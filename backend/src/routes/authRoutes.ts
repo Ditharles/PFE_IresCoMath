@@ -1,11 +1,11 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import {
   registerDoctorant,
   registerEnseignant,
   registerMaster,
   login,
   confirmRequest,
-  submitPassword,
+  submitAdditionalInfo,
   logout,
   resendConfirmLinkWithMail,
   resendConfirmLink,
@@ -14,34 +14,57 @@ import {
   confirmResetPassword,
   resetPassword,
   validateAccount,
+  refreshToken,
 } from "../controllers/authController";
 import { verifyToken } from "../middleware/verifyToken";
 
 const router = express.Router();
 
 // Routes d'inscription
-router.post("/registerEnseignant", registerEnseignant);
-router.post("/registerMaster", registerMaster);
-router.post("/registerDoctorant", registerDoctorant);
+router.post("/register/enseignant", registerEnseignant as RequestHandler);
+router.post("/register/master", registerMaster as RequestHandler);
+router.post("/register/doctorant", registerDoctorant as RequestHandler);
 
 // Routes de confirmation
-router.get("/confirmRequest/:token", confirmRequest);
-router.post("/submitPassword", verifyToken, submitPassword);
+router.get("/confirm-request/:token", confirmRequest as RequestHandler);
+router.post(
+  "/submit-additional-info",
+  verifyToken as RequestHandler,
+  submitAdditionalInfo as RequestHandler
+);
 
-//Routes de validation
-router.get("/validation", validateAccount);
+// Route de validation de compte
+router.get("/validate-account/:token", validateAccount as RequestHandler);
+
 // Routes de connexion et déconnexion
-router.post("/login", login);
-router.get("/logout", logout);
+router.post("/login", login as RequestHandler);
+router.get("/logout", logout as RequestHandler);
 
 // Routes de gestion de confirmation
-router.get("/resendConfirmationLink", verifyToken, resendConfirmLink);
-router.post("/resendConfirmationLink", resendConfirmLinkWithMail);
+router.get("/resend-confirmation-link", resendConfirmLink as RequestHandler);
+router.post(
+  "/resend-confirmation-link",
+  resendConfirmLinkWithMail as RequestHandler
+);
 
 // Routes de gestion de mot de passe
-router.post("/changePassword", verifyToken, changePassword);
-router.post("/forgetPassword", forgetPassword);
-router.get("/confirmResetPassword/:token", confirmResetPassword);
-router.post("/resetPassword/:token", resetPassword);
+router.post(
+  "/change-password",
+  verifyToken as RequestHandler,
+  changePassword as RequestHandler
+);
+router.post("/forget-password", forgetPassword as RequestHandler);
+router.get(
+  "/confirm-reset-password/:token",
+  confirmResetPassword as RequestHandler
+);
+router.post("/reset-password/:token", resetPassword as RequestHandler);
+
+// Route de rafraîchissement du token
+router.post(
+  "/refresh-token",
+  verifyToken as RequestHandler,
+  refreshToken as RequestHandler
+);
 
 export default router;

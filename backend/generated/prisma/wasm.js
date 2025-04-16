@@ -117,16 +117,22 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  role: 'role',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.DoctorantScalarFieldEnum = {
   id: 'id',
   nom: 'nom',
   prenom: 'prenom',
-  email: 'email',
-  dateInscription: 'dateInscription',
-  createdAt: 'createdAt',
+  annee_these: 'annee_these',
   directeur_these_id: 'directeur_these_id',
-  password: 'password',
-  photo: 'photo'
+  photo: 'photo',
+  userId: 'userId'
 };
 
 exports.Prisma.RequestDoctorantScalarFieldEnum = {
@@ -134,7 +140,7 @@ exports.Prisma.RequestDoctorantScalarFieldEnum = {
   nom: 'nom',
   prenom: 'prenom',
   email: 'email',
-  dateInscription: 'dateInscription',
+  annee_these: 'annee_these',
   createdAt: 'createdAt',
   directeur_these_id: 'directeur_these_id',
   status: 'status',
@@ -147,12 +153,11 @@ exports.Prisma.MasterScalarFieldEnum = {
   id: 'id',
   nom: 'nom',
   prenom: 'prenom',
-  email: 'email',
   dateInscription: 'dateInscription',
-  createdAt: 'createdAt',
   encadrant_id: 'encadrant_id',
-  password: 'password',
-  photo: 'photo'
+  annee_master: 'annee_master',
+  photo: 'photo',
+  userId: 'userId'
 };
 
 exports.Prisma.RequestMasterScalarFieldEnum = {
@@ -160,7 +165,7 @@ exports.Prisma.RequestMasterScalarFieldEnum = {
   nom: 'nom',
   prenom: 'prenom',
   email: 'email',
-  dateInscription: 'dateInscription',
+  annee_master: 'annee_master',
   createdAt: 'createdAt',
   encadrant_id: 'encadrant_id',
   status: 'status',
@@ -173,12 +178,11 @@ exports.Prisma.EnseignantChercheurScalarFieldEnum = {
   id: 'id',
   nom: 'nom',
   prenom: 'prenom',
-  email: 'email',
   fonction: 'fonction',
   grade: 'grade',
   etablissement: 'etablissement',
-  password: 'password',
-  photo: 'photo'
+  photo: 'photo',
+  userId: 'userId'
 };
 
 exports.Prisma.RequestEnseignantChercheurScalarFieldEnum = {
@@ -196,21 +200,20 @@ exports.Prisma.RequestEnseignantChercheurScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  machine: 'machine',
-  createdAt: 'createdAt',
-  doctorant_id: 'doctorant_id',
-  master_id: 'master_id',
-  enseignant_id: 'enseignant_id'
-};
-
 exports.Prisma.AdminScalarFieldEnum = {
   id: 'id',
   nom: 'nom',
-  email: 'email',
   prenom: 'prenom',
-  password: 'password'
+  userId: 'userId'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  machine: 'machine',
+  createdAt: 'createdAt',
+  userId: 'userId'
 };
 
 exports.Prisma.NotificationScalarFieldEnum = {
@@ -219,10 +222,7 @@ exports.Prisma.NotificationScalarFieldEnum = {
   recipient: 'recipient',
   status: 'status',
   createdAt: 'createdAt',
-  admin_id: 'admin_id',
-  doctorant_id: 'doctorant_id',
-  master_id: 'master_id',
-  enseignant_id: 'enseignant_id'
+  userId: 'userId'
 };
 
 exports.Prisma.SortOrder = {
@@ -239,13 +239,18 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Role = exports.$Enums.Role = {
+  ADMIN: 'ADMIN',
+  DOCTORANT: 'DOCTORANT',
+  MASTER: 'MASTER',
+  ENSEIGNANT: 'ENSEIGNANT',
+  DIRECTEUR: 'DIRECTEUR'
+};
+
 exports.RequestStatus = exports.$Enums.RequestStatus = {
   PENDING: 'PENDING',
-  APPROVEDBYSUPERIEUR: 'APPROVEDBYSUPERIEUR',
-  APPROVEDBYADMIN: 'APPROVEDBYADMIN',
-  APPROVEDBYTWO: 'APPROVEDBYTWO',
-  REJECTEDBYSUPERIEUR: 'REJECTEDBYSUPERIEUR',
-  REJECTEDBYADMIN: 'REJECTEDBYADMIN'
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
 };
 
 exports.Grade = exports.$Enums.Grade = {
@@ -261,14 +266,15 @@ exports.NotificationStatus = exports.$Enums.NotificationStatus = {
 };
 
 exports.Prisma.ModelName = {
+  User: 'User',
   Doctorant: 'Doctorant',
   RequestDoctorant: 'RequestDoctorant',
   Master: 'Master',
   RequestMaster: 'RequestMaster',
   EnseignantChercheur: 'EnseignantChercheur',
   RequestEnseignantChercheur: 'RequestEnseignantChercheur',
-  Session: 'Session',
   Admin: 'Admin',
+  Session: 'Session',
   Notification: 'Notification'
 };
 

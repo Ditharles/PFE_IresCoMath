@@ -1,33 +1,45 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import {
   getRequestInfo,
   getWaitingList,
   validateRequest,
+  resendValidationMail,
 } from "../controllers/validateController";
 import { checkRole } from "../middleware/checkRole";
 import { verifyToken } from "../middleware/verifyToken";
 
 const router = express.Router();
 
+// Route pour obtenir les requêtes en attente
 router.get(
-  "/getWaitingRequests",
-  verifyToken,
-  checkRole(["admin", "enseignant"]),
-  getWaitingList
+  "/get-waiting-list",
+  verifyToken as RequestHandler,
+  checkRole(["ADMIN", "ENSEIGNANT", "DIRECTEUR"]),
+  getWaitingList as RequestHandler
 );
 
+// Route pour valider une requête
 router.post(
-  "/validateRequest",
-  verifyToken,
-  checkRole(["admin", "enseignant"]),
-  validateRequest
+  "/validate-request",
+  verifyToken as RequestHandler,
+  checkRole(["DIRECTEUR"]),
+  validateRequest as RequestHandler
 );
 
+// Route pour obtenir les informations d'une requête
 router.get(
-  "/getInfo",
-  verifyToken,
-  checkRole(["admin", "enseignant"]),
-  getRequestInfo
+  "/get-request-info",
+  verifyToken as RequestHandler,
+  checkRole(["ADMIN", "ENSEIGNANT", "DIRECTEUR"]),
+  getRequestInfo as RequestHandler
+);
+
+// Route pour renvoyer l'email de validation
+router.post(
+  "/resend-validation-mail",
+  verifyToken as RequestHandler,
+  checkRole(["ADMIN", "DIRECTEUR"]),
+  resendValidationMail as RequestHandler
 );
 
 export default router;

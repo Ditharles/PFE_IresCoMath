@@ -14,6 +14,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
+ * Model User
+ * 
+ */
+export type User = $Result.DefaultSelection<Prisma.$UserPayload>
+/**
  * Model Doctorant
  * 
  */
@@ -44,15 +49,15 @@ export type EnseignantChercheur = $Result.DefaultSelection<Prisma.$EnseignantChe
  */
 export type RequestEnseignantChercheur = $Result.DefaultSelection<Prisma.$RequestEnseignantChercheurPayload>
 /**
- * Model Session
- * 
- */
-export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
-/**
  * Model Admin
  * 
  */
 export type Admin = $Result.DefaultSelection<Prisma.$AdminPayload>
+/**
+ * Model Session
+ * 
+ */
+export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
 /**
  * Model Notification
  * 
@@ -65,11 +70,8 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 export namespace $Enums {
   export const RequestStatus: {
   PENDING: 'PENDING',
-  APPROVEDBYSUPERIEUR: 'APPROVEDBYSUPERIEUR',
-  APPROVEDBYADMIN: 'APPROVEDBYADMIN',
-  APPROVEDBYTWO: 'APPROVEDBYTWO',
-  REJECTEDBYSUPERIEUR: 'REJECTEDBYSUPERIEUR',
-  REJECTEDBYADMIN: 'REJECTEDBYADMIN'
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
 };
 
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
@@ -92,6 +94,17 @@ export const Grade: {
 
 export type Grade = (typeof Grade)[keyof typeof Grade]
 
+
+export const Role: {
+  ADMIN: 'ADMIN',
+  DOCTORANT: 'DOCTORANT',
+  MASTER: 'MASTER',
+  ENSEIGNANT: 'ENSEIGNANT',
+  DIRECTEUR: 'DIRECTEUR'
+};
+
+export type Role = (typeof Role)[keyof typeof Role]
+
 }
 
 export type RequestStatus = $Enums.RequestStatus
@@ -106,6 +119,10 @@ export type Grade = $Enums.Grade
 
 export const Grade: typeof $Enums.Grade
 
+export type Role = $Enums.Role
+
+export const Role: typeof $Enums.Role
+
 /**
  * ##  Prisma Client ʲˢ
  *
@@ -113,8 +130,8 @@ export const Grade: typeof $Enums.Grade
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Doctorants
- * const doctorants = await prisma.doctorant.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  *
  *
@@ -134,8 +151,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Doctorants
-   * const doctorants = await prisma.doctorant.findMany()
+   * // Fetch zero or more Users
+   * const users = await prisma.user.findMany()
    * ```
    *
    *
@@ -232,6 +249,16 @@ export class PrismaClient<
   }>>
 
       /**
+   * `prisma.user`: Exposes CRUD operations for the **User** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Users
+    * const users = await prisma.user.findMany()
+    * ```
+    */
+  get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.doctorant`: Exposes CRUD operations for the **Doctorant** model.
     * Example usage:
     * ```ts
@@ -292,16 +319,6 @@ export class PrismaClient<
   get requestEnseignantChercheur(): Prisma.RequestEnseignantChercheurDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.session`: Exposes CRUD operations for the **Session** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Sessions
-    * const sessions = await prisma.session.findMany()
-    * ```
-    */
-  get session(): Prisma.SessionDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.admin`: Exposes CRUD operations for the **Admin** model.
     * Example usage:
     * ```ts
@@ -310,6 +327,16 @@ export class PrismaClient<
     * ```
     */
   get admin(): Prisma.AdminDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.session`: Exposes CRUD operations for the **Session** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sessions
+    * const sessions = await prisma.session.findMany()
+    * ```
+    */
+  get session(): Prisma.SessionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
@@ -760,14 +787,15 @@ export namespace Prisma {
 
 
   export const ModelName: {
+    User: 'User',
     Doctorant: 'Doctorant',
     RequestDoctorant: 'RequestDoctorant',
     Master: 'Master',
     RequestMaster: 'RequestMaster',
     EnseignantChercheur: 'EnseignantChercheur',
     RequestEnseignantChercheur: 'RequestEnseignantChercheur',
-    Session: 'Session',
     Admin: 'Admin',
+    Session: 'Session',
     Notification: 'Notification'
   };
 
@@ -787,10 +815,84 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "doctorant" | "requestDoctorant" | "master" | "requestMaster" | "enseignantChercheur" | "requestEnseignantChercheur" | "session" | "admin" | "notification"
+      modelProps: "user" | "doctorant" | "requestDoctorant" | "master" | "requestMaster" | "enseignantChercheur" | "requestEnseignantChercheur" | "admin" | "session" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
+      User: {
+        payload: Prisma.$UserPayload<ExtArgs>
+        fields: Prisma.UserFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findFirst: {
+            args: Prisma.UserFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findMany: {
+            args: Prisma.UserFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          create: {
+            args: Prisma.UserCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          createMany: {
+            args: Prisma.UserCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          delete: {
+            args: Prisma.UserDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          update: {
+            args: Prisma.UserUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          aggregate: {
+            args: Prisma.UserAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUser>
+          }
+          groupBy: {
+            args: Prisma.UserGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserCountArgs<ExtArgs>
+            result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
       Doctorant: {
         payload: Prisma.$DoctorantPayload<ExtArgs>
         fields: Prisma.DoctorantFieldRefs
@@ -1235,80 +1337,6 @@ export namespace Prisma {
           }
         }
       }
-      Session: {
-        payload: Prisma.$SessionPayload<ExtArgs>
-        fields: Prisma.SessionFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.SessionFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.SessionFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
-          }
-          findFirst: {
-            args: Prisma.SessionFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.SessionFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
-          }
-          findMany: {
-            args: Prisma.SessionFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
-          }
-          create: {
-            args: Prisma.SessionCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
-          }
-          createMany: {
-            args: Prisma.SessionCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.SessionCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
-          }
-          delete: {
-            args: Prisma.SessionDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
-          }
-          update: {
-            args: Prisma.SessionUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
-          }
-          deleteMany: {
-            args: Prisma.SessionDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.SessionUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.SessionUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
-          }
-          upsert: {
-            args: Prisma.SessionUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
-          }
-          aggregate: {
-            args: Prisma.SessionAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateSession>
-          }
-          groupBy: {
-            args: Prisma.SessionGroupByArgs<ExtArgs>
-            result: $Utils.Optional<SessionGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.SessionCountArgs<ExtArgs>
-            result: $Utils.Optional<SessionCountAggregateOutputType> | number
-          }
-        }
-      }
       Admin: {
         payload: Prisma.$AdminPayload<ExtArgs>
         fields: Prisma.AdminFieldRefs
@@ -1380,6 +1408,80 @@ export namespace Prisma {
           count: {
             args: Prisma.AdminCountArgs<ExtArgs>
             result: $Utils.Optional<AdminCountAggregateOutputType> | number
+          }
+        }
+      }
+      Session: {
+        payload: Prisma.$SessionPayload<ExtArgs>
+        fields: Prisma.SessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          findFirst: {
+            args: Prisma.SessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          findMany: {
+            args: Prisma.SessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          create: {
+            args: Prisma.SessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          createMany: {
+            args: Prisma.SessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          delete: {
+            args: Prisma.SessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          update: {
+            args: Prisma.SessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.SessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          upsert: {
+            args: Prisma.SessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          aggregate: {
+            args: Prisma.SessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSession>
+          }
+          groupBy: {
+            args: Prisma.SessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SessionCountArgs<ExtArgs>
+            result: $Utils.Optional<SessionCountAggregateOutputType> | number
           }
         }
       }
@@ -1541,14 +1643,15 @@ export namespace Prisma {
     omit?: Prisma.GlobalOmitConfig
   }
   export type GlobalOmitConfig = {
+    user?: UserOmit
     doctorant?: DoctorantOmit
     requestDoctorant?: RequestDoctorantOmit
     master?: MasterOmit
     requestMaster?: RequestMasterOmit
     enseignantChercheur?: EnseignantChercheurOmit
     requestEnseignantChercheur?: RequestEnseignantChercheurOmit
-    session?: SessionOmit
     admin?: AdminOmit
+    session?: SessionOmit
     notification?: NotificationOmit
   }
 
@@ -1640,81 +1743,41 @@ export namespace Prisma {
 
 
   /**
-   * Count Type DoctorantCountOutputType
+   * Count Type UserCountOutputType
    */
 
-  export type DoctorantCountOutputType = {
-    sessions_actives: number
+  export type UserCountOutputType = {
+    sessions: number
     notifications: number
   }
 
-  export type DoctorantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sessions_actives?: boolean | DoctorantCountOutputTypeCountSessions_activesArgs
-    notifications?: boolean | DoctorantCountOutputTypeCountNotificationsArgs
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   }
 
   // Custom InputTypes
   /**
-   * DoctorantCountOutputType without action
+   * UserCountOutputType without action
    */
-  export type DoctorantCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the DoctorantCountOutputType
+     * Select specific fields to fetch from the UserCountOutputType
      */
-    select?: DoctorantCountOutputTypeSelect<ExtArgs> | null
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * DoctorantCountOutputType without action
+   * UserCountOutputType without action
    */
-  export type DoctorantCountOutputTypeCountSessions_activesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionWhereInput
   }
 
   /**
-   * DoctorantCountOutputType without action
+   * UserCountOutputType without action
    */
-  export type DoctorantCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: NotificationWhereInput
-  }
-
-
-  /**
-   * Count Type MasterCountOutputType
-   */
-
-  export type MasterCountOutputType = {
-    sessions_actives: number
-    notifications: number
-  }
-
-  export type MasterCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sessions_actives?: boolean | MasterCountOutputTypeCountSessions_activesArgs
-    notifications?: boolean | MasterCountOutputTypeCountNotificationsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * MasterCountOutputType without action
-   */
-  export type MasterCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MasterCountOutputType
-     */
-    select?: MasterCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * MasterCountOutputType without action
-   */
-  export type MasterCountOutputTypeCountSessions_activesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
-  }
-
-  /**
-   * MasterCountOutputType without action
-   */
-  export type MasterCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationWhereInput
   }
 
@@ -1725,20 +1788,16 @@ export namespace Prisma {
 
   export type EnseignantChercheurCountOutputType = {
     doctorants: number
-    requestDoctorant: number
-    requestMaster: number
     masters: number
-    sessions_actives: number
-    notifications: number
+    requestsMaster: number
+    requestsDoctorant: number
   }
 
   export type EnseignantChercheurCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctorants?: boolean | EnseignantChercheurCountOutputTypeCountDoctorantsArgs
-    requestDoctorant?: boolean | EnseignantChercheurCountOutputTypeCountRequestDoctorantArgs
-    requestMaster?: boolean | EnseignantChercheurCountOutputTypeCountRequestMasterArgs
     masters?: boolean | EnseignantChercheurCountOutputTypeCountMastersArgs
-    sessions_actives?: boolean | EnseignantChercheurCountOutputTypeCountSessions_activesArgs
-    notifications?: boolean | EnseignantChercheurCountOutputTypeCountNotificationsArgs
+    requestsMaster?: boolean | EnseignantChercheurCountOutputTypeCountRequestsMasterArgs
+    requestsDoctorant?: boolean | EnseignantChercheurCountOutputTypeCountRequestsDoctorantArgs
   }
 
   // Custom InputTypes
@@ -1762,20 +1821,6 @@ export namespace Prisma {
   /**
    * EnseignantChercheurCountOutputType without action
    */
-  export type EnseignantChercheurCountOutputTypeCountRequestDoctorantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RequestDoctorantWhereInput
-  }
-
-  /**
-   * EnseignantChercheurCountOutputType without action
-   */
-  export type EnseignantChercheurCountOutputTypeCountRequestMasterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RequestMasterWhereInput
-  }
-
-  /**
-   * EnseignantChercheurCountOutputType without action
-   */
   export type EnseignantChercheurCountOutputTypeCountMastersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MasterWhereInput
   }
@@ -1783,46 +1828,15 @@ export namespace Prisma {
   /**
    * EnseignantChercheurCountOutputType without action
    */
-  export type EnseignantChercheurCountOutputTypeCountSessions_activesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
+  export type EnseignantChercheurCountOutputTypeCountRequestsMasterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RequestMasterWhereInput
   }
 
   /**
    * EnseignantChercheurCountOutputType without action
    */
-  export type EnseignantChercheurCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: NotificationWhereInput
-  }
-
-
-  /**
-   * Count Type AdminCountOutputType
-   */
-
-  export type AdminCountOutputType = {
-    notifications: number
-  }
-
-  export type AdminCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    notifications?: boolean | AdminCountOutputTypeCountNotificationsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * AdminCountOutputType without action
-   */
-  export type AdminCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdminCountOutputType
-     */
-    select?: AdminCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * AdminCountOutputType without action
-   */
-  export type AdminCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: NotificationWhereInput
+  export type EnseignantChercheurCountOutputTypeCountRequestsDoctorantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RequestDoctorantWhereInput
   }
 
 
@@ -1831,87 +1845,1283 @@ export namespace Prisma {
    */
 
   /**
+   * Model User
+   */
+
+  export type AggregateUser = {
+    _count: UserCountAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    password: string | null
+    role: $Enums.Role | null
+    createdAt: Date | null
+  }
+
+  export type UserMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    password: string | null
+    role: $Enums.Role | null
+    createdAt: Date | null
+  }
+
+  export type UserCountAggregateOutputType = {
+    id: number
+    email: number
+    password: number
+    role: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UserMinAggregateInputType = {
+    id?: true
+    email?: true
+    password?: true
+    role?: true
+    createdAt?: true
+  }
+
+  export type UserMaxAggregateInputType = {
+    id?: true
+    email?: true
+    password?: true
+    role?: true
+    createdAt?: true
+  }
+
+  export type UserCountAggregateInputType = {
+    id?: true
+    email?: true
+    password?: true
+    role?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UserAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which User to aggregate.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Users
+    **/
+    _count?: true | UserCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type GetUserAggregateType<T extends UserAggregateArgs> = {
+        [P in keyof T & keyof AggregateUser]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUser[P]>
+      : GetScalarType<T[P], AggregateUser[P]>
+  }
+
+
+
+
+  export type UserGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithAggregationInput | UserOrderByWithAggregationInput[]
+    by: UserScalarFieldEnum[] | UserScalarFieldEnum
+    having?: UserScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserCountAggregateInputType | true
+    _min?: UserMinAggregateInputType
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type UserGroupByOutputType = {
+    id: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt: Date
+    _count: UserCountAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserGroupByOutputType[P]>
+            : GetScalarType<T[P], UserGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    createdAt?: boolean
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
+    doctorant?: boolean | User$doctorantArgs<ExtArgs>
+    master?: boolean | User$masterArgs<ExtArgs>
+    enseignant?: boolean | User$enseignantArgs<ExtArgs>
+    admin?: boolean | User$adminArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["user"]>
+
+  export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["user"]>
+
+  export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["user"]>
+
+  export type UserSelectScalar = {
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    createdAt?: boolean
+  }
+
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
+    doctorant?: boolean | User$doctorantArgs<ExtArgs>
+    master?: boolean | User$masterArgs<ExtArgs>
+    enseignant?: boolean | User$enseignantArgs<ExtArgs>
+    admin?: boolean | User$adminArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "User"
+    objects: {
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      doctorant: Prisma.$DoctorantPayload<ExtArgs> | null
+      master: Prisma.$MasterPayload<ExtArgs> | null
+      enseignant: Prisma.$EnseignantChercheurPayload<ExtArgs> | null
+      admin: Prisma.$AdminPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      password: string
+      role: $Enums.Role
+      createdAt: Date
+    }, ExtArgs["result"]["user"]>
+    composites: {}
+  }
+
+  type UserGetPayload<S extends boolean | null | undefined | UserDefaultArgs> = $Result.GetResult<Prisma.$UserPayload, S>
+
+  type UserCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserCountAggregateInputType | true
+    }
+
+  export interface UserDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['User'], meta: { name: 'User' } }
+    /**
+     * Find zero or one User that matches the filter.
+     * @param {UserFindUniqueArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserFindUniqueArgs>(args: SelectSubset<T, UserFindUniqueArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one User that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserFindUniqueOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserFindUniqueOrThrowArgs>(args: SelectSubset<T, UserFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first User that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserFindFirstArgs>(args?: SelectSubset<T, UserFindFirstArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first User that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserFindFirstOrThrowArgs>(args?: SelectSubset<T, UserFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Users that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Users
+     * const users = await prisma.user.findMany()
+     * 
+     * // Get first 10 Users
+     * const users = await prisma.user.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserFindManyArgs>(args?: SelectSubset<T, UserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a User.
+     * @param {UserCreateArgs} args - Arguments to create a User.
+     * @example
+     * // Create one User
+     * const User = await prisma.user.create({
+     *   data: {
+     *     // ... data to create a User
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserCreateArgs>(args: SelectSubset<T, UserCreateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Users.
+     * @param {UserCreateManyArgs} args - Arguments to create many Users.
+     * @example
+     * // Create many Users
+     * const user = await prisma.user.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserCreateManyArgs>(args?: SelectSubset<T, UserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Users and returns the data saved in the database.
+     * @param {UserCreateManyAndReturnArgs} args - Arguments to create many Users.
+     * @example
+     * // Create many Users
+     * const user = await prisma.user.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Users and only return the `id`
+     * const userWithIdOnly = await prisma.user.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserCreateManyAndReturnArgs>(args?: SelectSubset<T, UserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a User.
+     * @param {UserDeleteArgs} args - Arguments to delete one User.
+     * @example
+     * // Delete one User
+     * const User = await prisma.user.delete({
+     *   where: {
+     *     // ... filter to delete one User
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserDeleteArgs>(args: SelectSubset<T, UserDeleteArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one User.
+     * @param {UserUpdateArgs} args - Arguments to update one User.
+     * @example
+     * // Update one User
+     * const user = await prisma.user.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserUpdateArgs>(args: SelectSubset<T, UserUpdateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Users.
+     * @param {UserDeleteManyArgs} args - Arguments to filter Users to delete.
+     * @example
+     * // Delete a few Users
+     * const { count } = await prisma.user.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserDeleteManyArgs>(args?: SelectSubset<T, UserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Users
+     * const user = await prisma.user.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserUpdateManyArgs>(args: SelectSubset<T, UserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Users and returns the data updated in the database.
+     * @param {UserUpdateManyAndReturnArgs} args - Arguments to update many Users.
+     * @example
+     * // Update many Users
+     * const user = await prisma.user.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Users and only return the `id`
+     * const userWithIdOnly = await prisma.user.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserUpdateManyAndReturnArgs>(args: SelectSubset<T, UserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one User.
+     * @param {UserUpsertArgs} args - Arguments to update or create a User.
+     * @example
+     * // Update or create a User
+     * const user = await prisma.user.upsert({
+     *   create: {
+     *     // ... data to create a User
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the User we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserUpsertArgs>(args: SelectSubset<T, UserUpsertArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCountArgs} args - Arguments to filter Users to count.
+     * @example
+     * // Count the number of Users
+     * const count = await prisma.user.count({
+     *   where: {
+     *     // ... the filter for the Users we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserCountArgs>(
+      args?: Subset<T, UserCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserAggregateArgs>(args: Subset<T, UserAggregateArgs>): Prisma.PrismaPromise<GetUserAggregateType<T>>
+
+    /**
+     * Group by User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserGroupByArgs['orderBy'] }
+        : { orderBy?: UserGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the User model
+   */
+  readonly fields: UserFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for User.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    doctorant<T extends User$doctorantArgs<ExtArgs> = {}>(args?: Subset<T, User$doctorantArgs<ExtArgs>>): Prisma__DoctorantClient<$Result.GetResult<Prisma.$DoctorantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    master<T extends User$masterArgs<ExtArgs> = {}>(args?: Subset<T, User$masterArgs<ExtArgs>>): Prisma__MasterClient<$Result.GetResult<Prisma.$MasterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    enseignant<T extends User$enseignantArgs<ExtArgs> = {}>(args?: Subset<T, User$enseignantArgs<ExtArgs>>): Prisma__EnseignantChercheurClient<$Result.GetResult<Prisma.$EnseignantChercheurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    admin<T extends User$adminArgs<ExtArgs> = {}>(args?: Subset<T, User$adminArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the User model
+   */ 
+  interface UserFieldRefs {
+    readonly id: FieldRef<"User", 'String'>
+    readonly email: FieldRef<"User", 'String'>
+    readonly password: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'Role'>
+    readonly createdAt: FieldRef<"User", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * User findUnique
+   */
+  export type UserFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User findUniqueOrThrow
+   */
+  export type UserFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User findFirst
+   */
+  export type UserFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User findFirstOrThrow
+   */
+  export type UserFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User findMany
+   */
+  export type UserFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which Users to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User create
+   */
+  export type UserCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to create a User.
+     */
+    data: XOR<UserCreateInput, UserUncheckedCreateInput>
+  }
+
+  /**
+   * User createMany
+   */
+  export type UserCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Users.
+     */
+    data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * User createManyAndReturn
+   */
+  export type UserCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * The data used to create many Users.
+     */
+    data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * User update
+   */
+  export type UserUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to update a User.
+     */
+    data: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+    /**
+     * Choose, which User to update.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User updateMany
+   */
+  export type UserUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Users.
+     */
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyInput>
+    /**
+     * Filter which Users to update
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * User updateManyAndReturn
+   */
+  export type UserUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * The data used to update Users.
+     */
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyInput>
+    /**
+     * Filter which Users to update
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * User upsert
+   */
+  export type UserUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The filter to search for the User to update in case it exists.
+     */
+    where: UserWhereUniqueInput
+    /**
+     * In case the User found by the `where` argument doesn't exist, create a new User with this data.
+     */
+    create: XOR<UserCreateInput, UserUncheckedCreateInput>
+    /**
+     * In case the User was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+  }
+
+  /**
+   * User delete
+   */
+  export type UserDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter which User to delete.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User deleteMany
+   */
+  export type UserDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Users to delete
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * User.sessions
+   */
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.notifications
+   */
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * User.doctorant
+   */
+  export type User$doctorantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Doctorant
+     */
+    select?: DoctorantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Doctorant
+     */
+    omit?: DoctorantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorantInclude<ExtArgs> | null
+    where?: DoctorantWhereInput
+  }
+
+  /**
+   * User.master
+   */
+  export type User$masterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Master
+     */
+    select?: MasterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Master
+     */
+    omit?: MasterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterInclude<ExtArgs> | null
+    where?: MasterWhereInput
+  }
+
+  /**
+   * User.enseignant
+   */
+  export type User$enseignantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EnseignantChercheur
+     */
+    select?: EnseignantChercheurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EnseignantChercheur
+     */
+    omit?: EnseignantChercheurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EnseignantChercheurInclude<ExtArgs> | null
+    where?: EnseignantChercheurWhereInput
+  }
+
+  /**
+   * User.admin
+   */
+  export type User$adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    where?: AdminWhereInput
+  }
+
+  /**
+   * User without action
+   */
+  export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Doctorant
    */
 
   export type AggregateDoctorant = {
     _count: DoctorantCountAggregateOutputType | null
+    _avg: DoctorantAvgAggregateOutputType | null
+    _sum: DoctorantSumAggregateOutputType | null
     _min: DoctorantMinAggregateOutputType | null
     _max: DoctorantMaxAggregateOutputType | null
+  }
+
+  export type DoctorantAvgAggregateOutputType = {
+    annee_these: number | null
+  }
+
+  export type DoctorantSumAggregateOutputType = {
+    annee_these: number | null
   }
 
   export type DoctorantMinAggregateOutputType = {
     id: string | null
     nom: string | null
     prenom: string | null
-    email: string | null
-    dateInscription: Date | null
-    createdAt: Date | null
+    annee_these: number | null
     directeur_these_id: string | null
-    password: string | null
     photo: string | null
+    userId: string | null
   }
 
   export type DoctorantMaxAggregateOutputType = {
     id: string | null
     nom: string | null
     prenom: string | null
-    email: string | null
-    dateInscription: Date | null
-    createdAt: Date | null
+    annee_these: number | null
     directeur_these_id: string | null
-    password: string | null
     photo: string | null
+    userId: string | null
   }
 
   export type DoctorantCountAggregateOutputType = {
     id: number
     nom: number
     prenom: number
-    email: number
-    dateInscription: number
-    createdAt: number
+    annee_these: number
     directeur_these_id: number
-    password: number
     photo: number
+    userId: number
     _all: number
   }
 
+
+  export type DoctorantAvgAggregateInputType = {
+    annee_these?: true
+  }
+
+  export type DoctorantSumAggregateInputType = {
+    annee_these?: true
+  }
 
   export type DoctorantMinAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
-    dateInscription?: true
-    createdAt?: true
+    annee_these?: true
     directeur_these_id?: true
-    password?: true
     photo?: true
+    userId?: true
   }
 
   export type DoctorantMaxAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
-    dateInscription?: true
-    createdAt?: true
+    annee_these?: true
     directeur_these_id?: true
-    password?: true
     photo?: true
+    userId?: true
   }
 
   export type DoctorantCountAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
-    dateInscription?: true
-    createdAt?: true
+    annee_these?: true
     directeur_these_id?: true
-    password?: true
     photo?: true
+    userId?: true
     _all?: true
   }
 
@@ -1953,6 +3163,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: DoctorantAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DoctorantSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: DoctorantMinAggregateInputType
@@ -1983,6 +3205,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: DoctorantCountAggregateInputType | true
+    _avg?: DoctorantAvgAggregateInputType
+    _sum?: DoctorantSumAggregateInputType
     _min?: DoctorantMinAggregateInputType
     _max?: DoctorantMaxAggregateInputType
   }
@@ -1991,13 +3215,13 @@ export namespace Prisma {
     id: string
     nom: string
     prenom: string
-    email: string
-    dateInscription: Date
-    createdAt: Date
+    annee_these: number
     directeur_these_id: string
-    password: string
     photo: string | null
+    userId: string
     _count: DoctorantCountAggregateOutputType | null
+    _avg: DoctorantAvgAggregateOutputType | null
+    _sum: DoctorantSumAggregateOutputType | null
     _min: DoctorantMinAggregateOutputType | null
     _max: DoctorantMaxAggregateOutputType | null
   }
@@ -2020,87 +3244,76 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
-    dateInscription?: boolean
-    createdAt?: boolean
+    annee_these?: boolean
     directeur_these_id?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
     directeur_these?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
-    sessions_actives?: boolean | Doctorant$sessions_activesArgs<ExtArgs>
-    notifications?: boolean | Doctorant$notificationsArgs<ExtArgs>
-    _count?: boolean | DoctorantCountOutputTypeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["doctorant"]>
 
   export type DoctorantSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
-    dateInscription?: boolean
-    createdAt?: boolean
+    annee_these?: boolean
     directeur_these_id?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
     directeur_these?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["doctorant"]>
 
   export type DoctorantSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
-    dateInscription?: boolean
-    createdAt?: boolean
+    annee_these?: boolean
     directeur_these_id?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
     directeur_these?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["doctorant"]>
 
   export type DoctorantSelectScalar = {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
-    dateInscription?: boolean
-    createdAt?: boolean
+    annee_these?: boolean
     directeur_these_id?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
   }
 
-  export type DoctorantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "email" | "dateInscription" | "createdAt" | "directeur_these_id" | "password" | "photo", ExtArgs["result"]["doctorant"]>
+  export type DoctorantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "annee_these" | "directeur_these_id" | "photo" | "userId", ExtArgs["result"]["doctorant"]>
   export type DoctorantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     directeur_these?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
-    sessions_actives?: boolean | Doctorant$sessions_activesArgs<ExtArgs>
-    notifications?: boolean | Doctorant$notificationsArgs<ExtArgs>
-    _count?: boolean | DoctorantCountOutputTypeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type DoctorantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     directeur_these?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type DoctorantIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     directeur_these?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $DoctorantPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Doctorant"
     objects: {
       directeur_these: Prisma.$EnseignantChercheurPayload<ExtArgs>
-      sessions_actives: Prisma.$SessionPayload<ExtArgs>[]
-      notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       nom: string
       prenom: string
-      email: string
-      dateInscription: Date
-      createdAt: Date
+      annee_these: number
       directeur_these_id: string
-      password: string
       photo: string | null
+      userId: string
     }, ExtArgs["result"]["doctorant"]>
     composites: {}
   }
@@ -2496,8 +3709,7 @@ export namespace Prisma {
   export interface Prisma__DoctorantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     directeur_these<T extends EnseignantChercheurDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheurDefaultArgs<ExtArgs>>): Prisma__EnseignantChercheurClient<$Result.GetResult<Prisma.$EnseignantChercheurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    sessions_actives<T extends Doctorant$sessions_activesArgs<ExtArgs> = {}>(args?: Subset<T, Doctorant$sessions_activesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    notifications<T extends Doctorant$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Doctorant$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2530,12 +3742,10 @@ export namespace Prisma {
     readonly id: FieldRef<"Doctorant", 'String'>
     readonly nom: FieldRef<"Doctorant", 'String'>
     readonly prenom: FieldRef<"Doctorant", 'String'>
-    readonly email: FieldRef<"Doctorant", 'String'>
-    readonly dateInscription: FieldRef<"Doctorant", 'DateTime'>
-    readonly createdAt: FieldRef<"Doctorant", 'DateTime'>
+    readonly annee_these: FieldRef<"Doctorant", 'Int'>
     readonly directeur_these_id: FieldRef<"Doctorant", 'String'>
-    readonly password: FieldRef<"Doctorant", 'String'>
     readonly photo: FieldRef<"Doctorant", 'String'>
+    readonly userId: FieldRef<"Doctorant", 'String'>
   }
     
 
@@ -2932,54 +4142,6 @@ export namespace Prisma {
   }
 
   /**
-   * Doctorant.sessions_actives
-   */
-  export type Doctorant$sessions_activesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Session
-     */
-    select?: SessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Session
-     */
-    omit?: SessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
-  }
-
-  /**
-   * Doctorant.notifications
-   */
-  export type Doctorant$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Notification
-     */
-    select?: NotificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Notification
-     */
-    omit?: NotificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: NotificationInclude<ExtArgs> | null
-    where?: NotificationWhereInput
-    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
-    cursor?: NotificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
-  }
-
-  /**
    * Doctorant without action
    */
   export type DoctorantDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3004,8 +4166,18 @@ export namespace Prisma {
 
   export type AggregateRequestDoctorant = {
     _count: RequestDoctorantCountAggregateOutputType | null
+    _avg: RequestDoctorantAvgAggregateOutputType | null
+    _sum: RequestDoctorantSumAggregateOutputType | null
     _min: RequestDoctorantMinAggregateOutputType | null
     _max: RequestDoctorantMaxAggregateOutputType | null
+  }
+
+  export type RequestDoctorantAvgAggregateOutputType = {
+    annee_these: number | null
+  }
+
+  export type RequestDoctorantSumAggregateOutputType = {
+    annee_these: number | null
   }
 
   export type RequestDoctorantMinAggregateOutputType = {
@@ -3013,7 +4185,7 @@ export namespace Prisma {
     nom: string | null
     prenom: string | null
     email: string | null
-    dateInscription: Date | null
+    annee_these: number | null
     createdAt: Date | null
     directeur_these_id: string | null
     status: $Enums.RequestStatus | null
@@ -3027,7 +4199,7 @@ export namespace Prisma {
     nom: string | null
     prenom: string | null
     email: string | null
-    dateInscription: Date | null
+    annee_these: number | null
     createdAt: Date | null
     directeur_these_id: string | null
     status: $Enums.RequestStatus | null
@@ -3041,7 +4213,7 @@ export namespace Prisma {
     nom: number
     prenom: number
     email: number
-    dateInscription: number
+    annee_these: number
     createdAt: number
     directeur_these_id: number
     status: number
@@ -3052,12 +4224,20 @@ export namespace Prisma {
   }
 
 
+  export type RequestDoctorantAvgAggregateInputType = {
+    annee_these?: true
+  }
+
+  export type RequestDoctorantSumAggregateInputType = {
+    annee_these?: true
+  }
+
   export type RequestDoctorantMinAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
     email?: true
-    dateInscription?: true
+    annee_these?: true
     createdAt?: true
     directeur_these_id?: true
     status?: true
@@ -3071,7 +4251,7 @@ export namespace Prisma {
     nom?: true
     prenom?: true
     email?: true
-    dateInscription?: true
+    annee_these?: true
     createdAt?: true
     directeur_these_id?: true
     status?: true
@@ -3085,7 +4265,7 @@ export namespace Prisma {
     nom?: true
     prenom?: true
     email?: true
-    dateInscription?: true
+    annee_these?: true
     createdAt?: true
     directeur_these_id?: true
     status?: true
@@ -3133,6 +4313,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: RequestDoctorantAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RequestDoctorantSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: RequestDoctorantMinAggregateInputType
@@ -3163,6 +4355,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RequestDoctorantCountAggregateInputType | true
+    _avg?: RequestDoctorantAvgAggregateInputType
+    _sum?: RequestDoctorantSumAggregateInputType
     _min?: RequestDoctorantMinAggregateInputType
     _max?: RequestDoctorantMaxAggregateInputType
   }
@@ -3172,7 +4366,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date
+    annee_these: number
     createdAt: Date
     directeur_these_id: string
     status: $Enums.RequestStatus
@@ -3180,6 +4374,8 @@ export namespace Prisma {
     photo: string | null
     isConfirm: boolean
     _count: RequestDoctorantCountAggregateOutputType | null
+    _avg: RequestDoctorantAvgAggregateOutputType | null
+    _sum: RequestDoctorantSumAggregateOutputType | null
     _min: RequestDoctorantMinAggregateOutputType | null
     _max: RequestDoctorantMaxAggregateOutputType | null
   }
@@ -3203,7 +4399,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_these?: boolean
     createdAt?: boolean
     directeur_these_id?: boolean
     status?: boolean
@@ -3218,7 +4414,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_these?: boolean
     createdAt?: boolean
     directeur_these_id?: boolean
     status?: boolean
@@ -3233,7 +4429,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_these?: boolean
     createdAt?: boolean
     directeur_these_id?: boolean
     status?: boolean
@@ -3248,7 +4444,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_these?: boolean
     createdAt?: boolean
     directeur_these_id?: boolean
     status?: boolean
@@ -3257,7 +4453,7 @@ export namespace Prisma {
     isConfirm?: boolean
   }
 
-  export type RequestDoctorantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "email" | "dateInscription" | "createdAt" | "directeur_these_id" | "status" | "rejectionReason" | "photo" | "isConfirm", ExtArgs["result"]["requestDoctorant"]>
+  export type RequestDoctorantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "email" | "annee_these" | "createdAt" | "directeur_these_id" | "status" | "rejectionReason" | "photo" | "isConfirm", ExtArgs["result"]["requestDoctorant"]>
   export type RequestDoctorantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     directeur_these?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
   }
@@ -3278,7 +4474,7 @@ export namespace Prisma {
       nom: string
       prenom: string
       email: string
-      dateInscription: Date
+      annee_these: number
       createdAt: Date
       directeur_these_id: string
       status: $Enums.RequestStatus
@@ -3713,7 +4909,7 @@ export namespace Prisma {
     readonly nom: FieldRef<"RequestDoctorant", 'String'>
     readonly prenom: FieldRef<"RequestDoctorant", 'String'>
     readonly email: FieldRef<"RequestDoctorant", 'String'>
-    readonly dateInscription: FieldRef<"RequestDoctorant", 'DateTime'>
+    readonly annee_these: FieldRef<"RequestDoctorant", 'Int'>
     readonly createdAt: FieldRef<"RequestDoctorant", 'DateTime'>
     readonly directeur_these_id: FieldRef<"RequestDoctorant", 'String'>
     readonly status: FieldRef<"RequestDoctorant", 'RequestStatus'>
@@ -4140,82 +5336,94 @@ export namespace Prisma {
 
   export type AggregateMaster = {
     _count: MasterCountAggregateOutputType | null
+    _avg: MasterAvgAggregateOutputType | null
+    _sum: MasterSumAggregateOutputType | null
     _min: MasterMinAggregateOutputType | null
     _max: MasterMaxAggregateOutputType | null
+  }
+
+  export type MasterAvgAggregateOutputType = {
+    annee_master: number | null
+  }
+
+  export type MasterSumAggregateOutputType = {
+    annee_master: number | null
   }
 
   export type MasterMinAggregateOutputType = {
     id: string | null
     nom: string | null
     prenom: string | null
-    email: string | null
     dateInscription: Date | null
-    createdAt: Date | null
     encadrant_id: string | null
-    password: string | null
+    annee_master: number | null
     photo: string | null
+    userId: string | null
   }
 
   export type MasterMaxAggregateOutputType = {
     id: string | null
     nom: string | null
     prenom: string | null
-    email: string | null
     dateInscription: Date | null
-    createdAt: Date | null
     encadrant_id: string | null
-    password: string | null
+    annee_master: number | null
     photo: string | null
+    userId: string | null
   }
 
   export type MasterCountAggregateOutputType = {
     id: number
     nom: number
     prenom: number
-    email: number
     dateInscription: number
-    createdAt: number
     encadrant_id: number
-    password: number
+    annee_master: number
     photo: number
+    userId: number
     _all: number
   }
 
+
+  export type MasterAvgAggregateInputType = {
+    annee_master?: true
+  }
+
+  export type MasterSumAggregateInputType = {
+    annee_master?: true
+  }
 
   export type MasterMinAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
     dateInscription?: true
-    createdAt?: true
     encadrant_id?: true
-    password?: true
+    annee_master?: true
     photo?: true
+    userId?: true
   }
 
   export type MasterMaxAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
     dateInscription?: true
-    createdAt?: true
     encadrant_id?: true
-    password?: true
+    annee_master?: true
     photo?: true
+    userId?: true
   }
 
   export type MasterCountAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
     dateInscription?: true
-    createdAt?: true
     encadrant_id?: true
-    password?: true
+    annee_master?: true
     photo?: true
+    userId?: true
     _all?: true
   }
 
@@ -4257,6 +5465,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: MasterAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MasterSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: MasterMinAggregateInputType
@@ -4287,6 +5507,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: MasterCountAggregateInputType | true
+    _avg?: MasterAvgAggregateInputType
+    _sum?: MasterSumAggregateInputType
     _min?: MasterMinAggregateInputType
     _max?: MasterMaxAggregateInputType
   }
@@ -4295,13 +5517,14 @@ export namespace Prisma {
     id: string
     nom: string
     prenom: string
-    email: string
     dateInscription: Date
-    createdAt: Date
     encadrant_id: string
-    password: string
+    annee_master: number
     photo: string | null
+    userId: string
     _count: MasterCountAggregateOutputType | null
+    _avg: MasterAvgAggregateOutputType | null
+    _sum: MasterSumAggregateOutputType | null
     _min: MasterMinAggregateOutputType | null
     _max: MasterMaxAggregateOutputType | null
   }
@@ -4324,87 +5547,81 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     dateInscription?: boolean
-    createdAt?: boolean
     encadrant_id?: boolean
-    password?: boolean
+    annee_master?: boolean
     photo?: boolean
+    userId?: boolean
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
-    sessions_actives?: boolean | Master$sessions_activesArgs<ExtArgs>
-    notifications?: boolean | Master$notificationsArgs<ExtArgs>
-    _count?: boolean | MasterCountOutputTypeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["master"]>
 
   export type MasterSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     dateInscription?: boolean
-    createdAt?: boolean
     encadrant_id?: boolean
-    password?: boolean
+    annee_master?: boolean
     photo?: boolean
+    userId?: boolean
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["master"]>
 
   export type MasterSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     dateInscription?: boolean
-    createdAt?: boolean
     encadrant_id?: boolean
-    password?: boolean
+    annee_master?: boolean
     photo?: boolean
+    userId?: boolean
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["master"]>
 
   export type MasterSelectScalar = {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     dateInscription?: boolean
-    createdAt?: boolean
     encadrant_id?: boolean
-    password?: boolean
+    annee_master?: boolean
     photo?: boolean
+    userId?: boolean
   }
 
-  export type MasterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "email" | "dateInscription" | "createdAt" | "encadrant_id" | "password" | "photo", ExtArgs["result"]["master"]>
+  export type MasterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "dateInscription" | "encadrant_id" | "annee_master" | "photo" | "userId", ExtArgs["result"]["master"]>
   export type MasterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
-    sessions_actives?: boolean | Master$sessions_activesArgs<ExtArgs>
-    notifications?: boolean | Master$notificationsArgs<ExtArgs>
-    _count?: boolean | MasterCountOutputTypeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type MasterIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type MasterIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $MasterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Master"
     objects: {
       encadrant: Prisma.$EnseignantChercheurPayload<ExtArgs>
-      sessions_actives: Prisma.$SessionPayload<ExtArgs>[]
-      notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       nom: string
       prenom: string
-      email: string
       dateInscription: Date
-      createdAt: Date
       encadrant_id: string
-      password: string
+      annee_master: number
       photo: string | null
+      userId: string
     }, ExtArgs["result"]["master"]>
     composites: {}
   }
@@ -4800,8 +6017,7 @@ export namespace Prisma {
   export interface Prisma__MasterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     encadrant<T extends EnseignantChercheurDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheurDefaultArgs<ExtArgs>>): Prisma__EnseignantChercheurClient<$Result.GetResult<Prisma.$EnseignantChercheurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    sessions_actives<T extends Master$sessions_activesArgs<ExtArgs> = {}>(args?: Subset<T, Master$sessions_activesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    notifications<T extends Master$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Master$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4834,12 +6050,11 @@ export namespace Prisma {
     readonly id: FieldRef<"Master", 'String'>
     readonly nom: FieldRef<"Master", 'String'>
     readonly prenom: FieldRef<"Master", 'String'>
-    readonly email: FieldRef<"Master", 'String'>
     readonly dateInscription: FieldRef<"Master", 'DateTime'>
-    readonly createdAt: FieldRef<"Master", 'DateTime'>
     readonly encadrant_id: FieldRef<"Master", 'String'>
-    readonly password: FieldRef<"Master", 'String'>
+    readonly annee_master: FieldRef<"Master", 'Int'>
     readonly photo: FieldRef<"Master", 'String'>
+    readonly userId: FieldRef<"Master", 'String'>
   }
     
 
@@ -5236,54 +6451,6 @@ export namespace Prisma {
   }
 
   /**
-   * Master.sessions_actives
-   */
-  export type Master$sessions_activesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Session
-     */
-    select?: SessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Session
-     */
-    omit?: SessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
-  }
-
-  /**
-   * Master.notifications
-   */
-  export type Master$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Notification
-     */
-    select?: NotificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Notification
-     */
-    omit?: NotificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: NotificationInclude<ExtArgs> | null
-    where?: NotificationWhereInput
-    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
-    cursor?: NotificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
-  }
-
-  /**
    * Master without action
    */
   export type MasterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5308,8 +6475,18 @@ export namespace Prisma {
 
   export type AggregateRequestMaster = {
     _count: RequestMasterCountAggregateOutputType | null
+    _avg: RequestMasterAvgAggregateOutputType | null
+    _sum: RequestMasterSumAggregateOutputType | null
     _min: RequestMasterMinAggregateOutputType | null
     _max: RequestMasterMaxAggregateOutputType | null
+  }
+
+  export type RequestMasterAvgAggregateOutputType = {
+    annee_master: number | null
+  }
+
+  export type RequestMasterSumAggregateOutputType = {
+    annee_master: number | null
   }
 
   export type RequestMasterMinAggregateOutputType = {
@@ -5317,7 +6494,7 @@ export namespace Prisma {
     nom: string | null
     prenom: string | null
     email: string | null
-    dateInscription: Date | null
+    annee_master: number | null
     createdAt: Date | null
     encadrant_id: string | null
     status: $Enums.RequestStatus | null
@@ -5331,7 +6508,7 @@ export namespace Prisma {
     nom: string | null
     prenom: string | null
     email: string | null
-    dateInscription: Date | null
+    annee_master: number | null
     createdAt: Date | null
     encadrant_id: string | null
     status: $Enums.RequestStatus | null
@@ -5345,7 +6522,7 @@ export namespace Prisma {
     nom: number
     prenom: number
     email: number
-    dateInscription: number
+    annee_master: number
     createdAt: number
     encadrant_id: number
     status: number
@@ -5356,12 +6533,20 @@ export namespace Prisma {
   }
 
 
+  export type RequestMasterAvgAggregateInputType = {
+    annee_master?: true
+  }
+
+  export type RequestMasterSumAggregateInputType = {
+    annee_master?: true
+  }
+
   export type RequestMasterMinAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
     email?: true
-    dateInscription?: true
+    annee_master?: true
     createdAt?: true
     encadrant_id?: true
     status?: true
@@ -5375,7 +6560,7 @@ export namespace Prisma {
     nom?: true
     prenom?: true
     email?: true
-    dateInscription?: true
+    annee_master?: true
     createdAt?: true
     encadrant_id?: true
     status?: true
@@ -5389,7 +6574,7 @@ export namespace Prisma {
     nom?: true
     prenom?: true
     email?: true
-    dateInscription?: true
+    annee_master?: true
     createdAt?: true
     encadrant_id?: true
     status?: true
@@ -5437,6 +6622,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: RequestMasterAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RequestMasterSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: RequestMasterMinAggregateInputType
@@ -5467,6 +6664,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RequestMasterCountAggregateInputType | true
+    _avg?: RequestMasterAvgAggregateInputType
+    _sum?: RequestMasterSumAggregateInputType
     _min?: RequestMasterMinAggregateInputType
     _max?: RequestMasterMaxAggregateInputType
   }
@@ -5476,7 +6675,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date
+    annee_master: number
     createdAt: Date
     encadrant_id: string
     status: $Enums.RequestStatus
@@ -5484,6 +6683,8 @@ export namespace Prisma {
     photo: string | null
     isConfirm: boolean
     _count: RequestMasterCountAggregateOutputType | null
+    _avg: RequestMasterAvgAggregateOutputType | null
+    _sum: RequestMasterSumAggregateOutputType | null
     _min: RequestMasterMinAggregateOutputType | null
     _max: RequestMasterMaxAggregateOutputType | null
   }
@@ -5507,7 +6708,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_master?: boolean
     createdAt?: boolean
     encadrant_id?: boolean
     status?: boolean
@@ -5522,7 +6723,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_master?: boolean
     createdAt?: boolean
     encadrant_id?: boolean
     status?: boolean
@@ -5537,7 +6738,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_master?: boolean
     createdAt?: boolean
     encadrant_id?: boolean
     status?: boolean
@@ -5552,7 +6753,7 @@ export namespace Prisma {
     nom?: boolean
     prenom?: boolean
     email?: boolean
-    dateInscription?: boolean
+    annee_master?: boolean
     createdAt?: boolean
     encadrant_id?: boolean
     status?: boolean
@@ -5561,7 +6762,7 @@ export namespace Prisma {
     isConfirm?: boolean
   }
 
-  export type RequestMasterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "email" | "dateInscription" | "createdAt" | "encadrant_id" | "status" | "rejectionReason" | "photo" | "isConfirm", ExtArgs["result"]["requestMaster"]>
+  export type RequestMasterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "email" | "annee_master" | "createdAt" | "encadrant_id" | "status" | "rejectionReason" | "photo" | "isConfirm", ExtArgs["result"]["requestMaster"]>
   export type RequestMasterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
   }
@@ -5582,7 +6783,7 @@ export namespace Prisma {
       nom: string
       prenom: string
       email: string
-      dateInscription: Date
+      annee_master: number
       createdAt: Date
       encadrant_id: string
       status: $Enums.RequestStatus
@@ -6017,7 +7218,7 @@ export namespace Prisma {
     readonly nom: FieldRef<"RequestMaster", 'String'>
     readonly prenom: FieldRef<"RequestMaster", 'String'>
     readonly email: FieldRef<"RequestMaster", 'String'>
-    readonly dateInscription: FieldRef<"RequestMaster", 'DateTime'>
+    readonly annee_master: FieldRef<"RequestMaster", 'Int'>
     readonly createdAt: FieldRef<"RequestMaster", 'DateTime'>
     readonly encadrant_id: FieldRef<"RequestMaster", 'String'>
     readonly status: FieldRef<"RequestMaster", 'RequestStatus'>
@@ -6452,36 +7653,33 @@ export namespace Prisma {
     id: string | null
     nom: string | null
     prenom: string | null
-    email: string | null
     fonction: string | null
     grade: $Enums.Grade | null
     etablissement: string | null
-    password: string | null
     photo: string | null
+    userId: string | null
   }
 
   export type EnseignantChercheurMaxAggregateOutputType = {
     id: string | null
     nom: string | null
     prenom: string | null
-    email: string | null
     fonction: string | null
     grade: $Enums.Grade | null
     etablissement: string | null
-    password: string | null
     photo: string | null
+    userId: string | null
   }
 
   export type EnseignantChercheurCountAggregateOutputType = {
     id: number
     nom: number
     prenom: number
-    email: number
     fonction: number
     grade: number
     etablissement: number
-    password: number
     photo: number
+    userId: number
     _all: number
   }
 
@@ -6490,36 +7688,33 @@ export namespace Prisma {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
     fonction?: true
     grade?: true
     etablissement?: true
-    password?: true
     photo?: true
+    userId?: true
   }
 
   export type EnseignantChercheurMaxAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
     fonction?: true
     grade?: true
     etablissement?: true
-    password?: true
     photo?: true
+    userId?: true
   }
 
   export type EnseignantChercheurCountAggregateInputType = {
     id?: true
     nom?: true
     prenom?: true
-    email?: true
     fonction?: true
     grade?: true
     etablissement?: true
-    password?: true
     photo?: true
+    userId?: true
     _all?: true
   }
 
@@ -6599,12 +7794,11 @@ export namespace Prisma {
     id: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo: string | null
+    userId: string
     _count: EnseignantChercheurCountAggregateOutputType | null
     _min: EnseignantChercheurMinAggregateOutputType | null
     _max: EnseignantChercheurMaxAggregateOutputType | null
@@ -6628,18 +7822,16 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     fonction?: boolean
     grade?: boolean
     etablissement?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
     doctorants?: boolean | EnseignantChercheur$doctorantsArgs<ExtArgs>
-    requestDoctorant?: boolean | EnseignantChercheur$requestDoctorantArgs<ExtArgs>
-    requestMaster?: boolean | EnseignantChercheur$requestMasterArgs<ExtArgs>
     masters?: boolean | EnseignantChercheur$mastersArgs<ExtArgs>
-    sessions_actives?: boolean | EnseignantChercheur$sessions_activesArgs<ExtArgs>
-    notifications?: boolean | EnseignantChercheur$notificationsArgs<ExtArgs>
+    requestsMaster?: boolean | EnseignantChercheur$requestsMasterArgs<ExtArgs>
+    requestsDoctorant?: boolean | EnseignantChercheur$requestsDoctorantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | EnseignantChercheurCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["enseignantChercheur"]>
 
@@ -6647,71 +7839,71 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     fonction?: boolean
     grade?: boolean
     etablissement?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["enseignantChercheur"]>
 
   export type EnseignantChercheurSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     fonction?: boolean
     grade?: boolean
     etablissement?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["enseignantChercheur"]>
 
   export type EnseignantChercheurSelectScalar = {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    email?: boolean
     fonction?: boolean
     grade?: boolean
     etablissement?: boolean
-    password?: boolean
     photo?: boolean
+    userId?: boolean
   }
 
-  export type EnseignantChercheurOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "email" | "fonction" | "grade" | "etablissement" | "password" | "photo", ExtArgs["result"]["enseignantChercheur"]>
+  export type EnseignantChercheurOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "fonction" | "grade" | "etablissement" | "photo" | "userId", ExtArgs["result"]["enseignantChercheur"]>
   export type EnseignantChercheurInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctorants?: boolean | EnseignantChercheur$doctorantsArgs<ExtArgs>
-    requestDoctorant?: boolean | EnseignantChercheur$requestDoctorantArgs<ExtArgs>
-    requestMaster?: boolean | EnseignantChercheur$requestMasterArgs<ExtArgs>
     masters?: boolean | EnseignantChercheur$mastersArgs<ExtArgs>
-    sessions_actives?: boolean | EnseignantChercheur$sessions_activesArgs<ExtArgs>
-    notifications?: boolean | EnseignantChercheur$notificationsArgs<ExtArgs>
+    requestsMaster?: boolean | EnseignantChercheur$requestsMasterArgs<ExtArgs>
+    requestsDoctorant?: boolean | EnseignantChercheur$requestsDoctorantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | EnseignantChercheurCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type EnseignantChercheurIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type EnseignantChercheurIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type EnseignantChercheurIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EnseignantChercheurIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $EnseignantChercheurPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "EnseignantChercheur"
     objects: {
       doctorants: Prisma.$DoctorantPayload<ExtArgs>[]
-      requestDoctorant: Prisma.$RequestDoctorantPayload<ExtArgs>[]
-      requestMaster: Prisma.$RequestMasterPayload<ExtArgs>[]
       masters: Prisma.$MasterPayload<ExtArgs>[]
-      sessions_actives: Prisma.$SessionPayload<ExtArgs>[]
-      notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      requestsMaster: Prisma.$RequestMasterPayload<ExtArgs>[]
+      requestsDoctorant: Prisma.$RequestDoctorantPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       nom: string
       prenom: string
-      email: string
       fonction: string
       grade: $Enums.Grade
       etablissement: string
-      password: string
       photo: string | null
+      userId: string
     }, ExtArgs["result"]["enseignantChercheur"]>
     composites: {}
   }
@@ -7107,11 +8299,10 @@ export namespace Prisma {
   export interface Prisma__EnseignantChercheurClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     doctorants<T extends EnseignantChercheur$doctorantsArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$doctorantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DoctorantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    requestDoctorant<T extends EnseignantChercheur$requestDoctorantArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$requestDoctorantArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RequestDoctorantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    requestMaster<T extends EnseignantChercheur$requestMasterArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$requestMasterArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RequestMasterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     masters<T extends EnseignantChercheur$mastersArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$mastersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sessions_actives<T extends EnseignantChercheur$sessions_activesArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$sessions_activesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    notifications<T extends EnseignantChercheur$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    requestsMaster<T extends EnseignantChercheur$requestsMasterArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$requestsMasterArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RequestMasterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    requestsDoctorant<T extends EnseignantChercheur$requestsDoctorantArgs<ExtArgs> = {}>(args?: Subset<T, EnseignantChercheur$requestsDoctorantArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RequestDoctorantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7144,12 +8335,11 @@ export namespace Prisma {
     readonly id: FieldRef<"EnseignantChercheur", 'String'>
     readonly nom: FieldRef<"EnseignantChercheur", 'String'>
     readonly prenom: FieldRef<"EnseignantChercheur", 'String'>
-    readonly email: FieldRef<"EnseignantChercheur", 'String'>
     readonly fonction: FieldRef<"EnseignantChercheur", 'String'>
     readonly grade: FieldRef<"EnseignantChercheur", 'Grade'>
     readonly etablissement: FieldRef<"EnseignantChercheur", 'String'>
-    readonly password: FieldRef<"EnseignantChercheur", 'String'>
     readonly photo: FieldRef<"EnseignantChercheur", 'String'>
+    readonly userId: FieldRef<"EnseignantChercheur", 'String'>
   }
     
 
@@ -7399,6 +8589,10 @@ export namespace Prisma {
      */
     data: EnseignantChercheurCreateManyInput | EnseignantChercheurCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EnseignantChercheurIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7469,6 +8663,10 @@ export namespace Prisma {
      * Limit how many EnseignantChercheurs to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EnseignantChercheurIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7562,54 +8760,6 @@ export namespace Prisma {
   }
 
   /**
-   * EnseignantChercheur.requestDoctorant
-   */
-  export type EnseignantChercheur$requestDoctorantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RequestDoctorant
-     */
-    select?: RequestDoctorantSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RequestDoctorant
-     */
-    omit?: RequestDoctorantOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RequestDoctorantInclude<ExtArgs> | null
-    where?: RequestDoctorantWhereInput
-    orderBy?: RequestDoctorantOrderByWithRelationInput | RequestDoctorantOrderByWithRelationInput[]
-    cursor?: RequestDoctorantWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: RequestDoctorantScalarFieldEnum | RequestDoctorantScalarFieldEnum[]
-  }
-
-  /**
-   * EnseignantChercheur.requestMaster
-   */
-  export type EnseignantChercheur$requestMasterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RequestMaster
-     */
-    select?: RequestMasterSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RequestMaster
-     */
-    omit?: RequestMasterOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RequestMasterInclude<ExtArgs> | null
-    where?: RequestMasterWhereInput
-    orderBy?: RequestMasterOrderByWithRelationInput | RequestMasterOrderByWithRelationInput[]
-    cursor?: RequestMasterWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: RequestMasterScalarFieldEnum | RequestMasterScalarFieldEnum[]
-  }
-
-  /**
    * EnseignantChercheur.masters
    */
   export type EnseignantChercheur$mastersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7634,51 +8784,51 @@ export namespace Prisma {
   }
 
   /**
-   * EnseignantChercheur.sessions_actives
+   * EnseignantChercheur.requestsMaster
    */
-  export type EnseignantChercheur$sessions_activesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type EnseignantChercheur$requestsMasterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Session
+     * Select specific fields to fetch from the RequestMaster
      */
-    select?: SessionSelect<ExtArgs> | null
+    select?: RequestMasterSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Session
+     * Omit specific fields from the RequestMaster
      */
-    omit?: SessionOmit<ExtArgs> | null
+    omit?: RequestMasterOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
+    include?: RequestMasterInclude<ExtArgs> | null
+    where?: RequestMasterWhereInput
+    orderBy?: RequestMasterOrderByWithRelationInput | RequestMasterOrderByWithRelationInput[]
+    cursor?: RequestMasterWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+    distinct?: RequestMasterScalarFieldEnum | RequestMasterScalarFieldEnum[]
   }
 
   /**
-   * EnseignantChercheur.notifications
+   * EnseignantChercheur.requestsDoctorant
    */
-  export type EnseignantChercheur$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type EnseignantChercheur$requestsDoctorantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Notification
+     * Select specific fields to fetch from the RequestDoctorant
      */
-    select?: NotificationSelect<ExtArgs> | null
+    select?: RequestDoctorantSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Notification
+     * Omit specific fields from the RequestDoctorant
      */
-    omit?: NotificationOmit<ExtArgs> | null
+    omit?: RequestDoctorantOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: NotificationInclude<ExtArgs> | null
-    where?: NotificationWhereInput
-    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
-    cursor?: NotificationWhereUniqueInput
+    include?: RequestDoctorantInclude<ExtArgs> | null
+    where?: RequestDoctorantWhereInput
+    orderBy?: RequestDoctorantOrderByWithRelationInput | RequestDoctorantOrderByWithRelationInput[]
+    cursor?: RequestDoctorantWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+    distinct?: RequestDoctorantScalarFieldEnum | RequestDoctorantScalarFieldEnum[]
   }
 
   /**
@@ -8787,6 +9937,1085 @@ export namespace Prisma {
 
 
   /**
+   * Model Admin
+   */
+
+  export type AggregateAdmin = {
+    _count: AdminCountAggregateOutputType | null
+    _avg: AdminAvgAggregateOutputType | null
+    _sum: AdminSumAggregateOutputType | null
+    _min: AdminMinAggregateOutputType | null
+    _max: AdminMaxAggregateOutputType | null
+  }
+
+  export type AdminAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AdminSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AdminMinAggregateOutputType = {
+    id: number | null
+    nom: string | null
+    prenom: string | null
+    userId: string | null
+  }
+
+  export type AdminMaxAggregateOutputType = {
+    id: number | null
+    nom: string | null
+    prenom: string | null
+    userId: string | null
+  }
+
+  export type AdminCountAggregateOutputType = {
+    id: number
+    nom: number
+    prenom: number
+    userId: number
+    _all: number
+  }
+
+
+  export type AdminAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type AdminSumAggregateInputType = {
+    id?: true
+  }
+
+  export type AdminMinAggregateInputType = {
+    id?: true
+    nom?: true
+    prenom?: true
+    userId?: true
+  }
+
+  export type AdminMaxAggregateInputType = {
+    id?: true
+    nom?: true
+    prenom?: true
+    userId?: true
+  }
+
+  export type AdminCountAggregateInputType = {
+    id?: true
+    nom?: true
+    prenom?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type AdminAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admin to aggregate.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Admins
+    **/
+    _count?: true | AdminCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AdminAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AdminSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminMaxAggregateInputType
+  }
+
+  export type GetAdminAggregateType<T extends AdminAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdmin]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdmin[P]>
+      : GetScalarType<T[P], AggregateAdmin[P]>
+  }
+
+
+
+
+  export type AdminGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminWhereInput
+    orderBy?: AdminOrderByWithAggregationInput | AdminOrderByWithAggregationInput[]
+    by: AdminScalarFieldEnum[] | AdminScalarFieldEnum
+    having?: AdminScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminCountAggregateInputType | true
+    _avg?: AdminAvgAggregateInputType
+    _sum?: AdminSumAggregateInputType
+    _min?: AdminMinAggregateInputType
+    _max?: AdminMaxAggregateInputType
+  }
+
+  export type AdminGroupByOutputType = {
+    id: number
+    nom: string
+    prenom: string
+    userId: string
+    _count: AdminCountAggregateOutputType | null
+    _avg: AdminAvgAggregateOutputType | null
+    _sum: AdminSumAggregateOutputType | null
+    _min: AdminMinAggregateOutputType | null
+    _max: AdminMaxAggregateOutputType | null
+  }
+
+  type GetAdminGroupByPayload<T extends AdminGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nom?: boolean
+    prenom?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nom?: boolean
+    prenom?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nom?: boolean
+    prenom?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectScalar = {
+    id?: boolean
+    nom?: boolean
+    prenom?: boolean
+    userId?: boolean
+  }
+
+  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "userId", ExtArgs["result"]["admin"]>
+  export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AdminIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Admin"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      nom: string
+      prenom: string
+      userId: string
+    }, ExtArgs["result"]["admin"]>
+    composites: {}
+  }
+
+  type AdminGetPayload<S extends boolean | null | undefined | AdminDefaultArgs> = $Result.GetResult<Prisma.$AdminPayload, S>
+
+  type AdminCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminCountAggregateInputType | true
+    }
+
+  export interface AdminDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Admin'], meta: { name: 'Admin' } }
+    /**
+     * Find zero or one Admin that matches the filter.
+     * @param {AdminFindUniqueArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminFindUniqueArgs>(args: SelectSubset<T, AdminFindUniqueArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Admin that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminFindUniqueOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admin that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindFirstArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminFindFirstArgs>(args?: SelectSubset<T, AdminFindFirstArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admin that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindFirstOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Admins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Admins
+     * const admins = await prisma.admin.findMany()
+     * 
+     * // Get first 10 Admins
+     * const admins = await prisma.admin.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminWithIdOnly = await prisma.admin.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminFindManyArgs>(args?: SelectSubset<T, AdminFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Admin.
+     * @param {AdminCreateArgs} args - Arguments to create a Admin.
+     * @example
+     * // Create one Admin
+     * const Admin = await prisma.admin.create({
+     *   data: {
+     *     // ... data to create a Admin
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminCreateArgs>(args: SelectSubset<T, AdminCreateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Admins.
+     * @param {AdminCreateManyArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminCreateManyArgs>(args?: SelectSubset<T, AdminCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Admins and returns the data saved in the database.
+     * @param {AdminCreateManyAndReturnArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Admins and only return the `id`
+     * const adminWithIdOnly = await prisma.admin.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Admin.
+     * @param {AdminDeleteArgs} args - Arguments to delete one Admin.
+     * @example
+     * // Delete one Admin
+     * const Admin = await prisma.admin.delete({
+     *   where: {
+     *     // ... filter to delete one Admin
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminDeleteArgs>(args: SelectSubset<T, AdminDeleteArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Admin.
+     * @param {AdminUpdateArgs} args - Arguments to update one Admin.
+     * @example
+     * // Update one Admin
+     * const admin = await prisma.admin.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminUpdateArgs>(args: SelectSubset<T, AdminUpdateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Admins.
+     * @param {AdminDeleteManyArgs} args - Arguments to filter Admins to delete.
+     * @example
+     * // Delete a few Admins
+     * const { count } = await prisma.admin.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminDeleteManyArgs>(args?: SelectSubset<T, AdminDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Admins
+     * const admin = await prisma.admin.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminUpdateManyArgs>(args: SelectSubset<T, AdminUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins and returns the data updated in the database.
+     * @param {AdminUpdateManyAndReturnArgs} args - Arguments to update many Admins.
+     * @example
+     * // Update many Admins
+     * const admin = await prisma.admin.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Admins and only return the `id`
+     * const adminWithIdOnly = await prisma.admin.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Admin.
+     * @param {AdminUpsertArgs} args - Arguments to update or create a Admin.
+     * @example
+     * // Update or create a Admin
+     * const admin = await prisma.admin.upsert({
+     *   create: {
+     *     // ... data to create a Admin
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Admin we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminUpsertArgs>(args: SelectSubset<T, AdminUpsertArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCountArgs} args - Arguments to filter Admins to count.
+     * @example
+     * // Count the number of Admins
+     * const count = await prisma.admin.count({
+     *   where: {
+     *     // ... the filter for the Admins we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminCountArgs>(
+      args?: Subset<T, AdminCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Admin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminAggregateArgs>(args: Subset<T, AdminAggregateArgs>): Prisma.PrismaPromise<GetAdminAggregateType<T>>
+
+    /**
+     * Group by Admin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminGroupByArgs['orderBy'] }
+        : { orderBy?: AdminGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Admin model
+   */
+  readonly fields: AdminFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Admin.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Admin model
+   */ 
+  interface AdminFieldRefs {
+    readonly id: FieldRef<"Admin", 'Int'>
+    readonly nom: FieldRef<"Admin", 'String'>
+    readonly prenom: FieldRef<"Admin", 'String'>
+    readonly userId: FieldRef<"Admin", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Admin findUnique
+   */
+  export type AdminFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin findUniqueOrThrow
+   */
+  export type AdminFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin findFirst
+   */
+  export type AdminFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin findFirstOrThrow
+   */
+  export type AdminFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin findMany
+   */
+  export type AdminFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin create
+   */
+  export type AdminCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Admin.
+     */
+    data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+  }
+
+  /**
+   * Admin createMany
+   */
+  export type AdminCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Admin createManyAndReturn
+   */
+  export type AdminCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Admin update
+   */
+  export type AdminUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Admin.
+     */
+    data: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
+    /**
+     * Choose, which Admin to update.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin updateMany
+   */
+  export type AdminUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admin updateManyAndReturn
+   */
+  export type AdminUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Admin upsert
+   */
+  export type AdminUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Admin to update in case it exists.
+     */
+    where: AdminWhereUniqueInput
+    /**
+     * In case the Admin found by the `where` argument doesn't exist, create a new Admin with this data.
+     */
+    create: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+    /**
+     * In case the Admin was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
+  }
+
+  /**
+   * Admin delete
+   */
+  export type AdminDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter which Admin to delete.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin deleteMany
+   */
+  export type AdminDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admins to delete
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admin without action
+   */
+  export type AdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Session
    */
 
@@ -8798,58 +11027,58 @@ export namespace Prisma {
 
   export type SessionMinAggregateOutputType = {
     id: string | null
+    accessToken: string | null
+    refreshToken: string | null
     machine: string | null
     createdAt: Date | null
-    doctorant_id: string | null
-    master_id: string | null
-    enseignant_id: string | null
+    userId: string | null
   }
 
   export type SessionMaxAggregateOutputType = {
     id: string | null
+    accessToken: string | null
+    refreshToken: string | null
     machine: string | null
     createdAt: Date | null
-    doctorant_id: string | null
-    master_id: string | null
-    enseignant_id: string | null
+    userId: string | null
   }
 
   export type SessionCountAggregateOutputType = {
     id: number
+    accessToken: number
+    refreshToken: number
     machine: number
     createdAt: number
-    doctorant_id: number
-    master_id: number
-    enseignant_id: number
+    userId: number
     _all: number
   }
 
 
   export type SessionMinAggregateInputType = {
     id?: true
+    accessToken?: true
+    refreshToken?: true
     machine?: true
     createdAt?: true
-    doctorant_id?: true
-    master_id?: true
-    enseignant_id?: true
+    userId?: true
   }
 
   export type SessionMaxAggregateInputType = {
     id?: true
+    accessToken?: true
+    refreshToken?: true
     machine?: true
     createdAt?: true
-    doctorant_id?: true
-    master_id?: true
-    enseignant_id?: true
+    userId?: true
   }
 
   export type SessionCountAggregateInputType = {
     id?: true
+    accessToken?: true
+    refreshToken?: true
     machine?: true
     createdAt?: true
-    doctorant_id?: true
-    master_id?: true
-    enseignant_id?: true
+    userId?: true
     _all?: true
   }
 
@@ -8927,11 +11156,11 @@ export namespace Prisma {
 
   export type SessionGroupByOutputType = {
     id: string
+    accessToken: string
+    refreshToken: string
     machine: string
     createdAt: Date
-    doctorant_id: string | null
-    master_id: string | null
-    enseignant_id: string | null
+    userId: string
     _count: SessionCountAggregateOutputType | null
     _min: SessionMinAggregateOutputType | null
     _max: SessionMaxAggregateOutputType | null
@@ -8953,80 +11182,66 @@ export namespace Prisma {
 
   export type SessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    accessToken?: boolean
+    refreshToken?: boolean
     machine?: boolean
     createdAt?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
-    doctorant?: boolean | Session$doctorantArgs<ExtArgs>
-    master?: boolean | Session$masterArgs<ExtArgs>
-    enseignant?: boolean | Session$enseignantArgs<ExtArgs>
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
   export type SessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    accessToken?: boolean
+    refreshToken?: boolean
     machine?: boolean
     createdAt?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
-    doctorant?: boolean | Session$doctorantArgs<ExtArgs>
-    master?: boolean | Session$masterArgs<ExtArgs>
-    enseignant?: boolean | Session$enseignantArgs<ExtArgs>
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
   export type SessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    accessToken?: boolean
+    refreshToken?: boolean
     machine?: boolean
     createdAt?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
-    doctorant?: boolean | Session$doctorantArgs<ExtArgs>
-    master?: boolean | Session$masterArgs<ExtArgs>
-    enseignant?: boolean | Session$enseignantArgs<ExtArgs>
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
   export type SessionSelectScalar = {
     id?: boolean
+    accessToken?: boolean
+    refreshToken?: boolean
     machine?: boolean
     createdAt?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
+    userId?: boolean
   }
 
-  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "machine" | "createdAt" | "doctorant_id" | "master_id" | "enseignant_id", ExtArgs["result"]["session"]>
+  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "accessToken" | "refreshToken" | "machine" | "createdAt" | "userId", ExtArgs["result"]["session"]>
   export type SessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    doctorant?: boolean | Session$doctorantArgs<ExtArgs>
-    master?: boolean | Session$masterArgs<ExtArgs>
-    enseignant?: boolean | Session$enseignantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type SessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    doctorant?: boolean | Session$doctorantArgs<ExtArgs>
-    master?: boolean | Session$masterArgs<ExtArgs>
-    enseignant?: boolean | Session$enseignantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type SessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    doctorant?: boolean | Session$doctorantArgs<ExtArgs>
-    master?: boolean | Session$masterArgs<ExtArgs>
-    enseignant?: boolean | Session$enseignantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $SessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Session"
     objects: {
-      doctorant: Prisma.$DoctorantPayload<ExtArgs> | null
-      master: Prisma.$MasterPayload<ExtArgs> | null
-      enseignant: Prisma.$EnseignantChercheurPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      accessToken: string
+      refreshToken: string
       machine: string
       createdAt: Date
-      doctorant_id: string | null
-      master_id: string | null
-      enseignant_id: string | null
+      userId: string
     }, ExtArgs["result"]["session"]>
     composites: {}
   }
@@ -9421,9 +11636,7 @@ export namespace Prisma {
    */
   export interface Prisma__SessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    doctorant<T extends Session$doctorantArgs<ExtArgs> = {}>(args?: Subset<T, Session$doctorantArgs<ExtArgs>>): Prisma__DoctorantClient<$Result.GetResult<Prisma.$DoctorantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    master<T extends Session$masterArgs<ExtArgs> = {}>(args?: Subset<T, Session$masterArgs<ExtArgs>>): Prisma__MasterClient<$Result.GetResult<Prisma.$MasterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    enseignant<T extends Session$enseignantArgs<ExtArgs> = {}>(args?: Subset<T, Session$enseignantArgs<ExtArgs>>): Prisma__EnseignantChercheurClient<$Result.GetResult<Prisma.$EnseignantChercheurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9454,11 +11667,11 @@ export namespace Prisma {
    */ 
   interface SessionFieldRefs {
     readonly id: FieldRef<"Session", 'String'>
+    readonly accessToken: FieldRef<"Session", 'String'>
+    readonly refreshToken: FieldRef<"Session", 'String'>
     readonly machine: FieldRef<"Session", 'String'>
     readonly createdAt: FieldRef<"Session", 'DateTime'>
-    readonly doctorant_id: FieldRef<"Session", 'String'>
-    readonly master_id: FieldRef<"Session", 'String'>
-    readonly enseignant_id: FieldRef<"Session", 'String'>
+    readonly userId: FieldRef<"Session", 'String'>
   }
     
 
@@ -9855,63 +12068,6 @@ export namespace Prisma {
   }
 
   /**
-   * Session.doctorant
-   */
-  export type Session$doctorantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Doctorant
-     */
-    select?: DoctorantSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Doctorant
-     */
-    omit?: DoctorantOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: DoctorantInclude<ExtArgs> | null
-    where?: DoctorantWhereInput
-  }
-
-  /**
-   * Session.master
-   */
-  export type Session$masterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Master
-     */
-    select?: MasterSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Master
-     */
-    omit?: MasterOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MasterInclude<ExtArgs> | null
-    where?: MasterWhereInput
-  }
-
-  /**
-   * Session.enseignant
-   */
-  export type Session$enseignantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EnseignantChercheur
-     */
-    select?: EnseignantChercheurSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EnseignantChercheur
-     */
-    omit?: EnseignantChercheurOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EnseignantChercheurInclude<ExtArgs> | null
-    where?: EnseignantChercheurWhereInput
-  }
-
-  /**
    * Session without action
    */
   export type SessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9931,1110 +12087,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Admin
-   */
-
-  export type AggregateAdmin = {
-    _count: AdminCountAggregateOutputType | null
-    _avg: AdminAvgAggregateOutputType | null
-    _sum: AdminSumAggregateOutputType | null
-    _min: AdminMinAggregateOutputType | null
-    _max: AdminMaxAggregateOutputType | null
-  }
-
-  export type AdminAvgAggregateOutputType = {
-    id: number | null
-  }
-
-  export type AdminSumAggregateOutputType = {
-    id: number | null
-  }
-
-  export type AdminMinAggregateOutputType = {
-    id: number | null
-    nom: string | null
-    email: string | null
-    prenom: string | null
-    password: string | null
-  }
-
-  export type AdminMaxAggregateOutputType = {
-    id: number | null
-    nom: string | null
-    email: string | null
-    prenom: string | null
-    password: string | null
-  }
-
-  export type AdminCountAggregateOutputType = {
-    id: number
-    nom: number
-    email: number
-    prenom: number
-    password: number
-    _all: number
-  }
-
-
-  export type AdminAvgAggregateInputType = {
-    id?: true
-  }
-
-  export type AdminSumAggregateInputType = {
-    id?: true
-  }
-
-  export type AdminMinAggregateInputType = {
-    id?: true
-    nom?: true
-    email?: true
-    prenom?: true
-    password?: true
-  }
-
-  export type AdminMaxAggregateInputType = {
-    id?: true
-    nom?: true
-    email?: true
-    prenom?: true
-    password?: true
-  }
-
-  export type AdminCountAggregateInputType = {
-    id?: true
-    nom?: true
-    email?: true
-    prenom?: true
-    password?: true
-    _all?: true
-  }
-
-  export type AdminAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Admin to aggregate.
-     */
-    where?: AdminWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Admins to fetch.
-     */
-    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: AdminWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Admins from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Admins.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Admins
-    **/
-    _count?: true | AdminCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: AdminAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: AdminSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: AdminMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: AdminMaxAggregateInputType
-  }
-
-  export type GetAdminAggregateType<T extends AdminAggregateArgs> = {
-        [P in keyof T & keyof AggregateAdmin]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateAdmin[P]>
-      : GetScalarType<T[P], AggregateAdmin[P]>
-  }
-
-
-
-
-  export type AdminGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AdminWhereInput
-    orderBy?: AdminOrderByWithAggregationInput | AdminOrderByWithAggregationInput[]
-    by: AdminScalarFieldEnum[] | AdminScalarFieldEnum
-    having?: AdminScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: AdminCountAggregateInputType | true
-    _avg?: AdminAvgAggregateInputType
-    _sum?: AdminSumAggregateInputType
-    _min?: AdminMinAggregateInputType
-    _max?: AdminMaxAggregateInputType
-  }
-
-  export type AdminGroupByOutputType = {
-    id: number
-    nom: string
-    email: string
-    prenom: string
-    password: string
-    _count: AdminCountAggregateOutputType | null
-    _avg: AdminAvgAggregateOutputType | null
-    _sum: AdminSumAggregateOutputType | null
-    _min: AdminMinAggregateOutputType | null
-    _max: AdminMaxAggregateOutputType | null
-  }
-
-  type GetAdminGroupByPayload<T extends AdminGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<AdminGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof AdminGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], AdminGroupByOutputType[P]>
-            : GetScalarType<T[P], AdminGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type AdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nom?: boolean
-    email?: boolean
-    prenom?: boolean
-    password?: boolean
-    notifications?: boolean | Admin$notificationsArgs<ExtArgs>
-    _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["admin"]>
-
-  export type AdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nom?: boolean
-    email?: boolean
-    prenom?: boolean
-    password?: boolean
-  }, ExtArgs["result"]["admin"]>
-
-  export type AdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nom?: boolean
-    email?: boolean
-    prenom?: boolean
-    password?: boolean
-  }, ExtArgs["result"]["admin"]>
-
-  export type AdminSelectScalar = {
-    id?: boolean
-    nom?: boolean
-    email?: boolean
-    prenom?: boolean
-    password?: boolean
-  }
-
-  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "email" | "prenom" | "password", ExtArgs["result"]["admin"]>
-  export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    notifications?: boolean | Admin$notificationsArgs<ExtArgs>
-    _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type AdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type AdminIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $AdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Admin"
-    objects: {
-      notifications: Prisma.$NotificationPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      nom: string
-      email: string
-      prenom: string
-      password: string
-    }, ExtArgs["result"]["admin"]>
-    composites: {}
-  }
-
-  type AdminGetPayload<S extends boolean | null | undefined | AdminDefaultArgs> = $Result.GetResult<Prisma.$AdminPayload, S>
-
-  type AdminCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<AdminFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: AdminCountAggregateInputType | true
-    }
-
-  export interface AdminDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Admin'], meta: { name: 'Admin' } }
-    /**
-     * Find zero or one Admin that matches the filter.
-     * @param {AdminFindUniqueArgs} args - Arguments to find a Admin
-     * @example
-     * // Get one Admin
-     * const admin = await prisma.admin.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends AdminFindUniqueArgs>(args: SelectSubset<T, AdminFindUniqueArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Admin that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {AdminFindUniqueOrThrowArgs} args - Arguments to find a Admin
-     * @example
-     * // Get one Admin
-     * const admin = await prisma.admin.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends AdminFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Admin that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminFindFirstArgs} args - Arguments to find a Admin
-     * @example
-     * // Get one Admin
-     * const admin = await prisma.admin.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends AdminFindFirstArgs>(args?: SelectSubset<T, AdminFindFirstArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Admin that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminFindFirstOrThrowArgs} args - Arguments to find a Admin
-     * @example
-     * // Get one Admin
-     * const admin = await prisma.admin.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends AdminFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Admins that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Admins
-     * const admins = await prisma.admin.findMany()
-     * 
-     * // Get first 10 Admins
-     * const admins = await prisma.admin.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const adminWithIdOnly = await prisma.admin.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends AdminFindManyArgs>(args?: SelectSubset<T, AdminFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Admin.
-     * @param {AdminCreateArgs} args - Arguments to create a Admin.
-     * @example
-     * // Create one Admin
-     * const Admin = await prisma.admin.create({
-     *   data: {
-     *     // ... data to create a Admin
-     *   }
-     * })
-     * 
-     */
-    create<T extends AdminCreateArgs>(args: SelectSubset<T, AdminCreateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Admins.
-     * @param {AdminCreateManyArgs} args - Arguments to create many Admins.
-     * @example
-     * // Create many Admins
-     * const admin = await prisma.admin.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends AdminCreateManyArgs>(args?: SelectSubset<T, AdminCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Admins and returns the data saved in the database.
-     * @param {AdminCreateManyAndReturnArgs} args - Arguments to create many Admins.
-     * @example
-     * // Create many Admins
-     * const admin = await prisma.admin.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Admins and only return the `id`
-     * const adminWithIdOnly = await prisma.admin.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends AdminCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Admin.
-     * @param {AdminDeleteArgs} args - Arguments to delete one Admin.
-     * @example
-     * // Delete one Admin
-     * const Admin = await prisma.admin.delete({
-     *   where: {
-     *     // ... filter to delete one Admin
-     *   }
-     * })
-     * 
-     */
-    delete<T extends AdminDeleteArgs>(args: SelectSubset<T, AdminDeleteArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Admin.
-     * @param {AdminUpdateArgs} args - Arguments to update one Admin.
-     * @example
-     * // Update one Admin
-     * const admin = await prisma.admin.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends AdminUpdateArgs>(args: SelectSubset<T, AdminUpdateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Admins.
-     * @param {AdminDeleteManyArgs} args - Arguments to filter Admins to delete.
-     * @example
-     * // Delete a few Admins
-     * const { count } = await prisma.admin.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends AdminDeleteManyArgs>(args?: SelectSubset<T, AdminDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Admins.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Admins
-     * const admin = await prisma.admin.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends AdminUpdateManyArgs>(args: SelectSubset<T, AdminUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Admins and returns the data updated in the database.
-     * @param {AdminUpdateManyAndReturnArgs} args - Arguments to update many Admins.
-     * @example
-     * // Update many Admins
-     * const admin = await prisma.admin.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Admins and only return the `id`
-     * const adminWithIdOnly = await prisma.admin.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends AdminUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Admin.
-     * @param {AdminUpsertArgs} args - Arguments to update or create a Admin.
-     * @example
-     * // Update or create a Admin
-     * const admin = await prisma.admin.upsert({
-     *   create: {
-     *     // ... data to create a Admin
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Admin we want to update
-     *   }
-     * })
-     */
-    upsert<T extends AdminUpsertArgs>(args: SelectSubset<T, AdminUpsertArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Admins.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminCountArgs} args - Arguments to filter Admins to count.
-     * @example
-     * // Count the number of Admins
-     * const count = await prisma.admin.count({
-     *   where: {
-     *     // ... the filter for the Admins we want to count
-     *   }
-     * })
-    **/
-    count<T extends AdminCountArgs>(
-      args?: Subset<T, AdminCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], AdminCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Admin.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends AdminAggregateArgs>(args: Subset<T, AdminAggregateArgs>): Prisma.PrismaPromise<GetAdminAggregateType<T>>
-
-    /**
-     * Group by Admin.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends AdminGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: AdminGroupByArgs['orderBy'] }
-        : { orderBy?: AdminGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, AdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Admin model
-   */
-  readonly fields: AdminFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Admin.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    notifications<T extends Admin$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Admin$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Admin model
-   */ 
-  interface AdminFieldRefs {
-    readonly id: FieldRef<"Admin", 'Int'>
-    readonly nom: FieldRef<"Admin", 'String'>
-    readonly email: FieldRef<"Admin", 'String'>
-    readonly prenom: FieldRef<"Admin", 'String'>
-    readonly password: FieldRef<"Admin", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Admin findUnique
-   */
-  export type AdminFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * Filter, which Admin to fetch.
-     */
-    where: AdminWhereUniqueInput
-  }
-
-  /**
-   * Admin findUniqueOrThrow
-   */
-  export type AdminFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * Filter, which Admin to fetch.
-     */
-    where: AdminWhereUniqueInput
-  }
-
-  /**
-   * Admin findFirst
-   */
-  export type AdminFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * Filter, which Admin to fetch.
-     */
-    where?: AdminWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Admins to fetch.
-     */
-    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Admins.
-     */
-    cursor?: AdminWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Admins from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Admins.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Admins.
-     */
-    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
-  }
-
-  /**
-   * Admin findFirstOrThrow
-   */
-  export type AdminFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * Filter, which Admin to fetch.
-     */
-    where?: AdminWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Admins to fetch.
-     */
-    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Admins.
-     */
-    cursor?: AdminWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Admins from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Admins.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Admins.
-     */
-    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
-  }
-
-  /**
-   * Admin findMany
-   */
-  export type AdminFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * Filter, which Admins to fetch.
-     */
-    where?: AdminWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Admins to fetch.
-     */
-    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Admins.
-     */
-    cursor?: AdminWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Admins from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Admins.
-     */
-    skip?: number
-    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
-  }
-
-  /**
-   * Admin create
-   */
-  export type AdminCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Admin.
-     */
-    data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
-  }
-
-  /**
-   * Admin createMany
-   */
-  export type AdminCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Admins.
-     */
-    data: AdminCreateManyInput | AdminCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Admin createManyAndReturn
-   */
-  export type AdminCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * The data used to create many Admins.
-     */
-    data: AdminCreateManyInput | AdminCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Admin update
-   */
-  export type AdminUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Admin.
-     */
-    data: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
-    /**
-     * Choose, which Admin to update.
-     */
-    where: AdminWhereUniqueInput
-  }
-
-  /**
-   * Admin updateMany
-   */
-  export type AdminUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Admins.
-     */
-    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
-    /**
-     * Filter which Admins to update
-     */
-    where?: AdminWhereInput
-    /**
-     * Limit how many Admins to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Admin updateManyAndReturn
-   */
-  export type AdminUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * The data used to update Admins.
-     */
-    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
-    /**
-     * Filter which Admins to update
-     */
-    where?: AdminWhereInput
-    /**
-     * Limit how many Admins to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Admin upsert
-   */
-  export type AdminUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Admin to update in case it exists.
-     */
-    where: AdminWhereUniqueInput
-    /**
-     * In case the Admin found by the `where` argument doesn't exist, create a new Admin with this data.
-     */
-    create: XOR<AdminCreateInput, AdminUncheckedCreateInput>
-    /**
-     * In case the Admin was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
-  }
-
-  /**
-   * Admin delete
-   */
-  export type AdminDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
-     * Filter which Admin to delete.
-     */
-    where: AdminWhereUniqueInput
-  }
-
-  /**
-   * Admin deleteMany
-   */
-  export type AdminDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Admins to delete
-     */
-    where?: AdminWhereInput
-    /**
-     * Limit how many Admins to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Admin.notifications
-   */
-  export type Admin$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Notification
-     */
-    select?: NotificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Notification
-     */
-    omit?: NotificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: NotificationInclude<ExtArgs> | null
-    where?: NotificationWhereInput
-    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
-    cursor?: NotificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
-  }
-
-  /**
-   * Admin without action
-   */
-  export type AdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Notification
    */
 
@@ -11048,12 +12100,10 @@ export namespace Prisma {
 
   export type NotificationAvgAggregateOutputType = {
     id: number | null
-    admin_id: number | null
   }
 
   export type NotificationSumAggregateOutputType = {
     id: number | null
-    admin_id: number | null
   }
 
   export type NotificationMinAggregateOutputType = {
@@ -11062,10 +12112,7 @@ export namespace Prisma {
     recipient: string | null
     status: $Enums.NotificationStatus | null
     createdAt: Date | null
-    admin_id: number | null
-    doctorant_id: string | null
-    master_id: string | null
-    enseignant_id: string | null
+    userId: string | null
   }
 
   export type NotificationMaxAggregateOutputType = {
@@ -11074,10 +12121,7 @@ export namespace Prisma {
     recipient: string | null
     status: $Enums.NotificationStatus | null
     createdAt: Date | null
-    admin_id: number | null
-    doctorant_id: string | null
-    master_id: string | null
-    enseignant_id: string | null
+    userId: string | null
   }
 
   export type NotificationCountAggregateOutputType = {
@@ -11086,22 +12130,17 @@ export namespace Prisma {
     recipient: number
     status: number
     createdAt: number
-    admin_id: number
-    doctorant_id: number
-    master_id: number
-    enseignant_id: number
+    userId: number
     _all: number
   }
 
 
   export type NotificationAvgAggregateInputType = {
     id?: true
-    admin_id?: true
   }
 
   export type NotificationSumAggregateInputType = {
     id?: true
-    admin_id?: true
   }
 
   export type NotificationMinAggregateInputType = {
@@ -11110,10 +12149,7 @@ export namespace Prisma {
     recipient?: true
     status?: true
     createdAt?: true
-    admin_id?: true
-    doctorant_id?: true
-    master_id?: true
-    enseignant_id?: true
+    userId?: true
   }
 
   export type NotificationMaxAggregateInputType = {
@@ -11122,10 +12158,7 @@ export namespace Prisma {
     recipient?: true
     status?: true
     createdAt?: true
-    admin_id?: true
-    doctorant_id?: true
-    master_id?: true
-    enseignant_id?: true
+    userId?: true
   }
 
   export type NotificationCountAggregateInputType = {
@@ -11134,10 +12167,7 @@ export namespace Prisma {
     recipient?: true
     status?: true
     createdAt?: true
-    admin_id?: true
-    doctorant_id?: true
-    master_id?: true
-    enseignant_id?: true
+    userId?: true
     _all?: true
   }
 
@@ -11233,10 +12263,7 @@ export namespace Prisma {
     recipient: string
     status: $Enums.NotificationStatus
     createdAt: Date
-    admin_id: number | null
-    doctorant_id: string | null
-    master_id: string | null
-    enseignant_id: string | null
+    userId: string
     _count: NotificationCountAggregateOutputType | null
     _avg: NotificationAvgAggregateOutputType | null
     _sum: NotificationSumAggregateOutputType | null
@@ -11264,14 +12291,8 @@ export namespace Prisma {
     recipient?: boolean
     status?: boolean
     createdAt?: boolean
-    admin_id?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
-    admin?: boolean | Notification$adminArgs<ExtArgs>
-    doctorant?: boolean | Notification$doctorantArgs<ExtArgs>
-    master?: boolean | Notification$masterArgs<ExtArgs>
-    enseignant?: boolean | Notification$enseignantArgs<ExtArgs>
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11280,14 +12301,8 @@ export namespace Prisma {
     recipient?: boolean
     status?: boolean
     createdAt?: boolean
-    admin_id?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
-    admin?: boolean | Notification$adminArgs<ExtArgs>
-    doctorant?: boolean | Notification$doctorantArgs<ExtArgs>
-    master?: boolean | Notification$masterArgs<ExtArgs>
-    enseignant?: boolean | Notification$enseignantArgs<ExtArgs>
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11296,14 +12311,8 @@ export namespace Prisma {
     recipient?: boolean
     status?: boolean
     createdAt?: boolean
-    admin_id?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
-    admin?: boolean | Notification$adminArgs<ExtArgs>
-    doctorant?: boolean | Notification$doctorantArgs<ExtArgs>
-    master?: boolean | Notification$masterArgs<ExtArgs>
-    enseignant?: boolean | Notification$enseignantArgs<ExtArgs>
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectScalar = {
@@ -11312,39 +12321,24 @@ export namespace Prisma {
     recipient?: boolean
     status?: boolean
     createdAt?: boolean
-    admin_id?: boolean
-    doctorant_id?: boolean
-    master_id?: boolean
-    enseignant_id?: boolean
+    userId?: boolean
   }
 
-  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "message" | "recipient" | "status" | "createdAt" | "admin_id" | "doctorant_id" | "master_id" | "enseignant_id", ExtArgs["result"]["notification"]>
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "message" | "recipient" | "status" | "createdAt" | "userId", ExtArgs["result"]["notification"]>
   export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    admin?: boolean | Notification$adminArgs<ExtArgs>
-    doctorant?: boolean | Notification$doctorantArgs<ExtArgs>
-    master?: boolean | Notification$masterArgs<ExtArgs>
-    enseignant?: boolean | Notification$enseignantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type NotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    admin?: boolean | Notification$adminArgs<ExtArgs>
-    doctorant?: boolean | Notification$doctorantArgs<ExtArgs>
-    master?: boolean | Notification$masterArgs<ExtArgs>
-    enseignant?: boolean | Notification$enseignantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    admin?: boolean | Notification$adminArgs<ExtArgs>
-    doctorant?: boolean | Notification$doctorantArgs<ExtArgs>
-    master?: boolean | Notification$masterArgs<ExtArgs>
-    enseignant?: boolean | Notification$enseignantArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Notification"
     objects: {
-      admin: Prisma.$AdminPayload<ExtArgs> | null
-      doctorant: Prisma.$DoctorantPayload<ExtArgs> | null
-      master: Prisma.$MasterPayload<ExtArgs> | null
-      enseignant: Prisma.$EnseignantChercheurPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -11352,10 +12346,7 @@ export namespace Prisma {
       recipient: string
       status: $Enums.NotificationStatus
       createdAt: Date
-      admin_id: number | null
-      doctorant_id: string | null
-      master_id: string | null
-      enseignant_id: string | null
+      userId: string
     }, ExtArgs["result"]["notification"]>
     composites: {}
   }
@@ -11750,10 +12741,7 @@ export namespace Prisma {
    */
   export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    admin<T extends Notification$adminArgs<ExtArgs> = {}>(args?: Subset<T, Notification$adminArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    doctorant<T extends Notification$doctorantArgs<ExtArgs> = {}>(args?: Subset<T, Notification$doctorantArgs<ExtArgs>>): Prisma__DoctorantClient<$Result.GetResult<Prisma.$DoctorantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    master<T extends Notification$masterArgs<ExtArgs> = {}>(args?: Subset<T, Notification$masterArgs<ExtArgs>>): Prisma__MasterClient<$Result.GetResult<Prisma.$MasterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    enseignant<T extends Notification$enseignantArgs<ExtArgs> = {}>(args?: Subset<T, Notification$enseignantArgs<ExtArgs>>): Prisma__EnseignantChercheurClient<$Result.GetResult<Prisma.$EnseignantChercheurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11788,10 +12776,7 @@ export namespace Prisma {
     readonly recipient: FieldRef<"Notification", 'String'>
     readonly status: FieldRef<"Notification", 'NotificationStatus'>
     readonly createdAt: FieldRef<"Notification", 'DateTime'>
-    readonly admin_id: FieldRef<"Notification", 'Int'>
-    readonly doctorant_id: FieldRef<"Notification", 'String'>
-    readonly master_id: FieldRef<"Notification", 'String'>
-    readonly enseignant_id: FieldRef<"Notification", 'String'>
+    readonly userId: FieldRef<"Notification", 'String'>
   }
     
 
@@ -12188,82 +13173,6 @@ export namespace Prisma {
   }
 
   /**
-   * Notification.admin
-   */
-  export type Notification$adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    where?: AdminWhereInput
-  }
-
-  /**
-   * Notification.doctorant
-   */
-  export type Notification$doctorantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Doctorant
-     */
-    select?: DoctorantSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Doctorant
-     */
-    omit?: DoctorantOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: DoctorantInclude<ExtArgs> | null
-    where?: DoctorantWhereInput
-  }
-
-  /**
-   * Notification.master
-   */
-  export type Notification$masterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Master
-     */
-    select?: MasterSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Master
-     */
-    omit?: MasterOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MasterInclude<ExtArgs> | null
-    where?: MasterWhereInput
-  }
-
-  /**
-   * Notification.enseignant
-   */
-  export type Notification$enseignantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EnseignantChercheur
-     */
-    select?: EnseignantChercheurSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EnseignantChercheur
-     */
-    omit?: EnseignantChercheurOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EnseignantChercheurInclude<ExtArgs> | null
-    where?: EnseignantChercheurWhereInput
-  }
-
-  /**
    * Notification without action
    */
   export type NotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12296,16 +13205,25 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+  export const UserScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    password: 'password',
+    role: 'role',
+    createdAt: 'createdAt'
+  };
+
+  export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
   export const DoctorantScalarFieldEnum: {
     id: 'id',
     nom: 'nom',
     prenom: 'prenom',
-    email: 'email',
-    dateInscription: 'dateInscription',
-    createdAt: 'createdAt',
+    annee_these: 'annee_these',
     directeur_these_id: 'directeur_these_id',
-    password: 'password',
-    photo: 'photo'
+    photo: 'photo',
+    userId: 'userId'
   };
 
   export type DoctorantScalarFieldEnum = (typeof DoctorantScalarFieldEnum)[keyof typeof DoctorantScalarFieldEnum]
@@ -12316,7 +13234,7 @@ export namespace Prisma {
     nom: 'nom',
     prenom: 'prenom',
     email: 'email',
-    dateInscription: 'dateInscription',
+    annee_these: 'annee_these',
     createdAt: 'createdAt',
     directeur_these_id: 'directeur_these_id',
     status: 'status',
@@ -12332,12 +13250,11 @@ export namespace Prisma {
     id: 'id',
     nom: 'nom',
     prenom: 'prenom',
-    email: 'email',
     dateInscription: 'dateInscription',
-    createdAt: 'createdAt',
     encadrant_id: 'encadrant_id',
-    password: 'password',
-    photo: 'photo'
+    annee_master: 'annee_master',
+    photo: 'photo',
+    userId: 'userId'
   };
 
   export type MasterScalarFieldEnum = (typeof MasterScalarFieldEnum)[keyof typeof MasterScalarFieldEnum]
@@ -12348,7 +13265,7 @@ export namespace Prisma {
     nom: 'nom',
     prenom: 'prenom',
     email: 'email',
-    dateInscription: 'dateInscription',
+    annee_master: 'annee_master',
     createdAt: 'createdAt',
     encadrant_id: 'encadrant_id',
     status: 'status',
@@ -12364,12 +13281,11 @@ export namespace Prisma {
     id: 'id',
     nom: 'nom',
     prenom: 'prenom',
-    email: 'email',
     fonction: 'fonction',
     grade: 'grade',
     etablissement: 'etablissement',
-    password: 'password',
-    photo: 'photo'
+    photo: 'photo',
+    userId: 'userId'
   };
 
   export type EnseignantChercheurScalarFieldEnum = (typeof EnseignantChercheurScalarFieldEnum)[keyof typeof EnseignantChercheurScalarFieldEnum]
@@ -12393,27 +13309,26 @@ export namespace Prisma {
   export type RequestEnseignantChercheurScalarFieldEnum = (typeof RequestEnseignantChercheurScalarFieldEnum)[keyof typeof RequestEnseignantChercheurScalarFieldEnum]
 
 
-  export const SessionScalarFieldEnum: {
-    id: 'id',
-    machine: 'machine',
-    createdAt: 'createdAt',
-    doctorant_id: 'doctorant_id',
-    master_id: 'master_id',
-    enseignant_id: 'enseignant_id'
-  };
-
-  export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
-
-
   export const AdminScalarFieldEnum: {
     id: 'id',
     nom: 'nom',
-    email: 'email',
     prenom: 'prenom',
-    password: 'password'
+    userId: 'userId'
   };
 
   export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+  export const SessionScalarFieldEnum: {
+    id: 'id',
+    accessToken: 'accessToken',
+    refreshToken: 'refreshToken',
+    machine: 'machine',
+    createdAt: 'createdAt',
+    userId: 'userId'
+  };
+
+  export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
   export const NotificationScalarFieldEnum: {
@@ -12422,10 +13337,7 @@ export namespace Prisma {
     recipient: 'recipient',
     status: 'status',
     createdAt: 'createdAt',
-    admin_id: 'admin_id',
-    doctorant_id: 'doctorant_id',
-    master_id: 'master_id',
-    enseignant_id: 'enseignant_id'
+    userId: 'userId'
   };
 
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
@@ -12475,6 +13387,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -12485,6 +13411,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -12524,20 +13464,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'NotificationStatus'
    */
   export type EnumNotificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationStatus'>
@@ -12568,6 +13494,76 @@ export namespace Prisma {
    */
 
 
+  export type UserWhereInput = {
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    id?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    sessions?: SessionListRelationFilter
+    notifications?: NotificationListRelationFilter
+    doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
+    master?: XOR<MasterNullableScalarRelationFilter, MasterWhereInput> | null
+    enseignant?: XOR<EnseignantChercheurNullableScalarRelationFilter, EnseignantChercheurWhereInput> | null
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+  }
+
+  export type UserOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    sessions?: SessionOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
+    doctorant?: DoctorantOrderByWithRelationInput
+    master?: MasterOrderByWithRelationInput
+    enseignant?: EnseignantChercheurOrderByWithRelationInput
+    admin?: AdminOrderByWithRelationInput
+  }
+
+  export type UserWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    email?: string
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    sessions?: SessionListRelationFilter
+    notifications?: NotificationListRelationFilter
+    doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
+    master?: XOR<MasterNullableScalarRelationFilter, MasterWhereInput> | null
+    enseignant?: XOR<EnseignantChercheurNullableScalarRelationFilter, EnseignantChercheurWhereInput> | null
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+  }, "id" | "id" | "email">
+
+  export type UserOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    _count?: UserCountOrderByAggregateInput
+    _max?: UserMaxOrderByAggregateInput
+    _min?: UserMinOrderByAggregateInput
+  }
+
+  export type UserScalarWhereWithAggregatesInput = {
+    AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    OR?: UserScalarWhereWithAggregatesInput[]
+    NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"User"> | string
+    email?: StringWithAggregatesFilter<"User"> | string
+    password?: StringWithAggregatesFilter<"User"> | string
+    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
+    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
   export type DoctorantWhereInput = {
     AND?: DoctorantWhereInput | DoctorantWhereInput[]
     OR?: DoctorantWhereInput[]
@@ -12575,63 +13571,54 @@ export namespace Prisma {
     id?: StringFilter<"Doctorant"> | string
     nom?: StringFilter<"Doctorant"> | string
     prenom?: StringFilter<"Doctorant"> | string
-    email?: StringFilter<"Doctorant"> | string
-    dateInscription?: DateTimeFilter<"Doctorant"> | Date | string
-    createdAt?: DateTimeFilter<"Doctorant"> | Date | string
+    annee_these?: IntFilter<"Doctorant"> | number
     directeur_these_id?: StringFilter<"Doctorant"> | string
-    password?: StringFilter<"Doctorant"> | string
     photo?: StringNullableFilter<"Doctorant"> | string | null
+    userId?: StringFilter<"Doctorant"> | string
     directeur_these?: XOR<EnseignantChercheurScalarRelationFilter, EnseignantChercheurWhereInput>
-    sessions_actives?: SessionListRelationFilter
-    notifications?: NotificationListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type DoctorantOrderByWithRelationInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
-    dateInscription?: SortOrder
-    createdAt?: SortOrder
+    annee_these?: SortOrder
     directeur_these_id?: SortOrder
-    password?: SortOrder
     photo?: SortOrderInput | SortOrder
+    userId?: SortOrder
     directeur_these?: EnseignantChercheurOrderByWithRelationInput
-    sessions_actives?: SessionOrderByRelationAggregateInput
-    notifications?: NotificationOrderByRelationAggregateInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type DoctorantWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    email?: string
+    userId?: string
     AND?: DoctorantWhereInput | DoctorantWhereInput[]
     OR?: DoctorantWhereInput[]
     NOT?: DoctorantWhereInput | DoctorantWhereInput[]
     nom?: StringFilter<"Doctorant"> | string
     prenom?: StringFilter<"Doctorant"> | string
-    dateInscription?: DateTimeFilter<"Doctorant"> | Date | string
-    createdAt?: DateTimeFilter<"Doctorant"> | Date | string
+    annee_these?: IntFilter<"Doctorant"> | number
     directeur_these_id?: StringFilter<"Doctorant"> | string
-    password?: StringFilter<"Doctorant"> | string
     photo?: StringNullableFilter<"Doctorant"> | string | null
     directeur_these?: XOR<EnseignantChercheurScalarRelationFilter, EnseignantChercheurWhereInput>
-    sessions_actives?: SessionListRelationFilter
-    notifications?: NotificationListRelationFilter
-  }, "id" | "id" | "email">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "id" | "userId">
 
   export type DoctorantOrderByWithAggregationInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
-    dateInscription?: SortOrder
-    createdAt?: SortOrder
+    annee_these?: SortOrder
     directeur_these_id?: SortOrder
-    password?: SortOrder
     photo?: SortOrderInput | SortOrder
+    userId?: SortOrder
     _count?: DoctorantCountOrderByAggregateInput
+    _avg?: DoctorantAvgOrderByAggregateInput
     _max?: DoctorantMaxOrderByAggregateInput
     _min?: DoctorantMinOrderByAggregateInput
+    _sum?: DoctorantSumOrderByAggregateInput
   }
 
   export type DoctorantScalarWhereWithAggregatesInput = {
@@ -12641,12 +13628,10 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Doctorant"> | string
     nom?: StringWithAggregatesFilter<"Doctorant"> | string
     prenom?: StringWithAggregatesFilter<"Doctorant"> | string
-    email?: StringWithAggregatesFilter<"Doctorant"> | string
-    dateInscription?: DateTimeWithAggregatesFilter<"Doctorant"> | Date | string
-    createdAt?: DateTimeWithAggregatesFilter<"Doctorant"> | Date | string
+    annee_these?: IntWithAggregatesFilter<"Doctorant"> | number
     directeur_these_id?: StringWithAggregatesFilter<"Doctorant"> | string
-    password?: StringWithAggregatesFilter<"Doctorant"> | string
     photo?: StringNullableWithAggregatesFilter<"Doctorant"> | string | null
+    userId?: StringWithAggregatesFilter<"Doctorant"> | string
   }
 
   export type RequestDoctorantWhereInput = {
@@ -12657,7 +13642,7 @@ export namespace Prisma {
     nom?: StringFilter<"RequestDoctorant"> | string
     prenom?: StringFilter<"RequestDoctorant"> | string
     email?: StringFilter<"RequestDoctorant"> | string
-    dateInscription?: DateTimeFilter<"RequestDoctorant"> | Date | string
+    annee_these?: IntFilter<"RequestDoctorant"> | number
     createdAt?: DateTimeFilter<"RequestDoctorant"> | Date | string
     directeur_these_id?: StringFilter<"RequestDoctorant"> | string
     status?: EnumRequestStatusFilter<"RequestDoctorant"> | $Enums.RequestStatus
@@ -12672,7 +13657,7 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_these?: SortOrder
     createdAt?: SortOrder
     directeur_these_id?: SortOrder
     status?: SortOrder
@@ -12690,7 +13675,7 @@ export namespace Prisma {
     NOT?: RequestDoctorantWhereInput | RequestDoctorantWhereInput[]
     nom?: StringFilter<"RequestDoctorant"> | string
     prenom?: StringFilter<"RequestDoctorant"> | string
-    dateInscription?: DateTimeFilter<"RequestDoctorant"> | Date | string
+    annee_these?: IntFilter<"RequestDoctorant"> | number
     createdAt?: DateTimeFilter<"RequestDoctorant"> | Date | string
     directeur_these_id?: StringFilter<"RequestDoctorant"> | string
     status?: EnumRequestStatusFilter<"RequestDoctorant"> | $Enums.RequestStatus
@@ -12705,7 +13690,7 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_these?: SortOrder
     createdAt?: SortOrder
     directeur_these_id?: SortOrder
     status?: SortOrder
@@ -12713,8 +13698,10 @@ export namespace Prisma {
     photo?: SortOrderInput | SortOrder
     isConfirm?: SortOrder
     _count?: RequestDoctorantCountOrderByAggregateInput
+    _avg?: RequestDoctorantAvgOrderByAggregateInput
     _max?: RequestDoctorantMaxOrderByAggregateInput
     _min?: RequestDoctorantMinOrderByAggregateInput
+    _sum?: RequestDoctorantSumOrderByAggregateInput
   }
 
   export type RequestDoctorantScalarWhereWithAggregatesInput = {
@@ -12725,7 +13712,7 @@ export namespace Prisma {
     nom?: StringWithAggregatesFilter<"RequestDoctorant"> | string
     prenom?: StringWithAggregatesFilter<"RequestDoctorant"> | string
     email?: StringWithAggregatesFilter<"RequestDoctorant"> | string
-    dateInscription?: DateTimeWithAggregatesFilter<"RequestDoctorant"> | Date | string
+    annee_these?: IntWithAggregatesFilter<"RequestDoctorant"> | number
     createdAt?: DateTimeWithAggregatesFilter<"RequestDoctorant"> | Date | string
     directeur_these_id?: StringWithAggregatesFilter<"RequestDoctorant"> | string
     status?: EnumRequestStatusWithAggregatesFilter<"RequestDoctorant"> | $Enums.RequestStatus
@@ -12741,63 +13728,58 @@ export namespace Prisma {
     id?: StringFilter<"Master"> | string
     nom?: StringFilter<"Master"> | string
     prenom?: StringFilter<"Master"> | string
-    email?: StringFilter<"Master"> | string
     dateInscription?: DateTimeFilter<"Master"> | Date | string
-    createdAt?: DateTimeFilter<"Master"> | Date | string
     encadrant_id?: StringFilter<"Master"> | string
-    password?: StringFilter<"Master"> | string
+    annee_master?: IntFilter<"Master"> | number
     photo?: StringNullableFilter<"Master"> | string | null
+    userId?: StringFilter<"Master"> | string
     encadrant?: XOR<EnseignantChercheurScalarRelationFilter, EnseignantChercheurWhereInput>
-    sessions_actives?: SessionListRelationFilter
-    notifications?: NotificationListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type MasterOrderByWithRelationInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     dateInscription?: SortOrder
-    createdAt?: SortOrder
     encadrant_id?: SortOrder
-    password?: SortOrder
+    annee_master?: SortOrder
     photo?: SortOrderInput | SortOrder
+    userId?: SortOrder
     encadrant?: EnseignantChercheurOrderByWithRelationInput
-    sessions_actives?: SessionOrderByRelationAggregateInput
-    notifications?: NotificationOrderByRelationAggregateInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type MasterWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    email?: string
+    userId?: string
     AND?: MasterWhereInput | MasterWhereInput[]
     OR?: MasterWhereInput[]
     NOT?: MasterWhereInput | MasterWhereInput[]
     nom?: StringFilter<"Master"> | string
     prenom?: StringFilter<"Master"> | string
     dateInscription?: DateTimeFilter<"Master"> | Date | string
-    createdAt?: DateTimeFilter<"Master"> | Date | string
     encadrant_id?: StringFilter<"Master"> | string
-    password?: StringFilter<"Master"> | string
+    annee_master?: IntFilter<"Master"> | number
     photo?: StringNullableFilter<"Master"> | string | null
     encadrant?: XOR<EnseignantChercheurScalarRelationFilter, EnseignantChercheurWhereInput>
-    sessions_actives?: SessionListRelationFilter
-    notifications?: NotificationListRelationFilter
-  }, "id" | "id" | "email">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "id" | "userId">
 
   export type MasterOrderByWithAggregationInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     dateInscription?: SortOrder
-    createdAt?: SortOrder
     encadrant_id?: SortOrder
-    password?: SortOrder
+    annee_master?: SortOrder
     photo?: SortOrderInput | SortOrder
+    userId?: SortOrder
     _count?: MasterCountOrderByAggregateInput
+    _avg?: MasterAvgOrderByAggregateInput
     _max?: MasterMaxOrderByAggregateInput
     _min?: MasterMinOrderByAggregateInput
+    _sum?: MasterSumOrderByAggregateInput
   }
 
   export type MasterScalarWhereWithAggregatesInput = {
@@ -12807,12 +13789,11 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Master"> | string
     nom?: StringWithAggregatesFilter<"Master"> | string
     prenom?: StringWithAggregatesFilter<"Master"> | string
-    email?: StringWithAggregatesFilter<"Master"> | string
     dateInscription?: DateTimeWithAggregatesFilter<"Master"> | Date | string
-    createdAt?: DateTimeWithAggregatesFilter<"Master"> | Date | string
     encadrant_id?: StringWithAggregatesFilter<"Master"> | string
-    password?: StringWithAggregatesFilter<"Master"> | string
+    annee_master?: IntWithAggregatesFilter<"Master"> | number
     photo?: StringNullableWithAggregatesFilter<"Master"> | string | null
+    userId?: StringWithAggregatesFilter<"Master"> | string
   }
 
   export type RequestMasterWhereInput = {
@@ -12823,7 +13804,7 @@ export namespace Prisma {
     nom?: StringFilter<"RequestMaster"> | string
     prenom?: StringFilter<"RequestMaster"> | string
     email?: StringFilter<"RequestMaster"> | string
-    dateInscription?: DateTimeFilter<"RequestMaster"> | Date | string
+    annee_master?: IntFilter<"RequestMaster"> | number
     createdAt?: DateTimeFilter<"RequestMaster"> | Date | string
     encadrant_id?: StringFilter<"RequestMaster"> | string
     status?: EnumRequestStatusFilter<"RequestMaster"> | $Enums.RequestStatus
@@ -12838,7 +13819,7 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_master?: SortOrder
     createdAt?: SortOrder
     encadrant_id?: SortOrder
     status?: SortOrder
@@ -12856,7 +13837,7 @@ export namespace Prisma {
     NOT?: RequestMasterWhereInput | RequestMasterWhereInput[]
     nom?: StringFilter<"RequestMaster"> | string
     prenom?: StringFilter<"RequestMaster"> | string
-    dateInscription?: DateTimeFilter<"RequestMaster"> | Date | string
+    annee_master?: IntFilter<"RequestMaster"> | number
     createdAt?: DateTimeFilter<"RequestMaster"> | Date | string
     encadrant_id?: StringFilter<"RequestMaster"> | string
     status?: EnumRequestStatusFilter<"RequestMaster"> | $Enums.RequestStatus
@@ -12871,7 +13852,7 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_master?: SortOrder
     createdAt?: SortOrder
     encadrant_id?: SortOrder
     status?: SortOrder
@@ -12879,8 +13860,10 @@ export namespace Prisma {
     photo?: SortOrderInput | SortOrder
     isConfirm?: SortOrder
     _count?: RequestMasterCountOrderByAggregateInput
+    _avg?: RequestMasterAvgOrderByAggregateInput
     _max?: RequestMasterMaxOrderByAggregateInput
     _min?: RequestMasterMinOrderByAggregateInput
+    _sum?: RequestMasterSumOrderByAggregateInput
   }
 
   export type RequestMasterScalarWhereWithAggregatesInput = {
@@ -12891,7 +13874,7 @@ export namespace Prisma {
     nom?: StringWithAggregatesFilter<"RequestMaster"> | string
     prenom?: StringWithAggregatesFilter<"RequestMaster"> | string
     email?: StringWithAggregatesFilter<"RequestMaster"> | string
-    dateInscription?: DateTimeWithAggregatesFilter<"RequestMaster"> | Date | string
+    annee_master?: IntWithAggregatesFilter<"RequestMaster"> | number
     createdAt?: DateTimeWithAggregatesFilter<"RequestMaster"> | Date | string
     encadrant_id?: StringWithAggregatesFilter<"RequestMaster"> | string
     status?: EnumRequestStatusWithAggregatesFilter<"RequestMaster"> | $Enums.RequestStatus
@@ -12907,41 +13890,37 @@ export namespace Prisma {
     id?: StringFilter<"EnseignantChercheur"> | string
     nom?: StringFilter<"EnseignantChercheur"> | string
     prenom?: StringFilter<"EnseignantChercheur"> | string
-    email?: StringFilter<"EnseignantChercheur"> | string
     fonction?: StringFilter<"EnseignantChercheur"> | string
     grade?: EnumGradeFilter<"EnseignantChercheur"> | $Enums.Grade
     etablissement?: StringFilter<"EnseignantChercheur"> | string
-    password?: StringFilter<"EnseignantChercheur"> | string
     photo?: StringNullableFilter<"EnseignantChercheur"> | string | null
+    userId?: StringFilter<"EnseignantChercheur"> | string
     doctorants?: DoctorantListRelationFilter
-    requestDoctorant?: RequestDoctorantListRelationFilter
-    requestMaster?: RequestMasterListRelationFilter
     masters?: MasterListRelationFilter
-    sessions_actives?: SessionListRelationFilter
-    notifications?: NotificationListRelationFilter
+    requestsMaster?: RequestMasterListRelationFilter
+    requestsDoctorant?: RequestDoctorantListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type EnseignantChercheurOrderByWithRelationInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     fonction?: SortOrder
     grade?: SortOrder
     etablissement?: SortOrder
-    password?: SortOrder
     photo?: SortOrderInput | SortOrder
+    userId?: SortOrder
     doctorants?: DoctorantOrderByRelationAggregateInput
-    requestDoctorant?: RequestDoctorantOrderByRelationAggregateInput
-    requestMaster?: RequestMasterOrderByRelationAggregateInput
     masters?: MasterOrderByRelationAggregateInput
-    sessions_actives?: SessionOrderByRelationAggregateInput
-    notifications?: NotificationOrderByRelationAggregateInput
+    requestsMaster?: RequestMasterOrderByRelationAggregateInput
+    requestsDoctorant?: RequestDoctorantOrderByRelationAggregateInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type EnseignantChercheurWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    email?: string
+    userId?: string
     AND?: EnseignantChercheurWhereInput | EnseignantChercheurWhereInput[]
     OR?: EnseignantChercheurWhereInput[]
     NOT?: EnseignantChercheurWhereInput | EnseignantChercheurWhereInput[]
@@ -12950,26 +13929,23 @@ export namespace Prisma {
     fonction?: StringFilter<"EnseignantChercheur"> | string
     grade?: EnumGradeFilter<"EnseignantChercheur"> | $Enums.Grade
     etablissement?: StringFilter<"EnseignantChercheur"> | string
-    password?: StringFilter<"EnseignantChercheur"> | string
     photo?: StringNullableFilter<"EnseignantChercheur"> | string | null
     doctorants?: DoctorantListRelationFilter
-    requestDoctorant?: RequestDoctorantListRelationFilter
-    requestMaster?: RequestMasterListRelationFilter
     masters?: MasterListRelationFilter
-    sessions_actives?: SessionListRelationFilter
-    notifications?: NotificationListRelationFilter
-  }, "id" | "id" | "email">
+    requestsMaster?: RequestMasterListRelationFilter
+    requestsDoctorant?: RequestDoctorantListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "id" | "userId">
 
   export type EnseignantChercheurOrderByWithAggregationInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     fonction?: SortOrder
     grade?: SortOrder
     etablissement?: SortOrder
-    password?: SortOrder
     photo?: SortOrderInput | SortOrder
+    userId?: SortOrder
     _count?: EnseignantChercheurCountOrderByAggregateInput
     _max?: EnseignantChercheurMaxOrderByAggregateInput
     _min?: EnseignantChercheurMinOrderByAggregateInput
@@ -12982,12 +13958,11 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
     nom?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
     prenom?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
-    email?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
     fonction?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
     grade?: EnumGradeWithAggregatesFilter<"EnseignantChercheur"> | $Enums.Grade
     etablissement?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
-    password?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
     photo?: StringNullableWithAggregatesFilter<"EnseignantChercheur"> | string | null
+    userId?: StringWithAggregatesFilter<"EnseignantChercheur"> | string
   }
 
   export type RequestEnseignantChercheurWhereInput = {
@@ -13077,111 +14052,41 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"RequestEnseignantChercheur"> | Date | string
   }
 
-  export type SessionWhereInput = {
-    AND?: SessionWhereInput | SessionWhereInput[]
-    OR?: SessionWhereInput[]
-    NOT?: SessionWhereInput | SessionWhereInput[]
-    id?: StringFilter<"Session"> | string
-    machine?: StringFilter<"Session"> | string
-    createdAt?: DateTimeFilter<"Session"> | Date | string
-    doctorant_id?: StringNullableFilter<"Session"> | string | null
-    master_id?: StringNullableFilter<"Session"> | string | null
-    enseignant_id?: StringNullableFilter<"Session"> | string | null
-    doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
-    master?: XOR<MasterNullableScalarRelationFilter, MasterWhereInput> | null
-    enseignant?: XOR<EnseignantChercheurNullableScalarRelationFilter, EnseignantChercheurWhereInput> | null
-  }
-
-  export type SessionOrderByWithRelationInput = {
-    id?: SortOrder
-    machine?: SortOrder
-    createdAt?: SortOrder
-    doctorant_id?: SortOrderInput | SortOrder
-    master_id?: SortOrderInput | SortOrder
-    enseignant_id?: SortOrderInput | SortOrder
-    doctorant?: DoctorantOrderByWithRelationInput
-    master?: MasterOrderByWithRelationInput
-    enseignant?: EnseignantChercheurOrderByWithRelationInput
-  }
-
-  export type SessionWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: SessionWhereInput | SessionWhereInput[]
-    OR?: SessionWhereInput[]
-    NOT?: SessionWhereInput | SessionWhereInput[]
-    machine?: StringFilter<"Session"> | string
-    createdAt?: DateTimeFilter<"Session"> | Date | string
-    doctorant_id?: StringNullableFilter<"Session"> | string | null
-    master_id?: StringNullableFilter<"Session"> | string | null
-    enseignant_id?: StringNullableFilter<"Session"> | string | null
-    doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
-    master?: XOR<MasterNullableScalarRelationFilter, MasterWhereInput> | null
-    enseignant?: XOR<EnseignantChercheurNullableScalarRelationFilter, EnseignantChercheurWhereInput> | null
-  }, "id" | "id">
-
-  export type SessionOrderByWithAggregationInput = {
-    id?: SortOrder
-    machine?: SortOrder
-    createdAt?: SortOrder
-    doctorant_id?: SortOrderInput | SortOrder
-    master_id?: SortOrderInput | SortOrder
-    enseignant_id?: SortOrderInput | SortOrder
-    _count?: SessionCountOrderByAggregateInput
-    _max?: SessionMaxOrderByAggregateInput
-    _min?: SessionMinOrderByAggregateInput
-  }
-
-  export type SessionScalarWhereWithAggregatesInput = {
-    AND?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
-    OR?: SessionScalarWhereWithAggregatesInput[]
-    NOT?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Session"> | string
-    machine?: StringWithAggregatesFilter<"Session"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
-    doctorant_id?: StringNullableWithAggregatesFilter<"Session"> | string | null
-    master_id?: StringNullableWithAggregatesFilter<"Session"> | string | null
-    enseignant_id?: StringNullableWithAggregatesFilter<"Session"> | string | null
-  }
-
   export type AdminWhereInput = {
     AND?: AdminWhereInput | AdminWhereInput[]
     OR?: AdminWhereInput[]
     NOT?: AdminWhereInput | AdminWhereInput[]
     id?: IntFilter<"Admin"> | number
     nom?: StringFilter<"Admin"> | string
-    email?: StringFilter<"Admin"> | string
     prenom?: StringFilter<"Admin"> | string
-    password?: StringFilter<"Admin"> | string
-    notifications?: NotificationListRelationFilter
+    userId?: StringFilter<"Admin"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type AdminOrderByWithRelationInput = {
     id?: SortOrder
     nom?: SortOrder
-    email?: SortOrder
     prenom?: SortOrder
-    password?: SortOrder
-    notifications?: NotificationOrderByRelationAggregateInput
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
   }
 
   export type AdminWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    email?: string
+    userId?: string
     AND?: AdminWhereInput | AdminWhereInput[]
     OR?: AdminWhereInput[]
     NOT?: AdminWhereInput | AdminWhereInput[]
     nom?: StringFilter<"Admin"> | string
     prenom?: StringFilter<"Admin"> | string
-    password?: StringFilter<"Admin"> | string
-    notifications?: NotificationListRelationFilter
-  }, "id" | "email">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
 
   export type AdminOrderByWithAggregationInput = {
     id?: SortOrder
     nom?: SortOrder
-    email?: SortOrder
     prenom?: SortOrder
-    password?: SortOrder
+    userId?: SortOrder
     _count?: AdminCountOrderByAggregateInput
     _avg?: AdminAvgOrderByAggregateInput
     _max?: AdminMaxOrderByAggregateInput
@@ -13195,9 +14100,68 @@ export namespace Prisma {
     NOT?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Admin"> | number
     nom?: StringWithAggregatesFilter<"Admin"> | string
-    email?: StringWithAggregatesFilter<"Admin"> | string
     prenom?: StringWithAggregatesFilter<"Admin"> | string
-    password?: StringWithAggregatesFilter<"Admin"> | string
+    userId?: StringWithAggregatesFilter<"Admin"> | string
+  }
+
+  export type SessionWhereInput = {
+    AND?: SessionWhereInput | SessionWhereInput[]
+    OR?: SessionWhereInput[]
+    NOT?: SessionWhereInput | SessionWhereInput[]
+    id?: StringFilter<"Session"> | string
+    accessToken?: StringFilter<"Session"> | string
+    refreshToken?: StringFilter<"Session"> | string
+    machine?: StringFilter<"Session"> | string
+    createdAt?: DateTimeFilter<"Session"> | Date | string
+    userId?: StringFilter<"Session"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type SessionOrderByWithRelationInput = {
+    id?: SortOrder
+    accessToken?: SortOrder
+    refreshToken?: SortOrder
+    machine?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type SessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    accessToken?: string
+    refreshToken?: string
+    AND?: SessionWhereInput | SessionWhereInput[]
+    OR?: SessionWhereInput[]
+    NOT?: SessionWhereInput | SessionWhereInput[]
+    machine?: StringFilter<"Session"> | string
+    createdAt?: DateTimeFilter<"Session"> | Date | string
+    userId?: StringFilter<"Session"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "id" | "accessToken" | "refreshToken">
+
+  export type SessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    accessToken?: SortOrder
+    refreshToken?: SortOrder
+    machine?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
+    _count?: SessionCountOrderByAggregateInput
+    _max?: SessionMaxOrderByAggregateInput
+    _min?: SessionMinOrderByAggregateInput
+  }
+
+  export type SessionScalarWhereWithAggregatesInput = {
+    AND?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
+    OR?: SessionScalarWhereWithAggregatesInput[]
+    NOT?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Session"> | string
+    accessToken?: StringWithAggregatesFilter<"Session"> | string
+    refreshToken?: StringWithAggregatesFilter<"Session"> | string
+    machine?: StringWithAggregatesFilter<"Session"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+    userId?: StringWithAggregatesFilter<"Session"> | string
   }
 
   export type NotificationWhereInput = {
@@ -13209,14 +14173,8 @@ export namespace Prisma {
     recipient?: StringFilter<"Notification"> | string
     status?: EnumNotificationStatusFilter<"Notification"> | $Enums.NotificationStatus
     createdAt?: DateTimeFilter<"Notification"> | Date | string
-    admin_id?: IntNullableFilter<"Notification"> | number | null
-    doctorant_id?: StringNullableFilter<"Notification"> | string | null
-    master_id?: StringNullableFilter<"Notification"> | string | null
-    enseignant_id?: StringNullableFilter<"Notification"> | string | null
-    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
-    doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
-    master?: XOR<MasterNullableScalarRelationFilter, MasterWhereInput> | null
-    enseignant?: XOR<EnseignantChercheurNullableScalarRelationFilter, EnseignantChercheurWhereInput> | null
+    userId?: StringFilter<"Notification"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type NotificationOrderByWithRelationInput = {
@@ -13225,14 +14183,8 @@ export namespace Prisma {
     recipient?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    admin_id?: SortOrderInput | SortOrder
-    doctorant_id?: SortOrderInput | SortOrder
-    master_id?: SortOrderInput | SortOrder
-    enseignant_id?: SortOrderInput | SortOrder
-    admin?: AdminOrderByWithRelationInput
-    doctorant?: DoctorantOrderByWithRelationInput
-    master?: MasterOrderByWithRelationInput
-    enseignant?: EnseignantChercheurOrderByWithRelationInput
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
   }
 
   export type NotificationWhereUniqueInput = Prisma.AtLeast<{
@@ -13244,14 +14196,8 @@ export namespace Prisma {
     recipient?: StringFilter<"Notification"> | string
     status?: EnumNotificationStatusFilter<"Notification"> | $Enums.NotificationStatus
     createdAt?: DateTimeFilter<"Notification"> | Date | string
-    admin_id?: IntNullableFilter<"Notification"> | number | null
-    doctorant_id?: StringNullableFilter<"Notification"> | string | null
-    master_id?: StringNullableFilter<"Notification"> | string | null
-    enseignant_id?: StringNullableFilter<"Notification"> | string | null
-    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
-    doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
-    master?: XOR<MasterNullableScalarRelationFilter, MasterWhereInput> | null
-    enseignant?: XOR<EnseignantChercheurNullableScalarRelationFilter, EnseignantChercheurWhereInput> | null
+    userId?: StringFilter<"Notification"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type NotificationOrderByWithAggregationInput = {
@@ -13260,10 +14206,7 @@ export namespace Prisma {
     recipient?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    admin_id?: SortOrderInput | SortOrder
-    doctorant_id?: SortOrderInput | SortOrder
-    master_id?: SortOrderInput | SortOrder
-    enseignant_id?: SortOrderInput | SortOrder
+    userId?: SortOrder
     _count?: NotificationCountOrderByAggregateInput
     _avg?: NotificationAvgOrderByAggregateInput
     _max?: NotificationMaxOrderByAggregateInput
@@ -13280,88 +14223,144 @@ export namespace Prisma {
     recipient?: StringWithAggregatesFilter<"Notification"> | string
     status?: EnumNotificationStatusWithAggregatesFilter<"Notification"> | $Enums.NotificationStatus
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
-    admin_id?: IntNullableWithAggregatesFilter<"Notification"> | number | null
-    doctorant_id?: StringNullableWithAggregatesFilter<"Notification"> | string | null
-    master_id?: StringNullableWithAggregatesFilter<"Notification"> | string | null
-    enseignant_id?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    userId?: StringWithAggregatesFilter<"Notification"> | string
+  }
+
+  export type UserCreateInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantCreateNestedOneWithoutUserInput
+    master?: MasterCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
+    master?: MasterUncheckedCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUpdateOneWithoutUserNestedInput
+    master?: MasterUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
+    master?: MasterUncheckedUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateManyInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+  }
+
+  export type UserUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DoctorantCreateInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
+    annee_these: number
     photo?: string | null
     directeur_these: EnseignantChercheurCreateNestedOneWithoutDoctorantsInput
-    sessions_actives?: SessionCreateNestedManyWithoutDoctorantInput
-    notifications?: NotificationCreateNestedManyWithoutDoctorantInput
+    user: UserCreateNestedOneWithoutDoctorantInput
   }
 
   export type DoctorantUncheckedCreateInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
+    annee_these: number
     directeur_these_id: string
-    password: string
     photo?: string | null
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutDoctorantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutDoctorantInput
+    userId: string
   }
 
   export type DoctorantUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     directeur_these?: EnseignantChercheurUpdateOneRequiredWithoutDoctorantsNestedInput
-    sessions_actives?: SessionUpdateManyWithoutDoctorantNestedInput
-    notifications?: NotificationUpdateManyWithoutDoctorantNestedInput
+    user?: UserUpdateOneRequiredWithoutDoctorantNestedInput
   }
 
   export type DoctorantUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     directeur_these_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUncheckedUpdateManyWithoutDoctorantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutDoctorantNestedInput
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type DoctorantCreateManyInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
+    annee_these: number
     directeur_these_id: string
-    password: string
     photo?: string | null
+    userId: string
   }
 
   export type DoctorantUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -13369,12 +14368,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     directeur_these_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type RequestDoctorantCreateInput = {
@@ -13382,13 +14379,13 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_these: number
     createdAt?: Date | string
     status?: $Enums.RequestStatus
     rejectionReason?: string | null
     photo?: string | null
     isConfirm?: boolean
-    directeur_these: EnseignantChercheurCreateNestedOneWithoutRequestDoctorantInput
+    directeur_these: EnseignantChercheurCreateNestedOneWithoutRequestsDoctorantInput
   }
 
   export type RequestDoctorantUncheckedCreateInput = {
@@ -13396,7 +14393,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_these: number
     createdAt?: Date | string
     directeur_these_id: string
     status?: $Enums.RequestStatus
@@ -13410,13 +14407,13 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     isConfirm?: BoolFieldUpdateOperationsInput | boolean
-    directeur_these?: EnseignantChercheurUpdateOneRequiredWithoutRequestDoctorantNestedInput
+    directeur_these?: EnseignantChercheurUpdateOneRequiredWithoutRequestsDoctorantNestedInput
   }
 
   export type RequestDoctorantUncheckedUpdateInput = {
@@ -13424,7 +14421,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     directeur_these_id?: StringFieldUpdateOperationsInput | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -13438,7 +14435,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_these: number
     createdAt?: Date | string
     directeur_these_id: string
     status?: $Enums.RequestStatus
@@ -13452,7 +14449,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13465,7 +14462,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     directeur_these_id?: StringFieldUpdateOperationsInput | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -13478,78 +14475,63 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    email: string
     dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
+    annee_master: number
     photo?: string | null
     encadrant: EnseignantChercheurCreateNestedOneWithoutMastersInput
-    sessions_actives?: SessionCreateNestedManyWithoutMasterInput
-    notifications?: NotificationCreateNestedManyWithoutMasterInput
+    user: UserCreateNestedOneWithoutMasterInput
   }
 
   export type MasterUncheckedCreateInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     dateInscription: Date | string
-    createdAt?: Date | string
     encadrant_id: string
-    password: string
+    annee_master: number
     photo?: string | null
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutMasterInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutMasterInput
+    userId: string
   }
 
   export type MasterUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     encadrant?: EnseignantChercheurUpdateOneRequiredWithoutMastersNestedInput
-    sessions_actives?: SessionUpdateManyWithoutMasterNestedInput
-    notifications?: NotificationUpdateManyWithoutMasterNestedInput
+    user?: UserUpdateOneRequiredWithoutMasterNestedInput
   }
 
   export type MasterUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     encadrant_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUncheckedUpdateManyWithoutMasterNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutMasterNestedInput
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MasterCreateManyInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     dateInscription: Date | string
-    createdAt?: Date | string
     encadrant_id: string
-    password: string
+    annee_master: number
     photo?: string | null
+    userId: string
   }
 
   export type MasterUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -13557,12 +14539,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     encadrant_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type RequestMasterCreateInput = {
@@ -13570,13 +14551,13 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_master: number
     createdAt?: Date | string
     status?: $Enums.RequestStatus
     rejectionReason?: string | null
     photo?: string | null
     isConfirm?: boolean
-    encadrant: EnseignantChercheurCreateNestedOneWithoutRequestMasterInput
+    encadrant: EnseignantChercheurCreateNestedOneWithoutRequestsMasterInput
   }
 
   export type RequestMasterUncheckedCreateInput = {
@@ -13584,7 +14565,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_master: number
     createdAt?: Date | string
     encadrant_id: string
     status?: $Enums.RequestStatus
@@ -13598,13 +14579,13 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     isConfirm?: BoolFieldUpdateOperationsInput | boolean
-    encadrant?: EnseignantChercheurUpdateOneRequiredWithoutRequestMasterNestedInput
+    encadrant?: EnseignantChercheurUpdateOneRequiredWithoutRequestsMasterNestedInput
   }
 
   export type RequestMasterUncheckedUpdateInput = {
@@ -13612,7 +14593,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     encadrant_id?: StringFieldUpdateOperationsInput | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -13626,7 +14607,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_master: number
     createdAt?: Date | string
     encadrant_id: string
     status?: $Enums.RequestStatus
@@ -13640,7 +14621,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13653,7 +14634,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     encadrant_id?: StringFieldUpdateOperationsInput | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -13666,95 +14647,80 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
     doctorants?: DoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
     masters?: MasterCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
+    user: UserCreateNestedOneWithoutEnseignantInput
   }
 
   export type EnseignantChercheurUncheckedCreateInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
+    userId: string
     doctorants?: DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
     masters?: MasterUncheckedCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
   }
 
   export type EnseignantChercheurUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     doctorants?: DoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
     masters?: MasterUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
+    user?: UserUpdateOneRequiredWithoutEnseignantNestedInput
   }
 
   export type EnseignantChercheurUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     doctorants?: DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
     masters?: MasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUncheckedUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
   }
 
   export type EnseignantChercheurCreateManyInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
+    userId: string
   }
 
   export type EnseignantChercheurUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -13762,12 +14728,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type RequestEnseignantChercheurCreateInput = {
@@ -13875,121 +14840,111 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AdminCreateInput = {
+    nom: string
+    prenom: string
+    user: UserCreateNestedOneWithoutAdminInput
+  }
+
+  export type AdminUncheckedCreateInput = {
+    id?: number
+    nom: string
+    prenom: string
+    userId: string
+  }
+
+  export type AdminUpdateInput = {
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutAdminNestedInput
+  }
+
+  export type AdminUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdminCreateManyInput = {
+    id?: number
+    nom: string
+    prenom: string
+    userId: string
+  }
+
+  export type AdminUpdateManyMutationInput = {
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdminUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type SessionCreateInput = {
     id?: string
+    accessToken: string
+    refreshToken: string
     machine: string
-    createdAt: Date | string
-    doctorant?: DoctorantCreateNestedOneWithoutSessions_activesInput
-    master?: MasterCreateNestedOneWithoutSessions_activesInput
-    enseignant?: EnseignantChercheurCreateNestedOneWithoutSessions_activesInput
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutSessionsInput
   }
 
   export type SessionUncheckedCreateInput = {
     id?: string
+    accessToken: string
+    refreshToken: string
     machine: string
-    createdAt: Date | string
-    doctorant_id?: string | null
-    master_id?: string | null
-    enseignant_id?: string | null
+    createdAt?: Date | string
+    userId: string
   }
 
   export type SessionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accessToken?: StringFieldUpdateOperationsInput | string
+    refreshToken?: StringFieldUpdateOperationsInput | string
     machine?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant?: DoctorantUpdateOneWithoutSessions_activesNestedInput
-    master?: MasterUpdateOneWithoutSessions_activesNestedInput
-    enseignant?: EnseignantChercheurUpdateOneWithoutSessions_activesNestedInput
+    user?: UserUpdateOneRequiredWithoutSessionsNestedInput
   }
 
   export type SessionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accessToken?: StringFieldUpdateOperationsInput | string
+    refreshToken?: StringFieldUpdateOperationsInput | string
     machine?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type SessionCreateManyInput = {
     id?: string
+    accessToken: string
+    refreshToken: string
     machine: string
-    createdAt: Date | string
-    doctorant_id?: string | null
-    master_id?: string | null
-    enseignant_id?: string | null
+    createdAt?: Date | string
+    userId: string
   }
 
   export type SessionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accessToken?: StringFieldUpdateOperationsInput | string
+    refreshToken?: StringFieldUpdateOperationsInput | string
     machine?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accessToken?: StringFieldUpdateOperationsInput | string
+    refreshToken?: StringFieldUpdateOperationsInput | string
     machine?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type AdminCreateInput = {
-    nom: string
-    email: string
-    prenom: string
-    password: string
-    notifications?: NotificationCreateNestedManyWithoutAdminInput
-  }
-
-  export type AdminUncheckedCreateInput = {
-    id?: number
-    nom: string
-    email: string
-    prenom: string
-    password: string
-    notifications?: NotificationUncheckedCreateNestedManyWithoutAdminInput
-  }
-
-  export type AdminUpdateInput = {
-    nom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    notifications?: NotificationUpdateManyWithoutAdminNestedInput
-  }
-
-  export type AdminUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    notifications?: NotificationUncheckedUpdateManyWithoutAdminNestedInput
-  }
-
-  export type AdminCreateManyInput = {
-    id?: number
-    nom: string
-    email: string
-    prenom: string
-    password: string
-  }
-
-  export type AdminUpdateManyMutationInput = {
-    nom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdminUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type NotificationCreateInput = {
@@ -13997,10 +14952,7 @@ export namespace Prisma {
     recipient: string
     status?: $Enums.NotificationStatus
     createdAt?: Date | string
-    admin?: AdminCreateNestedOneWithoutNotificationsInput
-    doctorant?: DoctorantCreateNestedOneWithoutNotificationsInput
-    master?: MasterCreateNestedOneWithoutNotificationsInput
-    enseignant?: EnseignantChercheurCreateNestedOneWithoutNotificationsInput
+    user: UserCreateNestedOneWithoutNotificationsInput
   }
 
   export type NotificationUncheckedCreateInput = {
@@ -14009,10 +14961,7 @@ export namespace Prisma {
     recipient: string
     status?: $Enums.NotificationStatus
     createdAt?: Date | string
-    admin_id?: number | null
-    doctorant_id?: string | null
-    master_id?: string | null
-    enseignant_id?: string | null
+    userId: string
   }
 
   export type NotificationUpdateInput = {
@@ -14020,10 +14969,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin?: AdminUpdateOneWithoutNotificationsNestedInput
-    doctorant?: DoctorantUpdateOneWithoutNotificationsNestedInput
-    master?: MasterUpdateOneWithoutNotificationsNestedInput
-    enseignant?: EnseignantChercheurUpdateOneWithoutNotificationsNestedInput
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
   }
 
   export type NotificationUncheckedUpdateInput = {
@@ -14032,10 +14978,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type NotificationCreateManyInput = {
@@ -14044,10 +14987,7 @@ export namespace Prisma {
     recipient: string
     status?: $Enums.NotificationStatus
     createdAt?: Date | string
-    admin_id?: number | null
-    doctorant_id?: string | null
-    master_id?: string | null
-    enseignant_id?: string | null
+    userId: string
   }
 
   export type NotificationUpdateManyMutationInput = {
@@ -14063,10 +15003,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -14084,6 +15021,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -14093,6 +15037,123 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
+  export type NotificationListRelationFilter = {
+    every?: NotificationWhereInput
+    some?: NotificationWhereInput
+    none?: NotificationWhereInput
+  }
+
+  export type DoctorantNullableScalarRelationFilter = {
+    is?: DoctorantWhereInput | null
+    isNot?: DoctorantWhereInput | null
+  }
+
+  export type MasterNullableScalarRelationFilter = {
+    is?: MasterWhereInput | null
+    isNot?: MasterWhereInput | null
+  }
+
+  export type EnseignantChercheurNullableScalarRelationFilter = {
+    is?: EnseignantChercheurWhereInput | null
+    isNot?: EnseignantChercheurWhereInput | null
+  }
+
+  export type AdminNullableScalarRelationFilter = {
+    is?: AdminWhereInput | null
+    isNot?: AdminWhereInput | null
+  }
+
+  export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
@@ -14115,16 +15176,9 @@ export namespace Prisma {
     isNot?: EnseignantChercheurWhereInput
   }
 
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
-  }
-
-  export type NotificationListRelationFilter = {
-    every?: NotificationWhereInput
-    some?: NotificationWhereInput
-    none?: NotificationWhereInput
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
   }
 
   export type SortOrderInput = {
@@ -14132,80 +15186,58 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type SessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type NotificationOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type DoctorantCountOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
-    dateInscription?: SortOrder
-    createdAt?: SortOrder
+    annee_these?: SortOrder
     directeur_these_id?: SortOrder
-    password?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type DoctorantAvgOrderByAggregateInput = {
+    annee_these?: SortOrder
   }
 
   export type DoctorantMaxOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
-    dateInscription?: SortOrder
-    createdAt?: SortOrder
+    annee_these?: SortOrder
     directeur_these_id?: SortOrder
-    password?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
   }
 
   export type DoctorantMinOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
-    dateInscription?: SortOrder
-    createdAt?: SortOrder
+    annee_these?: SortOrder
     directeur_these_id?: SortOrder
-    password?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
   }
 
-  export type StringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
+  export type DoctorantSumOrderByAggregateInput = {
+    annee_these?: SortOrder
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -14243,7 +15275,7 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_these?: SortOrder
     createdAt?: SortOrder
     directeur_these_id?: SortOrder
     status?: SortOrder
@@ -14252,12 +15284,16 @@ export namespace Prisma {
     isConfirm?: SortOrder
   }
 
+  export type RequestDoctorantAvgOrderByAggregateInput = {
+    annee_these?: SortOrder
+  }
+
   export type RequestDoctorantMaxOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_these?: SortOrder
     createdAt?: SortOrder
     directeur_these_id?: SortOrder
     status?: SortOrder
@@ -14271,13 +15307,17 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_these?: SortOrder
     createdAt?: SortOrder
     directeur_these_id?: SortOrder
     status?: SortOrder
     rejectionReason?: SortOrder
     photo?: SortOrder
     isConfirm?: SortOrder
+  }
+
+  export type RequestDoctorantSumOrderByAggregateInput = {
+    annee_these?: SortOrder
   }
 
   export type EnumRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -14302,36 +15342,41 @@ export namespace Prisma {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     dateInscription?: SortOrder
-    createdAt?: SortOrder
     encadrant_id?: SortOrder
-    password?: SortOrder
+    annee_master?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type MasterAvgOrderByAggregateInput = {
+    annee_master?: SortOrder
   }
 
   export type MasterMaxOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     dateInscription?: SortOrder
-    createdAt?: SortOrder
     encadrant_id?: SortOrder
-    password?: SortOrder
+    annee_master?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
   }
 
   export type MasterMinOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     dateInscription?: SortOrder
-    createdAt?: SortOrder
     encadrant_id?: SortOrder
-    password?: SortOrder
+    annee_master?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type MasterSumOrderByAggregateInput = {
+    annee_master?: SortOrder
   }
 
   export type RequestMasterCountOrderByAggregateInput = {
@@ -14339,7 +15384,7 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_master?: SortOrder
     createdAt?: SortOrder
     encadrant_id?: SortOrder
     status?: SortOrder
@@ -14348,12 +15393,16 @@ export namespace Prisma {
     isConfirm?: SortOrder
   }
 
+  export type RequestMasterAvgOrderByAggregateInput = {
+    annee_master?: SortOrder
+  }
+
   export type RequestMasterMaxOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_master?: SortOrder
     createdAt?: SortOrder
     encadrant_id?: SortOrder
     status?: SortOrder
@@ -14367,13 +15416,17 @@ export namespace Prisma {
     nom?: SortOrder
     prenom?: SortOrder
     email?: SortOrder
-    dateInscription?: SortOrder
+    annee_master?: SortOrder
     createdAt?: SortOrder
     encadrant_id?: SortOrder
     status?: SortOrder
     rejectionReason?: SortOrder
     photo?: SortOrder
     isConfirm?: SortOrder
+  }
+
+  export type RequestMasterSumOrderByAggregateInput = {
+    annee_master?: SortOrder
   }
 
   export type EnumGradeFilter<$PrismaModel = never> = {
@@ -14389,10 +15442,10 @@ export namespace Prisma {
     none?: DoctorantWhereInput
   }
 
-  export type RequestDoctorantListRelationFilter = {
-    every?: RequestDoctorantWhereInput
-    some?: RequestDoctorantWhereInput
-    none?: RequestDoctorantWhereInput
+  export type MasterListRelationFilter = {
+    every?: MasterWhereInput
+    some?: MasterWhereInput
+    none?: MasterWhereInput
   }
 
   export type RequestMasterListRelationFilter = {
@@ -14401,21 +15454,13 @@ export namespace Prisma {
     none?: RequestMasterWhereInput
   }
 
-  export type MasterListRelationFilter = {
-    every?: MasterWhereInput
-    some?: MasterWhereInput
-    none?: MasterWhereInput
+  export type RequestDoctorantListRelationFilter = {
+    every?: RequestDoctorantWhereInput
+    some?: RequestDoctorantWhereInput
+    none?: RequestDoctorantWhereInput
   }
 
   export type DoctorantOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type RequestDoctorantOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type RequestMasterOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14423,40 +15468,45 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type RequestMasterOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RequestDoctorantOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type EnseignantChercheurCountOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     fonction?: SortOrder
     grade?: SortOrder
     etablissement?: SortOrder
-    password?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
   }
 
   export type EnseignantChercheurMaxOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     fonction?: SortOrder
     grade?: SortOrder
     etablissement?: SortOrder
-    password?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
   }
 
   export type EnseignantChercheurMinOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    email?: SortOrder
     fonction?: SortOrder
     grade?: SortOrder
     etablissement?: SortOrder
-    password?: SortOrder
     photo?: SortOrder
+    userId?: SortOrder
   }
 
   export type EnumGradeWithAggregatesFilter<$PrismaModel = never> = {
@@ -14514,65 +15564,11 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type DoctorantNullableScalarRelationFilter = {
-    is?: DoctorantWhereInput | null
-    isNot?: DoctorantWhereInput | null
-  }
-
-  export type MasterNullableScalarRelationFilter = {
-    is?: MasterWhereInput | null
-    isNot?: MasterWhereInput | null
-  }
-
-  export type EnseignantChercheurNullableScalarRelationFilter = {
-    is?: EnseignantChercheurWhereInput | null
-    isNot?: EnseignantChercheurWhereInput | null
-  }
-
-  export type SessionCountOrderByAggregateInput = {
-    id?: SortOrder
-    machine?: SortOrder
-    createdAt?: SortOrder
-    doctorant_id?: SortOrder
-    master_id?: SortOrder
-    enseignant_id?: SortOrder
-  }
-
-  export type SessionMaxOrderByAggregateInput = {
-    id?: SortOrder
-    machine?: SortOrder
-    createdAt?: SortOrder
-    doctorant_id?: SortOrder
-    master_id?: SortOrder
-    enseignant_id?: SortOrder
-  }
-
-  export type SessionMinOrderByAggregateInput = {
-    id?: SortOrder
-    machine?: SortOrder
-    createdAt?: SortOrder
-    doctorant_id?: SortOrder
-    master_id?: SortOrder
-    enseignant_id?: SortOrder
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type AdminCountOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
-    email?: SortOrder
     prenom?: SortOrder
-    password?: SortOrder
+    userId?: SortOrder
   }
 
   export type AdminAvgOrderByAggregateInput = {
@@ -14582,37 +15578,46 @@ export namespace Prisma {
   export type AdminMaxOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
-    email?: SortOrder
     prenom?: SortOrder
-    password?: SortOrder
+    userId?: SortOrder
   }
 
   export type AdminMinOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
-    email?: SortOrder
     prenom?: SortOrder
-    password?: SortOrder
+    userId?: SortOrder
   }
 
   export type AdminSumOrderByAggregateInput = {
     id?: SortOrder
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
+  export type SessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    accessToken?: SortOrder
+    refreshToken?: SortOrder
+    machine?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type SessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    accessToken?: SortOrder
+    refreshToken?: SortOrder
+    machine?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type SessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    accessToken?: SortOrder
+    refreshToken?: SortOrder
+    machine?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type EnumNotificationStatusFilter<$PrismaModel = never> = {
@@ -14622,37 +15627,17 @@ export namespace Prisma {
     not?: NestedEnumNotificationStatusFilter<$PrismaModel> | $Enums.NotificationStatus
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type AdminNullableScalarRelationFilter = {
-    is?: AdminWhereInput | null
-    isNot?: AdminWhereInput | null
-  }
-
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     message?: SortOrder
     recipient?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    admin_id?: SortOrder
-    doctorant_id?: SortOrder
-    master_id?: SortOrder
-    enseignant_id?: SortOrder
+    userId?: SortOrder
   }
 
   export type NotificationAvgOrderByAggregateInput = {
     id?: SortOrder
-    admin_id?: SortOrder
   }
 
   export type NotificationMaxOrderByAggregateInput = {
@@ -14661,10 +15646,7 @@ export namespace Prisma {
     recipient?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    admin_id?: SortOrder
-    doctorant_id?: SortOrder
-    master_id?: SortOrder
-    enseignant_id?: SortOrder
+    userId?: SortOrder
   }
 
   export type NotificationMinOrderByAggregateInput = {
@@ -14673,15 +15655,11 @@ export namespace Prisma {
     recipient?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    admin_id?: SortOrder
-    doctorant_id?: SortOrder
-    master_id?: SortOrder
-    enseignant_id?: SortOrder
+    userId?: SortOrder
   }
 
   export type NotificationSumOrderByAggregateInput = {
     id?: SortOrder
-    admin_id?: SortOrder
   }
 
   export type EnumNotificationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -14694,20 +15672,228 @@ export namespace Prisma {
     _max?: NestedEnumNotificationStatusFilter<$PrismaModel>
   }
 
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type NotificationCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type DoctorantCreateNestedOneWithoutUserInput = {
+    create?: XOR<DoctorantCreateWithoutUserInput, DoctorantUncheckedCreateWithoutUserInput>
+    connectOrCreate?: DoctorantCreateOrConnectWithoutUserInput
+    connect?: DoctorantWhereUniqueInput
+  }
+
+  export type MasterCreateNestedOneWithoutUserInput = {
+    create?: XOR<MasterCreateWithoutUserInput, MasterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MasterCreateOrConnectWithoutUserInput
+    connect?: MasterWhereUniqueInput
+  }
+
+  export type EnseignantChercheurCreateNestedOneWithoutUserInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutUserInput, EnseignantChercheurUncheckedCreateWithoutUserInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutUserInput
+    connect?: EnseignantChercheurWhereUniqueInput
+  }
+
+  export type AdminCreateNestedOneWithoutUserInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type DoctorantUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<DoctorantCreateWithoutUserInput, DoctorantUncheckedCreateWithoutUserInput>
+    connectOrCreate?: DoctorantCreateOrConnectWithoutUserInput
+    connect?: DoctorantWhereUniqueInput
+  }
+
+  export type MasterUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<MasterCreateWithoutUserInput, MasterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MasterCreateOrConnectWithoutUserInput
+    connect?: MasterWhereUniqueInput
+  }
+
+  export type EnseignantChercheurUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutUserInput, EnseignantChercheurUncheckedCreateWithoutUserInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutUserInput
+    connect?: EnseignantChercheurWhereUniqueInput
+  }
+
+  export type AdminUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
+  }
+
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type NotificationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type DoctorantUpdateOneWithoutUserNestedInput = {
+    create?: XOR<DoctorantCreateWithoutUserInput, DoctorantUncheckedCreateWithoutUserInput>
+    connectOrCreate?: DoctorantCreateOrConnectWithoutUserInput
+    upsert?: DoctorantUpsertWithoutUserInput
+    disconnect?: DoctorantWhereInput | boolean
+    delete?: DoctorantWhereInput | boolean
+    connect?: DoctorantWhereUniqueInput
+    update?: XOR<XOR<DoctorantUpdateToOneWithWhereWithoutUserInput, DoctorantUpdateWithoutUserInput>, DoctorantUncheckedUpdateWithoutUserInput>
+  }
+
+  export type MasterUpdateOneWithoutUserNestedInput = {
+    create?: XOR<MasterCreateWithoutUserInput, MasterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MasterCreateOrConnectWithoutUserInput
+    upsert?: MasterUpsertWithoutUserInput
+    disconnect?: MasterWhereInput | boolean
+    delete?: MasterWhereInput | boolean
+    connect?: MasterWhereUniqueInput
+    update?: XOR<XOR<MasterUpdateToOneWithWhereWithoutUserInput, MasterUpdateWithoutUserInput>, MasterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EnseignantChercheurUpdateOneWithoutUserNestedInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutUserInput, EnseignantChercheurUncheckedCreateWithoutUserInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutUserInput
+    upsert?: EnseignantChercheurUpsertWithoutUserInput
+    disconnect?: EnseignantChercheurWhereInput | boolean
+    delete?: EnseignantChercheurWhereInput | boolean
+    connect?: EnseignantChercheurWhereUniqueInput
+    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutUserInput, EnseignantChercheurUpdateWithoutUserInput>, EnseignantChercheurUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AdminUpdateOneWithoutUserNestedInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    upsert?: AdminUpsertWithoutUserInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutUserInput, AdminUpdateWithoutUserInput>, AdminUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type DoctorantUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<DoctorantCreateWithoutUserInput, DoctorantUncheckedCreateWithoutUserInput>
+    connectOrCreate?: DoctorantCreateOrConnectWithoutUserInput
+    upsert?: DoctorantUpsertWithoutUserInput
+    disconnect?: DoctorantWhereInput | boolean
+    delete?: DoctorantWhereInput | boolean
+    connect?: DoctorantWhereUniqueInput
+    update?: XOR<XOR<DoctorantUpdateToOneWithWhereWithoutUserInput, DoctorantUpdateWithoutUserInput>, DoctorantUncheckedUpdateWithoutUserInput>
+  }
+
+  export type MasterUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<MasterCreateWithoutUserInput, MasterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MasterCreateOrConnectWithoutUserInput
+    upsert?: MasterUpsertWithoutUserInput
+    disconnect?: MasterWhereInput | boolean
+    delete?: MasterWhereInput | boolean
+    connect?: MasterWhereUniqueInput
+    update?: XOR<XOR<MasterUpdateToOneWithWhereWithoutUserInput, MasterUpdateWithoutUserInput>, MasterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EnseignantChercheurUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutUserInput, EnseignantChercheurUncheckedCreateWithoutUserInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutUserInput
+    upsert?: EnseignantChercheurUpsertWithoutUserInput
+    disconnect?: EnseignantChercheurWhereInput | boolean
+    delete?: EnseignantChercheurWhereInput | boolean
+    connect?: EnseignantChercheurWhereUniqueInput
+    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutUserInput, EnseignantChercheurUpdateWithoutUserInput>, EnseignantChercheurUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AdminUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    upsert?: AdminUpsertWithoutUserInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutUserInput, AdminUpdateWithoutUserInput>, AdminUncheckedUpdateWithoutUserInput>
   }
 
   export type EnseignantChercheurCreateNestedOneWithoutDoctorantsInput = {
@@ -14716,40 +15902,18 @@ export namespace Prisma {
     connect?: EnseignantChercheurWhereUniqueInput
   }
 
-  export type SessionCreateNestedManyWithoutDoctorantInput = {
-    create?: XOR<SessionCreateWithoutDoctorantInput, SessionUncheckedCreateWithoutDoctorantInput> | SessionCreateWithoutDoctorantInput[] | SessionUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutDoctorantInput | SessionCreateOrConnectWithoutDoctorantInput[]
-    createMany?: SessionCreateManyDoctorantInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  export type UserCreateNestedOneWithoutDoctorantInput = {
+    create?: XOR<UserCreateWithoutDoctorantInput, UserUncheckedCreateWithoutDoctorantInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDoctorantInput
+    connect?: UserWhereUniqueInput
   }
 
-  export type NotificationCreateNestedManyWithoutDoctorantInput = {
-    create?: XOR<NotificationCreateWithoutDoctorantInput, NotificationUncheckedCreateWithoutDoctorantInput> | NotificationCreateWithoutDoctorantInput[] | NotificationUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutDoctorantInput | NotificationCreateOrConnectWithoutDoctorantInput[]
-    createMany?: NotificationCreateManyDoctorantInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-  }
-
-  export type SessionUncheckedCreateNestedManyWithoutDoctorantInput = {
-    create?: XOR<SessionCreateWithoutDoctorantInput, SessionUncheckedCreateWithoutDoctorantInput> | SessionCreateWithoutDoctorantInput[] | SessionUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutDoctorantInput | SessionCreateOrConnectWithoutDoctorantInput[]
-    createMany?: SessionCreateManyDoctorantInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
-  export type NotificationUncheckedCreateNestedManyWithoutDoctorantInput = {
-    create?: XOR<NotificationCreateWithoutDoctorantInput, NotificationUncheckedCreateWithoutDoctorantInput> | NotificationCreateWithoutDoctorantInput[] | NotificationUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutDoctorantInput | NotificationCreateOrConnectWithoutDoctorantInput[]
-    createMany?: NotificationCreateManyDoctorantInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-  }
-
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -14764,65 +15928,17 @@ export namespace Prisma {
     update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutDoctorantsInput, EnseignantChercheurUpdateWithoutDoctorantsInput>, EnseignantChercheurUncheckedUpdateWithoutDoctorantsInput>
   }
 
-  export type SessionUpdateManyWithoutDoctorantNestedInput = {
-    create?: XOR<SessionCreateWithoutDoctorantInput, SessionUncheckedCreateWithoutDoctorantInput> | SessionCreateWithoutDoctorantInput[] | SessionUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutDoctorantInput | SessionCreateOrConnectWithoutDoctorantInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutDoctorantInput | SessionUpsertWithWhereUniqueWithoutDoctorantInput[]
-    createMany?: SessionCreateManyDoctorantInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutDoctorantInput | SessionUpdateWithWhereUniqueWithoutDoctorantInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutDoctorantInput | SessionUpdateManyWithWhereWithoutDoctorantInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  export type UserUpdateOneRequiredWithoutDoctorantNestedInput = {
+    create?: XOR<UserCreateWithoutDoctorantInput, UserUncheckedCreateWithoutDoctorantInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDoctorantInput
+    upsert?: UserUpsertWithoutDoctorantInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDoctorantInput, UserUpdateWithoutDoctorantInput>, UserUncheckedUpdateWithoutDoctorantInput>
   }
 
-  export type NotificationUpdateManyWithoutDoctorantNestedInput = {
-    create?: XOR<NotificationCreateWithoutDoctorantInput, NotificationUncheckedCreateWithoutDoctorantInput> | NotificationCreateWithoutDoctorantInput[] | NotificationUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutDoctorantInput | NotificationCreateOrConnectWithoutDoctorantInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutDoctorantInput | NotificationUpsertWithWhereUniqueWithoutDoctorantInput[]
-    createMany?: NotificationCreateManyDoctorantInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutDoctorantInput | NotificationUpdateWithWhereUniqueWithoutDoctorantInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutDoctorantInput | NotificationUpdateManyWithWhereWithoutDoctorantInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-  }
-
-  export type SessionUncheckedUpdateManyWithoutDoctorantNestedInput = {
-    create?: XOR<SessionCreateWithoutDoctorantInput, SessionUncheckedCreateWithoutDoctorantInput> | SessionCreateWithoutDoctorantInput[] | SessionUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutDoctorantInput | SessionCreateOrConnectWithoutDoctorantInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutDoctorantInput | SessionUpsertWithWhereUniqueWithoutDoctorantInput[]
-    createMany?: SessionCreateManyDoctorantInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutDoctorantInput | SessionUpdateWithWhereUniqueWithoutDoctorantInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutDoctorantInput | SessionUpdateManyWithWhereWithoutDoctorantInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
-  export type NotificationUncheckedUpdateManyWithoutDoctorantNestedInput = {
-    create?: XOR<NotificationCreateWithoutDoctorantInput, NotificationUncheckedCreateWithoutDoctorantInput> | NotificationCreateWithoutDoctorantInput[] | NotificationUncheckedCreateWithoutDoctorantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutDoctorantInput | NotificationCreateOrConnectWithoutDoctorantInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutDoctorantInput | NotificationUpsertWithWhereUniqueWithoutDoctorantInput[]
-    createMany?: NotificationCreateManyDoctorantInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutDoctorantInput | NotificationUpdateWithWhereUniqueWithoutDoctorantInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutDoctorantInput | NotificationUpdateManyWithWhereWithoutDoctorantInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-  }
-
-  export type EnseignantChercheurCreateNestedOneWithoutRequestDoctorantInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutRequestDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestDoctorantInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestDoctorantInput
+  export type EnseignantChercheurCreateNestedOneWithoutRequestsDoctorantInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutRequestsDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestsDoctorantInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestsDoctorantInput
     connect?: EnseignantChercheurWhereUniqueInput
   }
 
@@ -14834,12 +15950,12 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type EnseignantChercheurUpdateOneRequiredWithoutRequestDoctorantNestedInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutRequestDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestDoctorantInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestDoctorantInput
-    upsert?: EnseignantChercheurUpsertWithoutRequestDoctorantInput
+  export type EnseignantChercheurUpdateOneRequiredWithoutRequestsDoctorantNestedInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutRequestsDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestsDoctorantInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestsDoctorantInput
+    upsert?: EnseignantChercheurUpsertWithoutRequestsDoctorantInput
     connect?: EnseignantChercheurWhereUniqueInput
-    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutRequestDoctorantInput, EnseignantChercheurUpdateWithoutRequestDoctorantInput>, EnseignantChercheurUncheckedUpdateWithoutRequestDoctorantInput>
+    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutRequestsDoctorantInput, EnseignantChercheurUpdateWithoutRequestsDoctorantInput>, EnseignantChercheurUncheckedUpdateWithoutRequestsDoctorantInput>
   }
 
   export type EnseignantChercheurCreateNestedOneWithoutMastersInput = {
@@ -14848,32 +15964,10 @@ export namespace Prisma {
     connect?: EnseignantChercheurWhereUniqueInput
   }
 
-  export type SessionCreateNestedManyWithoutMasterInput = {
-    create?: XOR<SessionCreateWithoutMasterInput, SessionUncheckedCreateWithoutMasterInput> | SessionCreateWithoutMasterInput[] | SessionUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutMasterInput | SessionCreateOrConnectWithoutMasterInput[]
-    createMany?: SessionCreateManyMasterInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
-  export type NotificationCreateNestedManyWithoutMasterInput = {
-    create?: XOR<NotificationCreateWithoutMasterInput, NotificationUncheckedCreateWithoutMasterInput> | NotificationCreateWithoutMasterInput[] | NotificationUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutMasterInput | NotificationCreateOrConnectWithoutMasterInput[]
-    createMany?: NotificationCreateManyMasterInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-  }
-
-  export type SessionUncheckedCreateNestedManyWithoutMasterInput = {
-    create?: XOR<SessionCreateWithoutMasterInput, SessionUncheckedCreateWithoutMasterInput> | SessionCreateWithoutMasterInput[] | SessionUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutMasterInput | SessionCreateOrConnectWithoutMasterInput[]
-    createMany?: SessionCreateManyMasterInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
-  export type NotificationUncheckedCreateNestedManyWithoutMasterInput = {
-    create?: XOR<NotificationCreateWithoutMasterInput, NotificationUncheckedCreateWithoutMasterInput> | NotificationCreateWithoutMasterInput[] | NotificationUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutMasterInput | NotificationCreateOrConnectWithoutMasterInput[]
-    createMany?: NotificationCreateManyMasterInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  export type UserCreateNestedOneWithoutMasterInput = {
+    create?: XOR<UserCreateWithoutMasterInput, UserUncheckedCreateWithoutMasterInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMasterInput
+    connect?: UserWhereUniqueInput
   }
 
   export type EnseignantChercheurUpdateOneRequiredWithoutMastersNestedInput = {
@@ -14884,74 +15978,26 @@ export namespace Prisma {
     update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutMastersInput, EnseignantChercheurUpdateWithoutMastersInput>, EnseignantChercheurUncheckedUpdateWithoutMastersInput>
   }
 
-  export type SessionUpdateManyWithoutMasterNestedInput = {
-    create?: XOR<SessionCreateWithoutMasterInput, SessionUncheckedCreateWithoutMasterInput> | SessionCreateWithoutMasterInput[] | SessionUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutMasterInput | SessionCreateOrConnectWithoutMasterInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutMasterInput | SessionUpsertWithWhereUniqueWithoutMasterInput[]
-    createMany?: SessionCreateManyMasterInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutMasterInput | SessionUpdateWithWhereUniqueWithoutMasterInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutMasterInput | SessionUpdateManyWithWhereWithoutMasterInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  export type UserUpdateOneRequiredWithoutMasterNestedInput = {
+    create?: XOR<UserCreateWithoutMasterInput, UserUncheckedCreateWithoutMasterInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMasterInput
+    upsert?: UserUpsertWithoutMasterInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMasterInput, UserUpdateWithoutMasterInput>, UserUncheckedUpdateWithoutMasterInput>
   }
 
-  export type NotificationUpdateManyWithoutMasterNestedInput = {
-    create?: XOR<NotificationCreateWithoutMasterInput, NotificationUncheckedCreateWithoutMasterInput> | NotificationCreateWithoutMasterInput[] | NotificationUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutMasterInput | NotificationCreateOrConnectWithoutMasterInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutMasterInput | NotificationUpsertWithWhereUniqueWithoutMasterInput[]
-    createMany?: NotificationCreateManyMasterInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutMasterInput | NotificationUpdateWithWhereUniqueWithoutMasterInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutMasterInput | NotificationUpdateManyWithWhereWithoutMasterInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-  }
-
-  export type SessionUncheckedUpdateManyWithoutMasterNestedInput = {
-    create?: XOR<SessionCreateWithoutMasterInput, SessionUncheckedCreateWithoutMasterInput> | SessionCreateWithoutMasterInput[] | SessionUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutMasterInput | SessionCreateOrConnectWithoutMasterInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutMasterInput | SessionUpsertWithWhereUniqueWithoutMasterInput[]
-    createMany?: SessionCreateManyMasterInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutMasterInput | SessionUpdateWithWhereUniqueWithoutMasterInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutMasterInput | SessionUpdateManyWithWhereWithoutMasterInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
-  export type NotificationUncheckedUpdateManyWithoutMasterNestedInput = {
-    create?: XOR<NotificationCreateWithoutMasterInput, NotificationUncheckedCreateWithoutMasterInput> | NotificationCreateWithoutMasterInput[] | NotificationUncheckedCreateWithoutMasterInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutMasterInput | NotificationCreateOrConnectWithoutMasterInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutMasterInput | NotificationUpsertWithWhereUniqueWithoutMasterInput[]
-    createMany?: NotificationCreateManyMasterInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutMasterInput | NotificationUpdateWithWhereUniqueWithoutMasterInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutMasterInput | NotificationUpdateManyWithWhereWithoutMasterInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-  }
-
-  export type EnseignantChercheurCreateNestedOneWithoutRequestMasterInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutRequestMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestMasterInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestMasterInput
+  export type EnseignantChercheurCreateNestedOneWithoutRequestsMasterInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutRequestsMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestsMasterInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestsMasterInput
     connect?: EnseignantChercheurWhereUniqueInput
   }
 
-  export type EnseignantChercheurUpdateOneRequiredWithoutRequestMasterNestedInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutRequestMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestMasterInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestMasterInput
-    upsert?: EnseignantChercheurUpsertWithoutRequestMasterInput
+  export type EnseignantChercheurUpdateOneRequiredWithoutRequestsMasterNestedInput = {
+    create?: XOR<EnseignantChercheurCreateWithoutRequestsMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestsMasterInput>
+    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutRequestsMasterInput
+    upsert?: EnseignantChercheurUpsertWithoutRequestsMasterInput
     connect?: EnseignantChercheurWhereUniqueInput
-    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutRequestMasterInput, EnseignantChercheurUpdateWithoutRequestMasterInput>, EnseignantChercheurUncheckedUpdateWithoutRequestMasterInput>
+    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutRequestsMasterInput, EnseignantChercheurUpdateWithoutRequestsMasterInput>, EnseignantChercheurUncheckedUpdateWithoutRequestsMasterInput>
   }
 
   export type DoctorantCreateNestedManyWithoutDirecteur_theseInput = {
@@ -14961,11 +16007,11 @@ export namespace Prisma {
     connect?: DoctorantWhereUniqueInput | DoctorantWhereUniqueInput[]
   }
 
-  export type RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput = {
-    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
-    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
-    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
-    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+  export type MasterCreateNestedManyWithoutEncadrantInput = {
+    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
+    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
+    createMany?: MasterCreateManyEncadrantInputEnvelope
+    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
   }
 
   export type RequestMasterCreateNestedManyWithoutEncadrantInput = {
@@ -14975,25 +16021,17 @@ export namespace Prisma {
     connect?: RequestMasterWhereUniqueInput | RequestMasterWhereUniqueInput[]
   }
 
-  export type MasterCreateNestedManyWithoutEncadrantInput = {
-    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
-    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
-    createMany?: MasterCreateManyEncadrantInputEnvelope
-    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+  export type RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput = {
+    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
+    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
+    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
+    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
   }
 
-  export type SessionCreateNestedManyWithoutEnseignantInput = {
-    create?: XOR<SessionCreateWithoutEnseignantInput, SessionUncheckedCreateWithoutEnseignantInput> | SessionCreateWithoutEnseignantInput[] | SessionUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutEnseignantInput | SessionCreateOrConnectWithoutEnseignantInput[]
-    createMany?: SessionCreateManyEnseignantInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
-  export type NotificationCreateNestedManyWithoutEnseignantInput = {
-    create?: XOR<NotificationCreateWithoutEnseignantInput, NotificationUncheckedCreateWithoutEnseignantInput> | NotificationCreateWithoutEnseignantInput[] | NotificationUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutEnseignantInput | NotificationCreateOrConnectWithoutEnseignantInput[]
-    createMany?: NotificationCreateManyEnseignantInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  export type UserCreateNestedOneWithoutEnseignantInput = {
+    create?: XOR<UserCreateWithoutEnseignantInput, UserUncheckedCreateWithoutEnseignantInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEnseignantInput
+    connect?: UserWhereUniqueInput
   }
 
   export type DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput = {
@@ -15003,11 +16041,11 @@ export namespace Prisma {
     connect?: DoctorantWhereUniqueInput | DoctorantWhereUniqueInput[]
   }
 
-  export type RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput = {
-    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
-    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
-    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
-    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+  export type MasterUncheckedCreateNestedManyWithoutEncadrantInput = {
+    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
+    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
+    createMany?: MasterCreateManyEncadrantInputEnvelope
+    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
   }
 
   export type RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput = {
@@ -15017,25 +16055,11 @@ export namespace Prisma {
     connect?: RequestMasterWhereUniqueInput | RequestMasterWhereUniqueInput[]
   }
 
-  export type MasterUncheckedCreateNestedManyWithoutEncadrantInput = {
-    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
-    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
-    createMany?: MasterCreateManyEncadrantInputEnvelope
-    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-  }
-
-  export type SessionUncheckedCreateNestedManyWithoutEnseignantInput = {
-    create?: XOR<SessionCreateWithoutEnseignantInput, SessionUncheckedCreateWithoutEnseignantInput> | SessionCreateWithoutEnseignantInput[] | SessionUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutEnseignantInput | SessionCreateOrConnectWithoutEnseignantInput[]
-    createMany?: SessionCreateManyEnseignantInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
-  export type NotificationUncheckedCreateNestedManyWithoutEnseignantInput = {
-    create?: XOR<NotificationCreateWithoutEnseignantInput, NotificationUncheckedCreateWithoutEnseignantInput> | NotificationCreateWithoutEnseignantInput[] | NotificationUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutEnseignantInput | NotificationCreateOrConnectWithoutEnseignantInput[]
-    createMany?: NotificationCreateManyEnseignantInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  export type RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput = {
+    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
+    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
+    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
+    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
   }
 
   export type EnumGradeFieldUpdateOperationsInput = {
@@ -15056,18 +16080,18 @@ export namespace Prisma {
     deleteMany?: DoctorantScalarWhereInput | DoctorantScalarWhereInput[]
   }
 
-  export type RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput = {
-    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
-    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
-    upsert?: RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput[]
-    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
-    set?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    disconnect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    delete?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    update?: RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput[]
-    updateMany?: RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput | RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput[]
-    deleteMany?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
+  export type MasterUpdateManyWithoutEncadrantNestedInput = {
+    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
+    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
+    upsert?: MasterUpsertWithWhereUniqueWithoutEncadrantInput | MasterUpsertWithWhereUniqueWithoutEncadrantInput[]
+    createMany?: MasterCreateManyEncadrantInputEnvelope
+    set?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    disconnect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    delete?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    update?: MasterUpdateWithWhereUniqueWithoutEncadrantInput | MasterUpdateWithWhereUniqueWithoutEncadrantInput[]
+    updateMany?: MasterUpdateManyWithWhereWithoutEncadrantInput | MasterUpdateManyWithWhereWithoutEncadrantInput[]
+    deleteMany?: MasterScalarWhereInput | MasterScalarWhereInput[]
   }
 
   export type RequestMasterUpdateManyWithoutEncadrantNestedInput = {
@@ -15084,46 +16108,26 @@ export namespace Prisma {
     deleteMany?: RequestMasterScalarWhereInput | RequestMasterScalarWhereInput[]
   }
 
-  export type MasterUpdateManyWithoutEncadrantNestedInput = {
-    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
-    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
-    upsert?: MasterUpsertWithWhereUniqueWithoutEncadrantInput | MasterUpsertWithWhereUniqueWithoutEncadrantInput[]
-    createMany?: MasterCreateManyEncadrantInputEnvelope
-    set?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    disconnect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    delete?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    update?: MasterUpdateWithWhereUniqueWithoutEncadrantInput | MasterUpdateWithWhereUniqueWithoutEncadrantInput[]
-    updateMany?: MasterUpdateManyWithWhereWithoutEncadrantInput | MasterUpdateManyWithWhereWithoutEncadrantInput[]
-    deleteMany?: MasterScalarWhereInput | MasterScalarWhereInput[]
+  export type RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput = {
+    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
+    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
+    upsert?: RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput[]
+    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
+    set?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    disconnect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    delete?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    update?: RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput[]
+    updateMany?: RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput | RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput[]
+    deleteMany?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
   }
 
-  export type SessionUpdateManyWithoutEnseignantNestedInput = {
-    create?: XOR<SessionCreateWithoutEnseignantInput, SessionUncheckedCreateWithoutEnseignantInput> | SessionCreateWithoutEnseignantInput[] | SessionUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutEnseignantInput | SessionCreateOrConnectWithoutEnseignantInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutEnseignantInput | SessionUpsertWithWhereUniqueWithoutEnseignantInput[]
-    createMany?: SessionCreateManyEnseignantInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutEnseignantInput | SessionUpdateWithWhereUniqueWithoutEnseignantInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutEnseignantInput | SessionUpdateManyWithWhereWithoutEnseignantInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
-  export type NotificationUpdateManyWithoutEnseignantNestedInput = {
-    create?: XOR<NotificationCreateWithoutEnseignantInput, NotificationUncheckedCreateWithoutEnseignantInput> | NotificationCreateWithoutEnseignantInput[] | NotificationUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutEnseignantInput | NotificationCreateOrConnectWithoutEnseignantInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutEnseignantInput | NotificationUpsertWithWhereUniqueWithoutEnseignantInput[]
-    createMany?: NotificationCreateManyEnseignantInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutEnseignantInput | NotificationUpdateWithWhereUniqueWithoutEnseignantInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutEnseignantInput | NotificationUpdateManyWithWhereWithoutEnseignantInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  export type UserUpdateOneRequiredWithoutEnseignantNestedInput = {
+    create?: XOR<UserCreateWithoutEnseignantInput, UserUncheckedCreateWithoutEnseignantInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEnseignantInput
+    upsert?: UserUpsertWithoutEnseignantInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEnseignantInput, UserUpdateWithoutEnseignantInput>, UserUncheckedUpdateWithoutEnseignantInput>
   }
 
   export type DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput = {
@@ -15140,18 +16144,18 @@ export namespace Prisma {
     deleteMany?: DoctorantScalarWhereInput | DoctorantScalarWhereInput[]
   }
 
-  export type RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput = {
-    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
-    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
-    upsert?: RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput[]
-    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
-    set?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    disconnect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    delete?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
-    update?: RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput[]
-    updateMany?: RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput | RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput[]
-    deleteMany?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
+  export type MasterUncheckedUpdateManyWithoutEncadrantNestedInput = {
+    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
+    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
+    upsert?: MasterUpsertWithWhereUniqueWithoutEncadrantInput | MasterUpsertWithWhereUniqueWithoutEncadrantInput[]
+    createMany?: MasterCreateManyEncadrantInputEnvelope
+    set?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    disconnect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    delete?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
+    update?: MasterUpdateWithWhereUniqueWithoutEncadrantInput | MasterUpdateWithWhereUniqueWithoutEncadrantInput[]
+    updateMany?: MasterUpdateManyWithWhereWithoutEncadrantInput | MasterUpdateManyWithWhereWithoutEncadrantInput[]
+    deleteMany?: MasterScalarWhereInput | MasterScalarWhereInput[]
   }
 
   export type RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput = {
@@ -15168,220 +16172,64 @@ export namespace Prisma {
     deleteMany?: RequestMasterScalarWhereInput | RequestMasterScalarWhereInput[]
   }
 
-  export type MasterUncheckedUpdateManyWithoutEncadrantNestedInput = {
-    create?: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput> | MasterCreateWithoutEncadrantInput[] | MasterUncheckedCreateWithoutEncadrantInput[]
-    connectOrCreate?: MasterCreateOrConnectWithoutEncadrantInput | MasterCreateOrConnectWithoutEncadrantInput[]
-    upsert?: MasterUpsertWithWhereUniqueWithoutEncadrantInput | MasterUpsertWithWhereUniqueWithoutEncadrantInput[]
-    createMany?: MasterCreateManyEncadrantInputEnvelope
-    set?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    disconnect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    delete?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    connect?: MasterWhereUniqueInput | MasterWhereUniqueInput[]
-    update?: MasterUpdateWithWhereUniqueWithoutEncadrantInput | MasterUpdateWithWhereUniqueWithoutEncadrantInput[]
-    updateMany?: MasterUpdateManyWithWhereWithoutEncadrantInput | MasterUpdateManyWithWhereWithoutEncadrantInput[]
-    deleteMany?: MasterScalarWhereInput | MasterScalarWhereInput[]
+  export type RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput = {
+    create?: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput> | RequestDoctorantCreateWithoutDirecteur_theseInput[] | RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput[]
+    connectOrCreate?: RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput | RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput[]
+    upsert?: RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput[]
+    createMany?: RequestDoctorantCreateManyDirecteur_theseInputEnvelope
+    set?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    disconnect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    delete?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    connect?: RequestDoctorantWhereUniqueInput | RequestDoctorantWhereUniqueInput[]
+    update?: RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput | RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput[]
+    updateMany?: RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput | RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput[]
+    deleteMany?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutEnseignantNestedInput = {
-    create?: XOR<SessionCreateWithoutEnseignantInput, SessionUncheckedCreateWithoutEnseignantInput> | SessionCreateWithoutEnseignantInput[] | SessionUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutEnseignantInput | SessionCreateOrConnectWithoutEnseignantInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutEnseignantInput | SessionUpsertWithWhereUniqueWithoutEnseignantInput[]
-    createMany?: SessionCreateManyEnseignantInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutEnseignantInput | SessionUpdateWithWhereUniqueWithoutEnseignantInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutEnseignantInput | SessionUpdateManyWithWhereWithoutEnseignantInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  export type UserCreateNestedOneWithoutAdminInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    connect?: UserWhereUniqueInput
   }
 
-  export type NotificationUncheckedUpdateManyWithoutEnseignantNestedInput = {
-    create?: XOR<NotificationCreateWithoutEnseignantInput, NotificationUncheckedCreateWithoutEnseignantInput> | NotificationCreateWithoutEnseignantInput[] | NotificationUncheckedCreateWithoutEnseignantInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutEnseignantInput | NotificationCreateOrConnectWithoutEnseignantInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutEnseignantInput | NotificationUpsertWithWhereUniqueWithoutEnseignantInput[]
-    createMany?: NotificationCreateManyEnseignantInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutEnseignantInput | NotificationUpdateWithWhereUniqueWithoutEnseignantInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutEnseignantInput | NotificationUpdateManyWithWhereWithoutEnseignantInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  export type UserUpdateOneRequiredWithoutAdminNestedInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    upsert?: UserUpsertWithoutAdminInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAdminInput, UserUpdateWithoutAdminInput>, UserUncheckedUpdateWithoutAdminInput>
   }
 
-  export type DoctorantCreateNestedOneWithoutSessions_activesInput = {
-    create?: XOR<DoctorantCreateWithoutSessions_activesInput, DoctorantUncheckedCreateWithoutSessions_activesInput>
-    connectOrCreate?: DoctorantCreateOrConnectWithoutSessions_activesInput
-    connect?: DoctorantWhereUniqueInput
+  export type UserCreateNestedOneWithoutSessionsInput = {
+    create?: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSessionsInput
+    connect?: UserWhereUniqueInput
   }
 
-  export type MasterCreateNestedOneWithoutSessions_activesInput = {
-    create?: XOR<MasterCreateWithoutSessions_activesInput, MasterUncheckedCreateWithoutSessions_activesInput>
-    connectOrCreate?: MasterCreateOrConnectWithoutSessions_activesInput
-    connect?: MasterWhereUniqueInput
+  export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
+    create?: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSessionsInput
+    upsert?: UserUpsertWithoutSessionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type EnseignantChercheurCreateNestedOneWithoutSessions_activesInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutSessions_activesInput, EnseignantChercheurUncheckedCreateWithoutSessions_activesInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutSessions_activesInput
-    connect?: EnseignantChercheurWhereUniqueInput
-  }
-
-  export type DoctorantUpdateOneWithoutSessions_activesNestedInput = {
-    create?: XOR<DoctorantCreateWithoutSessions_activesInput, DoctorantUncheckedCreateWithoutSessions_activesInput>
-    connectOrCreate?: DoctorantCreateOrConnectWithoutSessions_activesInput
-    upsert?: DoctorantUpsertWithoutSessions_activesInput
-    disconnect?: DoctorantWhereInput | boolean
-    delete?: DoctorantWhereInput | boolean
-    connect?: DoctorantWhereUniqueInput
-    update?: XOR<XOR<DoctorantUpdateToOneWithWhereWithoutSessions_activesInput, DoctorantUpdateWithoutSessions_activesInput>, DoctorantUncheckedUpdateWithoutSessions_activesInput>
-  }
-
-  export type MasterUpdateOneWithoutSessions_activesNestedInput = {
-    create?: XOR<MasterCreateWithoutSessions_activesInput, MasterUncheckedCreateWithoutSessions_activesInput>
-    connectOrCreate?: MasterCreateOrConnectWithoutSessions_activesInput
-    upsert?: MasterUpsertWithoutSessions_activesInput
-    disconnect?: MasterWhereInput | boolean
-    delete?: MasterWhereInput | boolean
-    connect?: MasterWhereUniqueInput
-    update?: XOR<XOR<MasterUpdateToOneWithWhereWithoutSessions_activesInput, MasterUpdateWithoutSessions_activesInput>, MasterUncheckedUpdateWithoutSessions_activesInput>
-  }
-
-  export type EnseignantChercheurUpdateOneWithoutSessions_activesNestedInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutSessions_activesInput, EnseignantChercheurUncheckedCreateWithoutSessions_activesInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutSessions_activesInput
-    upsert?: EnseignantChercheurUpsertWithoutSessions_activesInput
-    disconnect?: EnseignantChercheurWhereInput | boolean
-    delete?: EnseignantChercheurWhereInput | boolean
-    connect?: EnseignantChercheurWhereUniqueInput
-    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutSessions_activesInput, EnseignantChercheurUpdateWithoutSessions_activesInput>, EnseignantChercheurUncheckedUpdateWithoutSessions_activesInput>
-  }
-
-  export type NotificationCreateNestedManyWithoutAdminInput = {
-    create?: XOR<NotificationCreateWithoutAdminInput, NotificationUncheckedCreateWithoutAdminInput> | NotificationCreateWithoutAdminInput[] | NotificationUncheckedCreateWithoutAdminInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutAdminInput | NotificationCreateOrConnectWithoutAdminInput[]
-    createMany?: NotificationCreateManyAdminInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-  }
-
-  export type NotificationUncheckedCreateNestedManyWithoutAdminInput = {
-    create?: XOR<NotificationCreateWithoutAdminInput, NotificationUncheckedCreateWithoutAdminInput> | NotificationCreateWithoutAdminInput[] | NotificationUncheckedCreateWithoutAdminInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutAdminInput | NotificationCreateOrConnectWithoutAdminInput[]
-    createMany?: NotificationCreateManyAdminInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-  }
-
-  export type NotificationUpdateManyWithoutAdminNestedInput = {
-    create?: XOR<NotificationCreateWithoutAdminInput, NotificationUncheckedCreateWithoutAdminInput> | NotificationCreateWithoutAdminInput[] | NotificationUncheckedCreateWithoutAdminInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutAdminInput | NotificationCreateOrConnectWithoutAdminInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutAdminInput | NotificationUpsertWithWhereUniqueWithoutAdminInput[]
-    createMany?: NotificationCreateManyAdminInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutAdminInput | NotificationUpdateWithWhereUniqueWithoutAdminInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutAdminInput | NotificationUpdateManyWithWhereWithoutAdminInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type NotificationUncheckedUpdateManyWithoutAdminNestedInput = {
-    create?: XOR<NotificationCreateWithoutAdminInput, NotificationUncheckedCreateWithoutAdminInput> | NotificationCreateWithoutAdminInput[] | NotificationUncheckedCreateWithoutAdminInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutAdminInput | NotificationCreateOrConnectWithoutAdminInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutAdminInput | NotificationUpsertWithWhereUniqueWithoutAdminInput[]
-    createMany?: NotificationCreateManyAdminInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutAdminInput | NotificationUpdateWithWhereUniqueWithoutAdminInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutAdminInput | NotificationUpdateManyWithWhereWithoutAdminInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-  }
-
-  export type AdminCreateNestedOneWithoutNotificationsInput = {
-    create?: XOR<AdminCreateWithoutNotificationsInput, AdminUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: AdminCreateOrConnectWithoutNotificationsInput
-    connect?: AdminWhereUniqueInput
-  }
-
-  export type DoctorantCreateNestedOneWithoutNotificationsInput = {
-    create?: XOR<DoctorantCreateWithoutNotificationsInput, DoctorantUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: DoctorantCreateOrConnectWithoutNotificationsInput
-    connect?: DoctorantWhereUniqueInput
-  }
-
-  export type MasterCreateNestedOneWithoutNotificationsInput = {
-    create?: XOR<MasterCreateWithoutNotificationsInput, MasterUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: MasterCreateOrConnectWithoutNotificationsInput
-    connect?: MasterWhereUniqueInput
-  }
-
-  export type EnseignantChercheurCreateNestedOneWithoutNotificationsInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutNotificationsInput, EnseignantChercheurUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutNotificationsInput
-    connect?: EnseignantChercheurWhereUniqueInput
+  export type UserCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
   }
 
   export type EnumNotificationStatusFieldUpdateOperationsInput = {
     set?: $Enums.NotificationStatus
   }
 
-  export type AdminUpdateOneWithoutNotificationsNestedInput = {
-    create?: XOR<AdminCreateWithoutNotificationsInput, AdminUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: AdminCreateOrConnectWithoutNotificationsInput
-    upsert?: AdminUpsertWithoutNotificationsInput
-    disconnect?: AdminWhereInput | boolean
-    delete?: AdminWhereInput | boolean
-    connect?: AdminWhereUniqueInput
-    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutNotificationsInput, AdminUpdateWithoutNotificationsInput>, AdminUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type DoctorantUpdateOneWithoutNotificationsNestedInput = {
-    create?: XOR<DoctorantCreateWithoutNotificationsInput, DoctorantUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: DoctorantCreateOrConnectWithoutNotificationsInput
-    upsert?: DoctorantUpsertWithoutNotificationsInput
-    disconnect?: DoctorantWhereInput | boolean
-    delete?: DoctorantWhereInput | boolean
-    connect?: DoctorantWhereUniqueInput
-    update?: XOR<XOR<DoctorantUpdateToOneWithWhereWithoutNotificationsInput, DoctorantUpdateWithoutNotificationsInput>, DoctorantUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type MasterUpdateOneWithoutNotificationsNestedInput = {
-    create?: XOR<MasterCreateWithoutNotificationsInput, MasterUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: MasterCreateOrConnectWithoutNotificationsInput
-    upsert?: MasterUpsertWithoutNotificationsInput
-    disconnect?: MasterWhereInput | boolean
-    delete?: MasterWhereInput | boolean
-    connect?: MasterWhereUniqueInput
-    update?: XOR<XOR<MasterUpdateToOneWithWhereWithoutNotificationsInput, MasterUpdateWithoutNotificationsInput>, MasterUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type EnseignantChercheurUpdateOneWithoutNotificationsNestedInput = {
-    create?: XOR<EnseignantChercheurCreateWithoutNotificationsInput, EnseignantChercheurUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: EnseignantChercheurCreateOrConnectWithoutNotificationsInput
-    upsert?: EnseignantChercheurUpsertWithoutNotificationsInput
-    disconnect?: EnseignantChercheurWhereInput | boolean
-    delete?: EnseignantChercheurWhereInput | boolean
-    connect?: EnseignantChercheurWhereUniqueInput
-    update?: XOR<XOR<EnseignantChercheurUpdateToOneWithWhereWithoutNotificationsInput, EnseignantChercheurUpdateWithoutNotificationsInput>, EnseignantChercheurUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    upsert?: UserUpsertWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -15398,6 +16246,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -15407,20 +16262,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -15451,6 +16292,16 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -15463,6 +16314,47 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -15540,33 +16432,6 @@ export namespace Prisma {
     _max?: NestedEnumGradeFilter<$PrismaModel>
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedEnumNotificationStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.NotificationStatus | EnumNotificationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
@@ -15584,65 +16449,357 @@ export namespace Prisma {
     _max?: NestedEnumNotificationStatusFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+  export type SessionCreateWithoutUserInput = {
+    id?: string
+    accessToken: string
+    refreshToken: string
+    machine: string
+    createdAt?: Date | string
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  export type SessionUncheckedCreateWithoutUserInput = {
+    id?: string
+    accessToken: string
+    refreshToken: string
+    machine: string
+    createdAt?: Date | string
+  }
+
+  export type SessionCreateOrConnectWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionCreateManyUserInputEnvelope = {
+    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type NotificationCreateWithoutUserInput = {
+    message: string
+    recipient: string
+    status?: $Enums.NotificationStatus
+    createdAt?: Date | string
+  }
+
+  export type NotificationUncheckedCreateWithoutUserInput = {
+    id?: number
+    message: string
+    recipient: string
+    status?: $Enums.NotificationStatus
+    createdAt?: Date | string
+  }
+
+  export type NotificationCreateOrConnectWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationCreateManyUserInputEnvelope = {
+    data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DoctorantCreateWithoutUserInput = {
+    id?: string
+    nom: string
+    prenom: string
+    annee_these: number
+    photo?: string | null
+    directeur_these: EnseignantChercheurCreateNestedOneWithoutDoctorantsInput
+  }
+
+  export type DoctorantUncheckedCreateWithoutUserInput = {
+    id?: string
+    nom: string
+    prenom: string
+    annee_these: number
+    directeur_these_id: string
+    photo?: string | null
+  }
+
+  export type DoctorantCreateOrConnectWithoutUserInput = {
+    where: DoctorantWhereUniqueInput
+    create: XOR<DoctorantCreateWithoutUserInput, DoctorantUncheckedCreateWithoutUserInput>
+  }
+
+  export type MasterCreateWithoutUserInput = {
+    id?: string
+    nom: string
+    prenom: string
+    dateInscription: Date | string
+    annee_master: number
+    photo?: string | null
+    encadrant: EnseignantChercheurCreateNestedOneWithoutMastersInput
+  }
+
+  export type MasterUncheckedCreateWithoutUserInput = {
+    id?: string
+    nom: string
+    prenom: string
+    dateInscription: Date | string
+    encadrant_id: string
+    annee_master: number
+    photo?: string | null
+  }
+
+  export type MasterCreateOrConnectWithoutUserInput = {
+    where: MasterWhereUniqueInput
+    create: XOR<MasterCreateWithoutUserInput, MasterUncheckedCreateWithoutUserInput>
+  }
+
+  export type EnseignantChercheurCreateWithoutUserInput = {
+    id?: string
+    nom: string
+    prenom: string
+    fonction: string
+    grade: $Enums.Grade
+    etablissement: string
+    photo?: string | null
+    doctorants?: DoctorantCreateNestedManyWithoutDirecteur_theseInput
+    masters?: MasterCreateNestedManyWithoutEncadrantInput
+    requestsMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
+  }
+
+  export type EnseignantChercheurUncheckedCreateWithoutUserInput = {
+    id?: string
+    nom: string
+    prenom: string
+    fonction: string
+    grade: $Enums.Grade
+    etablissement: string
+    photo?: string | null
+    doctorants?: DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
+    masters?: MasterUncheckedCreateNestedManyWithoutEncadrantInput
+    requestsMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
+  }
+
+  export type EnseignantChercheurCreateOrConnectWithoutUserInput = {
+    where: EnseignantChercheurWhereUniqueInput
+    create: XOR<EnseignantChercheurCreateWithoutUserInput, EnseignantChercheurUncheckedCreateWithoutUserInput>
+  }
+
+  export type AdminCreateWithoutUserInput = {
+    nom: string
+    prenom: string
+  }
+
+  export type AdminUncheckedCreateWithoutUserInput = {
+    id?: number
+    nom: string
+    prenom: string
+  }
+
+  export type AdminCreateOrConnectWithoutUserInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: StringFilter<"Session"> | string
+    accessToken?: StringFilter<"Session"> | string
+    refreshToken?: StringFilter<"Session"> | string
+    machine?: StringFilter<"Session"> | string
+    createdAt?: DateTimeFilter<"Session"> | Date | string
+    userId?: StringFilter<"Session"> | string
+  }
+
+  export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutUserInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationScalarWhereInput = {
+    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    OR?: NotificationScalarWhereInput[]
+    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    id?: IntFilter<"Notification"> | number
+    message?: StringFilter<"Notification"> | string
+    recipient?: StringFilter<"Notification"> | string
+    status?: EnumNotificationStatusFilter<"Notification"> | $Enums.NotificationStatus
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    userId?: StringFilter<"Notification"> | string
+  }
+
+  export type DoctorantUpsertWithoutUserInput = {
+    update: XOR<DoctorantUpdateWithoutUserInput, DoctorantUncheckedUpdateWithoutUserInput>
+    create: XOR<DoctorantCreateWithoutUserInput, DoctorantUncheckedCreateWithoutUserInput>
+    where?: DoctorantWhereInput
+  }
+
+  export type DoctorantUpdateToOneWithWhereWithoutUserInput = {
+    where?: DoctorantWhereInput
+    data: XOR<DoctorantUpdateWithoutUserInput, DoctorantUncheckedUpdateWithoutUserInput>
+  }
+
+  export type DoctorantUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    annee_these?: IntFieldUpdateOperationsInput | number
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    directeur_these?: EnseignantChercheurUpdateOneRequiredWithoutDoctorantsNestedInput
+  }
+
+  export type DoctorantUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    annee_these?: IntFieldUpdateOperationsInput | number
+    directeur_these_id?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MasterUpsertWithoutUserInput = {
+    update: XOR<MasterUpdateWithoutUserInput, MasterUncheckedUpdateWithoutUserInput>
+    create: XOR<MasterCreateWithoutUserInput, MasterUncheckedCreateWithoutUserInput>
+    where?: MasterWhereInput
+  }
+
+  export type MasterUpdateToOneWithWhereWithoutUserInput = {
+    where?: MasterWhereInput
+    data: XOR<MasterUpdateWithoutUserInput, MasterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type MasterUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    encadrant?: EnseignantChercheurUpdateOneRequiredWithoutMastersNestedInput
+  }
+
+  export type MasterUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    encadrant_id?: StringFieldUpdateOperationsInput | string
+    annee_master?: IntFieldUpdateOperationsInput | number
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type EnseignantChercheurUpsertWithoutUserInput = {
+    update: XOR<EnseignantChercheurUpdateWithoutUserInput, EnseignantChercheurUncheckedUpdateWithoutUserInput>
+    create: XOR<EnseignantChercheurCreateWithoutUserInput, EnseignantChercheurUncheckedCreateWithoutUserInput>
+    where?: EnseignantChercheurWhereInput
+  }
+
+  export type EnseignantChercheurUpdateToOneWithWhereWithoutUserInput = {
+    where?: EnseignantChercheurWhereInput
+    data: XOR<EnseignantChercheurUpdateWithoutUserInput, EnseignantChercheurUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EnseignantChercheurUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    fonction?: StringFieldUpdateOperationsInput | string
+    grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
+    etablissement?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    doctorants?: DoctorantUpdateManyWithoutDirecteur_theseNestedInput
+    masters?: MasterUpdateManyWithoutEncadrantNestedInput
+    requestsMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
+  }
+
+  export type EnseignantChercheurUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+    fonction?: StringFieldUpdateOperationsInput | string
+    grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
+    etablissement?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    doctorants?: DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
+    masters?: MasterUncheckedUpdateManyWithoutEncadrantNestedInput
+    requestsMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
+  }
+
+  export type AdminUpsertWithoutUserInput = {
+    update: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
+    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutUserInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AdminUpdateWithoutUserInput = {
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdminUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nom?: StringFieldUpdateOperationsInput | string
+    prenom?: StringFieldUpdateOperationsInput | string
   }
 
   export type EnseignantChercheurCreateWithoutDoctorantsInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
-    requestDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
     masters?: MasterCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
+    user: UserCreateNestedOneWithoutEnseignantInput
   }
 
   export type EnseignantChercheurUncheckedCreateWithoutDoctorantsInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
-    requestDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
+    userId: string
     masters?: MasterUncheckedCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
   }
 
   export type EnseignantChercheurCreateOrConnectWithoutDoctorantsInput = {
@@ -15650,61 +16807,35 @@ export namespace Prisma {
     create: XOR<EnseignantChercheurCreateWithoutDoctorantsInput, EnseignantChercheurUncheckedCreateWithoutDoctorantsInput>
   }
 
-  export type SessionCreateWithoutDoctorantInput = {
+  export type UserCreateWithoutDoctorantInput = {
     id?: string
-    machine: string
-    createdAt: Date | string
-    master?: MasterCreateNestedOneWithoutSessions_activesInput
-    enseignant?: EnseignantChercheurCreateNestedOneWithoutSessions_activesInput
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    master?: MasterCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
   }
 
-  export type SessionUncheckedCreateWithoutDoctorantInput = {
+  export type UserUncheckedCreateWithoutDoctorantInput = {
     id?: string
-    machine: string
-    createdAt: Date | string
-    master_id?: string | null
-    enseignant_id?: string | null
-  }
-
-  export type SessionCreateOrConnectWithoutDoctorantInput = {
-    where: SessionWhereUniqueInput
-    create: XOR<SessionCreateWithoutDoctorantInput, SessionUncheckedCreateWithoutDoctorantInput>
-  }
-
-  export type SessionCreateManyDoctorantInputEnvelope = {
-    data: SessionCreateManyDoctorantInput | SessionCreateManyDoctorantInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type NotificationCreateWithoutDoctorantInput = {
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
+    email: string
+    password: string
+    role: $Enums.Role
     createdAt?: Date | string
-    admin?: AdminCreateNestedOneWithoutNotificationsInput
-    master?: MasterCreateNestedOneWithoutNotificationsInput
-    enseignant?: EnseignantChercheurCreateNestedOneWithoutNotificationsInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    master?: MasterUncheckedCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
   }
 
-  export type NotificationUncheckedCreateWithoutDoctorantInput = {
-    id?: number
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
-    createdAt?: Date | string
-    admin_id?: number | null
-    master_id?: string | null
-    enseignant_id?: string | null
-  }
-
-  export type NotificationCreateOrConnectWithoutDoctorantInput = {
-    where: NotificationWhereUniqueInput
-    create: XOR<NotificationCreateWithoutDoctorantInput, NotificationUncheckedCreateWithoutDoctorantInput>
-  }
-
-  export type NotificationCreateManyDoctorantInputEnvelope = {
-    data: NotificationCreateManyDoctorantInput | NotificationCreateManyDoctorantInput[]
-    skipDuplicates?: boolean
+  export type UserCreateOrConnectWithoutDoctorantInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDoctorantInput, UserUncheckedCreateWithoutDoctorantInput>
   }
 
   export type EnseignantChercheurUpsertWithoutDoctorantsInput = {
@@ -15722,211 +16853,165 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    requestDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
     masters?: MasterUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
+    user?: UserUpdateOneRequiredWithoutEnseignantNestedInput
   }
 
   export type EnseignantChercheurUncheckedUpdateWithoutDoctorantsInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    requestDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
+    userId?: StringFieldUpdateOperationsInput | string
     masters?: MasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUncheckedUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
   }
 
-  export type SessionUpsertWithWhereUniqueWithoutDoctorantInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutDoctorantInput, SessionUncheckedUpdateWithoutDoctorantInput>
-    create: XOR<SessionCreateWithoutDoctorantInput, SessionUncheckedCreateWithoutDoctorantInput>
+  export type UserUpsertWithoutDoctorantInput = {
+    update: XOR<UserUpdateWithoutDoctorantInput, UserUncheckedUpdateWithoutDoctorantInput>
+    create: XOR<UserCreateWithoutDoctorantInput, UserUncheckedCreateWithoutDoctorantInput>
+    where?: UserWhereInput
   }
 
-  export type SessionUpdateWithWhereUniqueWithoutDoctorantInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutDoctorantInput, SessionUncheckedUpdateWithoutDoctorantInput>
+  export type UserUpdateToOneWithWhereWithoutDoctorantInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDoctorantInput, UserUncheckedUpdateWithoutDoctorantInput>
   }
 
-  export type SessionUpdateManyWithWhereWithoutDoctorantInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutDoctorantInput>
+  export type UserUpdateWithoutDoctorantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    master?: MasterUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
   }
 
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: StringFilter<"Session"> | string
-    machine?: StringFilter<"Session"> | string
-    createdAt?: DateTimeFilter<"Session"> | Date | string
-    doctorant_id?: StringNullableFilter<"Session"> | string | null
-    master_id?: StringNullableFilter<"Session"> | string | null
-    enseignant_id?: StringNullableFilter<"Session"> | string | null
+  export type UserUncheckedUpdateWithoutDoctorantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    master?: MasterUncheckedUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
   }
 
-  export type NotificationUpsertWithWhereUniqueWithoutDoctorantInput = {
-    where: NotificationWhereUniqueInput
-    update: XOR<NotificationUpdateWithoutDoctorantInput, NotificationUncheckedUpdateWithoutDoctorantInput>
-    create: XOR<NotificationCreateWithoutDoctorantInput, NotificationUncheckedCreateWithoutDoctorantInput>
-  }
-
-  export type NotificationUpdateWithWhereUniqueWithoutDoctorantInput = {
-    where: NotificationWhereUniqueInput
-    data: XOR<NotificationUpdateWithoutDoctorantInput, NotificationUncheckedUpdateWithoutDoctorantInput>
-  }
-
-  export type NotificationUpdateManyWithWhereWithoutDoctorantInput = {
-    where: NotificationScalarWhereInput
-    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutDoctorantInput>
-  }
-
-  export type NotificationScalarWhereInput = {
-    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-    OR?: NotificationScalarWhereInput[]
-    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-    id?: IntFilter<"Notification"> | number
-    message?: StringFilter<"Notification"> | string
-    recipient?: StringFilter<"Notification"> | string
-    status?: EnumNotificationStatusFilter<"Notification"> | $Enums.NotificationStatus
-    createdAt?: DateTimeFilter<"Notification"> | Date | string
-    admin_id?: IntNullableFilter<"Notification"> | number | null
-    doctorant_id?: StringNullableFilter<"Notification"> | string | null
-    master_id?: StringNullableFilter<"Notification"> | string | null
-    enseignant_id?: StringNullableFilter<"Notification"> | string | null
-  }
-
-  export type EnseignantChercheurCreateWithoutRequestDoctorantInput = {
+  export type EnseignantChercheurCreateWithoutRequestsDoctorantInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
     doctorants?: DoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
     masters?: MasterCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
+    user: UserCreateNestedOneWithoutEnseignantInput
   }
 
-  export type EnseignantChercheurUncheckedCreateWithoutRequestDoctorantInput = {
+  export type EnseignantChercheurUncheckedCreateWithoutRequestsDoctorantInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
+    userId: string
     doctorants?: DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
     masters?: MasterUncheckedCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
   }
 
-  export type EnseignantChercheurCreateOrConnectWithoutRequestDoctorantInput = {
+  export type EnseignantChercheurCreateOrConnectWithoutRequestsDoctorantInput = {
     where: EnseignantChercheurWhereUniqueInput
-    create: XOR<EnseignantChercheurCreateWithoutRequestDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestDoctorantInput>
+    create: XOR<EnseignantChercheurCreateWithoutRequestsDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestsDoctorantInput>
   }
 
-  export type EnseignantChercheurUpsertWithoutRequestDoctorantInput = {
-    update: XOR<EnseignantChercheurUpdateWithoutRequestDoctorantInput, EnseignantChercheurUncheckedUpdateWithoutRequestDoctorantInput>
-    create: XOR<EnseignantChercheurCreateWithoutRequestDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestDoctorantInput>
+  export type EnseignantChercheurUpsertWithoutRequestsDoctorantInput = {
+    update: XOR<EnseignantChercheurUpdateWithoutRequestsDoctorantInput, EnseignantChercheurUncheckedUpdateWithoutRequestsDoctorantInput>
+    create: XOR<EnseignantChercheurCreateWithoutRequestsDoctorantInput, EnseignantChercheurUncheckedCreateWithoutRequestsDoctorantInput>
     where?: EnseignantChercheurWhereInput
   }
 
-  export type EnseignantChercheurUpdateToOneWithWhereWithoutRequestDoctorantInput = {
+  export type EnseignantChercheurUpdateToOneWithWhereWithoutRequestsDoctorantInput = {
     where?: EnseignantChercheurWhereInput
-    data: XOR<EnseignantChercheurUpdateWithoutRequestDoctorantInput, EnseignantChercheurUncheckedUpdateWithoutRequestDoctorantInput>
+    data: XOR<EnseignantChercheurUpdateWithoutRequestsDoctorantInput, EnseignantChercheurUncheckedUpdateWithoutRequestsDoctorantInput>
   }
 
-  export type EnseignantChercheurUpdateWithoutRequestDoctorantInput = {
+  export type EnseignantChercheurUpdateWithoutRequestsDoctorantInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     doctorants?: DoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
     masters?: MasterUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
+    user?: UserUpdateOneRequiredWithoutEnseignantNestedInput
   }
 
-  export type EnseignantChercheurUncheckedUpdateWithoutRequestDoctorantInput = {
+  export type EnseignantChercheurUncheckedUpdateWithoutRequestsDoctorantInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     doctorants?: DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
     masters?: MasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUncheckedUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
   }
 
   export type EnseignantChercheurCreateWithoutMastersInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
     doctorants?: DoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
+    user: UserCreateNestedOneWithoutEnseignantInput
   }
 
   export type EnseignantChercheurUncheckedCreateWithoutMastersInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
+    userId: string
     doctorants?: DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutEnseignantInput
+    requestsMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
+    requestsDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
   }
 
   export type EnseignantChercheurCreateOrConnectWithoutMastersInput = {
@@ -15934,61 +17019,35 @@ export namespace Prisma {
     create: XOR<EnseignantChercheurCreateWithoutMastersInput, EnseignantChercheurUncheckedCreateWithoutMastersInput>
   }
 
-  export type SessionCreateWithoutMasterInput = {
+  export type UserCreateWithoutMasterInput = {
     id?: string
-    machine: string
-    createdAt: Date | string
-    doctorant?: DoctorantCreateNestedOneWithoutSessions_activesInput
-    enseignant?: EnseignantChercheurCreateNestedOneWithoutSessions_activesInput
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
   }
 
-  export type SessionUncheckedCreateWithoutMasterInput = {
+  export type UserUncheckedCreateWithoutMasterInput = {
     id?: string
-    machine: string
-    createdAt: Date | string
-    doctorant_id?: string | null
-    enseignant_id?: string | null
-  }
-
-  export type SessionCreateOrConnectWithoutMasterInput = {
-    where: SessionWhereUniqueInput
-    create: XOR<SessionCreateWithoutMasterInput, SessionUncheckedCreateWithoutMasterInput>
-  }
-
-  export type SessionCreateManyMasterInputEnvelope = {
-    data: SessionCreateManyMasterInput | SessionCreateManyMasterInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type NotificationCreateWithoutMasterInput = {
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
+    email: string
+    password: string
+    role: $Enums.Role
     createdAt?: Date | string
-    admin?: AdminCreateNestedOneWithoutNotificationsInput
-    doctorant?: DoctorantCreateNestedOneWithoutNotificationsInput
-    enseignant?: EnseignantChercheurCreateNestedOneWithoutNotificationsInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
   }
 
-  export type NotificationUncheckedCreateWithoutMasterInput = {
-    id?: number
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
-    createdAt?: Date | string
-    admin_id?: number | null
-    doctorant_id?: string | null
-    enseignant_id?: string | null
-  }
-
-  export type NotificationCreateOrConnectWithoutMasterInput = {
-    where: NotificationWhereUniqueInput
-    create: XOR<NotificationCreateWithoutMasterInput, NotificationUncheckedCreateWithoutMasterInput>
-  }
-
-  export type NotificationCreateManyMasterInputEnvelope = {
-    data: NotificationCreateManyMasterInput | NotificationCreateManyMasterInput[]
-    skipDuplicates?: boolean
+  export type UserCreateOrConnectWithoutMasterInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMasterInput, UserUncheckedCreateWithoutMasterInput>
   }
 
   export type EnseignantChercheurUpsertWithoutMastersInput = {
@@ -16006,176 +17065,155 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     doctorants?: DoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
+    user?: UserUpdateOneRequiredWithoutEnseignantNestedInput
   }
 
   export type EnseignantChercheurUncheckedUpdateWithoutMastersInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     doctorants?: DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUncheckedUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutEnseignantNestedInput
+    requestsMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
+    requestsDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
   }
 
-  export type SessionUpsertWithWhereUniqueWithoutMasterInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutMasterInput, SessionUncheckedUpdateWithoutMasterInput>
-    create: XOR<SessionCreateWithoutMasterInput, SessionUncheckedCreateWithoutMasterInput>
+  export type UserUpsertWithoutMasterInput = {
+    update: XOR<UserUpdateWithoutMasterInput, UserUncheckedUpdateWithoutMasterInput>
+    create: XOR<UserCreateWithoutMasterInput, UserUncheckedCreateWithoutMasterInput>
+    where?: UserWhereInput
   }
 
-  export type SessionUpdateWithWhereUniqueWithoutMasterInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutMasterInput, SessionUncheckedUpdateWithoutMasterInput>
+  export type UserUpdateToOneWithWhereWithoutMasterInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMasterInput, UserUncheckedUpdateWithoutMasterInput>
   }
 
-  export type SessionUpdateManyWithWhereWithoutMasterInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutMasterInput>
+  export type UserUpdateWithoutMasterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
   }
 
-  export type NotificationUpsertWithWhereUniqueWithoutMasterInput = {
-    where: NotificationWhereUniqueInput
-    update: XOR<NotificationUpdateWithoutMasterInput, NotificationUncheckedUpdateWithoutMasterInput>
-    create: XOR<NotificationCreateWithoutMasterInput, NotificationUncheckedCreateWithoutMasterInput>
+  export type UserUncheckedUpdateWithoutMasterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
   }
 
-  export type NotificationUpdateWithWhereUniqueWithoutMasterInput = {
-    where: NotificationWhereUniqueInput
-    data: XOR<NotificationUpdateWithoutMasterInput, NotificationUncheckedUpdateWithoutMasterInput>
-  }
-
-  export type NotificationUpdateManyWithWhereWithoutMasterInput = {
-    where: NotificationScalarWhereInput
-    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutMasterInput>
-  }
-
-  export type EnseignantChercheurCreateWithoutRequestMasterInput = {
+  export type EnseignantChercheurCreateWithoutRequestsMasterInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
     doctorants?: DoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
     masters?: MasterCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationCreateNestedManyWithoutEnseignantInput
+    requestsDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
+    user: UserCreateNestedOneWithoutEnseignantInput
   }
 
-  export type EnseignantChercheurUncheckedCreateWithoutRequestMasterInput = {
+  export type EnseignantChercheurUncheckedCreateWithoutRequestsMasterInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     fonction: string
     grade: $Enums.Grade
     etablissement: string
-    password: string
     photo?: string | null
+    userId: string
     doctorants?: DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
     masters?: MasterUncheckedCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutEnseignantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutEnseignantInput
+    requestsDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
   }
 
-  export type EnseignantChercheurCreateOrConnectWithoutRequestMasterInput = {
+  export type EnseignantChercheurCreateOrConnectWithoutRequestsMasterInput = {
     where: EnseignantChercheurWhereUniqueInput
-    create: XOR<EnseignantChercheurCreateWithoutRequestMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestMasterInput>
+    create: XOR<EnseignantChercheurCreateWithoutRequestsMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestsMasterInput>
   }
 
-  export type EnseignantChercheurUpsertWithoutRequestMasterInput = {
-    update: XOR<EnseignantChercheurUpdateWithoutRequestMasterInput, EnseignantChercheurUncheckedUpdateWithoutRequestMasterInput>
-    create: XOR<EnseignantChercheurCreateWithoutRequestMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestMasterInput>
+  export type EnseignantChercheurUpsertWithoutRequestsMasterInput = {
+    update: XOR<EnseignantChercheurUpdateWithoutRequestsMasterInput, EnseignantChercheurUncheckedUpdateWithoutRequestsMasterInput>
+    create: XOR<EnseignantChercheurCreateWithoutRequestsMasterInput, EnseignantChercheurUncheckedCreateWithoutRequestsMasterInput>
     where?: EnseignantChercheurWhereInput
   }
 
-  export type EnseignantChercheurUpdateToOneWithWhereWithoutRequestMasterInput = {
+  export type EnseignantChercheurUpdateToOneWithWhereWithoutRequestsMasterInput = {
     where?: EnseignantChercheurWhereInput
-    data: XOR<EnseignantChercheurUpdateWithoutRequestMasterInput, EnseignantChercheurUncheckedUpdateWithoutRequestMasterInput>
+    data: XOR<EnseignantChercheurUpdateWithoutRequestsMasterInput, EnseignantChercheurUncheckedUpdateWithoutRequestsMasterInput>
   }
 
-  export type EnseignantChercheurUpdateWithoutRequestMasterInput = {
+  export type EnseignantChercheurUpdateWithoutRequestsMasterInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     doctorants?: DoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
     masters?: MasterUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUpdateManyWithoutEnseignantNestedInput
+    requestsDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
+    user?: UserUpdateOneRequiredWithoutEnseignantNestedInput
   }
 
-  export type EnseignantChercheurUncheckedUpdateWithoutRequestMasterInput = {
+  export type EnseignantChercheurUncheckedUpdateWithoutRequestsMasterInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     fonction?: StringFieldUpdateOperationsInput | string
     grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
     etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     doctorants?: DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
     masters?: MasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUncheckedUpdateManyWithoutEnseignantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutEnseignantNestedInput
+    requestsDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
   }
 
   export type DoctorantCreateWithoutDirecteur_theseInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
+    annee_these: number
     photo?: string | null
-    sessions_actives?: SessionCreateNestedManyWithoutDoctorantInput
-    notifications?: NotificationCreateNestedManyWithoutDoctorantInput
+    user: UserCreateNestedOneWithoutDoctorantInput
   }
 
   export type DoctorantUncheckedCreateWithoutDirecteur_theseInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
+    annee_these: number
     photo?: string | null
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutDoctorantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutDoctorantInput
+    userId: string
   }
 
   export type DoctorantCreateOrConnectWithoutDirecteur_theseInput = {
@@ -16188,39 +17226,33 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type RequestDoctorantCreateWithoutDirecteur_theseInput = {
+  export type MasterCreateWithoutEncadrantInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     dateInscription: Date | string
-    createdAt?: Date | string
-    status?: $Enums.RequestStatus
-    rejectionReason?: string | null
+    annee_master: number
     photo?: string | null
-    isConfirm?: boolean
+    user: UserCreateNestedOneWithoutMasterInput
   }
 
-  export type RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput = {
+  export type MasterUncheckedCreateWithoutEncadrantInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     dateInscription: Date | string
-    createdAt?: Date | string
-    status?: $Enums.RequestStatus
-    rejectionReason?: string | null
+    annee_master: number
     photo?: string | null
-    isConfirm?: boolean
+    userId: string
   }
 
-  export type RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput = {
-    where: RequestDoctorantWhereUniqueInput
-    create: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput>
+  export type MasterCreateOrConnectWithoutEncadrantInput = {
+    where: MasterWhereUniqueInput
+    create: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput>
   }
 
-  export type RequestDoctorantCreateManyDirecteur_theseInputEnvelope = {
-    data: RequestDoctorantCreateManyDirecteur_theseInput | RequestDoctorantCreateManyDirecteur_theseInput[]
+  export type MasterCreateManyEncadrantInputEnvelope = {
+    data: MasterCreateManyEncadrantInput | MasterCreateManyEncadrantInput[]
     skipDuplicates?: boolean
   }
 
@@ -16229,7 +17261,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_master: number
     createdAt?: Date | string
     status?: $Enums.RequestStatus
     rejectionReason?: string | null
@@ -16242,7 +17274,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_master: number
     createdAt?: Date | string
     status?: $Enums.RequestStatus
     rejectionReason?: string | null
@@ -16260,97 +17292,71 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type MasterCreateWithoutEncadrantInput = {
+  export type RequestDoctorantCreateWithoutDirecteur_theseInput = {
     id?: string
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_these: number
     createdAt?: Date | string
-    password: string
+    status?: $Enums.RequestStatus
+    rejectionReason?: string | null
     photo?: string | null
-    sessions_actives?: SessionCreateNestedManyWithoutMasterInput
-    notifications?: NotificationCreateNestedManyWithoutMasterInput
+    isConfirm?: boolean
   }
 
-  export type MasterUncheckedCreateWithoutEncadrantInput = {
+  export type RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput = {
     id?: string
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_these: number
     createdAt?: Date | string
-    password: string
+    status?: $Enums.RequestStatus
+    rejectionReason?: string | null
     photo?: string | null
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutMasterInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutMasterInput
+    isConfirm?: boolean
   }
 
-  export type MasterCreateOrConnectWithoutEncadrantInput = {
-    where: MasterWhereUniqueInput
-    create: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput>
+  export type RequestDoctorantCreateOrConnectWithoutDirecteur_theseInput = {
+    where: RequestDoctorantWhereUniqueInput
+    create: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput>
   }
 
-  export type MasterCreateManyEncadrantInputEnvelope = {
-    data: MasterCreateManyEncadrantInput | MasterCreateManyEncadrantInput[]
+  export type RequestDoctorantCreateManyDirecteur_theseInputEnvelope = {
+    data: RequestDoctorantCreateManyDirecteur_theseInput | RequestDoctorantCreateManyDirecteur_theseInput[]
     skipDuplicates?: boolean
   }
 
-  export type SessionCreateWithoutEnseignantInput = {
+  export type UserCreateWithoutEnseignantInput = {
     id?: string
-    machine: string
-    createdAt: Date | string
-    doctorant?: DoctorantCreateNestedOneWithoutSessions_activesInput
-    master?: MasterCreateNestedOneWithoutSessions_activesInput
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantCreateNestedOneWithoutUserInput
+    master?: MasterCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
   }
 
-  export type SessionUncheckedCreateWithoutEnseignantInput = {
+  export type UserUncheckedCreateWithoutEnseignantInput = {
     id?: string
-    machine: string
-    createdAt: Date | string
-    doctorant_id?: string | null
-    master_id?: string | null
-  }
-
-  export type SessionCreateOrConnectWithoutEnseignantInput = {
-    where: SessionWhereUniqueInput
-    create: XOR<SessionCreateWithoutEnseignantInput, SessionUncheckedCreateWithoutEnseignantInput>
-  }
-
-  export type SessionCreateManyEnseignantInputEnvelope = {
-    data: SessionCreateManyEnseignantInput | SessionCreateManyEnseignantInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type NotificationCreateWithoutEnseignantInput = {
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
+    email: string
+    password: string
+    role: $Enums.Role
     createdAt?: Date | string
-    admin?: AdminCreateNestedOneWithoutNotificationsInput
-    doctorant?: DoctorantCreateNestedOneWithoutNotificationsInput
-    master?: MasterCreateNestedOneWithoutNotificationsInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
+    master?: MasterUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
   }
 
-  export type NotificationUncheckedCreateWithoutEnseignantInput = {
-    id?: number
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
-    createdAt?: Date | string
-    admin_id?: number | null
-    doctorant_id?: string | null
-    master_id?: string | null
-  }
-
-  export type NotificationCreateOrConnectWithoutEnseignantInput = {
-    where: NotificationWhereUniqueInput
-    create: XOR<NotificationCreateWithoutEnseignantInput, NotificationUncheckedCreateWithoutEnseignantInput>
-  }
-
-  export type NotificationCreateManyEnseignantInputEnvelope = {
-    data: NotificationCreateManyEnseignantInput | NotificationCreateManyEnseignantInput[]
-    skipDuplicates?: boolean
+  export type UserCreateOrConnectWithoutEnseignantInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutEnseignantInput, UserUncheckedCreateWithoutEnseignantInput>
   }
 
   export type DoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput = {
@@ -16376,45 +17382,40 @@ export namespace Prisma {
     id?: StringFilter<"Doctorant"> | string
     nom?: StringFilter<"Doctorant"> | string
     prenom?: StringFilter<"Doctorant"> | string
-    email?: StringFilter<"Doctorant"> | string
-    dateInscription?: DateTimeFilter<"Doctorant"> | Date | string
-    createdAt?: DateTimeFilter<"Doctorant"> | Date | string
+    annee_these?: IntFilter<"Doctorant"> | number
     directeur_these_id?: StringFilter<"Doctorant"> | string
-    password?: StringFilter<"Doctorant"> | string
     photo?: StringNullableFilter<"Doctorant"> | string | null
+    userId?: StringFilter<"Doctorant"> | string
   }
 
-  export type RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput = {
-    where: RequestDoctorantWhereUniqueInput
-    update: XOR<RequestDoctorantUpdateWithoutDirecteur_theseInput, RequestDoctorantUncheckedUpdateWithoutDirecteur_theseInput>
-    create: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput>
+  export type MasterUpsertWithWhereUniqueWithoutEncadrantInput = {
+    where: MasterWhereUniqueInput
+    update: XOR<MasterUpdateWithoutEncadrantInput, MasterUncheckedUpdateWithoutEncadrantInput>
+    create: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput>
   }
 
-  export type RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput = {
-    where: RequestDoctorantWhereUniqueInput
-    data: XOR<RequestDoctorantUpdateWithoutDirecteur_theseInput, RequestDoctorantUncheckedUpdateWithoutDirecteur_theseInput>
+  export type MasterUpdateWithWhereUniqueWithoutEncadrantInput = {
+    where: MasterWhereUniqueInput
+    data: XOR<MasterUpdateWithoutEncadrantInput, MasterUncheckedUpdateWithoutEncadrantInput>
   }
 
-  export type RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput = {
-    where: RequestDoctorantScalarWhereInput
-    data: XOR<RequestDoctorantUpdateManyMutationInput, RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseInput>
+  export type MasterUpdateManyWithWhereWithoutEncadrantInput = {
+    where: MasterScalarWhereInput
+    data: XOR<MasterUpdateManyMutationInput, MasterUncheckedUpdateManyWithoutEncadrantInput>
   }
 
-  export type RequestDoctorantScalarWhereInput = {
-    AND?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
-    OR?: RequestDoctorantScalarWhereInput[]
-    NOT?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
-    id?: StringFilter<"RequestDoctorant"> | string
-    nom?: StringFilter<"RequestDoctorant"> | string
-    prenom?: StringFilter<"RequestDoctorant"> | string
-    email?: StringFilter<"RequestDoctorant"> | string
-    dateInscription?: DateTimeFilter<"RequestDoctorant"> | Date | string
-    createdAt?: DateTimeFilter<"RequestDoctorant"> | Date | string
-    directeur_these_id?: StringFilter<"RequestDoctorant"> | string
-    status?: EnumRequestStatusFilter<"RequestDoctorant"> | $Enums.RequestStatus
-    rejectionReason?: StringNullableFilter<"RequestDoctorant"> | string | null
-    photo?: StringNullableFilter<"RequestDoctorant"> | string | null
-    isConfirm?: BoolFilter<"RequestDoctorant"> | boolean
+  export type MasterScalarWhereInput = {
+    AND?: MasterScalarWhereInput | MasterScalarWhereInput[]
+    OR?: MasterScalarWhereInput[]
+    NOT?: MasterScalarWhereInput | MasterScalarWhereInput[]
+    id?: StringFilter<"Master"> | string
+    nom?: StringFilter<"Master"> | string
+    prenom?: StringFilter<"Master"> | string
+    dateInscription?: DateTimeFilter<"Master"> | Date | string
+    encadrant_id?: StringFilter<"Master"> | string
+    annee_master?: IntFilter<"Master"> | number
+    photo?: StringNullableFilter<"Master"> | string | null
+    userId?: StringFilter<"Master"> | string
   }
 
   export type RequestMasterUpsertWithWhereUniqueWithoutEncadrantInput = {
@@ -16441,7 +17442,7 @@ export namespace Prisma {
     nom?: StringFilter<"RequestMaster"> | string
     prenom?: StringFilter<"RequestMaster"> | string
     email?: StringFilter<"RequestMaster"> | string
-    dateInscription?: DateTimeFilter<"RequestMaster"> | Date | string
+    annee_master?: IntFilter<"RequestMaster"> | number
     createdAt?: DateTimeFilter<"RequestMaster"> | Date | string
     encadrant_id?: StringFilter<"RequestMaster"> | string
     status?: EnumRequestStatusFilter<"RequestMaster"> | $Enums.RequestStatus
@@ -16450,774 +17451,360 @@ export namespace Prisma {
     isConfirm?: BoolFilter<"RequestMaster"> | boolean
   }
 
-  export type MasterUpsertWithWhereUniqueWithoutEncadrantInput = {
-    where: MasterWhereUniqueInput
-    update: XOR<MasterUpdateWithoutEncadrantInput, MasterUncheckedUpdateWithoutEncadrantInput>
-    create: XOR<MasterCreateWithoutEncadrantInput, MasterUncheckedCreateWithoutEncadrantInput>
+  export type RequestDoctorantUpsertWithWhereUniqueWithoutDirecteur_theseInput = {
+    where: RequestDoctorantWhereUniqueInput
+    update: XOR<RequestDoctorantUpdateWithoutDirecteur_theseInput, RequestDoctorantUncheckedUpdateWithoutDirecteur_theseInput>
+    create: XOR<RequestDoctorantCreateWithoutDirecteur_theseInput, RequestDoctorantUncheckedCreateWithoutDirecteur_theseInput>
   }
 
-  export type MasterUpdateWithWhereUniqueWithoutEncadrantInput = {
-    where: MasterWhereUniqueInput
-    data: XOR<MasterUpdateWithoutEncadrantInput, MasterUncheckedUpdateWithoutEncadrantInput>
+  export type RequestDoctorantUpdateWithWhereUniqueWithoutDirecteur_theseInput = {
+    where: RequestDoctorantWhereUniqueInput
+    data: XOR<RequestDoctorantUpdateWithoutDirecteur_theseInput, RequestDoctorantUncheckedUpdateWithoutDirecteur_theseInput>
   }
 
-  export type MasterUpdateManyWithWhereWithoutEncadrantInput = {
-    where: MasterScalarWhereInput
-    data: XOR<MasterUpdateManyMutationInput, MasterUncheckedUpdateManyWithoutEncadrantInput>
+  export type RequestDoctorantUpdateManyWithWhereWithoutDirecteur_theseInput = {
+    where: RequestDoctorantScalarWhereInput
+    data: XOR<RequestDoctorantUpdateManyMutationInput, RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseInput>
   }
 
-  export type MasterScalarWhereInput = {
-    AND?: MasterScalarWhereInput | MasterScalarWhereInput[]
-    OR?: MasterScalarWhereInput[]
-    NOT?: MasterScalarWhereInput | MasterScalarWhereInput[]
-    id?: StringFilter<"Master"> | string
-    nom?: StringFilter<"Master"> | string
-    prenom?: StringFilter<"Master"> | string
-    email?: StringFilter<"Master"> | string
-    dateInscription?: DateTimeFilter<"Master"> | Date | string
-    createdAt?: DateTimeFilter<"Master"> | Date | string
-    encadrant_id?: StringFilter<"Master"> | string
-    password?: StringFilter<"Master"> | string
-    photo?: StringNullableFilter<"Master"> | string | null
+  export type RequestDoctorantScalarWhereInput = {
+    AND?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
+    OR?: RequestDoctorantScalarWhereInput[]
+    NOT?: RequestDoctorantScalarWhereInput | RequestDoctorantScalarWhereInput[]
+    id?: StringFilter<"RequestDoctorant"> | string
+    nom?: StringFilter<"RequestDoctorant"> | string
+    prenom?: StringFilter<"RequestDoctorant"> | string
+    email?: StringFilter<"RequestDoctorant"> | string
+    annee_these?: IntFilter<"RequestDoctorant"> | number
+    createdAt?: DateTimeFilter<"RequestDoctorant"> | Date | string
+    directeur_these_id?: StringFilter<"RequestDoctorant"> | string
+    status?: EnumRequestStatusFilter<"RequestDoctorant"> | $Enums.RequestStatus
+    rejectionReason?: StringNullableFilter<"RequestDoctorant"> | string | null
+    photo?: StringNullableFilter<"RequestDoctorant"> | string | null
+    isConfirm?: BoolFilter<"RequestDoctorant"> | boolean
   }
 
-  export type SessionUpsertWithWhereUniqueWithoutEnseignantInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutEnseignantInput, SessionUncheckedUpdateWithoutEnseignantInput>
-    create: XOR<SessionCreateWithoutEnseignantInput, SessionUncheckedCreateWithoutEnseignantInput>
+  export type UserUpsertWithoutEnseignantInput = {
+    update: XOR<UserUpdateWithoutEnseignantInput, UserUncheckedUpdateWithoutEnseignantInput>
+    create: XOR<UserCreateWithoutEnseignantInput, UserUncheckedCreateWithoutEnseignantInput>
+    where?: UserWhereInput
   }
 
-  export type SessionUpdateWithWhereUniqueWithoutEnseignantInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutEnseignantInput, SessionUncheckedUpdateWithoutEnseignantInput>
+  export type UserUpdateToOneWithWhereWithoutEnseignantInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutEnseignantInput, UserUncheckedUpdateWithoutEnseignantInput>
   }
 
-  export type SessionUpdateManyWithWhereWithoutEnseignantInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutEnseignantInput>
-  }
-
-  export type NotificationUpsertWithWhereUniqueWithoutEnseignantInput = {
-    where: NotificationWhereUniqueInput
-    update: XOR<NotificationUpdateWithoutEnseignantInput, NotificationUncheckedUpdateWithoutEnseignantInput>
-    create: XOR<NotificationCreateWithoutEnseignantInput, NotificationUncheckedCreateWithoutEnseignantInput>
-  }
-
-  export type NotificationUpdateWithWhereUniqueWithoutEnseignantInput = {
-    where: NotificationWhereUniqueInput
-    data: XOR<NotificationUpdateWithoutEnseignantInput, NotificationUncheckedUpdateWithoutEnseignantInput>
-  }
-
-  export type NotificationUpdateManyWithWhereWithoutEnseignantInput = {
-    where: NotificationScalarWhereInput
-    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutEnseignantInput>
-  }
-
-  export type DoctorantCreateWithoutSessions_activesInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
-    photo?: string | null
-    directeur_these: EnseignantChercheurCreateNestedOneWithoutDoctorantsInput
-    notifications?: NotificationCreateNestedManyWithoutDoctorantInput
-  }
-
-  export type DoctorantUncheckedCreateWithoutSessions_activesInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    directeur_these_id: string
-    password: string
-    photo?: string | null
-    notifications?: NotificationUncheckedCreateNestedManyWithoutDoctorantInput
-  }
-
-  export type DoctorantCreateOrConnectWithoutSessions_activesInput = {
-    where: DoctorantWhereUniqueInput
-    create: XOR<DoctorantCreateWithoutSessions_activesInput, DoctorantUncheckedCreateWithoutSessions_activesInput>
-  }
-
-  export type MasterCreateWithoutSessions_activesInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
-    photo?: string | null
-    encadrant: EnseignantChercheurCreateNestedOneWithoutMastersInput
-    notifications?: NotificationCreateNestedManyWithoutMasterInput
-  }
-
-  export type MasterUncheckedCreateWithoutSessions_activesInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    encadrant_id: string
-    password: string
-    photo?: string | null
-    notifications?: NotificationUncheckedCreateNestedManyWithoutMasterInput
-  }
-
-  export type MasterCreateOrConnectWithoutSessions_activesInput = {
-    where: MasterWhereUniqueInput
-    create: XOR<MasterCreateWithoutSessions_activesInput, MasterUncheckedCreateWithoutSessions_activesInput>
-  }
-
-  export type EnseignantChercheurCreateWithoutSessions_activesInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    fonction: string
-    grade: $Enums.Grade
-    etablissement: string
-    password: string
-    photo?: string | null
-    doctorants?: DoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
-    masters?: MasterCreateNestedManyWithoutEncadrantInput
-    notifications?: NotificationCreateNestedManyWithoutEnseignantInput
-  }
-
-  export type EnseignantChercheurUncheckedCreateWithoutSessions_activesInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    fonction: string
-    grade: $Enums.Grade
-    etablissement: string
-    password: string
-    photo?: string | null
-    doctorants?: DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
-    masters?: MasterUncheckedCreateNestedManyWithoutEncadrantInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutEnseignantInput
-  }
-
-  export type EnseignantChercheurCreateOrConnectWithoutSessions_activesInput = {
-    where: EnseignantChercheurWhereUniqueInput
-    create: XOR<EnseignantChercheurCreateWithoutSessions_activesInput, EnseignantChercheurUncheckedCreateWithoutSessions_activesInput>
-  }
-
-  export type DoctorantUpsertWithoutSessions_activesInput = {
-    update: XOR<DoctorantUpdateWithoutSessions_activesInput, DoctorantUncheckedUpdateWithoutSessions_activesInput>
-    create: XOR<DoctorantCreateWithoutSessions_activesInput, DoctorantUncheckedCreateWithoutSessions_activesInput>
-    where?: DoctorantWhereInput
-  }
-
-  export type DoctorantUpdateToOneWithWhereWithoutSessions_activesInput = {
-    where?: DoctorantWhereInput
-    data: XOR<DoctorantUpdateWithoutSessions_activesInput, DoctorantUncheckedUpdateWithoutSessions_activesInput>
-  }
-
-  export type DoctorantUpdateWithoutSessions_activesInput = {
+  export type UserUpdateWithoutEnseignantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    directeur_these?: EnseignantChercheurUpdateOneRequiredWithoutDoctorantsNestedInput
-    notifications?: NotificationUpdateManyWithoutDoctorantNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUpdateOneWithoutUserNestedInput
+    master?: MasterUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
   }
 
-  export type DoctorantUncheckedUpdateWithoutSessions_activesInput = {
+  export type UserUncheckedUpdateWithoutEnseignantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    directeur_these_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    notifications?: NotificationUncheckedUpdateManyWithoutDoctorantNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
+    master?: MasterUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
   }
 
-  export type MasterUpsertWithoutSessions_activesInput = {
-    update: XOR<MasterUpdateWithoutSessions_activesInput, MasterUncheckedUpdateWithoutSessions_activesInput>
-    create: XOR<MasterCreateWithoutSessions_activesInput, MasterUncheckedCreateWithoutSessions_activesInput>
-    where?: MasterWhereInput
-  }
-
-  export type MasterUpdateToOneWithWhereWithoutSessions_activesInput = {
-    where?: MasterWhereInput
-    data: XOR<MasterUpdateWithoutSessions_activesInput, MasterUncheckedUpdateWithoutSessions_activesInput>
-  }
-
-  export type MasterUpdateWithoutSessions_activesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    encadrant?: EnseignantChercheurUpdateOneRequiredWithoutMastersNestedInput
-    notifications?: NotificationUpdateManyWithoutMasterNestedInput
-  }
-
-  export type MasterUncheckedUpdateWithoutSessions_activesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    encadrant_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    notifications?: NotificationUncheckedUpdateManyWithoutMasterNestedInput
-  }
-
-  export type EnseignantChercheurUpsertWithoutSessions_activesInput = {
-    update: XOR<EnseignantChercheurUpdateWithoutSessions_activesInput, EnseignantChercheurUncheckedUpdateWithoutSessions_activesInput>
-    create: XOR<EnseignantChercheurCreateWithoutSessions_activesInput, EnseignantChercheurUncheckedCreateWithoutSessions_activesInput>
-    where?: EnseignantChercheurWhereInput
-  }
-
-  export type EnseignantChercheurUpdateToOneWithWhereWithoutSessions_activesInput = {
-    where?: EnseignantChercheurWhereInput
-    data: XOR<EnseignantChercheurUpdateWithoutSessions_activesInput, EnseignantChercheurUncheckedUpdateWithoutSessions_activesInput>
-  }
-
-  export type EnseignantChercheurUpdateWithoutSessions_activesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fonction?: StringFieldUpdateOperationsInput | string
-    grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
-    etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    doctorants?: DoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
-    masters?: MasterUpdateManyWithoutEncadrantNestedInput
-    notifications?: NotificationUpdateManyWithoutEnseignantNestedInput
-  }
-
-  export type EnseignantChercheurUncheckedUpdateWithoutSessions_activesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fonction?: StringFieldUpdateOperationsInput | string
-    grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
-    etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    doctorants?: DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    masters?: MasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutEnseignantNestedInput
-  }
-
-  export type NotificationCreateWithoutAdminInput = {
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
+  export type UserCreateWithoutAdminInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
     createdAt?: Date | string
-    doctorant?: DoctorantCreateNestedOneWithoutNotificationsInput
-    master?: MasterCreateNestedOneWithoutNotificationsInput
-    enseignant?: EnseignantChercheurCreateNestedOneWithoutNotificationsInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantCreateNestedOneWithoutUserInput
+    master?: MasterCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurCreateNestedOneWithoutUserInput
   }
 
-  export type NotificationUncheckedCreateWithoutAdminInput = {
-    id?: number
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
+  export type UserUncheckedCreateWithoutAdminInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
     createdAt?: Date | string
-    doctorant_id?: string | null
-    master_id?: string | null
-    enseignant_id?: string | null
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
+    master?: MasterUncheckedCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurUncheckedCreateNestedOneWithoutUserInput
   }
 
-  export type NotificationCreateOrConnectWithoutAdminInput = {
-    where: NotificationWhereUniqueInput
-    create: XOR<NotificationCreateWithoutAdminInput, NotificationUncheckedCreateWithoutAdminInput>
+  export type UserCreateOrConnectWithoutAdminInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
   }
 
-  export type NotificationCreateManyAdminInputEnvelope = {
-    data: NotificationCreateManyAdminInput | NotificationCreateManyAdminInput[]
-    skipDuplicates?: boolean
+  export type UserUpsertWithoutAdminInput = {
+    update: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
+    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    where?: UserWhereInput
   }
 
-  export type NotificationUpsertWithWhereUniqueWithoutAdminInput = {
-    where: NotificationWhereUniqueInput
-    update: XOR<NotificationUpdateWithoutAdminInput, NotificationUncheckedUpdateWithoutAdminInput>
-    create: XOR<NotificationCreateWithoutAdminInput, NotificationUncheckedCreateWithoutAdminInput>
+  export type UserUpdateToOneWithWhereWithoutAdminInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
   }
 
-  export type NotificationUpdateWithWhereUniqueWithoutAdminInput = {
-    where: NotificationWhereUniqueInput
-    data: XOR<NotificationUpdateWithoutAdminInput, NotificationUncheckedUpdateWithoutAdminInput>
-  }
-
-  export type NotificationUpdateManyWithWhereWithoutAdminInput = {
-    where: NotificationScalarWhereInput
-    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutAdminInput>
-  }
-
-  export type AdminCreateWithoutNotificationsInput = {
-    nom: string
-    email: string
-    prenom: string
-    password: string
-  }
-
-  export type AdminUncheckedCreateWithoutNotificationsInput = {
-    id?: number
-    nom: string
-    email: string
-    prenom: string
-    password: string
-  }
-
-  export type AdminCreateOrConnectWithoutNotificationsInput = {
-    where: AdminWhereUniqueInput
-    create: XOR<AdminCreateWithoutNotificationsInput, AdminUncheckedCreateWithoutNotificationsInput>
-  }
-
-  export type DoctorantCreateWithoutNotificationsInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
-    photo?: string | null
-    directeur_these: EnseignantChercheurCreateNestedOneWithoutDoctorantsInput
-    sessions_actives?: SessionCreateNestedManyWithoutDoctorantInput
-  }
-
-  export type DoctorantUncheckedCreateWithoutNotificationsInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    directeur_these_id: string
-    password: string
-    photo?: string | null
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutDoctorantInput
-  }
-
-  export type DoctorantCreateOrConnectWithoutNotificationsInput = {
-    where: DoctorantWhereUniqueInput
-    create: XOR<DoctorantCreateWithoutNotificationsInput, DoctorantUncheckedCreateWithoutNotificationsInput>
-  }
-
-  export type MasterCreateWithoutNotificationsInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
-    photo?: string | null
-    encadrant: EnseignantChercheurCreateNestedOneWithoutMastersInput
-    sessions_actives?: SessionCreateNestedManyWithoutMasterInput
-  }
-
-  export type MasterUncheckedCreateWithoutNotificationsInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    encadrant_id: string
-    password: string
-    photo?: string | null
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutMasterInput
-  }
-
-  export type MasterCreateOrConnectWithoutNotificationsInput = {
-    where: MasterWhereUniqueInput
-    create: XOR<MasterCreateWithoutNotificationsInput, MasterUncheckedCreateWithoutNotificationsInput>
-  }
-
-  export type EnseignantChercheurCreateWithoutNotificationsInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    fonction: string
-    grade: $Enums.Grade
-    etablissement: string
-    password: string
-    photo?: string | null
-    doctorants?: DoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterCreateNestedManyWithoutEncadrantInput
-    masters?: MasterCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionCreateNestedManyWithoutEnseignantInput
-  }
-
-  export type EnseignantChercheurUncheckedCreateWithoutNotificationsInput = {
-    id?: string
-    nom: string
-    prenom: string
-    email: string
-    fonction: string
-    grade: $Enums.Grade
-    etablissement: string
-    password: string
-    photo?: string | null
-    doctorants?: DoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestDoctorant?: RequestDoctorantUncheckedCreateNestedManyWithoutDirecteur_theseInput
-    requestMaster?: RequestMasterUncheckedCreateNestedManyWithoutEncadrantInput
-    masters?: MasterUncheckedCreateNestedManyWithoutEncadrantInput
-    sessions_actives?: SessionUncheckedCreateNestedManyWithoutEnseignantInput
-  }
-
-  export type EnseignantChercheurCreateOrConnectWithoutNotificationsInput = {
-    where: EnseignantChercheurWhereUniqueInput
-    create: XOR<EnseignantChercheurCreateWithoutNotificationsInput, EnseignantChercheurUncheckedCreateWithoutNotificationsInput>
-  }
-
-  export type AdminUpsertWithoutNotificationsInput = {
-    update: XOR<AdminUpdateWithoutNotificationsInput, AdminUncheckedUpdateWithoutNotificationsInput>
-    create: XOR<AdminCreateWithoutNotificationsInput, AdminUncheckedCreateWithoutNotificationsInput>
-    where?: AdminWhereInput
-  }
-
-  export type AdminUpdateToOneWithWhereWithoutNotificationsInput = {
-    where?: AdminWhereInput
-    data: XOR<AdminUpdateWithoutNotificationsInput, AdminUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type AdminUpdateWithoutNotificationsInput = {
-    nom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdminUncheckedUpdateWithoutNotificationsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type DoctorantUpsertWithoutNotificationsInput = {
-    update: XOR<DoctorantUpdateWithoutNotificationsInput, DoctorantUncheckedUpdateWithoutNotificationsInput>
-    create: XOR<DoctorantCreateWithoutNotificationsInput, DoctorantUncheckedCreateWithoutNotificationsInput>
-    where?: DoctorantWhereInput
-  }
-
-  export type DoctorantUpdateToOneWithWhereWithoutNotificationsInput = {
-    where?: DoctorantWhereInput
-    data: XOR<DoctorantUpdateWithoutNotificationsInput, DoctorantUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type DoctorantUpdateWithoutNotificationsInput = {
+  export type UserUpdateWithoutAdminInput = {
     id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    directeur_these?: EnseignantChercheurUpdateOneRequiredWithoutDoctorantsNestedInput
-    sessions_actives?: SessionUpdateManyWithoutDoctorantNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUpdateOneWithoutUserNestedInput
+    master?: MasterUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUpdateOneWithoutUserNestedInput
   }
 
-  export type DoctorantUncheckedUpdateWithoutNotificationsInput = {
+  export type UserUncheckedUpdateWithoutAdminInput = {
     id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    directeur_these_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUncheckedUpdateManyWithoutDoctorantNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
+    master?: MasterUncheckedUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUncheckedUpdateOneWithoutUserNestedInput
   }
 
-  export type MasterUpsertWithoutNotificationsInput = {
-    update: XOR<MasterUpdateWithoutNotificationsInput, MasterUncheckedUpdateWithoutNotificationsInput>
-    create: XOR<MasterCreateWithoutNotificationsInput, MasterUncheckedCreateWithoutNotificationsInput>
-    where?: MasterWhereInput
-  }
-
-  export type MasterUpdateToOneWithWhereWithoutNotificationsInput = {
-    where?: MasterWhereInput
-    data: XOR<MasterUpdateWithoutNotificationsInput, MasterUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type MasterUpdateWithoutNotificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    encadrant?: EnseignantChercheurUpdateOneRequiredWithoutMastersNestedInput
-    sessions_actives?: SessionUpdateManyWithoutMasterNestedInput
-  }
-
-  export type MasterUncheckedUpdateWithoutNotificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    encadrant_id?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUncheckedUpdateManyWithoutMasterNestedInput
-  }
-
-  export type EnseignantChercheurUpsertWithoutNotificationsInput = {
-    update: XOR<EnseignantChercheurUpdateWithoutNotificationsInput, EnseignantChercheurUncheckedUpdateWithoutNotificationsInput>
-    create: XOR<EnseignantChercheurCreateWithoutNotificationsInput, EnseignantChercheurUncheckedCreateWithoutNotificationsInput>
-    where?: EnseignantChercheurWhereInput
-  }
-
-  export type EnseignantChercheurUpdateToOneWithWhereWithoutNotificationsInput = {
-    where?: EnseignantChercheurWhereInput
-    data: XOR<EnseignantChercheurUpdateWithoutNotificationsInput, EnseignantChercheurUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type EnseignantChercheurUpdateWithoutNotificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fonction?: StringFieldUpdateOperationsInput | string
-    grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
-    etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    doctorants?: DoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUpdateManyWithoutEncadrantNestedInput
-    masters?: MasterUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUpdateManyWithoutEnseignantNestedInput
-  }
-
-  export type EnseignantChercheurUncheckedUpdateWithoutNotificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nom?: StringFieldUpdateOperationsInput | string
-    prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fonction?: StringFieldUpdateOperationsInput | string
-    grade?: EnumGradeFieldUpdateOperationsInput | $Enums.Grade
-    etablissement?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    doctorants?: DoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestDoctorant?: RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseNestedInput
-    requestMaster?: RequestMasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    masters?: MasterUncheckedUpdateManyWithoutEncadrantNestedInput
-    sessions_actives?: SessionUncheckedUpdateManyWithoutEnseignantNestedInput
-  }
-
-  export type SessionCreateManyDoctorantInput = {
+  export type UserCreateWithoutSessionsInput = {
     id?: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantCreateNestedOneWithoutUserInput
+    master?: MasterCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSessionsInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
+    master?: MasterUncheckedCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSessionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
+  }
+
+  export type UserUpsertWithoutSessionsInput = {
+    update: XOR<UserUpdateWithoutSessionsInput, UserUncheckedUpdateWithoutSessionsInput>
+    create: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSessionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSessionsInput, UserUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type UserUpdateWithoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUpdateOneWithoutUserNestedInput
+    master?: MasterUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
+    master?: MasterUncheckedUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantCreateNestedOneWithoutUserInput
+    master?: MasterCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    password: string
+    role: $Enums.Role
+    createdAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
+    master?: MasterUncheckedCreateNestedOneWithoutUserInput
+    enseignant?: EnseignantChercheurUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutNotificationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type UserUpsertWithoutNotificationsInput = {
+    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type UserUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUpdateOneWithoutUserNestedInput
+    master?: MasterUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
+    master?: MasterUncheckedUpdateOneWithoutUserNestedInput
+    enseignant?: EnseignantChercheurUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type SessionCreateManyUserInput = {
+    id?: string
+    accessToken: string
+    refreshToken: string
     machine: string
-    createdAt: Date | string
-    master_id?: string | null
-    enseignant_id?: string | null
+    createdAt?: Date | string
   }
 
-  export type NotificationCreateManyDoctorantInput = {
+  export type NotificationCreateManyUserInput = {
     id?: number
     message: string
     recipient: string
     status?: $Enums.NotificationStatus
     createdAt?: Date | string
-    admin_id?: number | null
-    master_id?: string | null
-    enseignant_id?: string | null
   }
 
-  export type SessionUpdateWithoutDoctorantInput = {
+  export type SessionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accessToken?: StringFieldUpdateOperationsInput | string
+    refreshToken?: StringFieldUpdateOperationsInput | string
     machine?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    master?: MasterUpdateOneWithoutSessions_activesNestedInput
-    enseignant?: EnseignantChercheurUpdateOneWithoutSessions_activesNestedInput
   }
 
-  export type SessionUncheckedUpdateWithoutDoctorantInput = {
+  export type SessionUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accessToken?: StringFieldUpdateOperationsInput | string
+    refreshToken?: StringFieldUpdateOperationsInput | string
     machine?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type SessionUncheckedUpdateManyWithoutDoctorantInput = {
+  export type SessionUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accessToken?: StringFieldUpdateOperationsInput | string
+    refreshToken?: StringFieldUpdateOperationsInput | string
     machine?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type NotificationUpdateWithoutDoctorantInput = {
+  export type NotificationUpdateWithoutUserInput = {
     message?: StringFieldUpdateOperationsInput | string
     recipient?: StringFieldUpdateOperationsInput | string
     status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin?: AdminUpdateOneWithoutNotificationsNestedInput
-    master?: MasterUpdateOneWithoutNotificationsNestedInput
-    enseignant?: EnseignantChercheurUpdateOneWithoutNotificationsNestedInput
   }
 
-  export type NotificationUncheckedUpdateWithoutDoctorantInput = {
+  export type NotificationUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
     recipient?: StringFieldUpdateOperationsInput | string
     status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type NotificationUncheckedUpdateManyWithoutDoctorantInput = {
+  export type NotificationUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
     recipient?: StringFieldUpdateOperationsInput | string
     status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type SessionCreateManyMasterInput = {
-    id?: string
-    machine: string
-    createdAt: Date | string
-    doctorant_id?: string | null
-    enseignant_id?: string | null
-  }
-
-  export type NotificationCreateManyMasterInput = {
-    id?: number
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
-    createdAt?: Date | string
-    admin_id?: number | null
-    doctorant_id?: string | null
-    enseignant_id?: string | null
-  }
-
-  export type SessionUpdateWithoutMasterInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    machine?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant?: DoctorantUpdateOneWithoutSessions_activesNestedInput
-    enseignant?: EnseignantChercheurUpdateOneWithoutSessions_activesNestedInput
-  }
-
-  export type SessionUncheckedUpdateWithoutMasterInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    machine?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type SessionUncheckedUpdateManyWithoutMasterInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    machine?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type NotificationUpdateWithoutMasterInput = {
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin?: AdminUpdateOneWithoutNotificationsNestedInput
-    doctorant?: DoctorantUpdateOneWithoutNotificationsNestedInput
-    enseignant?: EnseignantChercheurUpdateOneWithoutNotificationsNestedInput
-  }
-
-  export type NotificationUncheckedUpdateWithoutMasterInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type NotificationUncheckedUpdateManyWithoutMasterInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DoctorantCreateManyDirecteur_theseInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
-    dateInscription: Date | string
-    createdAt?: Date | string
-    password: string
+    annee_these: number
     photo?: string | null
+    userId: string
   }
 
-  export type RequestDoctorantCreateManyDirecteur_theseInput = {
+  export type MasterCreateManyEncadrantInput = {
     id?: string
     nom: string
     prenom: string
-    email: string
     dateInscription: Date | string
-    createdAt?: Date | string
-    status?: $Enums.RequestStatus
-    rejectionReason?: string | null
+    annee_master: number
     photo?: string | null
-    isConfirm?: boolean
+    userId: string
   }
 
   export type RequestMasterCreateManyEncadrantInput = {
@@ -17225,7 +17812,7 @@ export namespace Prisma {
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_master: number
     createdAt?: Date | string
     status?: $Enums.RequestStatus
     rejectionReason?: string | null
@@ -17233,110 +17820,74 @@ export namespace Prisma {
     isConfirm?: boolean
   }
 
-  export type MasterCreateManyEncadrantInput = {
+  export type RequestDoctorantCreateManyDirecteur_theseInput = {
     id?: string
     nom: string
     prenom: string
     email: string
-    dateInscription: Date | string
+    annee_these: number
     createdAt?: Date | string
-    password: string
+    status?: $Enums.RequestStatus
+    rejectionReason?: string | null
     photo?: string | null
-  }
-
-  export type SessionCreateManyEnseignantInput = {
-    id?: string
-    machine: string
-    createdAt: Date | string
-    doctorant_id?: string | null
-    master_id?: string | null
-  }
-
-  export type NotificationCreateManyEnseignantInput = {
-    id?: number
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
-    createdAt?: Date | string
-    admin_id?: number | null
-    doctorant_id?: string | null
-    master_id?: string | null
+    isConfirm?: boolean
   }
 
   export type DoctorantUpdateWithoutDirecteur_theseInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUpdateManyWithoutDoctorantNestedInput
-    notifications?: NotificationUpdateManyWithoutDoctorantNestedInput
+    user?: UserUpdateOneRequiredWithoutDoctorantNestedInput
   }
 
   export type DoctorantUncheckedUpdateWithoutDirecteur_theseInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUncheckedUpdateManyWithoutDoctorantNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutDoctorantNestedInput
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type DoctorantUncheckedUpdateManyWithoutDirecteur_theseInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type RequestDoctorantUpdateWithoutDirecteur_theseInput = {
+  export type MasterUpdateWithoutEncadrantInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    isConfirm?: BoolFieldUpdateOperationsInput | boolean
+    user?: UserUpdateOneRequiredWithoutMasterNestedInput
   }
 
-  export type RequestDoctorantUncheckedUpdateWithoutDirecteur_theseInput = {
+  export type MasterUncheckedUpdateWithoutEncadrantInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    isConfirm?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseInput = {
+  export type MasterUncheckedUpdateManyWithoutEncadrantInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    isConfirm?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type RequestMasterUpdateWithoutEncadrantInput = {
@@ -17344,7 +17895,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17357,7 +17908,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17370,7 +17921,7 @@ export namespace Prisma {
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_master?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17378,140 +17929,43 @@ export namespace Prisma {
     isConfirm?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type MasterUpdateWithoutEncadrantInput = {
+  export type RequestDoctorantUpdateWithoutDirecteur_theseInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUpdateManyWithoutMasterNestedInput
-    notifications?: NotificationUpdateManyWithoutMasterNestedInput
+    isConfirm?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type MasterUncheckedUpdateWithoutEncadrantInput = {
+  export type RequestDoctorantUncheckedUpdateWithoutDirecteur_theseInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions_actives?: SessionUncheckedUpdateManyWithoutMasterNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutMasterNestedInput
+    isConfirm?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type MasterUncheckedUpdateManyWithoutEncadrantInput = {
+  export type RequestDoctorantUncheckedUpdateManyWithoutDirecteur_theseInput = {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
+    annee_these?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    password?: StringFieldUpdateOperationsInput | string
+    status?: EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type SessionUpdateWithoutEnseignantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    machine?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant?: DoctorantUpdateOneWithoutSessions_activesNestedInput
-    master?: MasterUpdateOneWithoutSessions_activesNestedInput
-  }
-
-  export type SessionUncheckedUpdateWithoutEnseignantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    machine?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type SessionUncheckedUpdateManyWithoutEnseignantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    machine?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type NotificationUpdateWithoutEnseignantInput = {
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin?: AdminUpdateOneWithoutNotificationsNestedInput
-    doctorant?: DoctorantUpdateOneWithoutNotificationsNestedInput
-    master?: MasterUpdateOneWithoutNotificationsNestedInput
-  }
-
-  export type NotificationUncheckedUpdateWithoutEnseignantInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type NotificationUncheckedUpdateManyWithoutEnseignantInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type NotificationCreateManyAdminInput = {
-    id?: number
-    message: string
-    recipient: string
-    status?: $Enums.NotificationStatus
-    createdAt?: Date | string
-    doctorant_id?: string | null
-    master_id?: string | null
-    enseignant_id?: string | null
-  }
-
-  export type NotificationUpdateWithoutAdminInput = {
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant?: DoctorantUpdateOneWithoutNotificationsNestedInput
-    master?: MasterUpdateOneWithoutNotificationsNestedInput
-    enseignant?: EnseignantChercheurUpdateOneWithoutNotificationsNestedInput
-  }
-
-  export type NotificationUncheckedUpdateWithoutAdminInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type NotificationUncheckedUpdateManyWithoutAdminInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    message?: StringFieldUpdateOperationsInput | string
-    recipient?: StringFieldUpdateOperationsInput | string
-    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorant_id?: NullableStringFieldUpdateOperationsInput | string | null
-    master_id?: NullableStringFieldUpdateOperationsInput | string | null
-    enseignant_id?: NullableStringFieldUpdateOperationsInput | string | null
+    isConfirm?: BoolFieldUpdateOperationsInput | boolean
   }
 
 
