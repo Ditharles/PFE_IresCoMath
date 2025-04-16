@@ -9,13 +9,20 @@ Le projet contient un script de seed pour initialiser votre base de données ave
 
 ### Prérequis
 
-Assurez-vous d'avoir configuré votre fichier `.env` avec la variable d'environnement `DATABASE_URL` pointant vers votre base de données PostgreSQL.
+Assurez-vous d'avoir configuré votre fichier `.env` avec la variable d'environnement `DATABASE_URL` pointant vers votre base de données PostgreSQL et autre variables .
 
 Exemple:
 
 ```
-DATABASE_URL="postgresql://username:password@localhost:5432/irescomath?schema=public"
+DATABASE_URL="postgresql://username:password@localhost:port/name?schema=public"
 ```
+
+`JWT_SECRET_KEY`
+
+`JWT_REFRESH_SECRET_KEY`
+
+`EMAIL_USER`
+`EMAIL_PASS`
 
 ### Étapes d'initialisation
 
