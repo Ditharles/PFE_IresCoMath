@@ -1,46 +1,61 @@
 import jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { PrismaClient } from "../../generated/prisma";
 
-export const verifyToken = (
+const prisma = new PrismaClient();
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
+export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { token } = req.headers;
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ message: "Token manquant" });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res
+      .status(401)
+      .json({ message: "Token d'authentification manquant ou mal formaté" });
   }
-  console.log(token);
-  const possibleRole = ["enseignant", "admin", "doctorant", "master"];
+
+  const accessToken = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY!);
-    console.log(decoded);
-    (req as Request & { user: { id: string; role: string } }).user =
-      decoded as { id: string; role: string };
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET_KEY!) as {
+      token: string;
+    };
 
-    console.log(
-      (req as Request & { user: { id: string; role: string } }).user.role
-    );
+    const session = await prisma.session.findFirst({
+      where: {
+        accessToken: decoded.token,
+      },
+      include: {
+        user: true,
+      },
+    });
 
-    if (
-      !possibleRole.includes(
-        (req as Request & { user: { id: string; role: string } }).user.role
-      )
-    ) {
-      return res.status(403).json({ message: "Unauthorized" });
+    if (!session) {
+      return res.status(401).json({ message: "Session non trouvée" });
     }
 
+    req.user = session.user;
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
-      res.status(401).json({ message: "Token expiré" });
+      return res.status(401).json({ message: "Token expiré" });
     } else if (error instanceof JsonWebTokenError) {
-      res.status(401).json({ message: "Token invalide" });
+      return res.status(401).json({ message: "Token invalide" });
     } else {
       console.error("Erreur de vérification du token:", error);
-      res.status(400).json({ message: "Token non valide" });
+      return res
+        .status(500)
+        .json({ message: "Erreur serveur lors de l'authentification" });
     }
   }
 };

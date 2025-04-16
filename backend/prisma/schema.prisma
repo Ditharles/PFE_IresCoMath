@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output = "../generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -8,19 +8,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String    @id @default(uuid()) @unique
+  email         String    @unique
+  password      String
+  role          Role
+  sessions      Session[]
+  notifications Notification[]
+  doctorant     Doctorant?
+  master        Master?
+  enseignant    EnseignantChercheur?
+  admin         Admin?
+  createdAt     DateTime  @default(now())
+
+  /// Index pour améliorer les performances des requêtes
+  @@index([email])
+}
+
 model Doctorant {
   id                 String            @id @default(uuid()) @unique
   nom                String
   prenom             String
-  email              String            @unique
-  dateInscription    DateTime
-  createdAt          DateTime         @default(now())
+ annee_these Int
   directeur_these    EnseignantChercheur @relation(fields: [directeur_these_id], references: [id])
   directeur_these_id String
-  sessions_actives   Session[]
-  password           String
   photo              String?
-  notifications      Notification[]
+  user               User              @relation(fields: [userId], references: [id])
+  userId             String            @unique
+
+  /// Index pour améliorer les performances des requêtes
+  @@index([userId])
 }
 
 model RequestDoctorant {
@@ -28,30 +45,33 @@ model RequestDoctorant {
   nom                String
   prenom             String
   email              String            @unique
-  dateInscription    DateTime
-  createdAt          DateTime         @default(now())
+  annee_these Int
+  createdAt          DateTime          @default(now())
   directeur_these    EnseignantChercheur @relation(fields: [directeur_these_id], references: [id])
   directeur_these_id String
   status             RequestStatus     @default(PENDING)
   rejectionReason    String?
   photo              String?
-  isConfirm Boolean @default(false)
+  isConfirm          Boolean           @default(false)
 
+  /// Index pour améliorer les performances des requêtes
+  @@index([email])
 }
 
 model Master {
   id                 String            @id @default(uuid()) @unique
   nom                String
   prenom             String
-  email              String            @unique
   dateInscription    DateTime
-  createdAt          DateTime         @default(now())
   encadrant          EnseignantChercheur @relation(fields: [encadrant_id], references: [id])
   encadrant_id       String
-  sessions_actives   Session[]
-  password           String
+annee_master Int
   photo              String?
-  notifications      Notification[]
+  user               User              @relation(fields: [userId], references: [id])
+  userId             String            @unique
+
+  /// Index pour améliorer les performances des requêtes
+  @@index([userId])
 }
 
 model RequestMaster {
@@ -59,33 +79,36 @@ model RequestMaster {
   nom                String
   prenom             String
   email              String            @unique
-  dateInscription    DateTime
-  createdAt          DateTime         @default(now())
+  annee_master Int
+  createdAt          DateTime          @default(now())
   encadrant          EnseignantChercheur @relation(fields: [encadrant_id], references: [id])
   encadrant_id       String
   status             RequestStatus     @default(PENDING)
   rejectionReason    String?
   photo              String?
-  isConfirm Boolean @default(false)
+  isConfirm          Boolean           @default(false)
 
+  /// Index pour améliorer les performances des requêtes
+  @@index([email])
 }
 
 model EnseignantChercheur {
   id                 String            @id @default(uuid()) @unique
   nom                String
   prenom             String
-  email              String            @unique
   fonction           String
   grade              Grade
   etablissement      String
   doctorants         Doctorant[]
-  requestDoctorant   RequestDoctorant[]
-  requestMaster      RequestMaster[]
   masters            Master[]
-  sessions_actives   Session[]
-  password           String
+  requestsMaster RequestMaster[]
+  requestsDoctorant RequestDoctorant[]
   photo              String?
-  notifications      Notification[]
+  user               User              @relation(fields: [userId], references: [id])
+  userId             String            @unique
+
+  /// Index pour améliorer les performances des requêtes
+  @@index([userId])
 }
 
 model RequestEnseignantChercheur {
@@ -97,57 +120,50 @@ model RequestEnseignantChercheur {
   grade              Grade
   etablissement      String
   status             RequestStatus     @default(PENDING)
-  isConfirm Boolean @default(false)
+  isConfirm          Boolean           @default(false)
   rejectionReason    String?
   photo              String?
-  createdAt          DateTime         @default(now())
-}
+  createdAt          DateTime          @default(now())
 
-model Session {
-  id         String            @id @default(uuid()) @unique
-  machine    String
-  createdAt      DateTime
-  doctorant  Doctorant?        @relation(fields: [doctorant_id], references: [id])
-  doctorant_id String?
-  master     Master?           @relation(fields: [master_id], references: [id])
-  master_id  String?
-  enseignant EnseignantChercheur? @relation(fields: [enseignant_id], references: [id])
-  enseignant_id String?
+  /// Index pour améliorer les performances des requêtes
+  @@index([email])
 }
 
 model Admin {
   id            Int       @id @default(autoincrement())
   nom           String
-  email String @unique
   prenom        String
-  password      String
-  notifications Notification[]
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String    @unique
+
+  /// Index pour améliorer les performances des requêtes
+  @@index([userId])
+}
+
+model Session {
+  id            String    @id @default(uuid()) @unique
+  accessToken   String    @unique
+  refreshToken  String    @unique
+  machine       String
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
 }
 
 model Notification {
-  id          Int      @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   message     String
   recipient   String
   status      NotificationStatus @default(UNREAD)
-  createdAt   DateTime @default(now())
-  admin       Admin?    @relation(fields: [admin_id], references: [id])
-  admin_id    Int?
- doctorant  Doctorant?        @relation(fields: [doctorant_id], references: [id])
-  doctorant_id String?
-  master     Master?           @relation(fields: [master_id], references: [id])
-  master_id  String?
-  enseignant EnseignantChercheur? @relation(fields: [enseignant_id], references: [id])
-  enseignant_id String?
+  createdAt   DateTime         @default(now())
+  user        User             @relation(fields: [userId], references: [id])
+  userId      String
 }
-
 
 enum RequestStatus {
   PENDING
-  APPROVEDBYSUPERIEUR
-  APPROVEDBYADMIN
-  APPROVEDBYTWO
-  REJECTEDBYSUPERIEUR
-  REJECTEDBYADMIN
+  APPROVED
+  REJECTED
 }
 
 enum NotificationStatus {
@@ -160,4 +176,12 @@ enum Grade {
   MaitreAssistant
   MaitreDeConference
   Professeur
+}
+
+enum Role {
+  ADMIN
+  DOCTORANT
+  MASTER
+  ENSEIGNANT
+  DIRECTEUR
 }

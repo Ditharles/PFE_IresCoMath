@@ -1,84 +1,48 @@
-import { PrismaClient, RequestStatus } from "../../generated/prisma";
+import {
+  PrismaClient,
+  RequestStatus,
+  Role,
+  Grade,
+  EnseignantChercheur,
+  Prisma,
+} from "../../generated/prisma";
 import transporter from "../utils/mailer";
-import jwt, {
-  TokenExpiredError,
-  JsonWebTokenError,
-  NotBeforeError,
-} from "jsonwebtoken";
+import jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
+import {
+  AuthRequest,
+  AuthResponse,
+  AuthHandler,
+  RequestType,
+  RequestDoctorant,
+  RequestMaster,
+  RequestEnseignant,
+  User,
+} from "../types/auth";
+import {
+  ERROR_MESSAGES,
+  generateRandomToken,
+  generateTokenLink,
+  createSession,
+  generateTokens,
+  JWT_SECRET_KEY,
+  JWT_REFRESH_SECRET_KEY,
+  requestRoleMap,
+  checkUserExists,
+  createUser,
+  createDoctorant,
+  createMaster,
+  validateRequestBody,
+  createEnseignant,
+  createUserRequest,
+  sendEmail,
+  getSupervisor,
+  checkSupervisorExists,
+} from "../utils/authUtils";
 
 const prisma = new PrismaClient();
 
-// Mapping des rôles pour les requêtes Prisma
-const roleMap = {
-  admin: prisma.admin,
-  enseignant: prisma.enseignantChercheur,
-  doctorant: prisma.doctorant,
-  master: prisma.master,
-};
-
-const requestRoleMap = {
-  enseignant: prisma.requestEnseignantChercheur,
-  doctorant: prisma.requestDoctorant,
-  master: prisma.requestMaster,
-};
-
-// Fonctions pour générer les liens pour la confirmation et le reset de mot de passe
-const generateTokenLink = (email: string, role: string) => {
-  const token = jwt.sign({ email, role }, JWT_SECRET_KEY, { expiresIn: "1h" });
-  return `http://localhost:3000/auth/${role}/${token}`;
-};
-
-// Fonction pour l'envoi des mails
-const sendEmail = async (
-  email: string,
-  nom: string,
-  prenom: string,
-  role: string,
-  subject: string,
-  link: string,
-  buttonText: string
-) => {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject,
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>${subject}</title>
-        <style>
-          body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
-          .container { max-width: 600px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-          .header { background: #007BFF; color: white; padding: 15px; text-align: center; font-size: 20px; border-radius: 8px 8px 0 0; }
-          .content { padding: 20px; text-align: left; color: #333; }
-          .button { display: block; width: 250px; margin: 20px auto; padding: 10px; text-align: center; background: #28a745; color: white; text-decoration: none; font-size: 16px; border-radius: 5px; }
-          .footer { text-align: center; padding: 10px; font-size: 12px; color: #777; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">${subject}</div>
-          <div class="content">
-            <p>Bonjour ${nom} ${prenom},</p>
-            <p>Vous avez soumis une demande pour le rôle de <strong>${role}</strong> au sein du laboratoire IreSCoMath.</p>
-            <p>Merci de bien vouloir ${buttonText} en cliquant sur le bouton ci-dessous :</p>
-            <a href="${link}" class="button">${buttonText}</a>
-            <p>Si vous ne reconnaissez pas cette demande, veuillez ignorer ce message.</p>
-            <p>Pour toute question, n'hésitez pas à nous contacter à <a href="mailto:support@irescomath.com">support@irescomath.com</a>.</p>
-          </div>
-          <div class="footer">© 2025 - IreSCoMath. Tous droits réservés.</div>
-        </div>
-      </body>
-      </html>
-    `,
-  });
-};
-
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 // Fonction pour la création des requêtes d'authentification
 const registerUser = async (
   req: Request,
@@ -88,80 +52,54 @@ const registerUser = async (
 ) => {
   const { email } = data;
 
-  try {
-    const roleKeys = Object.keys(roleMap);
-    const requestRoleKeys = Object.keys(requestRoleMap);
+  if (!email || typeof email !== "string") {
+    res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+    return;
+  }
 
-    const exist = await Promise.any([
-      ...requestRoleKeys.map((role) =>
-        requestRoleMap[role].findUnique({ where: { email } })
-      ),
-      ...roleKeys.map((role) => roleMap[role].findUnique({ where: { email } })),
-    ]);
+  const emailString = email as string;
+
+  try {
+    const exist = await checkUserExists(emailString);
 
     if (exist) {
-      return res.status(400).json({
-        message: `Cet utilisateur ${role} existe déjà ou une requête a déjà été envoyée`,
-      });
+      res.status(400).json({ message: ERROR_MESSAGES.USER_EXISTS });
+      return;
     }
 
-    if ("dateInscription" in data) {
-      data.dateInscription = new Date(data.dateInscription);
-    }
-    if (role === "doctorant" && "directeur_these" in data) {
-      data.directeur_these = {
-        connect: {
-          id: data.directeur_these,
-        },
-      };
-    }
-    if (role === "master" && "encadrant" in data) {
-      data.encadrant = {
-        connect: {
-          id: data.encadrant,
-        },
-      };
-    }
+    const user = await createUserRequest(role, data);
 
-    const user = await requestRoleMap[role].create({ data });
+    const emailLink = generateTokenLink(emailString, role, "confirm");
+    if (!emailLink) {
+      res.status(400).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+      return;
+    }
 
     await sendEmail(
-      email,
+      emailString,
       data.nom,
       data.prenom,
       role,
       "Validation de la requête d'authentification",
-      generateTokenLink(email, role, "confirm"),
+      emailLink,
       "Confirmer"
     );
 
     const token = jwt.sign({ id: user.id, role: role }, JWT_SECRET_KEY, {
       expiresIn: "1h",
     });
-    return res.status(201).json({ accesToken: token });
-  } catch (error) {
+    res.status(201).json({ tempToken: token });
+  } catch (error: any) {
     console.error(
       `Erreur lors de la création de l'utilisateur ${role}:`,
       error
     );
-    return res
-      .status(500)
-      .json({ message: `Erreur lors de la création de l'utilisateur ${role}` });
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
-};
-
-// Fonction pour la validation du contenu des requêtes
-const validateRequestBody = (body: any, requiredFields: string[]) => {
-  for (const field of requiredFields) {
-    if (!body[field]) {
-      return false;
-    }
-  }
-  return true;
 };
 
 // Exported functions
-export const registerEnseignant = async (req: Request, res: Response) => {
+export const registerEnseignant: AuthHandler = async (req, res) => {
   const requiredFields = [
     "nom",
     "prenom",
@@ -172,15 +110,22 @@ export const registerEnseignant = async (req: Request, res: Response) => {
     "etablissement",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
-    return res
-      .status(400)
-      .json({ message: "Veuillez remplir tous les champs" });
+    res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+    return;
   }
 
-  await registerUser(req, res, "enseignant", req.body);
+  try {
+    await registerUser(req, res, "ENSEIGNANT", req.body);
+  } catch (error) {
+    console.error(
+      `Erreur lors de la création de l'utilisateur ENSEIGNANT:`,
+      error
+    );
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
 };
 
-export const registerMaster = async (req: Request, res: Response) => {
+export const registerMaster: AuthHandler = async (req, res) => {
   const requiredFields = [
     "nom",
     "prenom",
@@ -190,21 +135,19 @@ export const registerMaster = async (req: Request, res: Response) => {
     "encadrant",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
-    return res
-      .status(400)
-      .json({ message: "Veuillez remplir tous les champs" });
+    return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
 
-  const encadrant = await prisma.enseignantChercheur.findUnique({
-    where: { id: req.body.encadrant },
-  });
-  if (!encadrant) {
-    return res.status(400).json({ message: "Encadrant non existant" });
+  try {
+    await checkSupervisorExists(req.body.encadrant);
+    await registerUser(req, res, "MASTER", req.body);
+  } catch (error) {
+    console.error(`Erreur lors de la création de l'utilisateur MASTER:`, error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
-  await registerUser(req, res, "master", req.body);
 };
 
-export const registerDoctorant = async (req: Request, res: Response) => {
+export const registerDoctorant: AuthHandler = async (req, res) => {
   const requiredFields = [
     "nom",
     "prenom",
@@ -214,84 +157,79 @@ export const registerDoctorant = async (req: Request, res: Response) => {
     "directeur_these",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
-    return res
-      .status(400)
-      .json({ message: "Veuillez remplir tous les champs" });
+    return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
-  const directeur_these = await prisma.enseignantChercheur.findUnique({
-    where: { id: req.body.directeur_these },
-  });
-  if (!directeur_these) {
-    return res.status(400).json({ message: "Directeur de thèse non existant" });
+
+  try {
+    await checkSupervisorExists(req.body.directeur_these);
+    await registerUser(req, res, "DOCTORANT", req.body);
+  } catch (error) {
+    console.error(
+      `Erreur lors de la création de l'utilisateur DOCTORANT:`,
+      error
+    );
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
-  await registerUser(req, res, "doctorant", req.body);
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
-  try {
-    let user = null;
-    let role = null;
 
-    for (const [roleKey, model] of Object.entries(roleMap)) {
-      user = await model.findUnique({ where: { email } });
-      if (user) {
-        role = roleKey;
-        break;
-      }
-    }
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
 
     if (!user) {
-      return res.status(400).json({ message: "Utilisateur non existant" });
+      return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Mot de passe incorrect" });
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.INCORRECT_PASSWORD });
     }
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        role: role,
-      },
-      JWT_SECRET_KEY,
-      {
-        expiresIn: "48h",
-      }
+    const { accessTokenValue, refreshTokenValue } = await createSession(
+      user.id
+    );
+    const { accessToken, refreshToken } = generateTokens(
+      accessTokenValue,
+      refreshTokenValue
     );
 
-    return res.status(200).json({ accessToken: token });
+    return res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    console.error("Erreur lors de la connexion :", error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
-  res.status(200).json({ message: "Déconnexion effectuée avec succès" });
-};
+export const logout: AuthHandler = async (req, res) => {
+  const { authorization } = req.headers;
 
-export const confirmRequest = async (req: Request, res: Response) => {
+  if (!authorization) {
+    return res.status(400).json({ message: "Token manquant" });
+  }
+
+  const token = authorization.split(" ")[1];
+
   try {
-    const { token } = req.params;
-    const decoded = jwt.verify(token, JWT_SECRET_KEY);
-    const { email, role } = decoded as { email: string; role: string };
+    const decoded = jwt.verify(token, JWT_SECRET_KEY) as { token: string };
 
-    await requestRoleMap[role].update({
-      where: { email },
-      data: { isConfirm: true },
+    await prisma.session.deleteMany({
+      where: {
+        accessToken: decoded.token,
+      },
     });
-    const user = await requestRoleMap[role].findUnique({ where: { email } });
-    const accessToken = jwt.sign({ id: user.id, role: role }, JWT_SECRET_KEY, {
-      expiresIn: "48h",
-    });
-    res.status(200).send({ accessToken });
+    res.status(200).json({ message: "Déconnexion effectuée avec succès" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
   }
 };
-export const validateAccount = async (req: Request, res: Response) => {
+
+export const confirmRequest: AuthHandler = async (req, res) => {
   try {
     const { token } = req.params;
     const decoded = jwt.verify(token, JWT_SECRET_KEY) as {
@@ -300,113 +238,100 @@ export const validateAccount = async (req: Request, res: Response) => {
     };
     const { email, role } = decoded;
 
-    let userRequest;
-
-    if (role === "enseignant") {
-      userRequest = await requestRoleMap[role].findUnique({
-        where: {
-          email: email,
-        },
-        select: {
-          nom: true,
-          prenom: true,
-          email: true,
-          fonction: true,
-          grade: true,
-          etablissement: true,
-          isConfirm: true,
-          status: true,
-        },
-      });
-    } else if (role === "doctorant") {
-      userRequest = await requestRoleMap[role].findUnique({
-        where: {
-          email: email,
-        },
-        select: {
-          nom: true,
-          prenom: true,
-          email: true,
-          dateInscription: true,
-          directeur_these: true,
-          isConfirm: true,
-          status: true,
-        },
-      });
-    } else if (role === "master") {
-      userRequest = await requestRoleMap[role].findUnique({
-        where: {
-          email: email,
-        },
-        select: {
-          nom: true,
-          prenom: true,
-          email: true,
-          dateInscription: true,
-          encadrant: true,
-          isConfirm: true,
-          status: true,
-        },
-      });
-    } else {
-      return res.status(404).json({ message: "Role invalide" });
-    }
-
-    if (!userRequest) {
-      return res.status(404).json({ message: "Requête non trouvée" });
-    }
-
-    if (userRequest.isConfirm === false) {
-      return res.status(400).json({ message: "Requête non confirmée" });
-    }
-
-    if (
-      (userRequest.status !== RequestStatus.APPROVEDBYTWO &&
-        role !== "enseignant") ||
-      (role === "enseignant" &&
-        userRequest.status !== RequestStatus.APPROVEDBYADMIN)
-    ) {
-      return res.status(400).json({ message: "Requête non validée" });
-    }
-
-    if (["enseignant", "doctorant", "master"].includes(role)) {
-      await requestRoleMap[role].delete({
-        where: {
-          email: email,
-        },
-      });
-    }
-
-    const { isConfirm, status, ...userData } = userRequest;
-    const user = await roleMap[role].create({
-      data: userData,
+    await requestRoleMap[role].update({
+      where: { email },
+      data: { isConfirm: true },
     });
-
-    return res.status(200).json({ message: "Opération réussie" });
+    const user = await requestRoleMap[role].findUnique({ where: { email } });
+    const accessToken = jwt.sign({ id: user?.id, role: role }, JWT_SECRET_KEY, {
+      expiresIn: "48h",
+    });
+    res.status(200).send({ accessToken });
   } catch (error) {
-    console.error("Erreur lors de la validation du compte:", error);
-    return res
-      .status(500)
-      .json({ message: "Erreur serveur lors de la validation du compte" });
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
-export const submitPassword = async (req: any, res: Response) => {
+
+export const validateAccount: AuthHandler = async (req, res) => {
+  try {
+    const { token } = req.params;
+    if (typeof token !== "string") {
+      return res.status(400).json({ message: "Token invalide" });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET_KEY) as {
+      email: string;
+      role: Role;
+    };
+    const { email, role } = decoded;
+
+    const request = (await requestRoleMap[role].findUnique({
+      where: { email },
+    })) as RequestType | null;
+
+    if (!request) {
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+      return;
+    }
+
+    if (request.status !== RequestStatus.APPROVED) {
+      res.status(400).json({ message: ERROR_MESSAGES.REQUEST_NOT_APPROVED });
+      return;
+    }
+
+    const password = generateRandomToken(12);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await createUser(email, role, hashedPassword);
+
+    if (role === "DOCTORANT") {
+      await createDoctorant(request as RequestDoctorant, user.id);
+    } else if (role === "MASTER") {
+      await createMaster(request as RequestMaster, user.id);
+    } else if (role === "ENSEIGNANT") {
+      const enseignantRequest = request as RequestEnseignant;
+      await createEnseignant(enseignantRequest, user.id);
+    }
+
+    await requestRoleMap[role].delete({
+      where: { email },
+    });
+
+    await sendEmail(
+      email,
+      request.nom,
+      request.prenom,
+      role,
+      "Compte validé",
+      "http://localhost:3000/auth/additionalInfo",
+      "Soumettez les informations supplémentaires"
+    );
+
+    res.status(200).json({ message: "Compte validé avec succès" });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Erreur lors de la validation du compte:", error.message);
+    } else {
+      console.error("Erreur inconnue lors de la validation du compte");
+    }
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const submitAdditionalInfo: AuthHandler = async (req, res) => {
   try {
     const { password } = req.body;
 
-    // Validation de la présence du mot de passe
     if (!password) {
-      return res
-        .status(400)
-        .json({ message: "Veuillez remplir tous les champs" });
+      return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
 
-    // Hachage du mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await roleMap[req.user.role].update({
+    await prisma.user.update({
       where: {
-        id: req.user.id,
+        id: req.user?.id,
       },
       data: {
         password: hashedPassword,
@@ -416,19 +341,28 @@ export const submitPassword = async (req: any, res: Response) => {
     res.status(200).json({ message: "Mot de passe défini avec succès" });
   } catch (error) {
     console.error("Erreur lors de la soumission du mot de passe :", error);
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
-export const resendConfirmLink = async (req: Request, res: Response) => {
-  const { token } = req.headers;
+export const resendConfirmLink: AuthHandler = async (req, res) => {
+  const { temptoken } = req.headers;
+  if (!temptoken) {
+    return res.status(400).json({ message: "Token temporaire manquant" });
+  }
   try {
-    const user = req.user as { id: string; role: string };
+    const user = jwt.verify(temptoken as string, JWT_SECRET_KEY) as {
+      id: string;
+      role: Role;
+    };
+
     const userbd = await requestRoleMap[user.role].findUnique({
       where: { id: user.id },
     });
     if (!userbd) {
-      return res.status(400).json({ message: "Cette requête n'existe pas" });
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
     await sendEmail(
       userbd.email,
@@ -440,20 +374,26 @@ export const resendConfirmLink = async (req: Request, res: Response) => {
       "Confirmer"
     );
     return res.status(200).json({ message: "Email envoyé avec succès" });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
 };
 
-export const resendConfirmLinkWithMail = async (
-  req: Request,
-  res: Response
-) => {
-  const { email, role } = req.body;
+export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
   try {
+    const { email, role } = req.body;
+    if (typeof email !== "string" || typeof role !== "string") {
+      return res.status(400).json({ message: "Email et rôle requis" });
+    }
+
     const userbd = await requestRoleMap[role].findUnique({
       where: { email },
     });
     if (!userbd) {
-      return res.status(400).json({ message: "Cette requête n'existe pas" });
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
     await sendEmail(
       userbd.email,
@@ -466,72 +406,129 @@ export const resendConfirmLinkWithMail = async (
     );
     return res.status(200).json({ message: "Email envoyé avec succès" });
   } catch (error) {
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
-export const changePassword = async (req: Request, res: Response) => {
-  const { oldPassword, newPassword } = req.body;
-  const user = req.user as { id: string; role: string };
+export const changePassword: AuthHandler = async (req, res) => {
+  if (!req.user?.id) {
+    return res.status(401).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
+  }
+
   try {
-    const userbd = await roleMap[user.role].findUnique({
-      where: { id: user.id },
+    const { oldPassword, newPassword } = req.body;
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
     });
-    if (!userbd) {
-      return res.status(400).json({ message: "Cette requête n'existe pas" });
+
+    if (!user) {
+      return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
-    const isPasswordCorrect = await bcrypt.compare(
-      oldPassword,
-      userbd.password
-    );
+
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Mot de passe incorrect" });
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.INCORRECT_PASSWORD });
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await roleMap[user.role].update({
-      where: { id: user.id },
+    await prisma.user.update({
+      where: { id: req.user.id },
       data: { password: hashedPassword },
     });
     res.status(200).json({ message: "Mot de passe changé avec succès" });
   } catch (error) {
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
-export const forgetPassword = async (req: Request, res: Response) => {
-  const { email, role } = req.body;
+export const forgetPassword: AuthHandler = async (req, res) => {
   try {
-    const user = await roleMap[role].findUnique({
-      where: { email },
-    });
-    if (!user) {
-      return res.status(400).json({ message: "Cet utilisateur n'existe pas" });
+    const { email } = req.body;
+    if (typeof email !== "string") {
+      return res.status(400).json({ message: "Email requis" });
     }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        enseignant: {
+          select: {
+            nom: true,
+            prenom: true,
+          },
+        },
+        master: {
+          select: {
+            nom: true,
+            prenom: true,
+          },
+        },
+        doctorant: {
+          select: {
+            nom: true,
+            prenom: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
+    }
+
+    const nom =
+      user.enseignant?.nom ||
+      user.master?.nom ||
+      user.doctorant?.nom ||
+      "Utilisateur";
+    const prenom =
+      user.enseignant?.prenom ||
+      user.master?.prenom ||
+      user.doctorant?.prenom ||
+      "";
+
+    const resetToken = generateTokenLink(
+      user.email,
+      user.role,
+      "reset-password"
+    );
+
     await sendEmail(
       user.email,
-      user.nom,
-      user.prenom,
-      role,
+      nom,
+      prenom,
+      user.role,
       "Réinitialisation de mot de passe",
-      generateTokenLink(user.email, role, "reset-password"),
+      resetToken,
       "Réinitialiser le mot de passe"
     );
-    return res.status(200).json({ message: "Email envoyé avec succès" });
+
+    res.status(200).json({ message: "Email envoyé avec succès" });
   } catch (error) {
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
-export const confirmResetPassword = async (req: Request, res: Response) => {
+export const confirmResetPassword: AuthHandler = async (req, res) => {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET_KEY);
-    console.log(decoded);
-    const { email, role } = decoded as { email: string; role: string };
-    const user = await roleMap[role as keyof typeof roleMap].findUnique({
+    const { token } = req.params;
+    const decoded = jwt.verify(token, JWT_SECRET_KEY) as {
+      email: string;
+      role: string;
+    };
+    const { email, role } = decoded;
+    const user = await prisma.user.findUnique({
       where: { email },
     });
     if (!user) {
-      return res.status(400).json({ message: "Cet utilisateur n'existe pas" });
+      return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
     const newToken = jwt.sign({ email, role }, JWT_SECRET_KEY, {
       expiresIn: "1h",
@@ -539,11 +536,11 @@ export const confirmResetPassword = async (req: Request, res: Response) => {
     return res.status(200).json({ token: newToken });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPassword: AuthHandler = async (req, res) => {
   const { token } = req.params;
   const { newPassword } = req.body;
 
@@ -554,25 +551,28 @@ export const resetPassword = async (req: Request, res: Response) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET_KEY);
-    const { email, role } = decoded as { email: string; role: string };
+    const decoded = jwt.verify(token, JWT_SECRET_KEY) as {
+      email: string;
+      role: string;
+    };
+    const { email, role } = decoded;
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const user = await roleMap[role].findUnique({
+    const user = await prisma.user.findUnique({
       where: { email },
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Cet utilisateur n'existe pas" });
+      return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
 
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
     if (isSamePassword) {
-      return res.status(400).json({ message: "Mot de passe identique" });
+      return res.status(400).json({ message: ERROR_MESSAGES.SAME_PASSWORD });
     }
 
-    await roleMap[role].update({
+    await prisma.user.update({
       where: { email },
       data: { password: hashedPassword },
     });
@@ -580,6 +580,58 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Mot de passe réinitialisé avec succès" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Erreur interne du serveeeeur" });
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const refreshToken: AuthHandler = async (req, res) => {
+  try {
+    const accessToken = Array.isArray(req.headers.accessToken)
+      ? req.headers.accessToken[0]
+      : (req.headers.accessToken as string) || "";
+
+    const refreshTokenValue = Array.isArray(req.headers.refreshToken)
+      ? req.headers.refreshToken[0]
+      : (req.headers.refreshToken as string) || "";
+
+    if (!accessToken || !refreshTokenValue) {
+      return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
+    }
+
+    try {
+      const decoded = jwt.verify(refreshTokenValue, JWT_REFRESH_SECRET_KEY) as {
+        token: string;
+      };
+      const session = await prisma.session.findUnique({
+        where: { refreshToken: decoded.token },
+      });
+      if (!session) {
+        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
+      }
+      if (session?.accessToken !== accessToken) {
+        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
+      }
+      const newAccessTokenValue = generateRandomToken(64);
+      const refreshToken = session.refreshToken;
+      if (!refreshToken) {
+        throw new Error("Token de rafraîchissement manquant");
+      }
+      const { accessToken: newAccessToken } = generateTokens(
+        newAccessTokenValue,
+        refreshToken
+      );
+      res.status(200).json({ accessToken: newAccessToken });
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
+      }
+      if (error instanceof JsonWebTokenError) {
+        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
