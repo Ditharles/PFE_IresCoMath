@@ -73,4 +73,5 @@ router.get(
   verifyToken as RequestHandler,
   confirmRequest as RequestHandler
 );
+
 export default router;
