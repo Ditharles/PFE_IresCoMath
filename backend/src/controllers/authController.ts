@@ -39,7 +39,14 @@ import {
   sendEmail,
   getSupervisor,
   checkSupervisorExists,
+  enseignantFields,
+  masterFields,
+  doctorantFields,
 } from "../utils/authUtils";
+import {
+  requestDoctorantFields,
+  requestMasterFields,
+} from "../utils/validateUtils";
 
 const prisma = new PrismaClient();
 
@@ -630,6 +637,48 @@ export const refreshToken: AuthHandler = async (req, res) => {
       }
       throw error;
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const getUser: AuthHandler = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user?.id,
+      },
+      select: {
+        email: true,
+        role: true,
+        enseignant: { select: enseignantFields },
+        master: {
+          select: masterFields,
+        },
+        doctorant: {
+          select: doctorantFields,
+        },
+        admin: {
+          select: {
+            nom: true,
+            prenom: true,
+          },
+        },
+      },
+    });
+  
+    if (!user) {
+      return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
+    }
+    const userfront={
+      email:user?.email,
+      role:user?.role,
+      ...user?.enseignant,
+      ...user?.master,
+      ...user?.doctorant,
+    }
+    res.status(200).json(userfront);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });

@@ -67,4 +67,10 @@ router.post(
   refreshToken as RequestHandler
 );
 
+// Route pour les informations de l'utilisateur
+router.get(
+  "/get-user-info",
+  verifyToken as RequestHandler,
+  confirmRequest as RequestHandler
+);
 export default router;

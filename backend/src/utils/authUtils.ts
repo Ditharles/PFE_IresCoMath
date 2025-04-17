@@ -51,6 +51,41 @@ export const requestRoleMap: Record<string, any> = {
   MASTER: prisma.requestMaster,
 };
 
+export const doctorantFields = {
+  id: true,
+  nom: true,
+  prenom: true,
+  email: true,
+  dateInscription: true,
+  createdAt: true,
+  directeur_these_id: true,
+  photo: true,
+};
+
+export const masterFields = {
+  id: true,
+  nom: true,
+  prenom: true,
+  email: true,
+  dateInscription: true,
+  createdAt: true,
+  encadrant_id: true,
+  photo: true,
+};
+
+export const enseignantFields = {
+  id: true,
+  nom: true,
+  prenom: true,
+  email: true,
+  fonction: true,
+  grade: true,
+  createdAt: true,
+  photo: true,
+  masters: { select: masterFields },
+  doctorants: { select: doctorantFields },
+};
+
 // Fonctions utilitaires
 export function generateRandomToken(length = 64): string {
   return crypto.randomBytes(length).toString("hex");
@@ -120,7 +155,7 @@ export const generateTokens = (
 export const checkUserExists = async (email: string): Promise<boolean> => {
   let user = null;
 
-  for (const [key, value] of Object.entries(requestRoleMap as any)) {
+  for (const [key, value] of Object.entries(requestRoleMap)) {
     user = await value.findUnique({ where: { email } });
     if (user) break;
   }

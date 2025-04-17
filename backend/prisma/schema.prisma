@@ -29,11 +29,11 @@ model Doctorant {
   id                 String            @id @default(uuid()) @unique
   nom                String
   prenom             String
- annee_these Int
+  annee_these        Int
   directeur_these    EnseignantChercheur @relation(fields: [directeur_these_id], references: [id])
   directeur_these_id String
   photo              String?
-  user               User              @relation(fields: [userId], references: [id])
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String            @unique
 
   /// Index pour améliorer les performances des requêtes
@@ -45,7 +45,7 @@ model RequestDoctorant {
   nom                String
   prenom             String
   email              String            @unique
-  annee_these Int
+  annee_these        Int
   createdAt          DateTime          @default(now())
   directeur_these    EnseignantChercheur @relation(fields: [directeur_these_id], references: [id])
   directeur_these_id String
@@ -65,9 +65,9 @@ model Master {
   dateInscription    DateTime
   encadrant          EnseignantChercheur @relation(fields: [encadrant_id], references: [id])
   encadrant_id       String
-annee_master Int
+  annee_master       Int
   photo              String?
-  user               User              @relation(fields: [userId], references: [id])
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String            @unique
 
   /// Index pour améliorer les performances des requêtes
@@ -79,7 +79,7 @@ model RequestMaster {
   nom                String
   prenom             String
   email              String            @unique
-  annee_master Int
+  annee_master       Int
   createdAt          DateTime          @default(now())
   encadrant          EnseignantChercheur @relation(fields: [encadrant_id], references: [id])
   encadrant_id       String
@@ -101,10 +101,10 @@ model EnseignantChercheur {
   etablissement      String
   doctorants         Doctorant[]
   masters            Master[]
-  requestsMaster RequestMaster[]
-  requestsDoctorant RequestDoctorant[]
+  requestsMaster     RequestMaster[]
+  requestsDoctorant  RequestDoctorant[]
   photo              String?
-  user               User              @relation(fields: [userId], references: [id])
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String            @unique
 
   /// Index pour améliorer les performances des requêtes
@@ -133,7 +133,7 @@ model Admin {
   id            Int       @id @default(autoincrement())
   nom           String
   prenom        String
-  user          User      @relation(fields: [userId], references: [id])
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String    @unique
 
   /// Index pour améliorer les performances des requêtes
@@ -146,7 +146,7 @@ model Session {
   refreshToken  String    @unique
   machine       String
   createdAt     DateTime  @default(now())
-  user          User      @relation(fields: [userId], references: [id])
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
 }
 
@@ -156,7 +156,7 @@ model Notification {
   recipient   String
   status      NotificationStatus @default(UNREAD)
   createdAt   DateTime         @default(now())
-  user        User             @relation(fields: [userId], references: [id])
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
 }
 
