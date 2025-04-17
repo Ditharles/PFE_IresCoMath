@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Validation = () => {
+  const navigate = useNavigate(); // Hook pour rediriger
   const [form, setForm] = useState({
     password: "",
     confirmPassword: "",
@@ -16,15 +18,25 @@ const Validation = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Envoyer les données à ton backend
-    console.log(form);
+
+    try {
+      // TODO : Valider et envoyer les données au backend ici
+      console.log(form);
+
+      // 🔁 Redirection vers la confirmation finale
+      navigate("/validation-confirmee");
+    } catch (err) {
+      console.error("Erreur lors de la validation du compte :", err);
+    }
   };
 
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-bold text-center text-blue-800 mb-4">Validation du compte</h2>
+      <h2 className="text-2xl font-bold text-center text-blue-800 mb-4">
+        Validation du compte
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="password"

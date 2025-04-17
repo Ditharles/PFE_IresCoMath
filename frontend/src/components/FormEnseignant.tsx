@@ -1,87 +1,66 @@
-import { useState } from "react";
-import axios from "axios";
+import React from 'react';
+import { SpecificFieldsProps } from '../types/common';
 
-export default function FormEnseignant() {
-  const [formData, setFormData] = useState({
-    nom: "",
-    prenom: "",
-    email: "",
-    departement: "",
-    specialite: "",
-    document: null as File | null,
-  });
-
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-
+const FormEnseignant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target as HTMLInputElement;
-    const files = (e.target as HTMLInputElement).files;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    const { name, value } = e.target;
+    onChange({ ...data, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value as string | Blob);
-    });
-
-    try {
-      await axios.post("/api/inscription-enseignant", data);
-      setStatus("success");
-    } catch (error) {
-      console.error(error);
-      setStatus("error");
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      onChange({ ...data, photo: e.target.files[0] });
     }
   };
 
   return (
-    <>
-      {status === "success" && (
-        <div className="bg-green-100 text-green-800 p-4 rounded mb-4">
-          ✅ Inscription réussie ! Veuillez attendre la validation de votre compte.
-        </div>
-      )}
-      {status === "error" && (
-        <div className="bg-red-100 text-red-800 p-4 rounded mb-4">
-          ❌ Une erreur est survenue. Veuillez réessayer.
-        </div>
-      )}
-
-      <form
-        onSubmit={handleSubmit}
-        onReset={() =>
-          setFormData({
-            nom: "",
-            prenom: "",
-            email: "",
-            departement: "",
-            specialite: "",
-            document: null,
-          })
-        }
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+    <div className="space-y-4">
+      <select
+        name="grade"
+        value={data.grade || ""}
+        onChange={handleChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none bg-white"
+        required
       >
-        <input name="nom" placeholder="Nom" value={formData.nom} onChange={handleChange} className="input" />
-        <input name="prenom" placeholder="Prénom" value={formData.prenom} onChange={handleChange} className="input" />
-        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="input" />
-        <input name="departement" placeholder="Département" value={formData.departement} onChange={handleChange} className="input" />
-        <input name="specialite" placeholder="Spécialité" value={formData.specialite} onChange={handleChange} className="input" />
-        <input
-          type="file"
-          name="document"
-          accept="image/*"
-          onChange={handleChange}
-          className="col-span-full file:input"
-        />        <div className="flex gap-4 col-span-full justify-center mt-4">
-          <button type="submit" className="btn-primary">Soumettre</button>
-          <button type="reset" className="btn-secondary">Réinitialiser</button>
-        </div>
-      </form>
-    </>
+        <option value="">Sélectionner un grade</option>
+        <option value="PA"> Assistant</option>
+        <option value="PH">Maître Assistant</option>
+        <option value="PH"> Maître de conférence </option>
+        <option value="PES">Professeur </option>
+       
+ 
+
+
+      </select>
+
+      <input
+        type="text"
+        name="specialite"
+        placeholder="Spécialité"
+        value={data.specialite || ""}
+        onChange={handleChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+        required
+      />
+      <input
+        type="text"
+        name="département"
+        placeholder="département"
+        value={data.département || ""}
+        onChange={handleChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+        required
+      />
+
+      <input
+        type="file"
+        accept="image/*"
+        name="photo"
+        onChange={handlePhotoUpload}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+      />
+    </div>
   );
-}
+};
+
+export default FormEnseignant;

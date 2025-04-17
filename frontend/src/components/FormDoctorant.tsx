@@ -1,95 +1,61 @@
-import { useState } from "react";
-import axios from "axios";
+import React from 'react';
+import { SpecificFieldsProps } from '../types/common';
 
-export default function FormDoctorant() {
-  const [formData, setFormData] = useState({
-    nom: "",
-    prenom: "",
-    email: "",
-    matricule: "",
-    sujetRecherche: "",
-    encadrant: "",
-    document: null as File | null,
-  });
-
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-
+const FormDoctorant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    const files = (e.target as HTMLInputElement).files;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    onChange({ ...data, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value as string | Blob);
-    });
-
-    try {
-      await axios.post("/api/inscription-doctorant", data);
-      setStatus("success");
-    } catch (error) {
-      console.error(error);
-      setStatus("error");
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      onChange({ ...data, photo: e.target.files[0] });
     }
   };
 
   return (
-    <>
-      {status === "success" && (
-        <div className="bg-green-100 text-green-800 p-4 rounded mb-4">
-          ✅ Inscription réussie ! Veuillez attendre la validation de votre compte.
-        </div>
-      )}
-      {status === "error" && (
-        <div className="bg-red-100 text-red-800 p-4 rounded mb-4">
-          ❌ Une erreur est survenue. Veuillez réessayer.
-        </div>
-      )}
+    <div className="space-y-4">
+      <input
+        name="anneeThese"
+        type="number"
+        placeholder="Année de thèse"
+        value={data.anneeThese || ""}
+        onChange={handleChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+        required
+      />
 
-      <form
-        onSubmit={handleSubmit}
-        onReset={() =>
-          setFormData({
-            nom: "",
-            prenom: "",
-            email: "",
-            matricule: "",
-            sujetRecherche: "",
-            encadrant: "",
-            document: null,
-          })
-        }
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      <textarea
+        name="sujetRecherche"
+        placeholder="Sujet de recherche"
+        value={data.sujetRecherche || ""}
+        onChange={handleChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+        required
+      />
+
+      <select
+        name="encadrant"
+        value={data.encadrant || ""}
+        onChange={handleChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none bg-white"
+        required
       >
-        <input name="nom" placeholder="Nom" value={formData.nom} onChange={handleChange} className="input" />
-        <input name="prenom" placeholder="Prénom" value={formData.prenom} onChange={handleChange} className="input" />
-        <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} className="input" />
-        <input name="matricule" placeholder="Matricule" value={formData.matricule} onChange={handleChange} className="input" />
-        <select name="encadrant" value={formData.encadrant} onChange={handleChange} className="input">
-          <option value="">-- Encadrant --</option>
-          <option>Dr. Ali</option>
-          <option>Pr. Nadia</option>
-        </select>
-        <textarea name="sujetRecherche" placeholder="Sujet de recherche" value={formData.sujetRecherche} onChange={handleChange} className="input md:col-span-2" />
-        <input
-          type="file"
-          name="document"
-          accept="image/*"
-          onChange={handleChange}
-          className="col-span-full file:input"
-        />
-        <div className="flex gap-4 col-span-full justify-center mt-4">
-          <button type="submit" className="btn-primary">Soumettre</button>
-          <button type="reset" className="btn-secondary">Réinitialiser</button>
-        </div>
-      </form>
-    </>
+        <option value="">Sélectionner un encadrant</option>
+        <option value="Dr. Haifa Touati">Dr. Haifa Touati</option>
+        <option value="Dr. Mahmoud Ltaief">Dr. Mahmoud Ltaief</option>
+        <option value="Dr. Ridha">Dr. Ridha</option>
+      </select>
+
+      <input
+        type="file"
+        accept="image/*"
+        name="photo"
+        onChange={handlePhotoUpload}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+      />
+    </div>
   );
-}
+};
+
+export default FormDoctorant;

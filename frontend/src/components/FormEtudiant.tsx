@@ -1,138 +1,54 @@
-import { useState } from "react";
-import axios from "axios";
+import React from 'react';
+import { SpecificFieldsProps } from '../types/common';
 
-export default function FormEtudiant() {
-  const [formData, setFormData] = useState({
-    nom: "",
-    prenom: "",
-    email: "",
-    cin: "",
-    dateNaissance: "",
-    encadrant: "",
-    document: null as File | null,
-  });
-
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-
+const FormEtudiant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    const files = (e.target as HTMLInputElement).files;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: e.target.type === "file" && files && files.length > 0 ? files[0] : value,
-    }));
+    onChange({ ...data, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value as string | Blob);
-    });
-
-    try {
-      await axios.post("/api/inscription-etudiant", data);
-      setStatus("success");
-    } catch (error) {
-      console.error(error);
-      setStatus("error");
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      onChange({ ...data, photo: e.target.files[0] });
     }
   };
 
   return (
-    <>
-      {status === "success" && (
-        <div className="bg-green-100 text-green-800 p-4 rounded mb-4">
-          ✅ Inscription réussie ! Veuillez attendre la validation de votre compte.
-        </div>
-      )}
-      {status === "error" && (
-        <div className="bg-red-100 text-red-800 p-4 rounded mb-4">
-          ❌ Une erreur est survenue. Veuillez réessayer.
-        </div>
-      )}
-
-      <form
-        onSubmit={handleSubmit}
-        onReset={() => setFormData({
-          nom: "",
-          prenom: "",
-          email: "",
-          cin: "",
-          dateNaissance: "",
-          encadrant: "",
-          document: null,
-        })}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+    <div className="space-y-4">
+      <input
+      name="etablissement"
+      placeholder="Établissement"
+      value={data.etablissement || ""}
+      onChange={handleChange}
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+      required
+      />
+      <select
+      name="encadrant"
+      value={data.encadrant || ""}
+      onChange={handleChange}
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none bg-white"
+      required
       >
-        <input
-          type="text"
-          name="nom"
-          placeholder="Nom"
-          value={formData.nom}
-          onChange={handleChange}
-          className="input"
-        />
-        <input
-          type="text"
-          name="prenom"
-          placeholder="Prénom"
-          value={formData.prenom}
-          onChange={handleChange}
-          className="input"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="input"
-        />
-        <input
-          type="text"
-          name="cin"
-          placeholder="CIN"
-          value={formData.cin}
-          onChange={handleChange}
-          className="input"
-        />
-        <input
-          type="date"
-          name="dateNaissance"
-          value={formData.dateNaissance}
-          onChange={handleChange}
-          className="input"
-        />
-        <select
-          name="encadrant"
-          value={formData.encadrant}
-          onChange={handleChange}
-          className="input"
-        >
-          <option value="">-- Encadrant --</option>
-          <option>Dr. Saïd</option>
-          <option>Pr. Khadija</option>
-        </select>
+      <option value="">Sélectionner un encadrant</option>
+      <option value="Dr. Haifa Touati">Dr. Haifa Touati</option>
+      <option value="Dr. Mahmoud Ltaief">Dr. Mahmoud Ltaief</option>
+      <option value="Dr. Ridha">Dr. Ridha</option>
+      <option value="Dr. Mohamed Belhassen">Dr. Mohamed Belhassen</option>
+      <option value="Dr. Fethi Mguis">Dr. fethi Mguis</option>
+      <option value="Dr.Eya Ben Charrada">Dr. Eya Ben charrada</option>
+      </select>
 
-        <input
-          type="file"
-          name="document"
-          accept="image/*"
-          onChange={handleChange}
-          className="col-span-full file:input"
-        />
-
-        <div className="flex gap-4 col-span-full justify-center mt-4">
-          <button type="submit" className="btn-primary">
-            Soumettre
-          </button>
-          <button type="reset" className="btn-secondary">
-            Réinitialiser
-          </button>
-        </div>
-      </form>
-    </>
+      <input
+      type="file"
+      accept="image/*"
+      name="photo"
+      onChange={handlePhotoUpload}
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+      required
+      />
+    </div>
   );
-}
+};
+
+export default FormEtudiant;

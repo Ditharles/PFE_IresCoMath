@@ -1,29 +1,40 @@
-interface Props {
-    onSelectRole: (role: "doctorant" | "etudiant" | "enseignant") => void;
-  }
-  
-  export default function RoleSelector({ onSelectRole }: Props) {
-    return (
-      <div className="flex gap-4 justify-center">
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={() => onSelectRole("doctorant")}
-        >
-          Doctorant
-        </button>
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded"
-          onClick={() => onSelectRole("etudiant")}
-        >
-          Étudiant
-        </button>
-        <button
-          className="bg-purple-500 text-white px-4 py-2 rounded"
-          onClick={() => onSelectRole("enseignant")}
-        >
-          Enseignant Chercheur
-        </button>
-      </div>
-    );
-  }
-  
+import React from 'react';
+import { Role } from '../types/common';
+import { UserIcon, GraduationCap, BookOpen } from 'lucide-react';
+
+interface RoleSelectorProps {
+  onSelectRole: (role: Role) => void;
+}
+
+const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <button
+        type="button"
+        onClick={() => onSelectRole('doctorant')}
+        className="flex flex-col items-center p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+      >
+        <GraduationCap className="w-8 h-8 mb-2 text-blue-600" />
+        <span>Doctorant</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => onSelectRole('master')}
+        className="flex flex-col items-center p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+      >
+        <BookOpen className="w-8 h-8 mb-2 text-blue-600" />
+        <span>Étudiant</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => onSelectRole('enseignant')}
+        className="flex flex-col items-center p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+      >
+        <UserIcon className="w-8 h-8 mb-2 text-blue-600" />
+        <span>Enseignant</span>
+      </button>
+    </div>
+  );
+};
+
+export default RoleSelector;
