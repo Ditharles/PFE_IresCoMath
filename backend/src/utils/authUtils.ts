@@ -99,7 +99,7 @@ export const generateTokenLink = (
   const token = jwt.sign({ email, role, action }, JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
-  return `http://localhost:3000/auth/${role}/${action}/${token}`;
+  return `http://localhost:3000/confirmation-email/${token}`;
 };
 
 export const createSession = async (userId: string) => {
@@ -161,7 +161,7 @@ export const checkUserExists = async (email: string): Promise<boolean> => {
   }
 
   if (!user) {
-    user = await user.findUnique({ where: { email } });
+    user = await prisma.user.findUnique({ where: { email } });
   }
 
   return !!user;
@@ -198,7 +198,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
           annee_these: Number(annee_these),
           directeur_these: {
             connect: {
-              id: directeur_these?.id,
+              id: directeur_these,
             },
           },
           status: RequestStatus.PENDING,
@@ -216,7 +216,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
           annee_master: Number(annee_master),
           encadrant: {
             connect: {
-              id: encadrant?.id,
+              id: encadrant,
             },
           },
           status: RequestStatus.PENDING,

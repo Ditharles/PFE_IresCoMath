@@ -107,11 +107,12 @@ const registerUser = async (
 
 // Exported functions
 export const registerEnseignant: AuthHandler = async (req, res) => {
+  console.log(req.body);
   const requiredFields = [
     "nom",
     "prenom",
     "email",
-    "photo",
+    // "photo",
     "fonction",
     "grade",
     "etablissement",
@@ -137,10 +138,11 @@ export const registerMaster: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    "photo",
-    "dateInscription",
+    // "photo",
+    "annee_master",
     "encadrant",
   ];
+  console.log(req.body);
   if (!validateRequestBody(req.body, requiredFields)) {
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
@@ -159,8 +161,8 @@ export const registerDoctorant: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    "photo",
-    "dateInscription",
+    // "photo",
+    "annee_these",
     "directeur_these",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
