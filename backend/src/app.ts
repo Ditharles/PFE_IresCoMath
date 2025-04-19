@@ -2,7 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import validateRoutes from "./routes/validateRoutes";
+
 import usersRoutes from "./routes/usersRoutes";
+
 dotenv.config();
 import cors from "cors";
 import { PrismaClient } from "../generated/prisma";
@@ -18,10 +20,12 @@ app.use(
 );
 app.use(express.json());
 
+
 app.use("/auth/", authRoutes);
 app.use("/validate/", validateRoutes);
 <<<<<<< Updated upstream
 app.use("/users/", usersRoutes);
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 =======

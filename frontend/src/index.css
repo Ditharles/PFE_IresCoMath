@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+.input {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black;
+}
+
+.file\:input {
+  @apply border border-dashed border-gray-400 p-2 rounded-lg w-full text-black;
+}
+
+.file\:input::file-selector-button {
+  @apply bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 cursor-pointer hover:bg-gray-200;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition;
+}
+
+.btn-secondary {
+  @apply bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition;
+}

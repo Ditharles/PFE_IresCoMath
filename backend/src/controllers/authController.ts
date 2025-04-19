@@ -39,6 +39,7 @@ import {
   sendEmail,
   getSupervisor,
   checkSupervisorExists,
+
   enseignantFields,
   masterFields,
   doctorantFields,
@@ -47,6 +48,7 @@ import {
   requestDoctorantFields,
   requestMasterFields,
 } from "../utils/validateUtils";
+
 
 const prisma = new PrismaClient();
 
@@ -645,6 +647,7 @@ export const refreshToken: AuthHandler = async (req, res) => {
   }
 };
 
+
 export const getUser: AuthHandler = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -686,3 +689,4 @@ export const getUser: AuthHandler = async (req, res) => {
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
+

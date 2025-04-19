@@ -51,6 +51,7 @@ export const requestRoleMap: Record<string, any> = {
   MASTER: prisma.requestMaster,
 };
 
+
 export const doctorantFields = {
   id: true,
   nom: true,
@@ -85,6 +86,7 @@ export const enseignantFields = {
   masters: { select: masterFields },
   doctorants: { select: doctorantFields },
 };
+
 
 // Fonctions utilitaires
 export function generateRandomToken(length = 64): string {
@@ -156,6 +158,7 @@ export const checkUserExists = async (email: string): Promise<boolean> => {
   let user = null;
 
   for (const [key, value] of Object.entries(requestRoleMap)) {
+
     user = await value.findUnique({ where: { email } });
     if (user) break;
   }
