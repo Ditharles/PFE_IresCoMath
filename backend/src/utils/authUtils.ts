@@ -89,7 +89,7 @@ export const enseignantFields = {
 
 
 // Fonctions utilitaires
-export function generateRandomToken(length = 64): string {
+export const generateRandomToken = (length: number = 64): string => {
   return crypto.randomBytes(length).toString("hex");
 }
 

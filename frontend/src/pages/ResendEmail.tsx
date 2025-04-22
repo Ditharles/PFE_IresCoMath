@@ -1,67 +1,23 @@
-
-
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useMemo, useCallback, FormEvent, ChangeEvent } from "react";
 import axios from "axios";
 import { Mail, Loader2, Send, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Toast, toast } from "../components/Toast";
+import AuthService from "../services/auth.service";
 
-export default function ResendEmail() {
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const token = searchParams.get("token");
-    const initialEmail = searchParams.get("email") || "";
+const ResendEmail = () => {
+    const authService = useMemo(() => new AuthService(), []);
 
-    const [email, setEmail] = useState(initialEmail);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [emailError, setEmailError] = useState("");
-    const [tokenExpired, setTokenExpired] = useState(false);
-    const [showEmailInput, setShowEmailInput] = useState(false);
+    const token: string = localStorage.getItem("tempToken") || "";
 
-    // Vérifier si le token est expiré lors du chargement de la page
-    useEffect(() => {
-        const checkToken = async () => {
-            if (!token) {
-                setShowEmailInput(true);
-                return;
-            }
 
-            try {
-                const endpoint = `http://localhost:8000/auth/check-token/${token}`;
-                const response = await axios.get(endpoint);
+    const [email, setEmail] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [emailError, setEmailError] = useState<string>("");
+    const [tokenExpired, setTokenExpired] = useState<boolean>(false);
+    const [showEmailInput, setShowEmailInput] = useState<boolean>(false);
 
-                // Si le token est valide, on peut utiliser l'email associé
-                if (response.data.status === "valid" && response.data.email) {
-                    setEmail(response.data.email);
-                    setShowEmailInput(false);
-                } else if (response.data.status === "expired") {
-                    toast.warning(
-                        "Votre lien de confirmation a expiré. Veuillez saisir votre email pour recevoir un nouveau lien."
-                    );
-                    setTokenExpired(true);
-                    setShowEmailInput(true);
-                } else {
-                    setShowEmailInput(true);
-                }
-            } catch (error) {
-                console.error("Erreur lors de la vérification du token:", error);
-                setShowEmailInput(true);
-
-                if (axios.isAxiosError(error) && error.response?.status === 410) {
-                    toast.warning(
-                        "Votre lien de confirmation a expiré. Veuillez saisir votre email pour recevoir un nouveau lien."
-                    );
-                    setTokenExpired(true);
-                }
-            }
-        };
-
-        checkToken();
-    }, [token, initialEmail]);
-
-    // Valider le format de l'email
-    const validateEmail = (email: string): boolean => {
+    const validateEmail = useCallback((email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) {
             setEmailError("L'email est requis");
@@ -73,16 +29,14 @@ export default function ResendEmail() {
         }
         setEmailError("");
         return true;
-    };
+    }, []);
 
-    // Gérer le changement de l'email
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEmailChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
         if (email) validateEmail(e.target.value);
-    };
+    }, [email, validateEmail]);
 
-    // Demander un nouveau lien de confirmation
-    const handleResendConfirmation = async (e: React.FormEvent) => {
+    const handleResendConfirmation = useCallback(async (e: FormEvent) => {
         e.preventDefault();
 
         if (showEmailInput && !validateEmail(email)) {
@@ -92,36 +46,51 @@ export default function ResendEmail() {
         setIsSubmitting(true);
 
         try {
-            const endpoint = "http://localhost:8000/auth/resend-confirmation";
-            await axios.post(
-                endpoint,
-                { email },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+            const response = showEmailInput
+                ? await authService.resendConfirmationEmailWithEmail(email)
+                : await authService.resendConfirmationEmail(token);
 
-            toast.success("Un nouveau lien de confirmation a été envoyé à votre adresse email.");
-        } catch (error) {
-            console.error("Erreur lors de la demande d'un nouveau lien de confirmation:", error);
-
-            if (axios.isAxiosError(error)) {
-                if (error.response?.status === 404) {
-                    toast.error("Aucun compte n'est associé à cette adresse email.");
-                } else if (error.response?.status === 429) {
-                    toast.warning("Trop de tentatives. Veuillez réessayer plus tard.");
-                } else {
-                    toast.error("Une erreur est survenue lors de l'envoi du nouveau lien de confirmation.");
-                }
+            if (response.data.status === 400) {
+                handleTokenExpired();
             } else {
-                toast.error("Une erreur inattendue est survenue. Veuillez réessayer.");
+                toast.success("Un nouveau lien de confirmation a été envoyé à votre adresse email.");
             }
+        } catch (error) {
+            handleError(error);
         } finally {
             setIsSubmitting(false);
         }
-    };
+    }, [showEmailInput, email, token, authService, validateEmail]);
+
+    const handleTokenExpired = useCallback(() => {
+        toast.warning(
+            "Votre lien de confirmation a expiré. Veuillez saisir votre email pour recevoir un nouveau lien."
+        );
+        setTokenExpired(true);
+        setShowEmailInput(true);
+    }, []);
+
+    const handleError = useCallback((error: unknown) => {
+        console.error("Erreur lors de la demande d'un nouveau lien de confirmation:", error);
+
+        if (axios.isAxiosError(error)) {
+            switch (error.response?.status) {
+                case 404:
+                    toast.error("Aucun compte n'est associé à cette adresse email.");
+                    break;
+                case 429:
+                    toast.warning("Trop de tentatives. Veuillez réessayer plus tard.");
+                    break;
+                case 410:
+                    handleTokenExpired();
+                    break;
+                default:
+                    toast.error("Une erreur est survenue lors de l'envoi du nouveau lien de confirmation.");
+            }
+        } else {
+            toast.error("Une erreur inattendue est survenue. Veuillez réessayer.");
+        }
+    }, [handleTokenExpired]);
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
@@ -219,4 +188,6 @@ export default function ResendEmail() {
             </div>
         </div>
     );
-}
+};
+
+export default ResendEmail;

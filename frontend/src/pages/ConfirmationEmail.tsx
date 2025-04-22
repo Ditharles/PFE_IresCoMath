@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios, { AxiosResponse } from "axios";
 import { CheckCircle, AlertCircle, Mail, Loader2 } from "lucide-react";
 import { Toast, toast } from "../components/Toast";
+import AuthService from "../services/auth.service";
 
 type TokenStatus = "validating" | "valid" | "invalid" | "expired";
 
 export default function ConfirmationEmail() {
   const params = useParams();
   const token = params.token as string;
-
+  const authService = new AuthService();
   const [tokenStatus, setTokenStatus] = useState<TokenStatus>("validating");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,15 +23,10 @@ export default function ConfirmationEmail() {
       }
 
       try {
-        const endpoint = `http://localhost:8000/auth/confirm-request/${token}`;
-        const response = await axios.get(endpoint, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await authService.confirmRequest(token);
 
         // Check response status or specific fields to determine token validity
-        if (response.data.status === "success") {
+        if (response.status === 200) {
           setTokenStatus("valid");
           toast.success("Votre email a été confirmé avec succès!");
         } else {
@@ -49,7 +44,7 @@ export default function ConfirmationEmail() {
   }, [token, params]);
 
   // Validate email format
-  const validateEmail = (email: string): boolean => {
+  const validateEmail = useCallback((email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
       setEmailError("L'email est requis");
@@ -61,15 +56,15 @@ export default function ConfirmationEmail() {
     }
     setEmailError("");
     return true;
-  };
+  }, []);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     validateEmail(e.target.value);
-  };
+  }, [validateEmail]);
 
   // Request new confirmation email
-  const handleResendConfirmation = async (e: React.FormEvent) => {
+  const handleResendConfirmation = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
@@ -79,39 +74,19 @@ export default function ConfirmationEmail() {
     setIsSubmitting(true);
 
     try {
-      const endpoint = "http://localhost:8000/auth/resend-confirmation";
-      const response: AxiosResponse = await axios.post(
-        endpoint,
-        { email },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await authService.resendConfirmationEmail();
 
       toast.success("Un nouveau lien de confirmation a été envoyé à votre adresse email.");
     } catch (error) {
       console.error("Error requesting new confirmation email:", error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          toast.error("Aucun compte n'est associé à cette adresse email.");
-        } else if (error.response?.status === 429) {
-          toast.warning("Trop de tentatives. Veuillez réessayer plus tard.");
-        } else {
-          toast.error("Une erreur est survenue lors de l'envoi du nouveau lien de confirmation.");
-        }
-      } else {
-        toast.error("Une erreur inattendue est survenue. Veuillez réessayer.");
-      }
+      toast.error(response.data.message);
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [email, validateEmail]);
 
   // Render different content based on token status
-  const renderContent = () => {
+  const renderContent = useCallback(() => {
     switch (tokenStatus) {
       case "validating":
         return (
@@ -218,7 +193,7 @@ export default function ConfirmationEmail() {
       default:
         return null;
     }
-  };
+  }, [tokenStatus, isSubmitting, email, emailError, handleResendConfirmation]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">

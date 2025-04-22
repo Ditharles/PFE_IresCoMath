@@ -1,0 +1,27 @@
+{
+  "name": "pfe_irescomath",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ditharles/PFE_IresCoMath.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ditharles/PFE_IresCoMath/issues"
+  },
+  "homepage": "https://github.com/Ditharles/PFE_IresCoMath#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

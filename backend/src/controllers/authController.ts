@@ -39,7 +39,6 @@ import {
   sendEmail,
   getSupervisor,
   checkSupervisorExists,
-
   enseignantFields,
   masterFields,
   doctorantFields,
@@ -48,7 +47,6 @@ import {
   requestDoctorantFields,
   requestMasterFields,
 } from "../utils/validateUtils";
-
 
 const prisma = new PrismaClient();
 
@@ -185,10 +183,26 @@ export const registerDoctorant: AuthHandler = async (req, res) => {
 
 export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(req.body);
   try {
+    const fields = { nom: true, prenom: true };
     const user = await prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        password: true,
+        master: {
+          select: fields,
+        },
+        enseignant: {
+          select: fields,
+        },
+        doctorant: {
+          select: fields,
+        },
+      },
     });
 
     if (!user) {
@@ -210,7 +224,18 @@ export const login: AuthHandler = async (req, res) => {
       refreshTokenValue
     );
 
-    return res.status(200).json({ accessToken, refreshToken });
+    return res.status(200).json({
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        ...user.master,
+        ...user.enseignant,
+        ...user.doctorant,
+      },
+    });
   } catch (error) {
     console.error("Erreur lors de la connexion :", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
@@ -249,11 +274,18 @@ export const confirmRequest: AuthHandler = async (req, res) => {
     };
     const { email, role } = decoded;
 
+    const user = await requestRoleMap[role].findUnique({ where: { email } });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
     await requestRoleMap[role].update({
       where: { email },
       data: { isConfirm: true },
     });
-    const user = await requestRoleMap[role].findUnique({ where: { email } });
+
     const accessToken = jwt.sign({ id: user?.id, role: role }, JWT_SECRET_KEY, {
       expiresIn: "48h",
     });
@@ -309,17 +341,24 @@ export const validateAccount: AuthHandler = async (req, res) => {
       where: { email },
     });
 
-    await sendEmail(
-      email,
-      request.nom,
-      request.prenom,
-      role,
-      "Compte validé",
-      "http://localhost:3000/auth/additionalInfo",
-      "Soumettez les informations supplémentaires"
+    const { accessTokenValue, refreshTokenValue } = await createSession(
+      user.id
+    );
+    const { accessToken, refreshToken } = generateTokens(
+      accessTokenValue,
+      refreshTokenValue
     );
 
-    res.status(200).json({ message: "Compte validé avec succès" });
+    res.status(200).json({
+      message: "Compte validé avec succès",
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      accessToken,
+      refreshToken,
+    });
   } catch (error) {
     if (error instanceof Error) {
       console.error("Erreur lors de la validation du compte:", error.message);
@@ -357,7 +396,7 @@ export const submitAdditionalInfo: AuthHandler = async (req, res) => {
 };
 
 export const resendConfirmLink: AuthHandler = async (req, res) => {
-  const { temptoken } = req.headers;
+  const temptoken = req.headers.authorization?.split(" ")[1];
   if (!temptoken) {
     return res.status(400).json({ message: "Token temporaire manquant" });
   }
@@ -647,7 +686,6 @@ export const refreshToken: AuthHandler = async (req, res) => {
   }
 };
 
-
 export const getUser: AuthHandler = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -672,21 +710,20 @@ export const getUser: AuthHandler = async (req, res) => {
         },
       },
     });
-  
+
     if (!user) {
       return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
-    const userfront={
-      email:user?.email,
-      role:user?.role,
+    const userfront = {
+      email: user?.email,
+      role: user?.role,
       ...user?.enseignant,
       ...user?.master,
       ...user?.doctorant,
-    }
+    };
     res.status(200).json(userfront);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
-

@@ -2,15 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import validateRoutes from "./routes/validateRoutes";
-
 import usersRoutes from "./routes/usersRoutes";
-
-dotenv.config();
+import helmet from "helmet";
 import cors from "cors";
 import { PrismaClient } from "../generated/prisma";
 
+dotenv.config();
+
 const prisma = new PrismaClient();
 const app = express();
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -18,25 +19,40 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
 
+app.use(express.json());
+app.use(helmet());
 
 app.use("/auth/", authRoutes);
 app.use("/validate/", validateRoutes);
-<<<<<<< Updated upstream
 app.use("/users/", usersRoutes);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-=======
 app.get("/enseignants", async (req, res) => {
-  const data = await prisma.enseignantChercheur.findMany({
-    select: { id: true, nom: true, prenom: true },
-  });
-  res.json(data);
+  try {
+    const data = await prisma.enseignantChercheur.findMany({
+      select: { id: true, nom: true, prenom: true },
+    });
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-app.listen(8000, () => {
-  console.log("Server is running on port 8000");
->>>>>>> Stashed changes
+
+
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+// Fermer la connexion Prisma proprement
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
 });

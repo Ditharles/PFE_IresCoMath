@@ -1,78 +1,74 @@
-import type React from "react"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from 'react-router-dom';
+import AuthService from "../services/auth.service";
+import RoleSelector from "../components/RoleSelector";
+import FormDoctorant from "../components/FormDoctorant";
+import FormEtudiant from "../components/FormEtudiant";
+import FormEnseignant from "../components/FormEnseignant";
+import type { BaseSpecificFields, Role } from "../types/common";
+import LoadingOverlay from "../components/LoadingOverlay";
+import { Toast, toast } from "../components/Toast";
 
-import axios from "axios"
-import RoleSelector from "../components/RoleSelector"
-import FormDoctorant from "../components/FormDoctorant"
-import FormEtudiant from "../components/FormEtudiant"
-import FormEnseignant from "../components/FormEnseignant"
-import type { BaseSpecificFields, Role } from "../types/common"
-import LoadingOverlay from "../components/LoadingOverlay"
-import { Toast, toast } from "../components/Toast"
-
-export default function Inscription() {
-  // const router = useRouter()
-  const [role, setRole] = useState<Role>("")
+const Inscription: React.FC = () => {
+  const [role, setRole] = useState<Role>("");
   const [commonFields, setCommonFields] = useState({
     nom: "",
     prenom: "",
     telephone: "",
     email: "",
     cin: "",
-  })
+  });
 
   const [specificFields, setSpecificFields] = useState<BaseSpecificFields & { [key: string]: any }>({
     photo: null,
-  })
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
-  const [loading, setLoading] = useState<boolean>(false)
+  });
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const authService = useMemo(() => new AuthService(), []);
 
-  //
   useEffect(() => {
-    let redirectTimer: NodeJS.Timeout
+    let redirectTimer: NodeJS.Timeout;
 
     if (status === "success") {
       redirectTimer = setTimeout(() => {
-
         navigate("/confirmation-email");
-      }, 3000)
+      }, 3000);
     }
 
     return () => {
-      if (redirectTimer) clearTimeout(redirectTimer)
-    }
-  }, [status, navigate])
+      if (redirectTimer) clearTimeout(redirectTimer);
+    };
+  }, [status, navigate]);
 
-  const handleChangeCommon = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setCommonFields((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChangeCommon = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCommonFields((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setCommonFields({
       nom: "",
       prenom: "",
       telephone: "",
       email: "",
       cin: "",
-    })
-    setSpecificFields({ photo: null })
-    setStatus("idle")
-  }
+    });
+    setSpecificFields({ photo: null });
+    setStatus("idle");
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setStatus("idle")
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus("idle");
 
     // Validate form data
     if (!role) {
-      toast.warning("Veuillez sélectionner un rôle avant de soumettre le formulaire.")
-      setLoading(false)
-      return
+      toast.warning("Veuillez sélectionner un rôle avant de soumettre le formulaire.");
+      setLoading(false);
+      return;
     }
 
     // Create data object for API request
@@ -80,54 +76,31 @@ export default function Inscription() {
       ...commonFields,
       role,
       ...specificFields,
-    }
+    };
 
     try {
-      const endpoint = `http://localhost:8000/auth/register/${role}`
-      const response = await axios.post(endpoint, requestData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-
-      setStatus("success")
-      toast.success("Inscription réussie ! Vous allez être redirigé vers la page de confirmation.")
+      const response = await authService.register(requestData, role);
+      setStatus("success");
+      toast.success("Inscription réussie ! Vous allez être redirigé vers la page de confirmation.");
     } catch (error) {
-      setStatus("error")
-
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data.message || "Une erreur est survenue lors de l'inscription."
-
-        // Provide more helpful error messages based on error type
-        if (error.response?.status === 409) {
-          toast.error(
-            `Un compte avec cet email existe déjà. Veuillez utiliser un autre email ou récupérer votre mot de passe.`,
-          )
-        } else if (error.response?.status === 400) {
-          toast.error(`Données invalides : ${errorMessage}. Veuillez vérifier les informations saisies.`)
-        } else if (error.response?.status === 500) {
-          toast.error("Erreur serveur. Veuillez réessayer plus tard ou contacter l'administrateur.")
-        } else {
-          toast.error(errorMessage)
-        }
+      setStatus("error");
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
       } else {
-        toast.error("Une erreur inattendue est survenue. Veuillez réessayer.")
+        toast.error("Une erreur inattendue s'est produite.");
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, [role, commonFields, specificFields, authService]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-12 relative">
       {/* Toast container */}
       <Toast />
       {loading && <LoadingOverlay loadingText="Traitement en cours..." />}
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8 relative">
-
-
         <h1 className="text-3xl font-bold mb-8 text-center text-gray-900">Inscription</h1>
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -215,10 +188,7 @@ export default function Inscription() {
             <h2 className="text-lg font-semibold mb-4 text-gray-700">Sélectionnez votre rôle</h2>
             <RoleSelector
               onSelectRole={(selectedRole) => {
-                setRole(selectedRole)
-                toast.info(
-                  `Vous avez sélectionné le rôle : ${selectedRole === "DOCTORANT" ? "Doctorant" : selectedRole === "MASTER" ? "Étudiant en Master" : "Enseignant chercheur"}`,
-                )
+                setRole(selectedRole);
               }}
               activeRole={role}
             />
@@ -260,8 +230,8 @@ export default function Inscription() {
               <button
                 type="button"
                 onClick={() => {
-                  resetForm()
-                  toast.info("Le formulaire a été réinitialisé.")
+                  resetForm();
+                  toast.info("Le formulaire a été réinitialisé.");
                 }}
                 className="bg-gray-200 text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300 transition-colors font-medium"
               >
@@ -272,5 +242,7 @@ export default function Inscription() {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default Inscription;

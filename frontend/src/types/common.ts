@@ -1,4 +1,4 @@
-export type Role = "DOCTORANT" | "MASTER" | "ENSEIGNANT" | "";
+export type Role = "DOCTORANT" | "MASTER" | "ENSEIGNANT" | "DIRECTEUR"| "ADMIN";
 
 export interface CommonFields {
   nom: string;
