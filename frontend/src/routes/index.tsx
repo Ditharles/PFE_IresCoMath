@@ -1,13 +1,13 @@
 import { RouteObject } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import PublicRoute from "../components/routes/PublicRoute";
-import Login from "../pages/Login";
-import Inscription from "../pages/Inscription";
-import ResendEmail from "../pages/ResendEmail";
-import ConfirmationEmail from "../pages/ConfirmationEmail";
-import ValidationConfirmee from "../pages/ValidationConfirme";
+import Login from "../pages/auth/Login";
+import Inscription from "../pages/auth/Inscription";
+import ResendEmail from "../pages/auth/ResendEmail";
+import ConfirmationEmail from "../pages/auth/ConfirmationEmail";
+import ValidationConfirmee from "../pages/auth/ValidationConfirme";
 import PrivateRoute from "../components/routes/PrivateRoute";
-import AdditionalInfo from "../pages/AdditionalInfo";
+import AdditionalInfo from "../pages/auth/AdditionalInfo";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 

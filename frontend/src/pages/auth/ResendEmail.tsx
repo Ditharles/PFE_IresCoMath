@@ -2,8 +2,8 @@ import React, { useState, useMemo, useCallback, FormEvent, ChangeEvent } from "r
 import axios from "axios";
 import { Mail, Loader2, Send, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Toast, toast } from "../components/Toast";
-import AuthService from "../services/auth.service";
+import { Toast, toast } from "../../components/Toast";
+import AuthService from "../../services/auth.service";
 
 const ResendEmail = () => {
     const authService = useMemo(() => new AuthService(), []);

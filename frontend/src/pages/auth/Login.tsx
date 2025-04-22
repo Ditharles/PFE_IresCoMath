@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../services/auth.service";
-import { Toast, toast } from "../components/Toast";
-import LoadingOverlay from "../components/LoadingOverlay";
-import { isAuthenticated } from "../utils/tokens.utils";
+import AuthService from "../../services/auth.service";
+import { Toast, toast } from "../../components/Toast";
+import LoadingOverlay from "../../components/LoadingOverlay";
+import { isAuthenticated } from "../../utils/tokens.utils";
 const LoginPage: React.FC = () => {
   const authService = new AuthService();
   const [email, setEmail] = useState<string>("");

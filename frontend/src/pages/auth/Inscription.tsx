@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from 'react-router-dom';
-import AuthService from "../services/auth.service";
-import RoleSelector from "../components/RoleSelector";
-import FormDoctorant from "../components/FormDoctorant";
-import FormEtudiant from "../components/FormEtudiant";
-import FormEnseignant from "../components/FormEnseignant";
-import type { BaseSpecificFields, Role } from "../types/common";
-import LoadingOverlay from "../components/LoadingOverlay";
-import { Toast, toast } from "../components/Toast";
+import AuthService from "../../services/auth.service";
+import RoleSelector from "../../components/RoleSelector";
+import FormDoctorant from "../../components/FormDoctorant";
+import FormEtudiant from "../../components/FormEtudiant";
+import FormEnseignant from "../../components/FormEnseignant";
+import type { BaseSpecificFields, Role } from "../../types/common";
+import LoadingOverlay from "../../components/LoadingOverlay";
+import { Toast, toast } from "../../components/Toast";
 
 const Inscription: React.FC = () => {
   const [role, setRole] = useState<Role>("");
