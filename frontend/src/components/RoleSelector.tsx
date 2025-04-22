@@ -1,40 +1,50 @@
-import React from 'react';
-import { Role } from '../types/common';
-import { UserIcon, GraduationCap, BookOpen } from 'lucide-react';
+
+import type React from "react"
+import type { Role } from "../types/common"
+import { UserIcon, GraduationCap, BookOpen } from "lucide-react"
 
 interface RoleSelectorProps {
-  onSelectRole: (role: Role) => void;
+  onSelectRole: (role: Role) => void
+  activeRole: Role
 }
 
-const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole }) => {
+const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole, activeRole }) => {
+  const roles = [
+    {
+      id: "DOCTORANT",
+      label: "Doctorant",
+      icon: <GraduationCap className="w-8 h-8 mb-2 text-blue-600" />,
+    },
+    {
+      id: "MASTER",
+      label: "Étudiant en Master",
+      icon: <BookOpen className="w-8 h-8 mb-2 text-blue-600" />,
+    },
+    {
+      id: "ENSEIGNANT",
+      label: "Enseignant chercheur",
+      icon: <UserIcon className="w-8 h-8 mb-2 text-blue-600" />,
+    },
+  ]
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <button
-        type="button"
-        onClick={() => onSelectRole('doctorant')}
-        className="flex flex-col items-center p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
-      >
-        <GraduationCap className="w-8 h-8 mb-2 text-blue-600" />
-        <span>Doctorant</span>
-      </button>
-      <button
-        type="button"
-        onClick={() => onSelectRole('master')}
-        className="flex flex-col items-center p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
-      >
-        <BookOpen className="w-8 h-8 mb-2 text-blue-600" />
-        <span>Étudiant</span>
-      </button>
-      <button
-        type="button"
-        onClick={() => onSelectRole('enseignant')}
-        className="flex flex-col items-center p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
-      >
-        <UserIcon className="w-8 h-8 mb-2 text-blue-600" />
-        <span>Enseignant</span>
-      </button>
+      {roles.map((role) => (
+        <button
+          key={role.id}
+          type="button"
+          onClick={() => onSelectRole(role.id as Role)}
+          className={`flex flex-col items-center p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all ${activeRole === role.id ? "border-blue-500 bg-blue-50" : ""
+            }`}
+          aria-pressed={activeRole === role.id}
+          aria-label={`Sélectionner le rôle ${role.label}`}
+        >
+          {role.icon}
+          <span>{role.label}</span>
+        </button>
+      ))}
     </div>
-  );
-};
+  )
+}
 
-export default RoleSelector;
+export default RoleSelector

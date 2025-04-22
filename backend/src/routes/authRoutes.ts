@@ -53,7 +53,7 @@ router.post(
   verifyToken as RequestHandler,
   changePassword as RequestHandler
 );
-router.post("/forget-password", forgetPassword as RequestHandler);
+router.post("/forgot-password", forgetPassword as RequestHandler);
 router.get(
   "/confirm-reset-password/:token",
   confirmResetPassword as RequestHandler
@@ -65,6 +65,13 @@ router.post(
   "/refresh-token",
   verifyToken as RequestHandler,
   refreshToken as RequestHandler
+);
+
+// Route pour les informations de l'utilisateur
+router.get(
+  "/me",
+  verifyToken as RequestHandler,
+  confirmRequest as RequestHandler
 );
 
 export default router;

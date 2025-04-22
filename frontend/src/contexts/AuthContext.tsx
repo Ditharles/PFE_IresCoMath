@@ -1,0 +1,32 @@
+import { createContext, useState, ReactNode } from "react";
+import { getUser } from "../utils/tokens.utils";
+import AuthService from "../services/auth.service";
+
+interface AuthContextType {
+    user: ReturnType<typeof getUser>;
+    isLoggedIn: boolean;
+    login(email: string, password: string): Promise<void>;
+    logout(): Promise<void>;
+}
+
+export const AuthContext = createContext<AuthContextType | null>(null);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [user, setUser] = useState(getUser);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!user);
+    const authService = new AuthService();
+
+    const login = async (email: string, password: string) => {
+        await authService.login(email, password);
+        setUser(getUser());
+        setIsLoggedIn(true);
+    };
+
+    const logout = async () => {
+        await authService.logout();
+        setUser(null);
+        setIsLoggedIn(false);
+    };
+
+    return <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>{children}</AuthContext.Provider>;
+};
