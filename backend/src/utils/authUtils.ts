@@ -51,7 +51,6 @@ export const requestRoleMap: Record<string, any> = {
   MASTER: prisma.requestMaster,
 };
 
-
 export const doctorantFields = {
   id: true,
   nom: true,
@@ -87,11 +86,10 @@ export const enseignantFields = {
   doctorants: { select: doctorantFields },
 };
 
-
 // Fonctions utilitaires
 export const generateRandomToken = (length: number = 64): string => {
   return crypto.randomBytes(length).toString("hex");
-}
+};
 
 export const generateTokenLink = (
   email: string,
@@ -101,7 +99,7 @@ export const generateTokenLink = (
   const token = jwt.sign({ email, role, action }, JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
-  return `http://localhost:3000/confirmation-email/${token}`;
+  return `http://localhost:5173/confirmation-email/${token}`;
 };
 
 export const createSession = async (userId: string) => {
@@ -158,7 +156,6 @@ export const checkUserExists = async (email: string): Promise<boolean> => {
   let user = null;
 
   for (const [key, value] of Object.entries(requestRoleMap)) {
-
     user = await value.findUnique({ where: { email } });
     if (user) break;
   }

@@ -33,7 +33,7 @@ const Inscription: React.FC = () => {
 
     if (status === "success") {
       redirectTimer = setTimeout(() => {
-        navigate("/confirmation-email");
+        navigate("/resend-confirmation-email");
       }, 3000);
     }
 
@@ -81,6 +81,7 @@ const Inscription: React.FC = () => {
     try {
       const response = await authService.register(requestData, role);
       setStatus("success");
+      localStorage.setItem("temptoken", response.data.tempToken)
       toast.success("Inscription réussie ! Vous allez être redirigé vers la page de confirmation.");
     } catch (error) {
       setStatus("error");

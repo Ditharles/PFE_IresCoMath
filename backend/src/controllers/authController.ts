@@ -432,14 +432,20 @@ export const resendConfirmLink: AuthHandler = async (req, res) => {
 
 export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
   try {
-    const { email, role } = req.body;
-    if (typeof email !== "string" || typeof role !== "string") {
-      return res.status(400).json({ message: "Email et rôle requis" });
+    const { email } = req.body;
+    if (typeof email !== "string") {
+      return res.status(400).json({ message: "Email  requis" });
     }
 
-    const userbd = await requestRoleMap[role].findUnique({
-      where: { email },
-    });
+    let userbd;
+    let finalRole;
+    for (let role of ["ENSEIGNANT", "MASTER", "DOCTORANT"]) {
+      userbd = await requestRoleMap[role].findUnique({
+        where: { email },
+      });
+      finalRole = role;
+      if (userbd) break;
+    }
     if (!userbd) {
       return res
         .status(400)
@@ -449,9 +455,9 @@ export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
       userbd.email,
       userbd.nom,
       userbd.prenom,
-      role,
+      finalRole,
       "Validation de la requête d'authentification",
-      generateTokenLink(userbd.email, role, "confirm"),
+      generateTokenLink(userbd.email, finalRole, "confirm"),
       "Confirmer"
     );
     return res.status(200).json({ message: "Email envoyé avec succès" });

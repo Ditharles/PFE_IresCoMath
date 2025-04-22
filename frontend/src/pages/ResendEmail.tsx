@@ -8,14 +8,15 @@ import AuthService from "../services/auth.service";
 const ResendEmail = () => {
     const authService = useMemo(() => new AuthService(), []);
 
-    const token: string = localStorage.getItem("tempToken") || "";
+    const token: string = localStorage.getItem("temptoken") || "";
+
 
 
     const [email, setEmail] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string>("");
     const [tokenExpired, setTokenExpired] = useState<boolean>(false);
-    const [showEmailInput, setShowEmailInput] = useState<boolean>(false);
+    const [showEmailInput, setShowEmailInput] = useState<boolean>(true);
 
     const validateEmail = useCallback((email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,12 +50,8 @@ const ResendEmail = () => {
             const response = showEmailInput
                 ? await authService.resendConfirmationEmailWithEmail(email)
                 : await authService.resendConfirmationEmail(token);
+            console.log(response)
 
-            if (response.data.status === 400) {
-                handleTokenExpired();
-            } else {
-                toast.success("Un nouveau lien de confirmation a été envoyé à votre adresse email.");
-            }
         } catch (error) {
             handleError(error);
         } finally {
@@ -137,14 +134,6 @@ const ResendEmail = () => {
                         </div>
                     )}
 
-                    {!showEmailInput && (
-                        <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                            <div className="flex items-center">
-                                <Mail className="h-5 w-5 text-gray-500 mr-2" />
-                                <span className="text-gray-700">{email}</span>
-                            </div>
-                        </div>
-                    )}
 
                     <button
                         type="submit"

@@ -95,7 +95,7 @@ class AuthService {
 
   async resendConfirmationEmailWithEmail(email: string) {
     try {
-      const response = await api.post("/auth/resend-confirmation-email", {
+      const response = await api.post("/auth/resend-confirmation-link", {
         email,
       });
       return response;

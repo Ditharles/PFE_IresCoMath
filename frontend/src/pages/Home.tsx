@@ -2,19 +2,6 @@ import { ArrowRightIcon } from "lucide-react";
 import { isAuthenticated } from "../utils/tokens.utils";
 import { Navigate } from "react-router-dom";
 
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * Page d'accueil de l'application.
- *
- * Cette page affiche une bannière avec le nom de l'application, une description, un bouton pour s'inscrire et un bouton pour se connecter.
- *
- * La page est accessible à l'adresse suivante : `http://localhost:3000/`.
- *
- * Si l'utilisateur est déjà connecté, il sera redirigé vers la page d'accueil.
- *
- * @returns {JSX.Element} La page d'accueil.
- */
-/*******  2777a651-4906-433c-b5a4-f69349f1a007  *******/
 const Home = () => {
     if (isAuthenticated()) {
         return <Navigate to={'/accueil'} replace />

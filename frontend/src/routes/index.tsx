@@ -30,7 +30,7 @@ const routes: RouteObject[] = [
                 element: <Inscription />,
             },
             {
-                path: "resend-confirmation-mail/:token",
+                path: "resend-confirmation-email",
                 element: <ResendEmail />,
             },
             {
@@ -48,7 +48,7 @@ const routes: RouteObject[] = [
         element: <PrivateRoute />,
         children: [
             {
-                path: "acceuil",
+                path: "accueil",
                 element: <HomePage />
             },
             {
