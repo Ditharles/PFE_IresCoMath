@@ -63,9 +63,8 @@ const HomePage = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'}`}>
-      {/* Header */}
-      <header className={`shadow-sm py-4 px-6 flex justify-between items-center ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+    <div className="h-screen bg-gray-50 flex items-center justify-center">
+    <div className="max-w-3xl w-full bg-white rounded-xl shadow-lg p-8">
         <h1 className="text-2xl font-bold">LOGO</h1>
         <div className="flex items-center space-x-4">
           <div className={`relative ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -102,8 +101,7 @@ const HomePage = () => {
               <MoonIcon className="h-6 w-6" />
             )}
           </button>
-        </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="flex-1 p-6">
@@ -274,6 +272,7 @@ const HomePage = () => {
 
      
      
+    </div>
     </div>
   );
 };
