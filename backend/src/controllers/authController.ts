@@ -39,7 +39,14 @@ import {
   sendEmail,
   getSupervisor,
   checkSupervisorExists,
+  enseignantFields,
+  masterFields,
+  doctorantFields,
 } from "../utils/authUtils";
+import {
+  requestDoctorantFields,
+  requestMasterFields,
+} from "../utils/validateUtils";
 
 const prisma = new PrismaClient();
 
@@ -100,11 +107,12 @@ const registerUser = async (
 
 // Exported functions
 export const registerEnseignant: AuthHandler = async (req, res) => {
+  console.log(req.body);
   const requiredFields = [
     "nom",
     "prenom",
     "email",
-    "photo",
+    // "photo",
     "fonction",
     "grade",
     "etablissement",
@@ -130,10 +138,11 @@ export const registerMaster: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    "photo",
-    "dateInscription",
+    // "photo",
+    "annee_master",
     "encadrant",
   ];
+  console.log(req.body);
   if (!validateRequestBody(req.body, requiredFields)) {
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
@@ -152,8 +161,8 @@ export const registerDoctorant: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    "photo",
-    "dateInscription",
+    // "photo",
+    "annee_these",
     "directeur_these",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
@@ -174,10 +183,26 @@ export const registerDoctorant: AuthHandler = async (req, res) => {
 
 export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(req.body);
   try {
+    const fields = { nom: true, prenom: true };
     const user = await prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        password: true,
+        master: {
+          select: fields,
+        },
+        enseignant: {
+          select: fields,
+        },
+        doctorant: {
+          select: fields,
+        },
+      },
     });
 
     if (!user) {
@@ -199,7 +224,18 @@ export const login: AuthHandler = async (req, res) => {
       refreshTokenValue
     );
 
-    return res.status(200).json({ accessToken, refreshToken });
+    return res.status(200).json({
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        ...user.master,
+        ...user.enseignant,
+        ...user.doctorant,
+      },
+    });
   } catch (error) {
     console.error("Erreur lors de la connexion :", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
@@ -238,11 +274,18 @@ export const confirmRequest: AuthHandler = async (req, res) => {
     };
     const { email, role } = decoded;
 
+    const user = await requestRoleMap[role].findUnique({ where: { email } });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
     await requestRoleMap[role].update({
       where: { email },
       data: { isConfirm: true },
     });
-    const user = await requestRoleMap[role].findUnique({ where: { email } });
+
     const accessToken = jwt.sign({ id: user?.id, role: role }, JWT_SECRET_KEY, {
       expiresIn: "48h",
     });
@@ -298,17 +341,24 @@ export const validateAccount: AuthHandler = async (req, res) => {
       where: { email },
     });
 
-    await sendEmail(
-      email,
-      request.nom,
-      request.prenom,
-      role,
-      "Compte validé",
-      "http://localhost:3000/auth/additionalInfo",
-      "Soumettez les informations supplémentaires"
+    const { accessTokenValue, refreshTokenValue } = await createSession(
+      user.id
+    );
+    const { accessToken, refreshToken } = generateTokens(
+      accessTokenValue,
+      refreshTokenValue
     );
 
-    res.status(200).json({ message: "Compte validé avec succès" });
+    res.status(200).json({
+      message: "Compte validé avec succès",
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      accessToken,
+      refreshToken,
+    });
   } catch (error) {
     if (error instanceof Error) {
       console.error("Erreur lors de la validation du compte:", error.message);
@@ -346,7 +396,7 @@ export const submitAdditionalInfo: AuthHandler = async (req, res) => {
 };
 
 export const resendConfirmLink: AuthHandler = async (req, res) => {
-  const { temptoken } = req.headers;
+  const temptoken = req.headers.authorization?.split(" ")[1];
   if (!temptoken) {
     return res.status(400).json({ message: "Token temporaire manquant" });
   }
@@ -382,14 +432,20 @@ export const resendConfirmLink: AuthHandler = async (req, res) => {
 
 export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
   try {
-    const { email, role } = req.body;
-    if (typeof email !== "string" || typeof role !== "string") {
-      return res.status(400).json({ message: "Email et rôle requis" });
+    const { email } = req.body;
+    if (typeof email !== "string") {
+      return res.status(400).json({ message: "Email  requis" });
     }
 
-    const userbd = await requestRoleMap[role].findUnique({
-      where: { email },
-    });
+    let userbd;
+    let finalRole;
+    for (let role of ["ENSEIGNANT", "MASTER", "DOCTORANT"]) {
+      userbd = await requestRoleMap[role].findUnique({
+        where: { email },
+      });
+      finalRole = role;
+      if (userbd) break;
+    }
     if (!userbd) {
       return res
         .status(400)
@@ -399,9 +455,9 @@ export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
       userbd.email,
       userbd.nom,
       userbd.prenom,
-      role,
+      finalRole,
       "Validation de la requête d'authentification",
-      generateTokenLink(userbd.email, role, "confirm"),
+      generateTokenLink(userbd.email, finalRole, "confirm"),
       "Confirmer"
     );
     return res.status(200).json({ message: "Email envoyé avec succès" });
@@ -630,6 +686,48 @@ export const refreshToken: AuthHandler = async (req, res) => {
       }
       throw error;
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const getUser: AuthHandler = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user?.id,
+      },
+      select: {
+        email: true,
+        role: true,
+        enseignant: { select: enseignantFields },
+        master: {
+          select: masterFields,
+        },
+        doctorant: {
+          select: doctorantFields,
+        },
+        admin: {
+          select: {
+            nom: true,
+            prenom: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
+    }
+    const userfront = {
+      email: user?.email,
+      role: user?.role,
+      ...user?.enseignant,
+      ...user?.master,
+      ...user?.doctorant,
+    };
+    res.status(200).json(userfront);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });

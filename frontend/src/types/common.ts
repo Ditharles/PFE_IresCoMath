@@ -1,4 +1,4 @@
-export type Role = "doctorant" | "master" | "enseignant" | null;
+export type Role = "DOCTORANT" | "MASTER" | "ENSEIGNANT" | "DIRECTEUR"| "ADMIN"|"";
 
 export interface CommonFields {
   nom: string;
@@ -10,10 +10,10 @@ export interface CommonFields {
 
 export interface BaseSpecificFields {
   photo: File | null;
-
 }
 
 export interface DoctorantFields extends BaseSpecificFields {
+  etablissement: string;
   anneeThese: string;
   directeurThese: string;
 }

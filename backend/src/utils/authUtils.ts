@@ -51,10 +51,45 @@ export const requestRoleMap: Record<string, any> = {
   MASTER: prisma.requestMaster,
 };
 
+export const doctorantFields = {
+  id: true,
+  nom: true,
+  prenom: true,
+  email: true,
+  dateInscription: true,
+  createdAt: true,
+  directeur_these_id: true,
+  photo: true,
+};
+
+export const masterFields = {
+  id: true,
+  nom: true,
+  prenom: true,
+  email: true,
+  dateInscription: true,
+  createdAt: true,
+  encadrant_id: true,
+  photo: true,
+};
+
+export const enseignantFields = {
+  id: true,
+  nom: true,
+  prenom: true,
+  email: true,
+  fonction: true,
+  grade: true,
+  createdAt: true,
+  photo: true,
+  masters: { select: masterFields },
+  doctorants: { select: doctorantFields },
+};
+
 // Fonctions utilitaires
-export function generateRandomToken(length = 64): string {
+export const generateRandomToken = (length: number = 64): string => {
   return crypto.randomBytes(length).toString("hex");
-}
+};
 
 export const generateTokenLink = (
   email: string,
@@ -64,7 +99,7 @@ export const generateTokenLink = (
   const token = jwt.sign({ email, role, action }, JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
-  return `http://localhost:3000/auth/${role}/${action}/${token}`;
+  return `http://localhost:5173/confirmation-email/${token}`;
 };
 
 export const createSession = async (userId: string) => {
@@ -120,13 +155,13 @@ export const generateTokens = (
 export const checkUserExists = async (email: string): Promise<boolean> => {
   let user = null;
 
-  for (const [key, value] of Object.entries(requestRoleMap as any)) {
+  for (const [key, value] of Object.entries(requestRoleMap)) {
     user = await value.findUnique({ where: { email } });
     if (user) break;
   }
 
   if (!user) {
-    user = await user.findUnique({ where: { email } });
+    user = await prisma.user.findUnique({ where: { email } });
   }
 
   return !!user;
@@ -163,7 +198,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
           annee_these: Number(annee_these),
           directeur_these: {
             connect: {
-              id: directeur_these?.id,
+              id: directeur_these,
             },
           },
           status: RequestStatus.PENDING,
@@ -181,7 +216,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
           annee_master: Number(annee_master),
           encadrant: {
             connect: {
-              id: encadrant?.id,
+              id: encadrant,
             },
           },
           status: RequestStatus.PENDING,
