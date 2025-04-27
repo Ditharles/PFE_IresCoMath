@@ -10,9 +10,9 @@ import PrivateRoute from "../components/routes/PrivateRoute";
 import AdditionalInfo from "../pages/auth/AdditionalInfo";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
+
 import PasswordForget from "../pages/password-forget";
 import PasswordReset from "../pages/password-reset";
-
 const routes: RouteObject[] = [
     {
         index: true,

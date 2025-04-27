@@ -66,13 +66,13 @@ const LoginPage: React.FC = () => {
               className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
               required
             />
-          </div>
-         {/* Lien "Mot de passe oublié ?" */}
-         <div className="text-right mt-2">
-            <Link to="/password-forget" className="text-blue-500 hover:underline text-sm">
-              Mot de passe oublié ?
-            </Link>
-          </div>
+</div>
+{/* Lien "Mot de passe oublié ?" */}
+<div className="text-right mt-2">
+  <Link to="/password-forget" className="text-blue-500 hover:underline text-sm">
+    Mot de passe oublié ?
+  </Link>
+</div>
           <button
             type="submit"
             disabled={isSubmitting}
