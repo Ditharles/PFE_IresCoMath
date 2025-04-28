@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../utils/db";
-import { enseignantFields, masterFields } from "../utils/authUtils";
+import {
+  doctorantFields,
+  enseignantFields,
+  masterFields,
+} from "../utils/authUtils";
 
 import { Role } from "../utils/validateUtils";
 import { Grade } from "../../generated/prisma";
@@ -29,13 +33,12 @@ export const getUsers = async (req: Request, res: Response) => {
   const users = await prisma.user.findMany({
     select: {
       id: true,
-      email: true,
       role: true,
+      email: true,
       createdAt: true,
-      admin: { select: { nom: true, prenom: true } },
       master: { select: masterFields },
       enseignant: { select: enseignantFields },
-      doctorant: { select: enseignantFields },
+      doctorant: { select: doctorantFields },
     },
     orderBy: {
       createdAt: "desc",
@@ -45,15 +48,15 @@ export const getUsers = async (req: Request, res: Response) => {
   const usersFront = users.map((user) => {
     return {
       id: user.id,
-      email: user.email,
       role: user.role,
+      email: user.email,
       createdAt: user.createdAt,
-      ...user.admin,
       ...user.master,
       ...user.enseignant,
       ...user.doctorant,
     };
   });
+  console.log(usersFront);
   res.status(200).json(usersFront);
 };
 

@@ -66,7 +66,6 @@ model Master {
   id                 String            @id @default(uuid()) @unique
   nom                String
   prenom             String
-  dateInscription    DateTime
   encadrant          EnseignantChercheur @relation(fields: [encadrant_id], references: [id])
   encadrant_id       String
 

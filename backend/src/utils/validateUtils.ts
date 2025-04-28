@@ -12,7 +12,8 @@ export type RequestRole = "ENSEIGNANT" | "MASTER" | "DOCTORANT";
 // Filtre pour les paramètres des recherches
 export interface Filters {
   status?: RequestStatus;
-  dateInscription?: Date;
+  annne_these?: Date;
+  annne_master?: Date;
   encadrant?: { id: string };
   directeur_these?: { id: string };
   fonction?: string;
@@ -46,10 +47,11 @@ export const requestDoctorantFields = {
   nom: true,
   prenom: true,
   email: true,
-  dateInscription: true,
+  annee_these: true,
   createdAt: true,
   directeur_these_id: true,
   photo: true,
+  status: true,
 };
 
 export const requestMasterFields = {
@@ -57,10 +59,11 @@ export const requestMasterFields = {
   nom: true,
   prenom: true,
   email: true,
-  dateInscription: true,
+  annee_master: true,
   createdAt: true,
   encadrant_id: true,
   photo: true,
+  status: true,
 };
 
 export const fields: Record<RequestRole, any> = {
@@ -73,6 +76,7 @@ export const fields: Record<RequestRole, any> = {
     grade: true,
     createdAt: true,
     photo: true,
+    status: true,
   },
   MASTER: requestMasterFields,
   DOCTORANT: requestDoctorantFields,
@@ -96,8 +100,8 @@ export const buildFilters = (query: any): Filters => {
   const filters: Filters = {};
 
   if (query.status) filters.status = query.status;
-  if (query.dateInscription)
-    filters.dateInscription = new Date(query.dateInscription);
+  if (query.annne_these) filters.annne_these = query.annne_these;
+  if (query.annne_master) filters.annne_master = query.annne_master;
   if (query.encadrant) filters.encadrant = { id: query.encadrant };
   if (query.directeur_these)
     filters.directeur_these = { id: query.directeur_these };

@@ -112,7 +112,7 @@ export const registerEnseignant: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    // "photo",
+    "photo",
     "fonction",
     "grade",
     "etablissement",
@@ -138,7 +138,7 @@ export const registerMaster: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    // "photo",
+    "photo",
     "annee_master",
     "encadrant",
   ];
@@ -161,7 +161,7 @@ export const registerDoctorant: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    // "photo",
+    "photo",
     "annee_these",
     "directeur_these",
   ];
@@ -185,7 +185,7 @@ export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
   try {
-    const fields = { nom: true, prenom: true };
+    const fields = { nom: true, prenom: true, photo: true };
     const user = await prisma.user.findUnique({
       where: { email },
       select: {

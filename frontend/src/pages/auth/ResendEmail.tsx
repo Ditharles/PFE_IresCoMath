@@ -16,7 +16,7 @@ const ResendEmail = () => {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string>("");
     const [tokenExpired, setTokenExpired] = useState<boolean>(false);
-    const [showEmailInput, setShowEmailInput] = useState<boolean>(true);
+    const [showEmailInput, setShowEmailInput] = useState<boolean>(false);
 
     const validateEmail = useCallback((email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,9 +50,11 @@ const ResendEmail = () => {
             const response = showEmailInput
                 ? await authService.resendConfirmationEmailWithEmail(email)
                 : await authService.resendConfirmationEmail(token);
-            console.log(response)
+            toast.success(response.data.message);
+
 
         } catch (error) {
+            toast.error(response.data.message);
             handleError(error);
         } finally {
             setIsSubmitting(false);
@@ -99,7 +101,7 @@ const ResendEmail = () => {
                     </div>
                 </div>
 
-                <h1 className="text-2xl font-bold mb-4 text-center text-gray-900">Renvoyer l'email de confirmation</h1>
+                <h1 className="text-2xl font-bold mb-4 text-center text-gray-900">Vous avez perdu votre lien de confirmation ?</h1>
 
                 <p className="text-gray-600 mb-6 text-center">
                     {tokenExpired

@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState, ReactNode, useContext } from "react";
 import { getUser } from "../utils/tokens.utils";
 import AuthService from "../services/auth.service";
 
@@ -29,4 +29,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
 };

@@ -1,29 +1,38 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { Toast, toast } from "../../components/Toast";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import { isAuthenticated } from "../../utils/tokens.utils";
+import { AuthContext } from "../../contexts/AuthContext";
+
 const LoginPage: React.FC = () => {
+  const { isLoggedIn } = useContext(AuthContext) || {};
   const authService = new AuthService();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
+
   const handleLogin = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       const response = await authService.login(email, password);
-      toast.success("Connexion réussie !");
+      if (response?.data?.message) {
+        toast.success(response?.data?.message);
+      } else {
+        toast.success("Connexion réussie!");
+      }
+
 
       setTimeout(() => {
         navigate("/accueil");
-      }, 3000);
+      }, 4000);
 
     } catch (error) {
       toast.error("Une erreur s'est produite lors de la connexion.");
+      console.log(error);
     } finally {
       setIsSubmitting(false);
     }

@@ -10,6 +10,7 @@ import PrivateRoute from "../components/routes/PrivateRoute";
 import AdditionalInfo from "../pages/auth/AdditionalInfo";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
+import GestionMembres from "../pages/directeur/GestionMembres";
 
 const routes: RouteObject[] = [
     {
@@ -54,6 +55,10 @@ const routes: RouteObject[] = [
             {
                 path: "additional-info",
                 element: <AdditionalInfo />
+            },
+            {
+                path: "gestion-des-membres",
+                element: <GestionMembres />
             }
         ]
     },
