@@ -1,12 +1,12 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { Toast, toast } from "../../components/Toast";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import { AuthContext } from "../../contexts/AuthContext";
+import {  useAuth } from "../../contexts/AuthContext";
 
 const LoginPage: React.FC = () => {
-  const { isLoggedIn } = useContext(AuthContext) || {};
+  const {  login } = useAuth(); ;
   const authService = new AuthService();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -16,23 +16,16 @@ const LoginPage: React.FC = () => {
   const handleLogin = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
-      const response = await authService.login(email, password);
-      if (response?.data?.message) {
-        toast.success(response?.data?.message);
-      } else {
-        toast.success("Connexion réussie!");
-      }
-
-
-      setTimeout(() => {
-        navigate("/accueil");
-      }, 4000);
-
+      if (login) {
+        await login(email, password);
+        toast.success("Connexion réussie !");
+        setTimeout(() => {
+          navigate("/accueil");
+      }, 3000);}
     } catch (error) {
       toast.error("Une erreur s'est produite lors de la connexion.");
-      console.log(error);
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }

@@ -31,7 +31,6 @@ class AuthService {
       }
       const response = await api.post("/auth/login", { email, password });
       const { accessToken, refreshToken, user } = response.data;
-      console.log(accessToken, refreshToken, user);
       setToken("accessToken", accessToken);
       setToken("refreshToken", refreshToken);
       setUser(user);
@@ -56,7 +55,7 @@ class AuthService {
     }
   }
 
-  async register(credentials: any, role: string) {
+  async register(credentials: unknown, role: string) {
     try {
       const response = await api.post(`/auth/register/${role}`, credentials);
       return response;
