@@ -9,7 +9,6 @@ import {
     getSortedRowModel,
     getPaginationRowModel,
     flexRender,
-    Column,
     ColumnDef,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
@@ -26,7 +25,7 @@ interface BaseDataTableProps<TData> {
     isLoading?: boolean;
 }
 
-export function BaseDataTable<TData, TValue>({
+export function BaseDataTable<TData>({
     columns,
     data,
     onRefresh,

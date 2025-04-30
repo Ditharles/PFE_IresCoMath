@@ -146,6 +146,34 @@ class AuthService {
       throw error;
     }
   }
+  async verifyValidationUser(token: string) {
+    try {
+      const response = await api.get(`/auth/validate-account/${token}`);
+      setUser(response.data.user);
+      setToken("accessToken", response.data.accessToken);
+      setToken("refreshToken", response.data.refreshToken);
+
+      return response;
+    } catch (error) {
+      console.error(
+        "Une erreur s'est produite lors de la confirmation:",
+        error
+      );
+      throw error;
+    }
+  }
+  async submitAdditionalInfo(data: any) {
+    try {
+      const response = await api.post("/auth/submit-additional-info", data);
+      return response;
+    } catch (error) {
+      console.error(
+        "Une erreur s'est produite lors de la confirmation:",
+        error
+      );
+      throw error;
+    }
+  }
 }
 
 export default AuthService;

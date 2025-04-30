@@ -62,10 +62,11 @@ const Members = () => {
                 ...membersRequestList.data.ENSEIGNANT,
             ];
             setMembersRequest(allMembersRequest);
-
+            console.log(allMembersRequest)
             // Récupérer les membres
             const membersList = await manageUserService.getUsers();
             setMembers(membersList.data);
+            console.log(members)
         } catch (error) {
             console.error("Error fetching data:", error);
             toast.error("Erreur lors de la récupération des données");

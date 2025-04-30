@@ -78,7 +78,9 @@ const Inscription: React.FC = () => {
       return;
     }
 
-    const requestData = { ...commonFields, role, ...specificFields };
+    const photo = specificFields.photo ? specificFields.photo[0] || "" : "";
+    const requestData = { ...commonFields, role, ...specificFields, photo };
+
     console.log(requestData);
     try {
       const response = await authService.register(requestData, role);

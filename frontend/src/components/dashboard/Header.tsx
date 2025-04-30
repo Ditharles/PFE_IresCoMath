@@ -34,7 +34,7 @@ export const Header = ({ darkMode, setDarkMode, showUserProfile, setShowUserProf
 
     return (
         <header
-            className={`shadow-sm py-4 px-6 flex justify-between items-center ${darkMode ? "bg-gray-800" : "bg-white"}`}
+            className={`fixed top-0 left-0 w-full z-50 shadow-sm py-4 px-6 flex justify-between items-center ${darkMode ? "bg-gray-800" : "bg-white"}`}
         >
             <h1 className="text-2xl font-bold">LOGO</h1>
             <div className="flex items-center space-x-4">
@@ -71,7 +71,7 @@ export const Header = ({ darkMode, setDarkMode, showUserProfile, setShowUserProf
                 >
                     <BellIcon className="h-6 w-6" />
                     {unreadNotificationsCount > 0 && (
-                        <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                        <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-red-500 text-white text-xs items-center justify-center">
                             {unreadNotificationsCount}
                         </span>
                     )}

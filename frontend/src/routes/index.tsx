@@ -5,12 +5,14 @@ import Login from "../pages/auth/Login";
 import Inscription from "../pages/auth/Inscription";
 import ResendEmail from "../pages/auth/ResendEmail";
 import ConfirmationEmail from "../pages/auth/ConfirmationEmail";
-import ValidationConfirmee from "../pages/auth/ValidationConfirme";
+import ValidationConfirme from "../pages/auth/ValidationConfirme";
 import PrivateRoute from "../components/routes/PrivateRoute";
 import AdditionalInfo from "../pages/auth/AdditionalInfo";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import GestionMembres from "../pages/directeur/GestionMembres";
+import RoleBasedRoute from "../components/routes/RoleBasedRoute";
+import Layout from "../components/dashboard/directeur/Layout";
 
 const routes: RouteObject[] = [
     {
@@ -40,7 +42,7 @@ const routes: RouteObject[] = [
             },
             {
                 path: "validation-confirme/:token",
-                element: <ValidationConfirmee />
+                element: <ValidationConfirme />
             }
         ],
     },
@@ -53,17 +55,23 @@ const routes: RouteObject[] = [
                 element: <HomePage />
             },
             {
-                path: "additional-info",
+                path: "informations-supplementaires",
                 element: <AdditionalInfo />
             },
-            {
-                path: "gestion-des-membres",
-                element: <GestionMembres />
-            }
+
         ]
     },
 
     //Routes lié au roles 
+    {
+        element: <RoleBasedRoute allowedRoles={["DIRECTEUR"]} />,
+        children: [
+            {
+                path: "membres",
+                element: <Layout><GestionMembres /> </Layout>
+            }
+        ]
+    },
 
 
     //404

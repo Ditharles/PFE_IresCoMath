@@ -7,6 +7,8 @@ interface AuthContextType {
     isLoggedIn: boolean;
     login(email: string, password: string): Promise<void>;
     logout(): Promise<void>;
+    loginSession(): Promise<void>;
+
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -17,6 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authService = new AuthService();
 
     const login = async (email: string, password: string) => {
+      
         const response = await authService.login(email, password);
         setUser(getUser());
         setIsLoggedIn(true);
@@ -28,8 +31,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null);
         setIsLoggedIn(false);
     };
+    const loginSession = async () => {
 
-    return <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>{children}</AuthContext.Provider>;
+        setUser(getUser());
+        setIsLoggedIn(true);
+
+    };
+
+    return <AuthContext.Provider value={{ user, isLoggedIn, login, logout, loginSession }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

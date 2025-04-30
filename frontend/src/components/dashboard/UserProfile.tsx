@@ -11,21 +11,17 @@ import {
 } from "@heroicons/react/24/outline"
 import AuthService from "../../services/auth.service"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../contexts/AuthContext"
 
 interface UserProfileProps {
   darkMode: boolean
   onClose: () => void
-  user?: {
-    name: string
-    email: string
-    role: string
-    profileImage?: string
-  }
+
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose, user = defaultUser }) => {
+const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
   const [isVisible, setIsVisible] = useState(false)
-
+  const { user } = useAuth()
   const navigate = useNavigate()
   // Animation d'entrée
   useEffect(() => {
@@ -89,10 +85,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose, user = def
           {/* Section profil */}
           <div className="flex flex-col items-center p-6 border-b border-gray-200 dark:border-gray-700">
             <div className="relative mb-4">
-              {user.profileImage ? (
+              {user.photo ? (
                 <div className="relative">
                   <img
-                    src={user.profileImage || "/placeholder.svg"}
+                    src={user.photo || "/placeholder.svg"}
                     alt={user.name}
                     className="w-24 h-24 rounded-full object-cover border-2 border-blue-500"
                   />
@@ -220,12 +216,6 @@ const ProfileOption: React.FC<{
   )
 }
 
-// Données utilisateur par défaut
-const defaultUser = {
-  name: "Mohamed Amine",
-  email: "mohamed.amine@example.com",
-  role: "Doctorant",
-  profileImage: "https://randomuser.me/api/portraits/men/32.jpg",
-}
+
 
 export default UserProfile
