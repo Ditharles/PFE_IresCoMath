@@ -405,7 +405,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.5.0
+   * Prisma Client JS version: 6.7.0
    * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
    */
   export type PrismaVersion = {
@@ -1860,6 +1860,8 @@ export namespace Prisma {
     password: string | null
     role: $Enums.Role | null
     createdAt: Date | null
+    bankData: string | null
+    signature: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1868,6 +1870,8 @@ export namespace Prisma {
     password: string | null
     role: $Enums.Role | null
     createdAt: Date | null
+    bankData: string | null
+    signature: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1876,6 +1880,8 @@ export namespace Prisma {
     password: number
     role: number
     createdAt: number
+    bankData: number
+    signature: number
     _all: number
   }
 
@@ -1886,6 +1892,8 @@ export namespace Prisma {
     password?: true
     role?: true
     createdAt?: true
+    bankData?: true
+    signature?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1894,6 +1902,8 @@ export namespace Prisma {
     password?: true
     role?: true
     createdAt?: true
+    bankData?: true
+    signature?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1902,6 +1912,8 @@ export namespace Prisma {
     password?: true
     role?: true
     createdAt?: true
+    bankData?: true
+    signature?: true
     _all?: true
   }
 
@@ -1983,6 +1995,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt: Date
+    bankData: string | null
+    signature: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2008,6 +2022,8 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     createdAt?: boolean
+    bankData?: boolean
+    signature?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     doctorant?: boolean | User$doctorantArgs<ExtArgs>
@@ -2023,6 +2039,8 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     createdAt?: boolean
+    bankData?: boolean
+    signature?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2031,6 +2049,8 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     createdAt?: boolean
+    bankData?: boolean
+    signature?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2039,9 +2059,11 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     createdAt?: boolean
+    bankData?: boolean
+    signature?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "bankData" | "signature", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
@@ -2070,6 +2092,8 @@ export namespace Prisma {
       password: string
       role: $Enums.Role
       createdAt: Date
+      bankData: string | null
+      signature: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2497,13 +2521,15 @@ export namespace Prisma {
 
   /**
    * Fields of the User model
-   */ 
+   */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly bankData: FieldRef<"User", 'String'>
+    readonly signature: FieldRef<"User", 'String'>
   }
     
 
@@ -3737,7 +3763,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Doctorant model
-   */ 
+   */
   interface DoctorantFieldRefs {
     readonly id: FieldRef<"Doctorant", 'String'>
     readonly nom: FieldRef<"Doctorant", 'String'>
@@ -4903,7 +4929,7 @@ export namespace Prisma {
 
   /**
    * Fields of the RequestDoctorant model
-   */ 
+   */
   interface RequestDoctorantFieldRefs {
     readonly id: FieldRef<"RequestDoctorant", 'String'>
     readonly nom: FieldRef<"RequestDoctorant", 'String'>
@@ -5354,7 +5380,6 @@ export namespace Prisma {
     id: string | null
     nom: string | null
     prenom: string | null
-    dateInscription: Date | null
     encadrant_id: string | null
     annee_master: number | null
     photo: string | null
@@ -5365,7 +5390,6 @@ export namespace Prisma {
     id: string | null
     nom: string | null
     prenom: string | null
-    dateInscription: Date | null
     encadrant_id: string | null
     annee_master: number | null
     photo: string | null
@@ -5376,7 +5400,6 @@ export namespace Prisma {
     id: number
     nom: number
     prenom: number
-    dateInscription: number
     encadrant_id: number
     annee_master: number
     photo: number
@@ -5397,7 +5420,6 @@ export namespace Prisma {
     id?: true
     nom?: true
     prenom?: true
-    dateInscription?: true
     encadrant_id?: true
     annee_master?: true
     photo?: true
@@ -5408,7 +5430,6 @@ export namespace Prisma {
     id?: true
     nom?: true
     prenom?: true
-    dateInscription?: true
     encadrant_id?: true
     annee_master?: true
     photo?: true
@@ -5419,7 +5440,6 @@ export namespace Prisma {
     id?: true
     nom?: true
     prenom?: true
-    dateInscription?: true
     encadrant_id?: true
     annee_master?: true
     photo?: true
@@ -5517,7 +5537,6 @@ export namespace Prisma {
     id: string
     nom: string
     prenom: string
-    dateInscription: Date
     encadrant_id: string
     annee_master: number
     photo: string | null
@@ -5547,7 +5566,6 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    dateInscription?: boolean
     encadrant_id?: boolean
     annee_master?: boolean
     photo?: boolean
@@ -5560,7 +5578,6 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    dateInscription?: boolean
     encadrant_id?: boolean
     annee_master?: boolean
     photo?: boolean
@@ -5573,7 +5590,6 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    dateInscription?: boolean
     encadrant_id?: boolean
     annee_master?: boolean
     photo?: boolean
@@ -5586,14 +5602,13 @@ export namespace Prisma {
     id?: boolean
     nom?: boolean
     prenom?: boolean
-    dateInscription?: boolean
     encadrant_id?: boolean
     annee_master?: boolean
     photo?: boolean
     userId?: boolean
   }
 
-  export type MasterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "dateInscription" | "encadrant_id" | "annee_master" | "photo" | "userId", ExtArgs["result"]["master"]>
+  export type MasterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "prenom" | "encadrant_id" | "annee_master" | "photo" | "userId", ExtArgs["result"]["master"]>
   export type MasterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     encadrant?: boolean | EnseignantChercheurDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -5617,7 +5632,6 @@ export namespace Prisma {
       id: string
       nom: string
       prenom: string
-      dateInscription: Date
       encadrant_id: string
       annee_master: number
       photo: string | null
@@ -6045,12 +6059,11 @@ export namespace Prisma {
 
   /**
    * Fields of the Master model
-   */ 
+   */
   interface MasterFieldRefs {
     readonly id: FieldRef<"Master", 'String'>
     readonly nom: FieldRef<"Master", 'String'>
     readonly prenom: FieldRef<"Master", 'String'>
-    readonly dateInscription: FieldRef<"Master", 'DateTime'>
     readonly encadrant_id: FieldRef<"Master", 'String'>
     readonly annee_master: FieldRef<"Master", 'Int'>
     readonly photo: FieldRef<"Master", 'String'>
@@ -7212,7 +7225,7 @@ export namespace Prisma {
 
   /**
    * Fields of the RequestMaster model
-   */ 
+   */
   interface RequestMasterFieldRefs {
     readonly id: FieldRef<"RequestMaster", 'String'>
     readonly nom: FieldRef<"RequestMaster", 'String'>
@@ -8330,7 +8343,7 @@ export namespace Prisma {
 
   /**
    * Fields of the EnseignantChercheur model
-   */ 
+   */
   interface EnseignantChercheurFieldRefs {
     readonly id: FieldRef<"EnseignantChercheur", 'String'>
     readonly nom: FieldRef<"EnseignantChercheur", 'String'>
@@ -9556,7 +9569,7 @@ export namespace Prisma {
 
   /**
    * Fields of the RequestEnseignantChercheur model
-   */ 
+   */
   interface RequestEnseignantChercheurFieldRefs {
     readonly id: FieldRef<"RequestEnseignantChercheur", 'String'>
     readonly nom: FieldRef<"RequestEnseignantChercheur", 'String'>
@@ -10595,7 +10608,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Admin model
-   */ 
+   */
   interface AdminFieldRefs {
     readonly id: FieldRef<"Admin", 'Int'>
     readonly nom: FieldRef<"Admin", 'String'>
@@ -11664,7 +11677,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Session model
-   */ 
+   */
   interface SessionFieldRefs {
     readonly id: FieldRef<"Session", 'String'>
     readonly accessToken: FieldRef<"Session", 'String'>
@@ -12769,7 +12782,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Notification model
-   */ 
+   */
   interface NotificationFieldRefs {
     readonly id: FieldRef<"Notification", 'Int'>
     readonly message: FieldRef<"Notification", 'String'>
@@ -13210,7 +13223,9 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     role: 'role',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    bankData: 'bankData',
+    signature: 'signature'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -13250,7 +13265,6 @@ export namespace Prisma {
     id: 'id',
     nom: 'nom',
     prenom: 'prenom',
-    dateInscription: 'dateInscription',
     encadrant_id: 'encadrant_id',
     annee_master: 'annee_master',
     photo: 'photo',
@@ -13368,7 +13382,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references 
+   * Field references
    */
 
 
@@ -13503,6 +13517,8 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
+    bankData?: StringNullableFilter<"User"> | string | null
+    signature?: StringNullableFilter<"User"> | string | null
     sessions?: SessionListRelationFilter
     notifications?: NotificationListRelationFilter
     doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
@@ -13517,6 +13533,8 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
+    bankData?: SortOrderInput | SortOrder
+    signature?: SortOrderInput | SortOrder
     sessions?: SessionOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     doctorant?: DoctorantOrderByWithRelationInput
@@ -13528,19 +13546,21 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    bankData?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
+    signature?: StringNullableFilter<"User"> | string | null
     sessions?: SessionListRelationFilter
     notifications?: NotificationListRelationFilter
     doctorant?: XOR<DoctorantNullableScalarRelationFilter, DoctorantWhereInput> | null
     master?: XOR<MasterNullableScalarRelationFilter, MasterWhereInput> | null
     enseignant?: XOR<EnseignantChercheurNullableScalarRelationFilter, EnseignantChercheurWhereInput> | null
     admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
-  }, "id" | "id" | "email">
+  }, "id" | "id" | "email" | "bankData">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -13548,6 +13568,8 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
+    bankData?: SortOrderInput | SortOrder
+    signature?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -13562,6 +13584,8 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"User"> | string
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    bankData?: StringNullableWithAggregatesFilter<"User"> | string | null
+    signature?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type DoctorantWhereInput = {
@@ -13728,7 +13752,6 @@ export namespace Prisma {
     id?: StringFilter<"Master"> | string
     nom?: StringFilter<"Master"> | string
     prenom?: StringFilter<"Master"> | string
-    dateInscription?: DateTimeFilter<"Master"> | Date | string
     encadrant_id?: StringFilter<"Master"> | string
     annee_master?: IntFilter<"Master"> | number
     photo?: StringNullableFilter<"Master"> | string | null
@@ -13741,7 +13764,6 @@ export namespace Prisma {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    dateInscription?: SortOrder
     encadrant_id?: SortOrder
     annee_master?: SortOrder
     photo?: SortOrderInput | SortOrder
@@ -13758,7 +13780,6 @@ export namespace Prisma {
     NOT?: MasterWhereInput | MasterWhereInput[]
     nom?: StringFilter<"Master"> | string
     prenom?: StringFilter<"Master"> | string
-    dateInscription?: DateTimeFilter<"Master"> | Date | string
     encadrant_id?: StringFilter<"Master"> | string
     annee_master?: IntFilter<"Master"> | number
     photo?: StringNullableFilter<"Master"> | string | null
@@ -13770,7 +13791,6 @@ export namespace Prisma {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    dateInscription?: SortOrder
     encadrant_id?: SortOrder
     annee_master?: SortOrder
     photo?: SortOrderInput | SortOrder
@@ -13789,7 +13809,6 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Master"> | string
     nom?: StringWithAggregatesFilter<"Master"> | string
     prenom?: StringWithAggregatesFilter<"Master"> | string
-    dateInscription?: DateTimeWithAggregatesFilter<"Master"> | Date | string
     encadrant_id?: StringWithAggregatesFilter<"Master"> | string
     annee_master?: IntWithAggregatesFilter<"Master"> | number
     photo?: StringNullableWithAggregatesFilter<"Master"> | string | null
@@ -14232,6 +14251,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     doctorant?: DoctorantCreateNestedOneWithoutUserInput
@@ -14246,6 +14267,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
@@ -14260,6 +14283,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUpdateOneWithoutUserNestedInput
@@ -14274,6 +14299,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
@@ -14288,6 +14315,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -14296,6 +14325,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -14304,6 +14335,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DoctorantCreateInput = {
@@ -14475,7 +14508,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     annee_master: number
     photo?: string | null
     encadrant: EnseignantChercheurCreateNestedOneWithoutMastersInput
@@ -14486,7 +14518,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     encadrant_id: string
     annee_master: number
     photo?: string | null
@@ -14497,7 +14528,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     encadrant?: EnseignantChercheurUpdateOneRequiredWithoutMastersNestedInput
@@ -14508,7 +14538,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     encadrant_id?: StringFieldUpdateOperationsInput | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14519,7 +14548,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     encadrant_id: string
     annee_master: number
     photo?: string | null
@@ -14530,7 +14558,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -14539,7 +14566,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     encadrant_id?: StringFieldUpdateOperationsInput | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15039,6 +15065,21 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -15071,6 +15112,11 @@ export namespace Prisma {
     isNot?: AdminWhereInput | null
   }
 
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -15085,6 +15131,8 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
+    bankData?: SortOrder
+    signature?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -15093,6 +15141,8 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
+    bankData?: SortOrder
+    signature?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -15101,6 +15151,8 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
+    bankData?: SortOrder
+    signature?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -15145,18 +15197,7 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -15168,7 +15209,21 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type EnseignantChercheurScalarRelationFilter = {
@@ -15179,11 +15234,6 @@ export namespace Prisma {
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
   }
 
   export type DoctorantCountOrderByAggregateInput = {
@@ -15238,24 +15288,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type EnumRequestStatusFilter<$PrismaModel = never> = {
@@ -15342,7 +15374,6 @@ export namespace Prisma {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    dateInscription?: SortOrder
     encadrant_id?: SortOrder
     annee_master?: SortOrder
     photo?: SortOrder
@@ -15357,7 +15388,6 @@ export namespace Prisma {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    dateInscription?: SortOrder
     encadrant_id?: SortOrder
     annee_master?: SortOrder
     photo?: SortOrder
@@ -15368,7 +15398,6 @@ export namespace Prisma {
     id?: SortOrder
     nom?: SortOrder
     prenom?: SortOrder
-    dateInscription?: SortOrder
     encadrant_id?: SortOrder
     annee_master?: SortOrder
     photo?: SortOrder
@@ -15760,6 +15789,10 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type SessionUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -15914,10 +15947,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type EnseignantChercheurUpdateOneRequiredWithoutDoctorantsNestedInput = {
@@ -16264,6 +16293,20 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -16316,7 +16359,7 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -16327,7 +16370,21 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -16355,34 +16412,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumRequestStatusFilter<$PrismaModel = never> = {
@@ -16527,7 +16556,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     annee_master: number
     photo?: string | null
     encadrant: EnseignantChercheurCreateNestedOneWithoutMastersInput
@@ -16537,7 +16565,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     encadrant_id: string
     annee_master: number
     photo?: string | null
@@ -16697,7 +16724,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     encadrant?: EnseignantChercheurUpdateOneRequiredWithoutMastersNestedInput
@@ -16707,7 +16733,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     encadrant_id?: StringFieldUpdateOperationsInput | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16813,6 +16838,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     master?: MasterCreateNestedOneWithoutUserInput
@@ -16826,6 +16853,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     master?: MasterUncheckedCreateNestedOneWithoutUserInput
@@ -16894,6 +16923,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     master?: MasterUpdateOneWithoutUserNestedInput
@@ -16907,6 +16938,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     master?: MasterUncheckedUpdateOneWithoutUserNestedInput
@@ -17025,6 +17058,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     doctorant?: DoctorantCreateNestedOneWithoutUserInput
@@ -17038,6 +17073,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
@@ -17106,6 +17143,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUpdateOneWithoutUserNestedInput
@@ -17119,6 +17158,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
@@ -17230,7 +17271,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     annee_master: number
     photo?: string | null
     user: UserCreateNestedOneWithoutMasterInput
@@ -17240,7 +17280,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     annee_master: number
     photo?: string | null
     userId: string
@@ -17334,6 +17373,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     doctorant?: DoctorantCreateNestedOneWithoutUserInput
@@ -17347,6 +17388,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
@@ -17411,7 +17454,6 @@ export namespace Prisma {
     id?: StringFilter<"Master"> | string
     nom?: StringFilter<"Master"> | string
     prenom?: StringFilter<"Master"> | string
-    dateInscription?: DateTimeFilter<"Master"> | Date | string
     encadrant_id?: StringFilter<"Master"> | string
     annee_master?: IntFilter<"Master"> | number
     photo?: StringNullableFilter<"Master"> | string | null
@@ -17501,6 +17543,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUpdateOneWithoutUserNestedInput
@@ -17514,6 +17558,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
@@ -17527,6 +17573,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     doctorant?: DoctorantCreateNestedOneWithoutUserInput
@@ -17540,6 +17588,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
@@ -17569,6 +17619,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUpdateOneWithoutUserNestedInput
@@ -17582,6 +17634,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
@@ -17595,6 +17649,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     notifications?: NotificationCreateNestedManyWithoutUserInput
     doctorant?: DoctorantCreateNestedOneWithoutUserInput
     master?: MasterCreateNestedOneWithoutUserInput
@@ -17608,6 +17664,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
     master?: MasterUncheckedCreateNestedOneWithoutUserInput
@@ -17637,6 +17695,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUpdateOneWithoutUserNestedInput
     master?: MasterUpdateOneWithoutUserNestedInput
@@ -17650,6 +17710,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
     master?: MasterUncheckedUpdateOneWithoutUserNestedInput
@@ -17663,6 +17725,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     doctorant?: DoctorantCreateNestedOneWithoutUserInput
     master?: MasterCreateNestedOneWithoutUserInput
@@ -17676,6 +17740,8 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     createdAt?: Date | string
+    bankData?: string | null
+    signature?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     doctorant?: DoctorantUncheckedCreateNestedOneWithoutUserInput
     master?: MasterUncheckedCreateNestedOneWithoutUserInput
@@ -17705,6 +17771,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUpdateOneWithoutUserNestedInput
     master?: MasterUpdateOneWithoutUserNestedInput
@@ -17718,6 +17786,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankData?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     doctorant?: DoctorantUncheckedUpdateOneWithoutUserNestedInput
     master?: MasterUncheckedUpdateOneWithoutUserNestedInput
@@ -17801,7 +17871,6 @@ export namespace Prisma {
     id?: string
     nom: string
     prenom: string
-    dateInscription: Date | string
     annee_master: number
     photo?: string | null
     userId: string
@@ -17864,7 +17933,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMasterNestedInput
@@ -17874,7 +17942,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -17884,7 +17951,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nom?: StringFieldUpdateOperationsInput | string
     prenom?: StringFieldUpdateOperationsInput | string
-    dateInscription?: DateTimeFieldUpdateOperationsInput | Date | string
     annee_master?: IntFieldUpdateOperationsInput | number
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string

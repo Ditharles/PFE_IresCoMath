@@ -34,6 +34,7 @@ app.use(helmet());
 app.use("/auth/", authRoutes);
 app.use("/validate/", validateRoutes);
 app.use("/users/", verifyToken as RequestHandler, usersRoutes);
+app.use("/requests/,", verifyToken as RequestHandler, usersRoutes);
 
 app.use(
   "/api/uploadthing",
