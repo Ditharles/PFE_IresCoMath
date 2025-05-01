@@ -1,0 +1,138 @@
+// MembershipRequests.jsx
+import { useMemo } from "react";
+import { FileDown } from "lucide-react";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardFooter,
+} from "../../../ui/card";
+import { Button } from "../../../ui/button";
+import { Skeleton } from "../../../ui/skeleton";
+import { Badge } from "../../../ui/badge";
+import { BaseDataTable } from "../../BaseDataTable";
+import { columns as requestMember } from "./columns";
+import { RoleEnum } from "../../../../types/common";
+import { RequestStatus } from "../../../../types/MemberAddRequest";
+const MembersAddRequestsList = ({
+    requests,
+    isLoading,
+    activeTab,
+    onRefresh,
+    exportToCSV
+}) => {
+    // Calcul des statistiques pour les demandes
+    const requestStatusCounts = useMemo(() => {
+        return {
+            pending: requests.filter(m => m.status === RequestStatus.PENDING).length,
+            approved: requests.filter(m => m.status === RequestStatus.APPROVED).length,
+            rejected: requests.filter(m => m.status === RequestStatus.REJECTED).length
+        };
+    }, [requests]);
+
+    // Calcul des statistiques des rôles pour les demandes
+    const requestRoleCounts = useMemo(() => {
+        const determineRole = (user) => {
+            if ("annee_these" in user) return RoleEnum.DOCTORANT;
+            if ("annee_master" in user) return RoleEnum.MASTER;
+            if ("fonction" in user) return RoleEnum.ENSEIGNANT;
+            return RoleEnum.ADMIN;
+        };
+
+        return {
+            [RoleEnum.DOCTORANT]: requests.filter(m => determineRole(m) === RoleEnum.DOCTORANT).length,
+            [RoleEnum.MASTER]: requests.filter(m => determineRole(m) === RoleEnum.MASTER).length,
+            [RoleEnum.ENSEIGNANT]: requests.filter(m => determineRole(m) === RoleEnum.ENSEIGNANT).length
+        };
+    }, [requests]);
+
+    return (
+        <Card className="mb-6">
+            <CardHeader>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                    <div>
+                        <CardTitle>Demandes d'adhésion ({requests.length})</CardTitle>
+                        <CardDescription>Liste des demandes d'adhésion au laboratoire</CardDescription>
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => exportToCSV('requests')}
+                        disabled={requests.length === 0}
+                    >
+                        <FileDown className="h-4 w-4 mr-2" />
+                        Exporter CSV
+                    </Button>
+                </div>
+            </CardHeader>
+            <CardContent>
+                {/* Statistiques des demandes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Demandes par statut
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex gap-2 flex-wrap">
+                                <Badge variant="outline" className="bg-yellow-50">
+                                    En attente: {requestStatusCounts.pending}
+                                </Badge>
+                                <Badge variant="outline" className="bg-green-50">
+                                    Approuvées: {requestStatusCounts.approved}
+                                </Badge>
+                                <Badge variant="outline" className="bg-red-50">
+                                    Rejetées: {requestStatusCounts.rejected}
+                                </Badge>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Demandes par rôle
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex gap-2 flex-wrap">
+                                <Badge variant="outline" className="bg-blue-50">
+                                    Doctorants: {requestRoleCounts[RoleEnum.DOCTORANT]}
+                                </Badge>
+                                <Badge variant="outline" className="bg-purple-50">
+                                    Masters: {requestRoleCounts[RoleEnum.MASTER]}
+                                </Badge>
+                                <Badge variant="outline" className="bg-cyan-50">
+                                    Enseignants: {requestRoleCounts[RoleEnum.ENSEIGNANT]}
+                                </Badge>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {isLoading ? (
+                    <div className="space-y-3">
+                        <Skeleton className="h-8 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                    </div>
+                ) : (
+                    <BaseDataTable
+                        columns={requestMember(onRefresh)}
+                        data={requests}
+                        onRefresh={onRefresh}
+                        isLoading={isLoading}
+                    />
+                )}
+            </CardContent>
+            <CardFooter className="text-sm text-muted-foreground">
+                Dernière mise à jour: {new Date().toLocaleString()}
+            </CardFooter>
+        </Card>
+    );
+};
+
+export default MembersAddRequestsList;

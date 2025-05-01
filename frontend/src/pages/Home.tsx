@@ -63,15 +63,7 @@ const Home = () => {
                                 </a>
                             </div>
                         </div>
-                        <div className="md:w-1/2 flex justify-center">
-                            <img
-                                src="/placeholder.svg?height=400&width=500"
-                                alt="Gestion administrative et matériels"
-                                className="rounded-lg shadow-lg max-w-full h-auto"
-                                width={500}
-                                height={400}
-                            />
-                        </div>
+                  
                     </div>
                 </div>
             </section>

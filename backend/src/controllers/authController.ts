@@ -112,7 +112,7 @@ export const registerEnseignant: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    // "photo",
+    "photo",
     "fonction",
     "grade",
     "etablissement",
@@ -138,7 +138,7 @@ export const registerMaster: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    // "photo",
+    "photo",
     "annee_master",
     "encadrant",
   ];
@@ -161,7 +161,7 @@ export const registerDoctorant: AuthHandler = async (req, res) => {
     "nom",
     "prenom",
     "email",
-    // "photo",
+    "photo",
     "annee_these",
     "directeur_these",
   ];
@@ -185,7 +185,7 @@ export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
   try {
-    const fields = { nom: true, prenom: true };
+    const fields = { nom: true, prenom: true, photo: true };
     const user = await prisma.user.findUnique({
       where: { email },
       select: {
@@ -297,49 +297,60 @@ export const confirmRequest: AuthHandler = async (req, res) => {
 };
 
 export const validateAccount: AuthHandler = async (req, res) => {
-  try {
-    const { token } = req.params;
-    if (typeof token !== "string") {
-      return res.status(400).json({ message: "Token invalide" });
-    }
+  const { token } = req.params;
 
+  if (typeof token !== "string") {
+    return res.status(400).json({ message: "Token invalide" });
+  }
+
+  let role: Role;
+  let request: any;
+
+  try {
     const decoded = jwt.verify(token, JWT_SECRET_KEY) as {
       email: string;
       role: Role;
     };
-    const { email, role } = decoded;
 
-    const request = (await requestRoleMap[role].findUnique({
+    const { email } = decoded;
+    role = decoded.role;
+
+    const model = requestRoleMap[role];
+    if (!model) {
+      return res.status(400).json({ message: "Rôle inconnu" });
+    }
+
+    request = await model.findUnique({
       where: { email },
-    })) as RequestType | null;
+    });
 
     if (!request) {
-      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
-      return;
+      return res
+        .status(404)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
 
     if (request.status !== RequestStatus.APPROVED) {
-      res.status(400).json({ message: ERROR_MESSAGES.REQUEST_NOT_APPROVED });
-      return;
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_APPROVED });
     }
 
-    const password = generateRandomToken(12);
-    const hashedPassword = await bcrypt.hash(password, 10);
+    await model.delete({
+      where: { email },
+    });
 
-    const user = await createUser(email, role, hashedPassword);
+    const password = "123"; // à remplacer par un mot de passe généré ou envoyé
+
+    const user = await createUser(email, role, password);
 
     if (role === "DOCTORANT") {
       await createDoctorant(request as RequestDoctorant, user.id);
     } else if (role === "MASTER") {
       await createMaster(request as RequestMaster, user.id);
     } else if (role === "ENSEIGNANT") {
-      const enseignantRequest = request as RequestEnseignant;
-      await createEnseignant(enseignantRequest, user.id);
+      await createEnseignant(request as RequestEnseignantChercheur, user.id);
     }
-
-    await requestRoleMap[role].delete({
-      where: { email },
-    });
 
     const { accessTokenValue, refreshTokenValue } = await createSession(
       user.id
@@ -360,23 +371,20 @@ export const validateAccount: AuthHandler = async (req, res) => {
       refreshToken,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Erreur lors de la validation du compte:", error.message);
-    } else {
-      console.error("Erreur inconnue lors de la validation du compte");
-    }
+    console.error("Erreur lors de la validation du compte:", error);
+
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
 export const submitAdditionalInfo: AuthHandler = async (req, res) => {
   try {
-    const { password } = req.body;
+    const { password,bankData,signature } = req.body;
 
-    if (!password) {
+    const requiredFields = ["password", "bankData", "signature"];
+    if (!validateRequestBody(req.body, requiredFields)) {
       return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.update({
@@ -384,6 +392,8 @@ export const submitAdditionalInfo: AuthHandler = async (req, res) => {
         id: req.user?.id,
       },
       data: {
+        signature,
+        bankData,
         password: hashedPassword,
       },
     });

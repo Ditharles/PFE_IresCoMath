@@ -1,11 +1,12 @@
 
-import { isAuthenticated } from '../../utils/tokens.utils'
+import { useAuth } from '../../contexts/AuthContext';
 import { Navigate, Outlet } from 'react-router-dom'
 
 const PublicRoute = () => {
-    if (isAuthenticated()) {
-       
-        return <Navigate to="/acceuil" replace
+    const { isLoggedIn } = useAuth();
+    if (isLoggedIn) {
+
+        return <Navigate to="/accueil" replace
         />
     }
     return <Outlet />

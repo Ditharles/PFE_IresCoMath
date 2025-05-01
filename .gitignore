@@ -1,3 +1,5 @@
 /frontend/node_modules
+/backend/generated/
 
 .env*
+node_modules

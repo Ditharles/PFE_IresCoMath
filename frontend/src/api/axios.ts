@@ -7,7 +7,7 @@ import {
 } from "../utils/tokens.utils";
 
 const api = axios.create({
-  baseURL: import.meta.env.BACKEND_API || "http://localhost:8000",
+  baseURL: "http://localhost:8000",
 });
 
 // Liste des routes ou méthodes qui ne nécessitent pas de token

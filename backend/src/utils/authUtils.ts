@@ -55,9 +55,7 @@ export const doctorantFields = {
   id: true,
   nom: true,
   prenom: true,
-  email: true,
-  dateInscription: true,
-  createdAt: true,
+  annee_these: true,
   directeur_these_id: true,
   photo: true,
 };
@@ -66,9 +64,7 @@ export const masterFields = {
   id: true,
   nom: true,
   prenom: true,
-  email: true,
-  dateInscription: true,
-  createdAt: true,
+  annee_master: true,
   encadrant_id: true,
   photo: true,
 };
@@ -77,10 +73,8 @@ export const enseignantFields = {
   id: true,
   nom: true,
   prenom: true,
-  email: true,
   fonction: true,
   grade: true,
-  createdAt: true,
   photo: true,
   masters: { select: masterFields },
   doctorants: { select: doctorantFields },
@@ -99,7 +93,7 @@ export const generateTokenLink = (
   const token = jwt.sign({ email, role, action }, JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
-  return `http://localhost:5173/confirmation-email/${token}`;
+  return `http://localhost:5173/confirm-email/${token}`;
 };
 
 export const createSession = async (userId: string) => {
@@ -188,7 +182,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
       });
     }
     case "DOCTORANT": {
-      const { nom, prenom, email, annee_these, directeur_these } =
+      const { nom, prenom, email, annee_these, directeur_these_id } =
         data as RequestDoctorant;
       return prisma.requestDoctorant.create({
         data: {
@@ -198,7 +192,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
           annee_these: Number(annee_these),
           directeur_these: {
             connect: {
-              id: directeur_these,
+              id: directeur_these_id,
             },
           },
           status: RequestStatus.PENDING,
@@ -382,10 +376,10 @@ export const createMaster = async (data: RequestMaster, userId: string) => {
       nom: data.nom,
       prenom: data.prenom,
       annee_master: Number(data.annee_master),
-      dateInscription: new Date(),
+
       encadrant: {
         connect: {
-          id: data.encadrant?.id,
+          id: data.encadrant_id,
         },
       },
     },
