@@ -229,9 +229,67 @@ exports.Prisma.NotificationScalarFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.MaterialCategoryScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  nom: 'nom',
+  quantite: 'quantite'
+};
+
+exports.Prisma.MaterialScalarFieldEnum = {
+  id: 'id',
+  nom: 'nom',
+  categorieId: 'categorieId',
+  specificites: 'specificites',
+  dateObtention: 'dateObtention'
+};
+
+exports.Prisma.HistoriqueMaterialScalarFieldEnum = {
+  id: 'id',
+  materielId: 'materielId',
+  creeLe: 'creeLe',
+  misAJourLe: 'misAJourLe',
+  userId: 'userId',
+  dateEmprunt: 'dateEmprunt',
+  dateRetour: 'dateRetour'
+};
+
+exports.Prisma.RequestScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  userId: 'userId',
+  creeLe: 'creeLe',
+  statut: 'statut',
+  notes: 'notes'
+};
+
+exports.Prisma.RequestPurchaseMaterialScalarFieldEnum = {
+  id: 'id',
+  requeteId: 'requeteId',
+  typeMateriel: 'typeMateriel',
+  nom: 'nom',
+  quantite: 'quantite',
+  photo: 'photo',
+  specificites: 'specificites',
+  estimationCout: 'estimationCout'
+};
+
+exports.Prisma.RequestLendMaterialScalarFieldEnum = {
+  id: 'id',
+  requeteId: 'requeteId',
+  materielId: 'materielId',
+  quantite: 'quantite',
+  dateDebut: 'dateDebut',
+  dateFin: 'dateFin'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -242,6 +300,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
@@ -254,7 +318,8 @@ exports.Role = exports.$Enums.Role = {
 exports.RequestStatus = exports.$Enums.RequestStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  END: 'END'
 };
 
 exports.Grade = exports.$Enums.Grade = {
@@ -269,6 +334,25 @@ exports.NotificationStatus = exports.$Enums.NotificationStatus = {
   READ: 'READ'
 };
 
+exports.MaterielType = exports.$Enums.MaterielType = {
+  FOURNITURES: 'FOURNITURES',
+  CONSOMMABLES: 'CONSOMMABLES',
+  EQUIPEMENT: 'EQUIPEMENT',
+  OUTILLAGE: 'OUTILLAGE'
+};
+
+exports.RequestType = exports.$Enums.RequestType = {
+  MISSION: 'MISSION',
+  STAGE: 'STAGE',
+  CONFERENCE: 'CONFERENCE',
+  ACHAT_MATERIEL: 'ACHAT_MATERIEL',
+  PRET_MATERIEL: 'PRET_MATERIEL',
+  DEPLACEMENT_HEBERGEMENT: 'DEPLACEMENT_HEBERGEMENT',
+  REPARATION_MAINTENANCE: 'REPARATION_MAINTENANCE',
+  CONTRACTUEL: 'CONTRACTUEL',
+  INSCRIPTION_ARTICLE: 'INSCRIPTION_ARTICLE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Doctorant: 'Doctorant',
@@ -279,7 +363,13 @@ exports.Prisma.ModelName = {
   RequestEnseignantChercheur: 'RequestEnseignantChercheur',
   Admin: 'Admin',
   Session: 'Session',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  MaterialCategory: 'MaterialCategory',
+  Material: 'Material',
+  HistoriqueMaterial: 'HistoriqueMaterial',
+  Request: 'Request',
+  RequestPurchaseMaterial: 'RequestPurchaseMaterial',
+  RequestLendMaterial: 'RequestLendMaterial'
 };
 
 /**

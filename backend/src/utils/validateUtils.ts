@@ -176,7 +176,7 @@ export const sendMailAfterValidation = async (
       { expiresIn: "24h" }
     );
 
-    linkUrl = `https://localhost:5173/validation/${token}`;
+    linkUrl = `http://localhost:5173/validation-confirme/${token}`;
 
     mainContent = `
       <p>Nous avons le plaisir de vous informer que votre demande pour rejoindre le laboratoire IreSCoMath en tant que <span class="highlight">${request_role}</span> a été approuvée par notre directeur.</p>

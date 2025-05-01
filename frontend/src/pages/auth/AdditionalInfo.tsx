@@ -11,13 +11,16 @@ const AdditionalInfo = () => {
   const [form, setForm] = useState({
     password: "",
     confirmPassword: "",
-    rib: "",
-    signature: null as File | null,
+    bankData: "",
+    signature: null as string | null,
   });
+
   const authService = new AuthService();
+
   useEffect(() => {
     loginSession();
-  })
+  }, []); // ✅ important : empêche les appels multiples
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
     setForm((prev) => ({
@@ -35,7 +38,6 @@ const AdditionalInfo = () => {
       setTimeout(() => {
         navigate("/accueil");
       }, 2000);
-
     } catch (err) {
       console.error("Erreur lors de la validation du compte :", err);
     }
@@ -46,8 +48,8 @@ const AdditionalInfo = () => {
       ...prev,
       photo: photoLink
     }));
-
   }, []);
+
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
       <h2 className="text-2xl font-bold text-center text-blue-800 mb-4">
@@ -70,7 +72,7 @@ const AdditionalInfo = () => {
         />
         <input
           type="text"
-          name="rib"
+          name="bankData"
           placeholder="Données bancaires"
           onChange={handleChange}
           className="input"
