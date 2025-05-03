@@ -12,7 +12,7 @@ interface FormData {
   [key: string]: any;
 }
 
-interface FormErrors {
+interface FormErrors {              
   [key: string]: string;
 }
 
