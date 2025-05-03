@@ -1,4 +1,5 @@
 import { RouteObject } from "react-router-dom";
+import Layout from "../components/Layout";
 import HomePage from "../pages/HomePage";
 import PublicRoute from "../components/routes/PublicRoute";
 import Login from "../pages/auth/Login";
@@ -10,19 +11,19 @@ import PrivateRoute from "../components/routes/PrivateRoute";
 import AdditionalInfo from "../pages/auth/AdditionalInfo";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
-
+import NouvelleDemande from "../pages/NouvelleDemande";
 import PasswordForget from "../pages/password-forget";
 import PasswordReset from "../pages/password-reset";
+
 const routes: RouteObject[] = [
     {
         index: true,
         element: <Home />
     },
-    //Routes non inaccessibles une fois connecté
+    //Routes non accessibles une fois connecté
     {
         element: <PublicRoute />,
         children: [
-
             {
                 path: "login",
                 element: <Login />,
@@ -58,18 +59,27 @@ const routes: RouteObject[] = [
         element: <PrivateRoute />,
         children: [
             {
-                path: "accueil",
-                element: <HomePage />
-            },
-            {
-                path: "additional-info",
-                element: <AdditionalInfo />
+                element: <Layout />, // Layout ajouté ici
+                children: [
+                    {
+                        path: "accueil",
+                        element: <HomePage />
+                    },
+                    {
+                        path: "demande/:type",
+                        element: <NouvelleDemande />   
+                    },
+                    {
+                        path: "additional-info",
+                        element: <AdditionalInfo />
+                    },
+                ]
             }
         ]
     },
 
     //Routes lié au roles 
-
+    // (Laissez cette section vide si pas encore implémenté)
 
     //404
     {
@@ -78,4 +88,4 @@ const routes: RouteObject[] = [
     }
 ]
 
-export default routes
+export default routes;

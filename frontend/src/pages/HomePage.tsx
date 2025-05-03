@@ -5,6 +5,8 @@ import { MoonIcon, SunIcon, BellIcon } from "@heroicons/react/24/outline"
 import UserProfile from "../components/UserProfile"
 import NotificationsPanel from "../components/NotificationsPanel"
 import { getUser } from "../utils/tokens.utils"
+import { Link } from "react-router-dom";
+
 type Request = {
   id: string
   date: string
@@ -196,11 +198,12 @@ const HomePage = () => {
                   </button>
                 </li>
                 <li>
-                  <button
-                    className={`w-full text-left px-4 py-2 rounded-md font-medium ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
-                  >
-                    Nouvelle Demande
-                  </button>
+                <Link
+    to="/nouvelleDemande" // Ajout du lien vers la page NouvelleDemande
+    className={`w-full text-left px-4 py-2 rounded-md font-medium ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
+  >
+    Nouvelle Demande
+  </Link>
                 </li>
                 <li>
                   <button

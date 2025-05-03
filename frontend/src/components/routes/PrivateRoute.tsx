@@ -1,8 +1,9 @@
 
 import { isAuthenticated } from '../../utils/tokens.utils'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
 const PrivateRoute = () => {
+    const location = useLocation(); 
     if (!isAuthenticated()) {
         return <Navigate to="/login" state={{ from: location }} replace />
     }

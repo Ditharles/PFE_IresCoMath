@@ -23,5 +23,8 @@
   "homepage": "https://github.com/Ditharles/PFE_IresCoMath#readme",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "react-hot-toast": "^2.5.2"
   }
 }
