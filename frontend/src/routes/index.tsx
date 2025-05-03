@@ -68,6 +68,10 @@ const routes: RouteObject[] = [
                 path: "informations-supplementaires",
                 element: <AdditionalInfo />
             },
+            {
+                path: "demande/:type",
+                element: <NouvelleDemande />
+            },
 
         ]
     },
