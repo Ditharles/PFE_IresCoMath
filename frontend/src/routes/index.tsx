@@ -1,5 +1,4 @@
 import { RouteObject } from "react-router-dom";
-import Layout from "../components/Layout";
 import HomePage from "../pages/HomePage";
 import PublicRoute from "../components/routes/PublicRoute";
 import Login from "../pages/auth/Login";
@@ -11,26 +10,22 @@ import PrivateRoute from "../components/routes/PrivateRoute";
 import AdditionalInfo from "../pages/auth/AdditionalInfo";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
-<<<<<<< HEAD
-import NouvelleDemande from "../pages/NouvelleDemande";
-=======
 import GestionMembres from "../pages/directeur/GestionMembres";
 import RoleBasedRoute from "../components/routes/RoleBasedRoute";
-import Layout from "../components/dashboard/directeur/Layout";
 
->>>>>>> origin/main
 import PasswordForget from "../pages/password-forget";
 import PasswordReset from "../pages/password-reset";
-
+import MemberAddRequest from "../pages/MemberAddRequest";
 const routes: RouteObject[] = [
     {
         index: true,
         element: <Home />
     },
-    //Routes non accessibles une fois connecté
+    //Routes non inaccessibles une fois connecté
     {
         element: <PublicRoute />,
         children: [
+
             {
                 path: "login",
                 element: <Login />,
@@ -66,24 +61,6 @@ const routes: RouteObject[] = [
         element: <PrivateRoute />,
         children: [
             {
-<<<<<<< HEAD
-                element: <Layout />, // Layout ajouté ici
-                children: [
-                    {
-                        path: "accueil",
-                        element: <HomePage />
-                    },
-                    {
-                        path: "demande/:type",
-                        element: <NouvelleDemande />   
-                    },
-                    {
-                        path: "additional-info",
-                        element: <AdditionalInfo />
-                    },
-                ]
-            }
-=======
                 path: "accueil",
                 element: <HomePage />
             },
@@ -91,26 +68,29 @@ const routes: RouteObject[] = [
                 path: "informations-supplementaires",
                 element: <AdditionalInfo />
             },
+            {
+                path: "demande/:type",
+                element: <NouvelleDemande />
+            },
 
->>>>>>> origin/main
         ]
     },
 
     //Routes lié au roles 
-<<<<<<< HEAD
-    // (Laissez cette section vide si pas encore implémenté)
-=======
     {
         element: <RoleBasedRoute allowedRoles={["DIRECTEUR"]} />,
         children: [
             {
                 path: "membres",
-                element: <Layout><GestionMembres /> </Layout>
+                element: <GestionMembres />
+            },
+            {
+                path: "membre",
+                element: <MemberAddRequest />
             }
         ]
     },
 
->>>>>>> origin/main
 
     //404
     {
@@ -119,4 +99,4 @@ const routes: RouteObject[] = [
     }
 ]
 
-export default routes;
+export default routes
