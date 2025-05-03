@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "components/dashboard", "components/routes", "components/ui", "components/FileUpload.tsx", "components/LoadingOverlay.tsx", "components/NotificationsPanel.tsx", "components/Toast.tsx"]
 }

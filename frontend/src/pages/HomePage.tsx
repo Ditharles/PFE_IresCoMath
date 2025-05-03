@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client"
 
 import { useState } from "react"
@@ -15,33 +16,23 @@ type Request = {
   status: string
 }
 
+=======
+import { Navigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext';
+>>>>>>> origin/main
 const HomePage = () => {
-  const [startDate, setStartDate] = useState<string>("")
-  const [endDate, setEndDate] = useState<string>("")
-  const [filterType, setFilterType] = useState<string>("")
-  const [filterStatus, setFilterStatus] = useState<string>("")
-  const [searchQuery, setSearchQuery] = useState<string>("")
-  const [darkMode, setDarkMode] = useState<boolean>(false)
-  const [showUserProfile, setShowUserProfile] = useState<boolean>(false)
-  const [showNotifications, setShowNotifications] = useState<boolean>(false)
+  const { user } = useAuth();
+  const role = user?.role;
 
-  //TODO: données réeels 
-  const unreadNotificationsCount = 2
-
-  const user = getUser()
-
-
-  const requests: Request[] = [
-    { id: "1", date: "2023-05-15", type: "Vacation", info: "Summer vacation", status: "Approved" },
-    { id: "2", date: "2023-06-20", type: "Sick Leave", info: "Flu symptoms", status: "Pending" },
-    { id: "3", date: "2023-07-10", type: "Remote Work", info: "Home office setup", status: "Rejected" },
-    { id: "4", date: "2023-08-05", type: "Vacation", info: "Family trip", status: "Approved" },
-    { id: "5", date: "2023-09-12", type: "Sick Leave", info: "Doctor appointment", status: "Pending" },
-  ]
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
+  switch (role) {
+    case 'ADMIN':
+      return <Navigate to="/admin" />;
+    case 'DIRECTEUR':
+      return <Navigate to="/membres" />;
+    default:
+      return <Navigate to="/historique" />;
   }
+<<<<<<< HEAD
 
   const toggleUserProfile = () => {
     if (showNotifications) setShowNotifications(false)
@@ -390,6 +381,8 @@ const HomePage = () => {
       {showNotifications && <NotificationsPanel darkMode={darkMode} onClose={() => setShowNotifications(false)} />}
     </div>
   )
+=======
+>>>>>>> origin/main
 }
 
 export default HomePage

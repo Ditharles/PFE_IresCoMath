@@ -6,12 +6,19 @@ import Login from "../pages/auth/Login";
 import Inscription from "../pages/auth/Inscription";
 import ResendEmail from "../pages/auth/ResendEmail";
 import ConfirmationEmail from "../pages/auth/ConfirmationEmail";
-import ValidationConfirmee from "../pages/auth/ValidationConfirme";
+import ValidationConfirme from "../pages/auth/ValidationConfirme";
 import PrivateRoute from "../components/routes/PrivateRoute";
 import AdditionalInfo from "../pages/auth/AdditionalInfo";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
+<<<<<<< HEAD
 import NouvelleDemande from "../pages/NouvelleDemande";
+=======
+import GestionMembres from "../pages/directeur/GestionMembres";
+import RoleBasedRoute from "../components/routes/RoleBasedRoute";
+import Layout from "../components/dashboard/directeur/Layout";
+
+>>>>>>> origin/main
 import PasswordForget from "../pages/password-forget";
 import PasswordReset from "../pages/password-reset";
 
@@ -42,7 +49,7 @@ const routes: RouteObject[] = [
             },
             {
                 path: "validation-confirme/:token",
-                element: <ValidationConfirmee />
+                element: <ValidationConfirme />
             },
             {
                 path: "password-forget",
@@ -59,6 +66,7 @@ const routes: RouteObject[] = [
         element: <PrivateRoute />,
         children: [
             {
+<<<<<<< HEAD
                 element: <Layout />, // Layout ajouté ici
                 children: [
                     {
@@ -75,11 +83,34 @@ const routes: RouteObject[] = [
                     },
                 ]
             }
+=======
+                path: "accueil",
+                element: <HomePage />
+            },
+            {
+                path: "informations-supplementaires",
+                element: <AdditionalInfo />
+            },
+
+>>>>>>> origin/main
         ]
     },
 
     //Routes lié au roles 
+<<<<<<< HEAD
     // (Laissez cette section vide si pas encore implémenté)
+=======
+    {
+        element: <RoleBasedRoute allowedRoles={["DIRECTEUR"]} />,
+        children: [
+            {
+                path: "membres",
+                element: <Layout><GestionMembres /> </Layout>
+            }
+        ]
+    },
+
+>>>>>>> origin/main
 
     //404
     {

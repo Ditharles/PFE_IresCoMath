@@ -4,84 +4,99 @@ import { ToastContainer, toast as toastify } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { CheckCircle, AlertCircle, Info, XCircle } from "lucide-react"
 
-// Custom toast styles to match application theme
+type ToastType = "success" | "error" | "info" | "warning"
+
 const toastStyles = {
   success: {
-    style: {
-      background: "#EFF6FF",
-      color: "#1E40AF",
-      borderLeft: "4px solid #3B82F6",
-    },
-    icon: <CheckCircle className="w-5 h-5 text-blue-500" />,
+    icon: <CheckCircle className="w-5 h-5 text-green-500" />,
+    className: "bg-green-50 text-green-800 border-l-4 border-green-500"
   },
   error: {
-    style: {
-      background: "#FEF2F2",
-      color: "#B91C1C",
-      borderLeft: "4px solid #EF4444",
-    },
     icon: <XCircle className="w-5 h-5 text-red-500" />,
+    className: "bg-red-50 text-red-800 border-l-4 border-red-500"
   },
   info: {
-    style: {
-      background: "#F0F9FF",
-      color: "#0369A1",
-      borderLeft: "4px solid #0EA5E9",
-    },
-    icon: <Info className="w-5 h-5 text-sky-500" />,
+    icon: <Info className="w-5 h-5 text-blue-500" />,
+    className: "bg-blue-50 text-blue-800 border-l-4 border-blue-500"
   },
   warning: {
-    style: {
-      background: "#FFFBEB",
-      color: "#92400E",
-      borderLeft: "4px solid #F59E0B",
-    },
-    icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+    icon: <AlertCircle className="w-5 h-5 text-yellow-500" />,
+    className: "bg-yellow-50 text-yellow-800 border-l-4 border-yellow-500"
   },
 }
 
-// Toast container component
 export function Toast() {
   return (
     <ToastContainer
       position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop
-      closeOnClick
+      autoClose={3000}
+      hideProgressBar={true}
+      newestOnTop={true}
+      closeOnClick={false}
       rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
+      pauseOnFocusLoss={true}
+      draggable={false}
+      pauseOnHover={true}
       theme="light"
+      toastClassName="relative flex p-4 min-h-16 rounded-md justify-between overflow-hidden cursor-pointer shadow-lg my-2 mx-4"
+      bodyClassName="flex items-center text-sm font-medium gap-3"
+      closeButton={({ type }) => (
+        <button className={`
+          absolute top-2 right-2 p-1 rounded-full hover:bg-opacity-20 transition-colors
+          ${type === "success" ? "hover:bg-green-500" : ""}
+          ${type === "error" ? "hover:bg-red-500" : ""}
+          ${type === "info" ? "hover:bg-blue-500" : ""}
+          ${type === "warning" ? "hover:bg-yellow-500" : ""}
+        `}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      )}
     />
   )
 }
 
-// Toast functions
 export const toast = {
-  success: (message: string) => {
+  success: (message: string, options?: any) => {
     toastify.success(message, {
       icon: toastStyles.success.icon,
-      style: toastStyles.success.style,
+      className: toastStyles.success.className,
+      autoClose: 3000,
+      ...options,
     })
   },
-  error: (message: string) => {
+  error: (message: string, options?: any) => {
     toastify.error(message, {
       icon: toastStyles.error.icon,
-      style: toastStyles.error.style,
+      className: toastStyles.error.className,
+      autoClose: 3000,
+      ...options,
     })
   },
-  info: (message: string) => {
+  info: (message: string, options?: any) => {
     toastify.info(message, {
       icon: toastStyles.info.icon,
-      style: toastStyles.info.style,
+      className: toastStyles.info.className,
+      autoClose: 3000,
+      ...options,
     })
   },
-  warning: (message: string) => {
+  warning: (message: string, options?: any) => {
     toastify.warning(message, {
       icon: toastStyles.warning.icon,
-      style: toastStyles.warning.style,
+      className: toastStyles.warning.className,
+      autoClose: 3000,
+      ...options,
     })
   },
 }
