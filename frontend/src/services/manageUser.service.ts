@@ -28,6 +28,20 @@ export class ManageUserService {
     }
   }
 
+  async getUser(id: string) {
+    try {
+      const response = await api.get(`/users/get-user/${id}`);
+      return response;
+      
+    } catch (error) {
+      console.error(
+        "Une erreur s'est produite lors de la récupération des utilisateurs:",
+        error
+      );
+      throw error;
+    }
+  }
+
   async acceptUser(
     request_id: string,
     request_role: Role,
@@ -35,7 +49,6 @@ export class ManageUserService {
     rejected_reason?: string
   ) {
     try {
-     
       const response = await api.post("/validate/validate-request", {
         request_id,
         request_role,
@@ -55,7 +68,7 @@ export class ManageUserService {
   async getRequestInfo(id: string, role: Role) {
     try {
       const response = await api.get(
-        `/validate/get-request-info?user_id=${id}&role=${role}`
+        `/validate/get-request-info?user_id=${id}&user_role=${role}`
       );
       return response;
     } catch (error) {

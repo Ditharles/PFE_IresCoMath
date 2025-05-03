@@ -6,10 +6,11 @@ type RequestDoctorant = {
   annee_these: number;
   createdAt: Date;
   directeur_these_id: string;
+  directeur_these?: { id: string; nom: string; prenom: string };
   status: RequestStatus;
   rejectionReason?: string;
   photo?: string;
-  isConfirm: boolean;
+  isConfirm?: boolean;
 };
 
 type RequestMaster = {
@@ -20,10 +21,11 @@ type RequestMaster = {
   annee_master: number;
   createdAt: Date;
   encadrant_id: string;
+  encadrant?: { id: string; nom: string; prenom: string };
   status: RequestStatus;
   rejectionReason?: string;
   photo?: string;
-  isConfirm: boolean;
+  isConfirm?: boolean;
 };
 
 type RequestEnseignantChercheur = {
@@ -35,7 +37,7 @@ type RequestEnseignantChercheur = {
   grade: Grade;
   etablissement: string;
   status: RequestStatus;
-  isConfirm: boolean;
+  isConfirm?: boolean;
   rejectionReason?: string;
   photo?: string;
   createdAt: Date;

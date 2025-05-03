@@ -39,7 +39,7 @@ const Members = () => {
         members,
         searchQuery,
         filterRole,
-        undefined, // Pas de filtrage par statut pour les membres
+        undefined, 
         activeTab
     );
 

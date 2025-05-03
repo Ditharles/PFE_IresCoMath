@@ -5,7 +5,7 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
 import { ScrollArea } from "../../../components/ui/scroll-area";
 
-const Sidebar = ({ darkMode = false }: { darkMode?: boolean }) => {
+const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const menuItems = [
@@ -121,4 +121,4 @@ const Sidebar = ({ darkMode = false }: { darkMode?: boolean }) => {
     );
 };
 
-export default Sidebar;
+export default SidebarDirector;

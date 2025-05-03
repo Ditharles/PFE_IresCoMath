@@ -19,8 +19,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "components/dashboard", "components/routes", "components/ui", "components/FileUpload.tsx", "components/LoadingOverlay.tsx", "components/NotificationsPanel.tsx", "components/Toast.tsx"]
+  "include": ["src"]
 }
+

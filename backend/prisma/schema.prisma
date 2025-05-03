@@ -148,13 +148,28 @@ model Session {
 }
 
 model Notification {
-  id         String              @id @default(uuid())
+  id         String             @id @default(uuid())
+  titre      String
   message    String
-  recipient  String
-  status     NotificationStatus  @default(UNREAD)
-  createdAt  DateTime            @default(now())
-  user       User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       NotificationType   
+  status     NotificationStatus @default(UNREAD)
+  createdAt  DateTime           @default(now())
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+}
+
+enum NotificationType {
+  DEMANDE_REÇUE
+  NOUVELLE_DEMANDE
+  DEMANDE_ACCEPTEE
+  DEMANDE_REJETEE
+  NOUVELLE_SESSION
+  MATERIEL_PRET
+  MATERIEL_RENDU
+  AUTRE
 }
 
 model MaterialCategory {
@@ -248,6 +263,10 @@ enum RequestType {
 enum RequestStatus {
   PENDING
   APPROVED
+  APPROVEDBYSUPERVISOR
+  APPROVEDBYDIRECTOR
+  REJECTEDBYSUPERVISOR
+  REJECTEDBYDIRECTOR
   REJECTED
   END
 }

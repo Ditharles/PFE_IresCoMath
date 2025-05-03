@@ -8,6 +8,7 @@ import {
   Role,
   RequestRole,
   requestRoleMap,
+  fields,
 } from "../utils/validateUtils";
 
 const prisma = new PrismaClient();
@@ -47,7 +48,7 @@ export const getWaitingList = async (req: Request, res: Response) => {
 export const getRequestInfo = async (req: Request, res: Response) => {
   try {
     const { user_id, user_role } = req.query;
-
+    console.log(req.query);
     if (typeof user_id !== "string" || typeof user_role !== "string") {
       res.status(400).json({ message: "Paramètres de requête invalides" });
       return;
@@ -61,9 +62,10 @@ export const getRequestInfo = async (req: Request, res: Response) => {
     }
 
     const data = await (model as any).findUnique({
-      where: { id: user_id, isConfirm: true },
+      where: { id: user_id },
+      select: fields[typedUserRole],
     });
-
+   
     if (!data) {
       res.status(404).json({ message: "Requête non trouvée" });
       return;

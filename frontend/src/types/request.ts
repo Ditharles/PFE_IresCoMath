@@ -1,0 +1,23 @@
+export enum RequestType {
+  MISSION = "MISSION",
+  STAGE = "STAGE",
+  CONFERENCE = "CONFERENCE",
+  ACHAT_MATERIEL = "ACHAT_MATERIEL",
+  PRET_MATERIEL = "PRET_MATERIEL",
+  DEPLACEMENT_HEBERGEMENT = "DEPLACEMENT_HEBERGEMENT",
+  REPARATION_MAINTENANCE = "REPARATION_MAINTENANCE",
+  CONTRACTUEL = "CONTRACTUEL",
+  INSCRIPTION_ARTICLE = "INSCRIPTION_ARTICLE",
+}
+
+export const requestUrl = {
+  MISSION: "mission",
+  STAGE: "stage",
+  CONFERENCE: "conference",
+  ACHAT_MATERIEL: "material/purchase",
+  PRET_MATERIEL: "material/rent",
+  DEPLACEMENT_HEBERGEMENT: "deplacement-hebergement",
+  REPARATION_MAINTENANCE: "reparation-maintenance",
+  CONTRACTUEL: "contractuel",
+  INSCRIPTION_ARTICLE: "inscription-article",
+};

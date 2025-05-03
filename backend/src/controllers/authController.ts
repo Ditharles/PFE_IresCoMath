@@ -379,7 +379,7 @@ export const validateAccount: AuthHandler = async (req, res) => {
 
 export const submitAdditionalInfo: AuthHandler = async (req, res) => {
   try {
-    const { password,bankData,signature } = req.body;
+    const { password, bankData, signature } = req.body;
 
     const requiredFields = ["password", "bankData", "signature"];
     if (!validateRequestBody(req.body, requiredFields)) {
@@ -703,10 +703,12 @@ export const refreshToken: AuthHandler = async (req, res) => {
 };
 
 export const getUser: AuthHandler = async (req, res) => {
+  const id = req.user.id;
+  console.log(id);
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id: req.user?.id,
+        id: id,
       },
       select: {
         email: true,
@@ -727,9 +729,6 @@ export const getUser: AuthHandler = async (req, res) => {
       },
     });
 
-    if (!user) {
-      return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
-    }
     const userfront = {
       email: user?.email,
       role: user?.role,

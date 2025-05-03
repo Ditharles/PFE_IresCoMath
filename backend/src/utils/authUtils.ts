@@ -3,6 +3,7 @@ import {
   Role,
   RequestStatus,
   EnseignantChercheur,
+  User,
 } from "../../generated/prisma";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -11,7 +12,6 @@ import {
   RequestEnseignant,
   RequestMaster,
   RequestType,
-  User,
 } from "../types/auth";
 import transporter from "./mailer";
 
@@ -200,7 +200,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
       });
     }
     case "MASTER": {
-      const { nom, prenom, email, annee_master, encadrant } =
+      const { nom, prenom, email, annee_master, encadrant_id } =
         data as RequestMaster;
       return prisma.requestMaster.create({
         data: {
@@ -210,7 +210,7 @@ export const createUserRequest = async (role: string, data: RequestType) => {
           annee_master: Number(annee_master),
           encadrant: {
             connect: {
-              id: encadrant,
+              id: encadrant_id,
             },
           },
           status: RequestStatus.PENDING,
@@ -386,18 +386,99 @@ export const createMaster = async (data: RequestMaster, userId: string) => {
   });
 };
 
-// Fonction pour récupérer le superviseur
+// Fonction pour récupérer le superviseur a partir de son email ou de l'id de la personne qu'il supervise
 export const getSupervisor = async (
-  email: string
-): Promise<EnseignantChercheur | null> => {
-  const supervisor = await prisma.enseignantChercheur.findFirst({
-    where: {
-      user: {
+  email?: string,
+  id?: string
+): Promise<User | null> => {
+  let supervisor = null;
+  if (email) {
+    let supervisor = await prisma.user.findFirst({
+      where: {
         email,
       },
+    });
+  }
+
+  if (!supervisor && id) {
+    supervisor = await prisma.user.findFirst({
+      where: {
+        enseignant: {
+          masters: {
+            some: {
+              id,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  return supervisor;
+};
+
+//Obtenir un utiloisateur a partir de son id
+export const getUserByID = async (id: string) => {
+  let user = await prisma.user.findUnique({
+    where: { id: id },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      admin: { select: { nom: true, prenom: true } },
+      master: { select: masterFields },
+      enseignant: { select: enseignantFields },
+      doctorant: { select: doctorantFields },
     },
   });
-  return supervisor;
+
+  if (!user) {
+    user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { enseignant: { id: id } },
+          { doctorant: { id: id } },
+          { master: { id: id } },
+        ],
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        admin: { select: { nom: true, prenom: true } },
+        master: { select: masterFields },
+        enseignant: { select: enseignantFields },
+        doctorant: { select: doctorantFields },
+      },
+    });
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  const userFormat = {
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+    ...user.admin,
+    ...user.master,
+    ...user.enseignant,
+    ...user.doctorant,
+  };
+
+  return userFormat;
+};
+//Fonction pour obtenir le directeur
+export const getDirector = async (): Promise<User | null> => {
+  return await prisma.user.findFirst({
+    where: {
+      role: Role.DIRECTEUR,
+    },
+  });
 };
 
 // Fonction pour la validation du contenu des requêtes

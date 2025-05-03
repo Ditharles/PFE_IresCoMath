@@ -1,6 +1,8 @@
 import jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "../../generated/prisma";
+import { getUser } from "../controllers/authController";
+import { getUserByID } from "../utils/authUtils";
 
 const prisma = new PrismaClient();
 
@@ -44,7 +46,7 @@ export const verifyToken = async (
       return res.status(401).json({ message: "Session non trouvée" });
     }
 
-    req.user = session.user;
+    req.user = getUserByID(session.user.id);
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {

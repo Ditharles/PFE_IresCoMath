@@ -8,7 +8,7 @@ interface SidebarItem {
   icon: React.ElementType;
 }
 
-const Sidebar = ({ darkMode = false }: { darkMode?: boolean }) => {
+const SidebarOthers = ({ darkMode = false }: { darkMode?: boolean }) => {
   const location = useLocation();
 
   const items: SidebarItem[] = [
@@ -53,4 +53,4 @@ const Sidebar = ({ darkMode = false }: { darkMode?: boolean }) => {
   );
 };
 
-export default Sidebar;
+export default SidebarOthers;

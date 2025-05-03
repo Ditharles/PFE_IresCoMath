@@ -12,10 +12,10 @@ import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import GestionMembres from "../pages/directeur/GestionMembres";
 import RoleBasedRoute from "../components/routes/RoleBasedRoute";
-import Layout from "../components/dashboard/directeur/Layout";
 
 import PasswordForget from "../pages/password-forget";
 import PasswordReset from "../pages/password-reset";
+import MemberAddRequest from "../pages/MemberAddRequest";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -78,7 +78,11 @@ const routes: RouteObject[] = [
         children: [
             {
                 path: "membres",
-                element: <Layout><GestionMembres /> </Layout>
+                element: <GestionMembres />
+            },
+            {
+                path: "membre",
+                element: <MemberAddRequest />
             }
         ]
     },

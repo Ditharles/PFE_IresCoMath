@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { RequestUser, RequestStatus } from "../../../../types/MemberAddRequest"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../ui/dropdown-menu"
 import { Button } from "../../../ui/button"
-import { ChevronDown} from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { Role } from "../../../../types/common"
 import { ManageUserService } from "../../../../services/manageUser.service"
 import { useState } from "react"
@@ -26,7 +26,18 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
         id: "nomComplet",
         header: "Nom & Prénom",
         enableColumnFilter: true,
-        cell: ({ row }) => <div className="font-medium">{row.getValue("nomComplet")}</div>,
+        cell: ({ row }) => {
+            const original = row.original;
+            const id = original.id;
+            const role = determineRequestRole(original) as Role;
+            return (
+                <div className="font-medium">
+                    <a href={`membre/?id=${id}&role=${role}`}>
+                        {row.getValue("nomComplet")}
+                    </a>
+                </div>
+            );
+        },
     },
     {
         accessorKey: "email",
@@ -78,19 +89,16 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
             const [reason, setReason] = useState("");
             const [isOpen, setIsOpen] = useState(false);
 
-
             const handleAccept = () => {
                 const role = determineRequestRole(original) as Role;
                 if (original.id) {
                     manageUserService.acceptUser(original.id, role, true, "");
                     setTimeout(() => refresh(), 1000);
                 }
-                
             };
 
             const handleReject = () => {
                 const role = determineRequestRole(original) as Role;
-
                 if (reason && original.id) {
                     manageUserService.acceptUser(original.id, role, false, reason);
                     setIsOpen(false);
@@ -98,7 +106,6 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
                     setTimeout(() => refresh(), 1000);
                 }
             };
-
 
             return (
                 <>
@@ -109,7 +116,8 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Voir le profil</DropdownMenuItem>
+                            <DropdownMenuItem><a href={`/membre?id=${original.id}&role=$
+                                {determineRequestRole(original) as Role}`}>Voir le profil</a></DropdownMenuItem>
                             <DropdownMenuItem onClick={handleAccept}>Approuver</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setIsOpen(true)}>Rejeter</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive">Supprimer</DropdownMenuItem>

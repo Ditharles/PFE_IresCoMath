@@ -3,6 +3,7 @@ import prisma from "../utils/db";
 import {
   doctorantFields,
   enseignantFields,
+  getUserByID,
   masterFields,
 } from "../utils/authUtils";
 
@@ -61,36 +62,13 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const user = await prisma.user.findUnique({
-    where: { id: req.params.id },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-      createdAt: true,
-      admin: { select: { nom: true, prenom: true } },
-      master: { select: masterFields },
-      enseignant: { select: enseignantFields },
-      doctorant: { select: enseignantFields },
-    },
-  });
+  const user = getUserByID(req.params.id);
 
   if (!user) {
-    return res.status(404).json({ message: "Utilisateur non trouvé" });
+    return res.status(404).json({ message: "Utilisateur introuvable." });
   }
 
-  const userFront = {
-    id: user.id,
-    email: user.email,
-    role: user.role,
-    createdAt: user.createdAt,
-    ...user.admin,
-    ...user.master,
-    ...user.enseignant,
-    ...user.doctorant,
-  };
-
-  res.status(200).json(userFront);
+  res.status(200).json(user);
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
