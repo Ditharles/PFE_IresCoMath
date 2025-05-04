@@ -93,6 +93,7 @@ export const nextStatusMap: Record<
   },
   APPROVED: {},
   REJECTED: {},
+  END: {},
 };
 
 // Filtres de recherches

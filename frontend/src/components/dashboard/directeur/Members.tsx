@@ -39,7 +39,7 @@ const Members = () => {
         members,
         searchQuery,
         filterRole,
-        undefined, 
+        undefined,
         activeTab
     );
 
@@ -63,7 +63,7 @@ const Members = () => {
             ];
             setMembersRequest(allMembersRequest);
             console.log(allMembersRequest)
-            // Récupérer les membres
+
             const membersList = await manageUserService.getUsers();
             setMembers(membersList.data);
             console.log(members)
@@ -73,11 +73,13 @@ const Members = () => {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [membersRequest, members]);
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+        console.log(membersRequest)
+        console.log(members)
+    }, []);
 
     // Exporter les données en CSV
     const handleExportToCSV = (type: string = "members") => {

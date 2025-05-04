@@ -2,7 +2,7 @@
 import { RoleEnum } from "../types/common";
 import { User } from "../types/Member";
 import { RequestUser } from "../types/MemberAddRequest";
-
+import { useMemo } from "react";
 /**
  * Détermine le rôle d'un utilisateur en fonction de ses attributs
  */

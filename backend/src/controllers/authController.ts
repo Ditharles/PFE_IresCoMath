@@ -314,7 +314,7 @@ export const validateAccount: AuthHandler = async (req, res) => {
 
     const { email } = decoded;
     role = decoded.role;
-
+   
     const model = requestRoleMap[role];
     if (!model) {
       return res.status(400).json({ message: "Rôle inconnu" });

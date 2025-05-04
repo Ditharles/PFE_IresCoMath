@@ -13,8 +13,8 @@ import Home from "../pages/Home";
 import GestionMembres from "../pages/directeur/GestionMembres";
 import RoleBasedRoute from "../components/routes/RoleBasedRoute";
 
-import PasswordForget from "../pages/password-forget";
-import PasswordReset from "../pages/password-reset";
+import PasswordForget from "../pages/auth/password-forget";
+import PasswordReset from "../pages/auth/password-reset";
 import MemberAddRequest from "../pages/MemberAddRequest";
 const routes: RouteObject[] = [
     {
@@ -86,6 +86,13 @@ const routes: RouteObject[] = [
             }
         ]
     },
+    {element: <RoleBasedRoute allowedRoles={["DOCTORANT", "MASTER", "ENSEIGNANT"]} />,
+    children: [
+        {
+            path: "membre",
+            element: <MemberAddRequest />
+        }
+    ]},
 
 
     //404

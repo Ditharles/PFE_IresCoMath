@@ -42,12 +42,19 @@ export const verifyToken = async (
       },
     });
 
-    if (!session) {
-      return res.status(401).json({ message: "Session non trouvée" });
+    if (!session || !session.user) {
+      return res
+        .status(401)
+        .json({ message: "Session ou utilisateur non trouvé" });
     }
 
-    req.user = getUserByID(session.user.id);
-    next();
+    const user = await getUserByID(session.user.id);
+    if (!user) {
+      return res.status(401).json({ message: "Utilisateur introuvable" });
+    }
+
+    req.user = user;
+    return next(); // ✅ sécuriser le flow
   } catch (error) {
     if (error instanceof TokenExpiredError) {
       return res.status(401).json({ message: "Token expiré" });
