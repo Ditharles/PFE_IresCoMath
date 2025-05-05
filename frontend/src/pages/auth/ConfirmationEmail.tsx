@@ -79,7 +79,7 @@ export default function ConfirmationEmail() {
       toast.success("Un nouveau lien de confirmation a été envoyé à votre adresse email.");
     } catch (error) {
       console.error("Error requesting new confirmation email:", error);
-      toast.error(response?.data.message);
+      toast.error(response);
     } finally {
       setIsSubmitting(false);
     }

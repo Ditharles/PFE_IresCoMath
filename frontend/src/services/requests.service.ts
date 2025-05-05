@@ -10,7 +10,7 @@ class RequestsService {
       return response;
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la récupération des utilisateurs:",
+        "Une erreur s'est produite lors de la récupération des informations:",
         error
       );
       throw error;
@@ -24,7 +24,7 @@ class RequestsService {
       return response;
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la récupération des utilisateurs:",
+        "Une erreur s'est produite lors de la récupération des informations:",
         error
       );
       throw error;

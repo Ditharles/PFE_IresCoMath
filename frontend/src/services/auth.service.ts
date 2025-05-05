@@ -25,20 +25,15 @@ class AuthService {
     }
   }
   async login(email: string, password: string) {
-    try {
-      if (isAuthenticated()) {
-        return;
-      }
-      const response = await api.post("/auth/login", { email, password });
-      const { accessToken, refreshToken, user } = response.data;
-      setToken("accessToken", accessToken);
-      setToken("refreshToken", refreshToken);
-      setUser(user);
-      return user;
-    } catch (error) {
-      console.error("Une erreur s'est produite lors de la connexion:", error);
-      throw error;
+    if (isAuthenticated()) {
+      return;
     }
+    const response = await api.post("/auth/login", { email, password });
+    const { accessToken, refreshToken, user } = response.data;
+    setToken("accessToken", accessToken);
+    setToken("refreshToken", refreshToken);
+    setUser(user);
+    return response;
   }
 
   async logout() {
@@ -56,13 +51,8 @@ class AuthService {
   }
 
   async register(credentials: unknown, role: string) {
-    try {
-      const response = await api.post(`/auth/register/${role}`, credentials);
-      return response;
-    } catch (error) {
-      console.error("Une erreur s'est produite lors de l'inscription:", error);
-      throw error;
-    }
+    const response = await api.post(`/auth/register/${role}`, credentials);
+    return response;
   }
 
   async confirmRequest(token: string) {

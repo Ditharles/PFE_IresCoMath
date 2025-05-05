@@ -185,7 +185,6 @@ export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
   try {
-    const fields = { nom: true, prenom: true, photo: true };
     const user = await prisma.user.findUnique({
       where: { email },
       select: {
@@ -194,13 +193,13 @@ export const login: AuthHandler = async (req, res) => {
         role: true,
         password: true,
         master: {
-          select: fields,
+          select: masterFields,
         },
         enseignant: {
-          select: fields,
+          select: enseignantFields,
         },
         doctorant: {
-          select: fields,
+          select: doctorantFields,
         },
       },
     });
@@ -211,6 +210,7 @@ export const login: AuthHandler = async (req, res) => {
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
+      console.log("Mot de passe incorrect");
       return res
         .status(400)
         .json({ message: ERROR_MESSAGES.INCORRECT_PASSWORD });
@@ -314,7 +314,7 @@ export const validateAccount: AuthHandler = async (req, res) => {
 
     const { email } = decoded;
     role = decoded.role;
-   
+
     const model = requestRoleMap[role];
     if (!model) {
       return res.status(400).json({ message: "Rôle inconnu" });
@@ -341,15 +341,16 @@ export const validateAccount: AuthHandler = async (req, res) => {
     });
 
     const password = "123"; // à remplacer par un mot de passe généré ou envoyé
+    const cryptPassword = await bcrypt.hash(password, 10);
 
-    const user = await createUser(email, role, password);
+    const user = await createUser(email, role, cryptPassword);
 
     if (role === "DOCTORANT") {
       await createDoctorant(request as RequestDoctorant, user.id);
     } else if (role === "MASTER") {
       await createMaster(request as RequestMaster, user.id);
     } else if (role === "ENSEIGNANT") {
-      await createEnseignant(request as RequestEnseignantChercheur, user.id);
+      await createEnseignant(request as RequestEnseignant, user.id);
     }
 
     const { accessTokenValue, refreshTokenValue } = await createSession(

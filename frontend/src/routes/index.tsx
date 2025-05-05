@@ -16,6 +16,7 @@ import RoleBasedRoute from "../components/routes/RoleBasedRoute";
 import PasswordForget from "../pages/auth/password-forget";
 import PasswordReset from "../pages/auth/password-reset";
 import MemberAddRequest from "../pages/MemberAddRequest";
+import NewRequest from "../pages/NewRequest";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -69,8 +70,8 @@ const routes: RouteObject[] = [
                 element: <AdditionalInfo />
             },
             {
-                path: "demande/:type",
-                element: <NouvelleDemande />
+                path: "nouvelle-demande/:type",
+                element: <NewRequest />
             },
 
         ]
@@ -90,13 +91,15 @@ const routes: RouteObject[] = [
             }
         ]
     },
-    {element: <RoleBasedRoute allowedRoles={["DOCTORANT", "MASTER", "ENSEIGNANT"]} />,
-    children: [
-        {
-            path: "membre",
-            element: <MemberAddRequest />
-        }
-    ]},
+    {
+        element: <RoleBasedRoute allowedRoles={["DOCTORANT", "MASTER", "ENSEIGNANT"]} />,
+        children: [
+            {
+                path: "membre",
+                element: <MemberAddRequest />
+            }
+        ]
+    },
 
 
     //404

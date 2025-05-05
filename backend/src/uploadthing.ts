@@ -14,6 +14,30 @@ export const uploadRouter = {
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
+
+  stageLetter: f({
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+
+  articleCover: f({
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+
+  equipementPhotos: f({
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+
+  equipementPhotosRequest: f({
+    image: { maxFileSize: "4MB", maxFileCount: 5 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof uploadRouter;

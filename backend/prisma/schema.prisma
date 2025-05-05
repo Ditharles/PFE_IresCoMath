@@ -215,6 +215,14 @@ model Request {
   demandesAchat  RequestPurchaseMaterial?
   demandesPret   RequestLendMaterial?
   notes String ?
+
+  RequestStage RequestStage[]
+
+  missionSchema missionSchema[]
+
+  evenementScientifique evenementScientifique[]
+
+  inscriptionDArticle inscriptionDArticle[]
 }
 
 model RequestPurchaseMaterial {
@@ -239,6 +247,55 @@ model RequestLendMaterial {
   dateDebut    DateTime
   dateFin      DateTime
 
+}
+
+model RequestStage {
+  id String @id @default(uuid())
+  requete      Request   @relation(fields: [requeteId], references: [id], onDelete: Cascade)
+  requeteId    String @unique 
+  entreprise String
+  email_entreprise String
+  num_entreprise String
+  superviseur String
+  email_superviseur String
+  num_superviseur String
+  lettre String
+  pays String
+  dateDebut DateTime
+  dateFin DateTime
+}
+
+model missionSchema{
+  id String @id @default(uuid())
+  requete      Request   @relation(fields: [requeteId], references: [id], onDelete: Cascade)
+  requeteId    String @unique 
+    pays String
+  dateDebut DateTime
+  dateFin DateTime
+ 
+  lieu String
+
+}
+
+model evenementScientifique {
+  id String @id @default(uuid())
+  requete      Request   @relation(fields: [requeteId], references: [id], onDelete: Cascade)
+  requeteId    String @unique 
+  lieu String
+  titre String
+  articleAcceptes Boolean
+  articleCover String?
+   dateDebut DateTime
+  dateFin DateTime
+}
+
+model inscriptionDArticle{
+    id String @id @default(uuid())
+  requete      Request   @relation(fields: [requeteId], references: [id], onDelete: Cascade)
+  requeteId    String @unique 
+  lieu String
+  conference String
+  montant String 
 }
 
 enum MaterielType {
