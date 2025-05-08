@@ -3,7 +3,7 @@ import {
   RequestStatus,
   Role,
   Grade,
-  EnseignantChercheur,
+  TeacherResearcher,
   Prisma,
 } from "../../generated/prisma";
 import transporter from "../utils/mailer";
@@ -11,44 +11,38 @@ import jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import {
-  AuthRequest,
-  AuthResponse,
-  AuthHandler,
-  RequestType,
-  RequestDoctorant,
-  RequestMaster,
-  RequestEnseignant,
-  User,
+  DoctoralStudentRequest,
+  MasterStudentRequest,
+  TeacherResearcherRequest,
 } from "../types/auth";
+import prisma from "../utils/db";
 import {
-  ERROR_MESSAGES,
-  generateRandomToken,
-  generateTokenLink,
-  createSession,
-  generateTokens,
-  JWT_SECRET_KEY,
-  JWT_REFRESH_SECRET_KEY,
-  requestRoleMap,
+  masterStudentFields,
+  teacherResearcherFields,
+  doctoralStudentFields,
+} from "../constants/userFields";
+import {
   checkUserExists,
-  createUser,
-  createDoctorant,
-  createMaster,
-  validateRequestBody,
-  createEnseignant,
   createUserRequest,
   sendEmail,
-  getSupervisor,
   checkSupervisorExists,
-  enseignantFields,
-  masterFields,
-  doctorantFields,
-} from "../utils/authUtils";
+  createSession,
+  createUser,
+  createDoctoralStudent,
+  createMasterStudent,
+  createTeacherResearcher,
+} from "../services/auth.service";
+import { AuthHandler } from "../types/auth";
 import {
-  requestDoctorantFields,
-  requestMasterFields,
-} from "../utils/validateUtils";
-
-const prisma = new PrismaClient();
+  ERROR_MESSAGES,
+  generateTokenLink,
+  JWT_SECRET_KEY,
+  validateRequestBody,
+  generateTokens,
+  JWT_REFRESH_SECRET_KEY,
+  generateRandomToken,
+} from "../utils/authUtils";
+import { RequestRole, requestRoleMap } from "../utils/validateUtils";
 
 // Fonction pour la création des requêtes d'authentification
 const registerUser = async (
@@ -58,7 +52,7 @@ const registerUser = async (
   data: any
 ) => {
   const { email } = data;
-
+  console.log(data);
   if (!email || typeof email !== "string") {
     res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     return;
@@ -84,8 +78,8 @@ const registerUser = async (
 
     await sendEmail(
       emailString,
-      data.nom,
-      data.prenom,
+      data.lastName,
+      data.firstName,
       role,
       "Validation de la requête d'authentification",
       emailLink,
@@ -106,16 +100,16 @@ const registerUser = async (
 };
 
 // Exported functions
-export const registerEnseignant: AuthHandler = async (req, res) => {
+export const registerTeacherResearcher: AuthHandler = async (req, res) => {
   console.log(req.body);
   const requiredFields = [
-    "nom",
-    "prenom",
+    "lastName",
+    "firstName",
     "email",
     "photo",
-    "fonction",
+    "position",
     "grade",
-    "etablissement",
+    "institution",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
     res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
@@ -133,14 +127,15 @@ export const registerEnseignant: AuthHandler = async (req, res) => {
   }
 };
 
-export const registerMaster: AuthHandler = async (req, res) => {
+export const registerMasterStudent: AuthHandler = async (req, res) => {
+  console.log(req.body);
   const requiredFields = [
-    "nom",
-    "prenom",
+    "lastName",
+    "firstName",
     "email",
     "photo",
-    "annee_master",
-    "encadrant",
+    "masterYear",
+    "supervisorId",
   ];
   console.log(req.body);
   if (!validateRequestBody(req.body, requiredFields)) {
@@ -148,7 +143,7 @@ export const registerMaster: AuthHandler = async (req, res) => {
   }
 
   try {
-    await checkSupervisorExists(req.body.encadrant);
+    await checkSupervisorExists(req.body.supervisorId);
     await registerUser(req, res, "MASTER", req.body);
   } catch (error) {
     console.error(`Erreur lors de la création de l'utilisateur MASTER:`, error);
@@ -156,21 +151,22 @@ export const registerMaster: AuthHandler = async (req, res) => {
   }
 };
 
-export const registerDoctorant: AuthHandler = async (req, res) => {
+export const registerDoctoralStudent: AuthHandler = async (req, res) => {
+  console.log(req.body);
   const requiredFields = [
-    "nom",
-    "prenom",
+    "lastName",
+    "firstName",
     "email",
     "photo",
-    "annee_these",
-    "directeur_these",
+    "thesisYear",
+    "thesisSupervisorId",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
 
   try {
-    await checkSupervisorExists(req.body.directeur_these);
+    await checkSupervisorExists(req.body.thesisSupervisorId);
     await registerUser(req, res, "DOCTORANT", req.body);
   } catch (error) {
     console.error(
@@ -192,14 +188,14 @@ export const login: AuthHandler = async (req, res) => {
         email: true,
         role: true,
         password: true,
-        master: {
-          select: masterFields,
+        masterStudent: {
+          select: masterStudentFields,
         },
-        enseignant: {
-          select: enseignantFields,
+        teacherResearcher: {
+          select: teacherResearcherFields,
         },
-        doctorant: {
-          select: doctorantFields,
+        doctoralStudent: {
+          select: doctoralStudentFields,
         },
       },
     });
@@ -231,9 +227,9 @@ export const login: AuthHandler = async (req, res) => {
         id: user.id,
         email: user.email,
         role: user.role,
-        ...user.master,
-        ...user.enseignant,
-        ...user.doctorant,
+        ...user.masterStudent,
+        ...user.teacherResearcher,
+        ...user.doctoralStudent,
       },
     });
   } catch (error) {
@@ -270,20 +266,20 @@ export const confirmRequest: AuthHandler = async (req, res) => {
     const { token } = req.params;
     const decoded = jwt.verify(token, JWT_SECRET_KEY) as {
       email: string;
-      role: string;
+      role: RequestRole;
     };
     const { email, role } = decoded;
-
-    const user = await requestRoleMap[role].findUnique({ where: { email } });
+    const model: any = requestRoleMap[role];
+    const user = await model.findUnique({ where: { email } });
 
     if (!user) {
       return res
         .status(400)
         .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
-    await requestRoleMap[role].update({
+    await model.update({
       where: { email },
-      data: { isConfirm: true },
+      data: { isConfirmed: true },
     });
 
     const accessToken = jwt.sign({ id: user?.id, role: role }, JWT_SECRET_KEY, {
@@ -315,7 +311,7 @@ export const validateAccount: AuthHandler = async (req, res) => {
     const { email } = decoded;
     role = decoded.role;
 
-    const model = requestRoleMap[role];
+    const model: any = requestRoleMap[role as RequestRole];
     if (!model) {
       return res.status(400).json({ message: "Rôle inconnu" });
     }
@@ -346,11 +342,14 @@ export const validateAccount: AuthHandler = async (req, res) => {
     const user = await createUser(email, role, cryptPassword);
 
     if (role === "DOCTORANT") {
-      await createDoctorant(request as RequestDoctorant, user.id);
+      await createDoctoralStudent(request as DoctoralStudentRequest, user.id);
     } else if (role === "MASTER") {
-      await createMaster(request as RequestMaster, user.id);
+      await createMasterStudent(request as MasterStudentRequest, user.id);
     } else if (role === "ENSEIGNANT") {
-      await createEnseignant(request as RequestEnseignant, user.id);
+      await createTeacherResearcher(
+        request as TeacherResearcherRequest,
+        user.id
+      );
     }
 
     const { accessTokenValue, refreshTokenValue } = await createSession(
@@ -407,31 +406,31 @@ export const submitAdditionalInfo: AuthHandler = async (req, res) => {
 };
 
 export const resendConfirmLink: AuthHandler = async (req, res) => {
-  const temptoken = req.headers.authorization?.split(" ")[1];
-  if (!temptoken) {
+  const tempToken = req.headers.authorization?.split(" ")[1];
+  if (!tempToken) {
     return res.status(400).json({ message: "Token temporaire manquant" });
   }
   try {
-    const user = jwt.verify(temptoken as string, JWT_SECRET_KEY) as {
+    const user = jwt.verify(tempToken as string, JWT_SECRET_KEY) as {
       id: string;
-      role: Role;
+      role: RequestRole;
     };
 
-    const userbd = await requestRoleMap[user.role].findUnique({
+    const userDb = await (requestRoleMap[user.role] as any).findUnique({
       where: { id: user.id },
     });
-    if (!userbd) {
+    if (!userDb) {
       return res
         .status(400)
         .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
     await sendEmail(
-      userbd.email,
-      userbd.nom,
-      userbd.prenom,
+      userDb.email,
+      userDb.lastName,
+      userDb.firstName,
       user.role,
       "Validation de la requête d'authentification",
-      generateTokenLink(userbd.email, user.role, "confirm"),
+      generateTokenLink(userDb.email, user.role, "confirm"),
       "Confirmer"
     );
     return res.status(200).json({ message: "Email envoyé avec succès" });
@@ -445,30 +444,32 @@ export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
   try {
     const { email } = req.body;
     if (typeof email !== "string") {
-      return res.status(400).json({ message: "Email  requis" });
+      return res.status(400).json({ message: "Email requis" });
     }
 
-    let userbd;
-    let finalRole;
+    let userDb;
+    let finalRole = "";
+
     for (let role of ["ENSEIGNANT", "MASTER", "DOCTORANT"]) {
-      userbd = await requestRoleMap[role].findUnique({
+      const requestModel: any = requestRoleMap[role as RequestRole];
+      userDb = await requestModel.findUnique({
         where: { email },
       });
       finalRole = role;
-      if (userbd) break;
+      if (userDb) break;
     }
-    if (!userbd) {
+    if (!userDb) {
       return res
         .status(400)
         .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
     await sendEmail(
-      userbd.email,
-      userbd.nom,
-      userbd.prenom,
+      userDb.email,
+      userDb.lastName,
+      userDb.firstName,
       finalRole,
       "Validation de la requête d'authentification",
-      generateTokenLink(userbd.email, finalRole, "confirm"),
+      generateTokenLink(userDb.email, finalRole, "confirm"),
       "Confirmer"
     );
     return res.status(200).json({ message: "Email envoyé avec succès" });
@@ -486,7 +487,7 @@ export const changePassword: AuthHandler = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
     const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
+      where: { id: req.user.userId },
     });
 
     if (!user) {
@@ -501,7 +502,7 @@ export const changePassword: AuthHandler = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
-      where: { id: req.user.id },
+      where: { id: req.user.userId },
       data: { password: hashedPassword },
     });
     res.status(200).json({ message: "Mot de passe changé avec succès" });
@@ -524,22 +525,22 @@ export const forgetPassword: AuthHandler = async (req, res) => {
         id: true,
         email: true,
         role: true,
-        enseignant: {
+        teacherResearcher: {
           select: {
-            nom: true,
-            prenom: true,
+            lastName: true,
+            firstName: true,
           },
         },
-        master: {
+        masterStudent: {
           select: {
-            nom: true,
-            prenom: true,
+            lastName: true,
+            firstName: true,
           },
         },
-        doctorant: {
+        doctoralStudent: {
           select: {
-            nom: true,
-            prenom: true,
+            lastName: true,
+            firstName: true,
           },
         },
       },
@@ -549,15 +550,15 @@ export const forgetPassword: AuthHandler = async (req, res) => {
       return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
 
-    const nom =
-      user.enseignant?.nom ||
-      user.master?.nom ||
-      user.doctorant?.nom ||
+    const lastName =
+      user.teacherResearcher?.lastName ||
+      user.masterStudent?.lastName ||
+      user.doctoralStudent?.lastName ||
       "Utilisateur";
-    const prenom =
-      user.enseignant?.prenom ||
-      user.master?.prenom ||
-      user.doctorant?.prenom ||
+    const firstName =
+      user.teacherResearcher?.firstName ||
+      user.masterStudent?.firstName ||
+      user.doctoralStudent?.firstName ||
       "";
 
     const resetToken = generateTokenLink(
@@ -568,8 +569,8 @@ export const forgetPassword: AuthHandler = async (req, res) => {
 
     await sendEmail(
       user.email,
-      nom,
-      prenom,
+      lastName,
+      firstName,
       user.role,
       "Réinitialisation de mot de passe",
       resetToken,
@@ -704,7 +705,7 @@ export const refreshToken: AuthHandler = async (req, res) => {
 };
 
 export const getUser: AuthHandler = async (req, res) => {
-  const id = req.user.id;
+  const id = req.user.userId;
   console.log(id);
   try {
     const user = await prisma.user.findUnique({
@@ -714,30 +715,30 @@ export const getUser: AuthHandler = async (req, res) => {
       select: {
         email: true,
         role: true,
-        enseignant: { select: enseignantFields },
-        master: {
-          select: masterFields,
+        teacherResearcher: { select: teacherResearcherFields },
+        masterStudent: {
+          select: masterStudentFields,
         },
-        doctorant: {
-          select: doctorantFields,
+        doctoralStudent: {
+          select: doctoralStudentFields,
         },
         admin: {
           select: {
-            nom: true,
-            prenom: true,
+            lastName: true,
+            firstName: true,
           },
         },
       },
     });
 
-    const userfront = {
+    const userFront = {
       email: user?.email,
       role: user?.role,
-      ...user?.enseignant,
-      ...user?.master,
-      ...user?.doctorant,
+      ...user?.teacherResearcher,
+      ...user?.masterStudent,
+      ...user?.doctoralStudent,
     };
-    res.status(200).json(userfront);
+    res.status(200).json(userFront);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });

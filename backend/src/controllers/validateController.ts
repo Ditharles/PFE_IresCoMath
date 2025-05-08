@@ -2,14 +2,16 @@ import { Request, Response } from "express";
 import { PrismaClient, RequestStatus } from "../../generated/prisma";
 import {
   buildFilters,
-  fetchDataByRole,
-  sendMailAfterValidation,
   nextStatusMap,
   Role,
   RequestRole,
   requestRoleMap,
   fields,
 } from "../utils/validateUtils";
+import {
+  fetchDataByRole,
+  sendMailAfterValidation,
+} from "../services/validate.service";
 
 const prisma = new PrismaClient();
 
@@ -27,22 +29,23 @@ export const getWaitingList = async (req: Request, res: Response) => {
     }
 
     const data = await fetchDataByRole(
-      req.user.id,
+      req.user.userId,
       req.user.role as Role,
       roleRequest as RequestRole | undefined,
       filters
     );
 
     if (!data || Object.keys(data).length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Erreur : Aucune donnée trouvée" });
+      res.status(400).json({ message: "Erreur : Aucune donnée trouvée" });
+      return;
     }
 
-    return res.status(200).json(data);
+    res.status(200).json(data);
+    return;
   } catch (error) {
     console.error("Erreur rencontrée :", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
 };
 
@@ -50,7 +53,7 @@ export const getWaitingList = async (req: Request, res: Response) => {
 export const getRequestInfo = async (req: Request, res: Response) => {
   try {
     const { user_id, user_role } = req.query;
-    console.log(req.query);
+
     if (typeof user_id !== "string" || typeof user_role !== "string") {
       res.status(400).json({ message: "Paramètres de requête invalides" });
       return;
@@ -108,7 +111,7 @@ export const validateRequest = async (req: Request, res: Response) => {
     }
 
     if (user.role === "ENSEIGNANT") {
-      if (typedRequestRole === "MASTER" && request.encadrant_id !== user.id) {
+      if (typedRequestRole === "MASTER" && request.supervisorId !== user.id) {
         res.status(403).json({
           message: "Vous n'êtes pas autorisé à valider cette requête de master",
         });
@@ -116,7 +119,7 @@ export const validateRequest = async (req: Request, res: Response) => {
       }
       if (
         typedRequestRole === "DOCTORANT" &&
-        request.directeur_these_id !== user.id
+        request.thesisSupervisorId !== user.id
       ) {
         res.status(403).json({
           message:

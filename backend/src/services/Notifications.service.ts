@@ -2,7 +2,7 @@ import { NotificationType } from "../../generated/prisma";
 import prisma from "../utils/db";
 type CreateNotificationInput = {
   userId: string;
-  titre: string;
+  title: string;
   message: string;
   type: NotificationType;
 };
@@ -10,7 +10,7 @@ type CreateNotificationInput = {
 class NotificationsService {
   createNotification = async ({
     userId,
-    titre,
+    title,
     message,
     type,
   }: CreateNotificationInput) => {
@@ -18,7 +18,7 @@ class NotificationsService {
       await prisma.notification.create({
         data: {
           userId,
-          titre,
+          title,
           message,
           type,
         },

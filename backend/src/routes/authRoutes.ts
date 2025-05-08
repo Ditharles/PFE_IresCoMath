@@ -1,8 +1,6 @@
 import express, { RequestHandler } from "express";
 import {
-  registerDoctorant,
-  registerEnseignant,
-  registerMaster,
+
   login,
   confirmRequest,
   submitAdditionalInfo,
@@ -15,15 +13,18 @@ import {
   resetPassword,
   validateAccount,
   refreshToken,
+  registerDoctoralStudent,
+  registerMasterStudent,
+  registerTeacherResearcher,
 } from "../controllers/authController";
 import { verifyToken } from "../middleware/verifyToken";
 
 const router = express.Router();
 
 // Routes d'inscription
-router.post("/register/enseignant", registerEnseignant as RequestHandler);
-router.post("/register/master", registerMaster as RequestHandler);
-router.post("/register/doctorant", registerDoctorant as RequestHandler);
+router.post("/register/enseignant", registerTeacherResearcher as RequestHandler);
+router.post("/register/master", registerMasterStudent as RequestHandler);
+router.post("/register/doctorant", registerDoctoralStudent as RequestHandler);
 
 // Routes de confirmation
 router.get("/confirm-request/:token", confirmRequest as RequestHandler);

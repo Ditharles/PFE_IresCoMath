@@ -10,7 +10,6 @@ import { Input } from "../../../ui/input";
 import { ManageUserService } from "../../../../services/manageUser.service";
 import { toast } from "../../../Toast";
 
-
 const manageUserService = new ManageUserService();
 const deleteUser = async (id: string, password: string) => {
     try {
@@ -26,11 +25,11 @@ const deleteUser = async (id: string, password: string) => {
 
 export const columns: ColumnDef<User>[] = [
     {
-        accessorFn: (row) => `${row.nom} ${row.prenom}`,
-        id: "nomComplet",
+        accessorFn: (row) => `${row.lastName} ${row.firstName}`,
+        id: "fullName",
         header: "Nom & Prénom",
         enableColumnFilter: true,
-        cell: ({ row }) => <div className="font-medium">{row.getValue("nomComplet")}</div>,
+        cell: ({ row }) => <div className="font-medium">{row.getValue("fullName")}</div>,
     },
     {
         accessorKey: "email",
@@ -43,11 +42,11 @@ export const columns: ColumnDef<User>[] = [
         enableColumnFilter: true,
         cell: ({ row }) => {
             const original = row.original;
-            if ("annee_these" in original) {
+            if ("thesisYear" in original) {
                 return "Doctorant";
-            } else if ("annee_master" in original) {
+            } else if ("masterYear" in original) {
                 return "Étudiant Master";
-            } else if ("fonction" in original) {
+            } else if ("position" in original) {
                 return "Enseignant Chercheur";
             }
             return "Inconnu";
@@ -66,7 +65,6 @@ export const columns: ColumnDef<User>[] = [
                 const success = await deleteUser(original.id, password);
                 if (success) {
                     setOpen(false);
-                    
                 }
             }
 

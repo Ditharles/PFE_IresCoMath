@@ -1,79 +1,169 @@
 export enum RequestType {
   MISSION = "MISSION",
-  STAGE = "STAGE",
+  INTERNSHIP = "INTERNSHIP",
   CONFERENCE = "CONFERENCE",
-  ACHAT_MATERIEL = "ACHAT_MATERIEL",
-  PRET_MATERIEL = "PRET_MATERIEL",
-  DEPLACEMENT_HEBERGEMENT = "DEPLACEMENT_HEBERGEMENT",
-  REPARATION_MAINTENANCE = "REPARATION_MAINTENANCE",
-  CONTRACTUEL = "CONTRACTUEL",
-  INSCRIPTION_ARTICLE = "INSCRIPTION_ARTICLE",
+  EQUIPMENT_PURCHASE = "EQUIPMENT_PURCHASE",
+  EQUIPMENT_LOAN = "EQUIPMENT_LOAN",
+  TRAVEL_ACCOMMODATION = "TRAVEL_ACCOMMODATION",
+  REPAIR_MAINTENANCE = "REPAIR_MAINTENANCE",
+  CONTRACTUAL = "CONTRACTUAL",
+  ARTICLE_REGISTRATION = "ARTICLE_REGISTRATION",
 }
 
-export const requestUrl = {
-  MISSION: "mission",
-  STAGE: "stage",
-  CONFERENCE: "conference",
-  ACHAT_MATERIEL: "material/purchase",
-  PRET_MATERIEL: "material/rent",
-  DEPLACEMENT_HEBERGEMENT: "deplacement-hebergement",
-  REPARATION_MAINTENANCE: "reparation-maintenance",
-  CONTRACTUEL: "contractuel",
-  INSCRIPTION_ARTICLE: "inscription-article",
+export const requestUrl: Record<RequestType, string> = {
+  [RequestType.MISSION]: "mission",
+  [RequestType.INTERNSHIP]: "internship",
+  [RequestType.CONFERENCE]: "conference",
+  [RequestType.EQUIPMENT_PURCHASE]: "equipment/purchase",
+  [RequestType.EQUIPMENT_LOAN]: "equipment/rent",
+  [RequestType.TRAVEL_ACCOMMODATION]: "travel-accommodation",
+  [RequestType.REPAIR_MAINTENANCE]: "repair-maintenance",
+  [RequestType.CONTRACTUAL]: "contractual",
+  [RequestType.ARTICLE_REGISTRATION]: "article-registration",
 };
 
-// Types pour l'affichage des informations de requêtes
-export type Request = {
-  // Informations de base de la requête
-  id: string;
-  type: RequestType;
-  userId: string;
-  creeLe: Date;
-  statut: RequestStatus;
-  notes: string | null;
-
-  // Informations utilisateur (à inclure si besoin)
-  user?: {
-    id: string;
-    name?: string;
-    email?: string;
-    // Autres champs d'utilisateur pertinents
-  };
-
-  // Informations spécifiques selon le type de requête
-  detailsAchat?: {
-    id: string;
-    typeMateriel: MaterielType;
-    nom: string;
-    quantite: number;
-    photo?: string;
-    specificites: Record<string, any>; // Pour le champ Json
-    estimationCout: number;
-  };
-
-  detailsPret?: {
-    id: string;
-    materielId: string;
-    materiel?: {
-      id: string;
-      nom: string;
-      // Autres champs de MaterialCategory si nécessaires
-    };
-    quantite: number;
-    dateDebut: Date;
-    dateFin: Date;
-  };
-};
-
-enum RequestStatus {
+export enum RequestStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
+  APPROVED_BY_SUPERVISOR = "APPROVED_BY_SUPERVISOR",
+  APPROVED_BY_DIRECTOR = "APPROVED_BY_DIRECTOR",
+  REJECTED_BY_SUPERVISOR = "REJECTED_BY_SUPERVISOR",
+  REJECTED_BY_DIRECTOR = "REJECTED_BY_DIRECTOR",
   REJECTED = "REJECTED",
   COMPLETED = "COMPLETED",
 }
 
-enum MaterielType {
+export enum EquipmentType {
+  SUPPLIES = "SUPPLIES",
+  CONSUMABLES = "CONSUMABLES",
   EQUIPMENT = "EQUIPMENT",
-  CONSUMABLE = "CONSUMABLE",
-  TOOL = "TOOL",
+  TOOLS = "TOOLS",
 }
+
+export const EquipmentTypeList: Record<EquipmentType, string> = {
+  [EquipmentType.SUPPLIES]: "Fournitures",
+  [EquipmentType.CONSUMABLES]: "Consommables",
+  [EquipmentType.EQUIPMENT]: "Équipement",
+  [EquipmentType.TOOLS]: "Outillage",
+};
+
+export enum Role {
+  ADMIN = "ADMIN",
+  DOCTORANT = "DOCTORANT",
+  MASTER = "MASTER",
+  ENSEIGNANT = "ENSEIGNANT",
+  DIRECTEUR = "DIRECTEUR",
+}
+
+// Base request type with common fields
+export type BaseRequest = {
+  id: string;
+  type: RequestType;
+  status: RequestStatus;
+  createdAt: Date;
+  notes?: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: Role;
+  };
+};
+
+// Specific request types
+type PurchaseRequest = {
+  id: string;
+  
+  equipmentType: EquipmentType;
+  name: string;
+  quantity: number;
+  photo?: string;
+  specifications: Record<string, unknown>;
+  costEstimation: number;
+};
+
+type EquipmentLoanRequest = {
+  id: string;
+  equipment?: {
+    id: string;
+    name: string;
+    category: {
+      id: string;
+      name: string;
+      type: EquipmentType;
+    };
+  };
+  category?: {
+    id: string;
+    name: string;
+    type: EquipmentType;
+  };
+  quantity: number;
+  startDate: Date;
+  endDate: Date;
+};
+
+type RequestStage = {
+  id: string;
+  company: string;
+  companyEmail: string;
+  companyPhone: string;
+  supervisor: string;
+  supervisorEmail: string;
+  supervisorPhone: string;
+  letter: string;
+  country: string;
+  startDate: Date;
+  endDate: Date;
+};
+
+type Mission = {
+  id: string;
+  location: string;
+  objective: string;
+  country: string;
+  startDate: Date;
+  endDate: Date;
+};
+
+type ScientificEvent = {
+  id: string;
+  location: string;
+  title: string;
+  articlesAccepted: boolean;
+  articleCover?: string;
+  startDate: Date;
+  endDate: Date;
+};
+
+type ArticleRegistration = {
+  id: string;
+  conference: string;
+  amount: string;
+};
+
+// Main Request type that combines all possibilities
+export type Request = BaseRequest & {
+  purchaseRequest?: PurchaseRequest;
+  equipmentLoanRequest?: EquipmentLoanRequest;
+  requestStage?: RequestStage;
+  mission?: Mission;
+  scientificEvent?: ScientificEvent;
+  articleRegistration?: ArticleRegistration;
+};
+
+// Type for the Prisma query result
+export type PrismaRequestResult = {
+  id: string;
+  type: RequestType;
+  status: RequestStatus;
+  createdAt: Date;
+  notes?: string | null;
+  purchaseRequests: PurchaseRequest[];
+  loanRequests: EquipmentLoanRequest[];
+  stages: RequestStage[];
+  missions: Mission[];
+  scientificEvents: ScientificEvent[];
+  articleRegistrations: ArticleRegistration[];
+};

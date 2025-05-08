@@ -1,29 +1,29 @@
 import { Request, Response } from "express";
 import prisma from "../utils/db";
-import {
-  doctorantFields,
-  enseignantFields,
-  getUserByID,
-  masterFields,
-} from "../utils/authUtils";
 
 import { Role } from "../utils/validateUtils";
 import { Grade } from "../../generated/prisma";
+import {
+  masterStudentFields,
+  teacherResearcherFields,
+  doctoralStudentFields,
+} from "../constants/userFields";
+import { getUserByID } from "../services/auth.service";
 
 interface UpdateUserRequest extends Request {
   body: {
     email?: string;
     password?: string;
     role?: Role;
-    nom?: string;
-    prenom?: string;
-    annee_these?: number;
-    directeur_these_id?: string;
-    annee_master?: number;
-    encadrant_id?: string;
-    fonction?: string;
+    lastName?: string;
+    firstName?: string;
+    thesisYear?: number;
+    thesisSupervisorId?: string;
+    masterYear?: number;
+    supervisorId?: string;
+    position?: string;
     grade?: Grade;
-    etablissement?: string;
+    institution?: string;
   };
   params: {
     id: string;
@@ -37,9 +37,9 @@ export const getUsers = async (req: Request, res: Response) => {
       role: true,
       email: true,
       createdAt: true,
-      master: { select: masterFields },
-      enseignant: { select: enseignantFields },
-      doctorant: { select: doctorantFields },
+      masterStudent: { select: masterStudentFields },
+      teacherResearcher: { select: teacherResearcherFields },
+      doctoralStudent: { select: doctoralStudentFields },
     },
     orderBy: {
       createdAt: "desc",
@@ -52,17 +52,16 @@ export const getUsers = async (req: Request, res: Response) => {
       role: user.role,
       email: user.email,
       createdAt: user.createdAt,
-      ...user.master,
-      ...user.enseignant,
-      ...user.doctorant,
+      ...user.masterStudent,
+      ...user.teacherResearcher,
+      ...user.doctoralStudent,
     };
   });
-  console.log(usersFront);
   res.status(200).json(usersFront);
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const user = getUserByID(req.params.id);
+  const user = await getUserByID(req.params.id);
 
   if (!user) {
     return res.status(404).json({ message: "Utilisateur introuvable." });
@@ -87,15 +86,15 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
   const { id } = req.params;
   const {
     role,
-    nom,
-    prenom,
-    annee_these,
-    directeur_these_id,
-    annee_master,
-    encadrant_id,
-    fonction,
+    lastName,
+    firstName,
+    thesisYear,
+    thesisSupervisorId,
+    masterYear,
+    supervisorId,
+    position,
     grade,
-    etablissement,
+    institution,
   } = req.body;
 
   try {
@@ -114,24 +113,39 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
     // Mettre à jour les informations spécifiques en fonction du rôle
     switch (role) {
       case "DOCTORANT":
-        await prisma.doctorant.updateMany({
+        await prisma.doctoralStudent.updateMany({
           where: { userId: id },
-          data: { nom, prenom, annee_these, directeur_these_id },
+          data: {
+            lastName,
+            firstName,
+            thesisYear,
+            thesisSupervisorId,
+          },
         });
         break;
       case "MASTER":
-        await prisma.master.updateMany({
+        await prisma.masterStudent.updateMany({
           where: { userId: id },
-          data: { nom, prenom, annee_master, encadrant_id },
+          data: {
+            lastName,
+            firstName,
+            masterYear,
+            supervisorId,
+          },
         });
         break;
       case "ENSEIGNANT":
-        await prisma.enseignantChercheur.updateMany({
+        await prisma.teacherResearcher.updateMany({
           where: { userId: id },
-          data: { nom, prenom, fonction, grade, etablissement },
+          data: {
+            lastName,
+            firstName,
+            position,
+            grade,
+            institution,
+          },
         });
         break;
-      // Ajoutez d'autres cas si nécessaire
       default:
         break;
     }

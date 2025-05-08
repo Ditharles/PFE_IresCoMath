@@ -3,94 +3,68 @@ import { useFormContext } from 'react-hook-form';
 import { Textarea } from '../../ui/textarea';
 import { Input } from '../../ui/input';
 import { Calendar } from 'lucide-react';
-import { Checkbox } from '../../ui/checkbox';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '../../ui/form';
 
 const MissionForm: React.FC = () => {
-  const { control, watch } = useFormContext();
-  const articleChecked = watch('article') || false;
+  const { control, formState: { errors } } = useFormContext();
+
+  // Fonction pour obtenir la classe CSS en fonction des erreurs
+  const getFieldClass = (fieldName: string) => {
+    return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
+  };
 
   return (
     <div className="space-y-4">
       <FormField
         control={control}
-        name="objectif"
+        name="objective"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Objectif *</FormLabel>
+            <FormLabel>Objectif</FormLabel>
             <FormControl>
-              <Textarea {...field} rows={3} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="article"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
-            <FormControl>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
+              <Textarea 
+                {...field} 
+                rows={3} 
+                className={getFieldClass('objective')}
               />
             </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel>Article accepté</FormLabel>
-            </div>
           </FormItem>
         )}
       />
 
-      {articleChecked && (
-        <>
-          <FormField
-            control={control}
-            name="titre"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Titre de l'article *</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="numero"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Numéro</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </>
-      )}
+      <FormField
+        control={control}
+        name="country"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Pays</FormLabel>
+            <FormControl>
+              <Input 
+                {...field} 
+                className={getFieldClass('country')}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
 
       <FormField
         control={control}
-        name="pays"
+        name="location"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Pays *</FormLabel>
+            <FormLabel>Lieu</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input 
+                {...field} 
+                className={getFieldClass('location')}
+              />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -98,33 +72,40 @@ const MissionForm: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={control}
-          name="dateDebut"
+          name="startDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date de début *</FormLabel>
+              <FormLabel>Date de début</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input type="date" {...field} />
+                  <Input 
+                    type="date" 
+                    {...field} 
+                    className={getFieldClass('startDate')}
+                  />
                   <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 </div>
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
+        
         <FormField
           control={control}
-          name="dateFin"
+          name="endDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date de fin *</FormLabel>
+              <FormLabel>Date de fin</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input type="date" {...field} />
+                  <Input 
+                    type="date" 
+                    {...field} 
+                    className={getFieldClass('endDate')}
+                  />
                   <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 </div>
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />

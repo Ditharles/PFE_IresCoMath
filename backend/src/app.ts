@@ -13,10 +13,11 @@ import cors from "cors";
 import { PrismaClient } from "../generated/prisma";
 import { createRouteHandler } from "uploadthing/express";
 import { uploadRouter } from "./uploadthing";
-import { verify } from "crypto";
+
 import { verifyToken } from "./middleware/verifyToken";
 import requestsRoutes from "./routes/requestsRoutes";
 import notificationsRoutes from "./routes/notificationsRoutes";
+import equipmentsRoutes from "./routes/equipmentsRoutes";
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -36,8 +37,9 @@ app.use(helmet());
 app.use("/auth/", authRoutes);
 app.use("/validate/", validateRoutes);
 app.use("/users/", verifyToken as RequestHandler, usersRoutes);
-app.use("/requests/,", verifyToken as RequestHandler, requestsRoutes);
-app.use("/notifications/,", verifyToken as RequestHandler, notificationsRoutes);
+app.use("/requests/", verifyToken as RequestHandler, requestsRoutes);
+app.use("/notifications/", verifyToken as RequestHandler, notificationsRoutes);
+app.use("/equipments/", verifyToken as RequestHandler, equipmentsRoutes);
 app.use(
   "/api/uploadthing",
   createRouteHandler({
@@ -48,11 +50,12 @@ app.use(
   })
 );
 
-app.get("/enseignants", async (req, res) => {
+app.get("/teachers-researchers", async (req, res) => {
   try {
-    const data = await prisma.enseignantChercheur.findMany({
-      select: { id: true, nom: true, prenom: true },
+    const data = await prisma.teacherResearcher.findMany({
+      select: { id: true, lastName: true, firstName: true },
     });
+
     res.json(data);
   } catch (error) {
     console.error(error);

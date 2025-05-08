@@ -13,6 +13,14 @@ class NotificationsService {
     const response = await api.get(`/notifications/read-notification/${id}`);
     return response;
   }
+  async markAllAsRead() {
+    const response = await api.get("/notifications/read-all-notifications");
+    return response;
+  }
+  async getUnreadNumberNotifications() {
+    const response = await api.get("/notifications/get-unread-number-notifications");
+    return response;
+  }
 }
 
 export default NotificationsService;

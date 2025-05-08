@@ -1,116 +1,315 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '../../ui/form';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { Calendar, Loader2 } from 'lucide-react';
 import { Input } from '../../ui/input';
 import { Textarea } from '../../ui/textarea';
-import FileUpload from '../../FileUpload';
-import { FileText, X } from 'lucide-react';
+import { EquipmentType, EquipmentTypeList } from '../../../types/request';
+import EquipmentService from '../../../services/equipment.service';
 
-const EquipmentPurchaseForm = () => {
-  const { control, watch, setValue } = useFormContext();
-  const photos = watch('photos') || [];
 
-  const handlePhotosUpload = (fileUrl: string) => {
-    setValue('photos', [...photos, fileUrl], { shouldValidate: true });
+interface EquipmentCategory {
+  id: string;
+  name: string;
+  type: EquipmentType;
+  quantity: number;
+}
+
+interface EquipmentItem {
+  id: string;
+  name: string;
+  categoryId: string;
+  specifications: Record<string, unknown>;
+}
+
+const EquipmentLoanForm: React.FC = () => {
+  const { control, formState: { errors }, setValue, trigger } = useFormContext();
+
+  // State for categories and equipments
+  const [categories, setCategories] = useState<EquipmentCategory[]>([]);
+  const [equipments, setEquipments] = useState<EquipmentItem[]>([]);
+  const [loading, setLoading] = useState({
+    categories: false,
+    equipments: false
+  });
+  const equipmentService = new EquipmentService();
+
+  const selectedType = useWatch({ control, name: 'equipmentType' });
+  const selectedCategoryId = useWatch({ control, name: 'categoryId' });
+  const selectedEquipmentId = useWatch({ control, name: 'equipmentId' });
+
+  //filtre les categories par type
+  const filteredCategories = useMemo(() => {
+    if (!selectedType) return [];
+    return categories.filter(cat => cat.type === selectedType);
+  }, [categories, selectedType]);
+
+  // equipement 
+  const filteredEquipments = useMemo(() => {
+    if (!selectedCategoryId) return [];
+    return equipments.filter(eq => eq.categoryId === selectedCategoryId);
+  }, [equipments, selectedCategoryId]);
+
+  // quantitié maximum d'une catéguorie d'objets 
+  const maxQuantity = useMemo(() => {
+    if (selectedEquipmentId) {
+      // If specific equipment is selected, get its available quantity
+      // This would need to be fetched from the API in a real scenario
+      return null; // Placeholder - implement based on your API
+    } else if (selectedCategoryId) {
+      const category = categories.find(cat => cat.id === selectedCategoryId);
+      return category?.quantity || null;
+    }
+    return null;
+  }, [selectedCategoryId, selectedEquipmentId, categories]);
+
+  // Fetch all categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(prev => ({ ...prev, categories: true }));
+        const response = await equipmentService.getAllCategories();
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      } finally {
+        setLoading(prev => ({ ...prev, categories: false }));
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Fetch equipments when type changes
+  useEffect(() => {
+    const fetchEquipments = async () => {
+      if (!selectedType) {
+        setEquipments([]);
+        return;
+      }
+
+      try {
+        setLoading(prev => ({ ...prev, equipments: true }));
+        const response = await api.get(`/equipment/type/${selectedType}`);
+        setEquipments(response.data);
+      } catch (error) {
+        console.error('Failed to fetch equipments:', error);
+      } finally {
+        setLoading(prev => ({ ...prev, equipments: false }));
+      }
+    };
+
+    fetchEquipments();
+  }, [selectedType]);
+
+  // Reset category and equipment when type changes
+  useEffect(() => {
+    setValue('categoryId', '');
+    setValue('equipmentId', '');
+  }, [selectedType, setValue]);
+
+  // Reset equipment when category changes
+  useEffect(() => {
+    setValue('equipmentId', '');
+  }, [selectedCategoryId, setValue]);
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numValue = value === '' ? 0 : Number(value);
+
+    if (maxQuantity !== null && numValue > maxQuantity) {
+      setValue('quantity', maxQuantity);
+    } else {
+      setValue('quantity', value);
+    }
+
+    trigger('quantity');
   };
 
-  const removePhoto = (index: number) => {
-    const updated = [...photos];
-    updated.splice(index, 1);
-    setValue('photos', updated, { shouldValidate: true });
+  const getFieldClass = (fieldName: string) => {
+    return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Type selection */}
       <FormField
         control={control}
-        name="name"
+        name="equipmentType"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nom du matériel *</FormLabel>
+            <FormLabel>Type de matériel</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <select
+                {...field}
+                className={`w-full px-4 py-2 border rounded-lg outline-none transition-all ${getFieldClass('equipmentType')}`}
+              >
+                <option value="">-- Choisir le type de matériel --</option>
+                {Object.entries(EquipmentTypeList).map(([key, value]) => (
+                  <option key={key} value={key}>{value}</option>
+                ))}
+              </select>
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <FormField
-        control={control}
-        name="type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Type *</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {/* Category selection - only shown when type is selected */}
+      {selectedType && (
+        <FormField
+          control={control}
+          name="categoryId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Catégorie</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <select
+                    {...field}
+                    disabled={loading.categories}
+                    className={`w-full px-4 py-2 border rounded-lg outline-none transition-all ${getFieldClass('categoryId')} ${loading.categories ? 'opacity-50' : ''}`}
+                  >
+                    <option value="">-- Choisir une catégorie --</option>
+                    {filteredCategories.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name} ({category.quantity} disponibles)
+                      </option>
+                    ))}
+                  </select>
+                  {loading.categories && (
+                    <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin" />
+                  )}
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
 
+      {/* Equipment selection - only shown when category is selected */}
+      {selectedCategoryId && filteredEquipments.length > 0 && (
+        <FormField
+          control={control}
+          name="equipmentId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Matériel spécifique (optionnel)</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <select
+                    {...field}
+                    disabled={loading.equipments}
+                    className={`w-full px-4 py-2 border rounded-lg outline-none transition-all ${getFieldClass('equipmentId')} ${loading.equipments ? 'opacity-50' : ''}`}
+                  >
+                    <option value="">-- Choisir un matériel spécifique --</option>
+                    {filteredEquipments.map(equipment => (
+                      <option key={equipment.id} value={equipment.id}>
+                        {equipment.name} ({JSON.stringify(equipment.specifications)})
+                      </option>
+                    ))}
+                  </select>
+                  {loading.equipments && (
+                    <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin" />
+                  )}
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
+      {/* Quantity with max quantity indicator */}
       <FormField
         control={control}
         name="quantity"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Quantité *</FormLabel>
+            <FormLabel>
+              Quantité {maxQuantity !== null && `(Maximum disponible: ${maxQuantity})`}
+            </FormLabel>
             <FormControl>
-              <Input type="number" min={1} {...field} />
+              <Input
+                type="number"
+                min={1}
+                max={maxQuantity || undefined}
+                {...field}
+                onChange={handleQuantityChange}
+                className={getFieldClass('quantity')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <FormField
-        control={control}
-        name="note"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Note</FormLabel>
-            <FormControl>
-              <Textarea rows={3} {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      {/* Téléversement photos */}
-      <div className="space-y-4">
-        <FormLabel>Photos</FormLabel>
-
-        <FileUpload
-          endpoint="equipementPhotosRequest"
-          maxFiles={5}
-          acceptedTypes={['image/*']}
-          headerText="Téléverser les photos"
-          subHeaderText="Images uniquement"
-          onFileUploaded={handlePhotosUpload}
+      {/* Date fields */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date de début</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type="date"
+                    {...field}
+                    className={getFieldClass('startDate')}
+                  />
+                  <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
-        {photos.length > 0 && (
-          <div className="grid grid-cols-2 gap-4">
-            {photos.map((url: string, index: number) => (
-              <div key={index} className="flex items-center justify-between border p-2 rounded bg-white">
-                <div className="flex items-center space-x-2">
-                  <FileText className="text-blue-500" />
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
-                    Voir la photo {index + 1}
-                  </a>
+        <FormField
+          control={control}
+          name="endDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date de fin</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type="date"
+                    {...field}
+                    className={getFieldClass('endDate')}
+                  />
+                  <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 </div>
-                <button onClick={() => removePhoto(index)} className="p-1 rounded-full hover:bg-gray-200">
-                  <X className="h-4 w-4 text-red-500" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
+
+      {/* Notes */}
+      <FormField
+        control={control}
+        name="notes"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Commentaire</FormLabel>
+            <FormControl>
+              <Textarea
+                rows={3}
+                {...field}
+                placeholder="Précisez ici toute information supplémentaire sur votre demande..."
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 };
 
-export default EquipmentPurchaseForm;
+export default EquipmentLoanForm;

@@ -27,13 +27,13 @@ export const uploadRouter = {
     return { url: file.ufsUrl };
   }),
 
-  equipementPhotos: f({
+  equipmentPhotos: f({
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
 
-  equipementPhotosRequest: f({
+  equipmentPhotosRequest: f({
     image: { maxFileSize: "4MB", maxFileCount: 5 },
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };

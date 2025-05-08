@@ -1,4 +1,3 @@
-// MembershipRequests.jsx
 import { useMemo } from "react";
 import { FileDown } from "lucide-react";
 import {
@@ -16,6 +15,7 @@ import { BaseDataTable } from "../../BaseDataTable";
 import { columns as requestMember } from "./columns";
 import { RoleEnum } from "../../../../types/common";
 import { RequestStatus } from "../../../../types/MemberAddRequest";
+
 const MembersAddRequestsList = ({
     requests,
     isLoading,
@@ -35,9 +35,9 @@ const MembersAddRequestsList = ({
     // Calcul des statistiques des rôles pour les demandes
     const requestRoleCounts = useMemo(() => {
         const determineRole = (user) => {
-            if ("annee_these" in user) return RoleEnum.DOCTORANT;
-            if ("annee_master" in user) return RoleEnum.MASTER;
-            if ("fonction" in user) return RoleEnum.ENSEIGNANT;
+            if ("thesisYear" in user) return RoleEnum.DOCTORANT;
+            if ("masterYear" in user) return RoleEnum.MASTER;
+            if ("position" in user) return RoleEnum.ENSEIGNANT;
             return RoleEnum.ADMIN;
         };
 

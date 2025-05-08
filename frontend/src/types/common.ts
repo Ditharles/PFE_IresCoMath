@@ -13,10 +13,11 @@ export enum RoleEnum {
   DIRECTEUR = "DIRECTEUR",
   ADMIN = "ADMIN",
 }
+
 export interface CommonFields {
-  nom: string;
-  prenom: string;
-  telephone: string;
+  lastName: string;
+  firstName: string;
+  phone: string;
   email: string;
   cin: string;
 }
@@ -25,20 +26,20 @@ export interface BaseSpecificFields {
   photo: string | null;
 }
 
-export interface DoctorantFields extends BaseSpecificFields {
-  etablissement: string;
-  anneeThese: string;
-  directeurThese: string;
+export interface DoctoralStudentFields extends BaseSpecificFields {
+  institution: string;
+  thesisYear: string;
+  thesisSupervisor: string;
 }
 
-export interface EtudiantFields extends BaseSpecificFields {
-  etablissement: string;
-  encadrant: string;
+export interface MasterStudentFields extends BaseSpecificFields {
+  institution: string;
+  supervisor: string;
 }
 
-export interface EnseignantFields extends BaseSpecificFields {
+export interface TeacherResearcherFields extends BaseSpecificFields {
   grade: string;
-  specialite: string;
+  specialty: string;
 }
 
 export interface SpecificFieldsProps {

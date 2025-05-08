@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react"
 import {
   XMarkIcon,
@@ -9,23 +8,25 @@ import {
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline"
-import AuthService from "../../services/auth.service"
+
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
+import { toast } from "../Toast"
+import { AxiosResponse } from "axios"
+
 
 interface UserProfileProps {
   darkMode: boolean
   onClose: () => void
-
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
   const [isVisible, setIsVisible] = useState(false)
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
+
   // Animation d'entrée
   useEffect(() => {
-    // Petit délai pour permettre au DOM de se mettre à jour avant l'animation
     const timer = setTimeout(() => {
       setIsVisible(true)
     }, 10)
@@ -33,22 +34,56 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
     return () => clearTimeout(timer)
   }, [])
 
-  // Gestion de la fermeture avec animation
   const handleClose = () => {
     setIsVisible(false)
     setTimeout(() => {
       onClose()
-    }, 300) // Durée de l'animation de sortie
+    }, 300)
   }
-  const authService = new AuthService()
+
   const handleLogout = async () => {
     try {
-      await authService.logout();
+      const response = await logout()
+      const data = (response as AxiosResponse).data as { message: string }
+      toast.success(data.message)
     } catch (error) {
-      console.error("Une erreur s'est produite lors de la déconnexion:", error);
+      console.error("Une erreur s'est produite lors de la déconnexion:", error)
     } finally {
-      navigate("/");
+      setIsVisible(false)
+      setTimeout(() => {
+        navigate("/")
+      }, 100)
     }
+  }
+  const ProfileOption: React.FC<{
+    icon: React.ReactNode
+    label: string
+    description?: string
+    darkMode: boolean
+    danger?: boolean
+  }> = ({ icon, label, description, darkMode, danger = false }) => {
+    return (
+      <button
+        className={`w-full flex items-center p-3 rounded-lg ${danger
+          ? darkMode
+            ? "text-red-300 hover:bg-red-900 hover:bg-opacity-30"
+            : "text-red-600 hover:bg-red-50"
+          : darkMode
+            ? "hover:bg-gray-700"
+            : "hover:bg-gray-100"
+          }`}
+      >
+        <span className="mr-3">{icon}</span>
+        <div className="text-left">
+          <div className={danger ? (darkMode ? "text-red-300" : "text-red-600") : ""}>{label}</div>
+          {description && (
+            <div className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+              {description}
+            </div>
+          )}
+        </div>
+      </button>
+    )
   }
 
   return (
@@ -62,7 +97,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
       {/* Panneau latéral */}
       <div
         className={`relative w-full max-w-md h-full ${darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
-          } shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"}`}
+          } shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* En-tête du panneau */}
@@ -73,7 +109,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
           <h2 className="text-xl font-semibold">Profil utilisateur</h2>
           <button
             onClick={handleClose}
-            className={`p-1.5 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
+            className={`p-1.5 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+              }`}
             aria-label="Fermer"
           >
             <XMarkIcon className="w-6 h-6" />
@@ -109,7 +146,9 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
               )}
             </div>
             <h2 className="text-xl font-bold">{user.name}</h2>
-            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>{user.email}</p>
+            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+              {user.email}
+            </p>
             <span
               className={`mt-2 px-3 py-1 text-xs rounded-full ${darkMode ? "bg-blue-900 text-blue-100" : "bg-blue-100 text-blue-800"
                 }`}
@@ -169,8 +208,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
           {/* Section déconnexion */}
           <div className="p-4 mt-auto">
             <button
-              className={`w-full flex items-center p-3 rounded-lg ${darkMode ? "text-red-300 hover:bg-red-900 hover:bg-opacity-30" : "text-red-600 hover:bg-red-50"}`}
-              onClick={() => handleLogout()}
+              className={`w-full flex items-center p-3 rounded-lg ${darkMode
+                ? "text-red-300 hover:bg-red-900 hover:bg-opacity-30"
+                : "text-red-600 hover:bg-red-50"
+                }`}
+              onClick={handleLogout}
             >
               <ArrowRightOnRectangleIcon className="w-5 h-5 mr-3" />
               <div className="text-left">
@@ -180,7 +222,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
           </div>
 
           {/* Pied de page */}
-          <div className={`p-4 text-xs text-center ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+          <div
+            className={`p-4 text-xs text-center ${darkMode ? "text-gray-500" : "text-gray-400"
+              }`}
+          >
             Dernière connexion: Aujourd'hui à 10:45
           </div>
         </div>
@@ -188,34 +233,5 @@ const UserProfile: React.FC<UserProfileProps> = ({ darkMode, onClose }) => {
     </div>
   )
 }
-
-const ProfileOption: React.FC<{
-  icon: React.ReactNode
-  label: string
-  description?: string
-  darkMode: boolean
-  danger?: boolean
-}> = ({ icon, label, description, darkMode, danger = false }) => {
-  return (
-    <button
-      className={`w-full flex items-center p-3 rounded-lg ${danger
-        ? darkMode
-          ? "text-red-300 hover:bg-red-900 hover:bg-opacity-30"
-          : "text-red-600 hover:bg-red-50"
-        : darkMode
-          ? "hover:bg-gray-700"
-          : "hover:bg-gray-100"
-        }`}
-    >
-      <span className="mr-3">{icon}</span>
-      <div className="text-left">
-        <div className={danger ? (darkMode ? "text-red-300" : "text-red-600") : ""}>{label}</div>
-        {description && <div className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>{description}</div>}
-      </div>
-    </button>
-  )
-}
-
-
 
 export default UserProfile

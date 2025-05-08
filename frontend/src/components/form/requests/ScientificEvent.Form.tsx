@@ -2,16 +2,21 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/input';
 import { Calendar } from 'lucide-react';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { FormControl, FormField, FormItem, FormLabel } from '../../ui/form';
 import FileUpload from '../../FileUpload';
 
 const ScientificEventForm: React.FC = () => {
-  const { control, watch, setValue } = useFormContext();
-  const articleAccepted = watch('articleAccepted') || false;
+  const { control, watch, setValue, formState: { errors } } = useFormContext();
+  const articlesAccepted = watch('articlesAccepted') || false;
 
-  const handleFileUpload = (fileUrl: string) => {
+  const getFieldClass = (fieldName: string) => {
+    return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
+  };
+
+  const handleFileUpload = (fileUrl: any) => {
     if (fileUrl) {
-      setValue('fileUrl', fileUrl);
+      
+      setValue('articleCover', fileUrl[0]);
     }
   };
 
@@ -24,9 +29,8 @@ const ScientificEventForm: React.FC = () => {
           <FormItem>
             <FormLabel>Lieu *</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} className={getFieldClass('location')} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -38,18 +42,17 @@ const ScientificEventForm: React.FC = () => {
           <FormItem>
             <FormLabel>Titre de l'événement *</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} className={getFieldClass('title')} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
 
       <FormField
         control={control}
-        name="articleAccepted"
+        name="articlesAccepted"
         render={({ field }) => (
-          <FormItem className="flex items-center gap-3 px-4 py-2    shadow-sm">
+          <FormItem className="flex items-center gap-3 px-4 py-2 shadow-sm">
             <FormControl>
               <Input
                 type="checkbox"
@@ -63,11 +66,10 @@ const ScientificEventForm: React.FC = () => {
         )}
       />
 
-
-      {articleAccepted && (
+      {articlesAccepted && (
         <FormField
           control={control}
-          name="fileUrl"
+          name="articleCover"
           render={() => (
             <FormItem>
               <FormLabel>Première page de l'article *</FormLabel>
@@ -81,7 +83,6 @@ const ScientificEventForm: React.FC = () => {
                   onFileUploaded={handleFileUpload}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -90,34 +91,32 @@ const ScientificEventForm: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={control}
-          name="dateDebut"
+          name="startDate"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Date de début *</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input type="date" {...field} />
+                  <Input type="date" {...field} className={getFieldClass('startDate')} />
                   <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 </div>
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
 
         <FormField
           control={control}
-          name="dateFin"
+          name="endDate"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Date de fin *</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input type="date" {...field} />
+                  <Input type="date" {...field} className={getFieldClass('endDate')} />
                   <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 </div>
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />

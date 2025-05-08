@@ -2,14 +2,20 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import type { SpecificFieldsProps } from "../../../src/types/common"
-import axios from "axios"
+import type { SpecificFieldsProps } from "../../types/common"
+
 import { Loader2 } from "lucide-react"
 import InputField from "./InputField"
+import api from "../../api/axios"
 
-
-const FormEtudiant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
-  const [enseignants, setEnseignants] = useState<Array<{ id: string; nom: string; prenom: string }>>([])
+const MasterStudent: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
+  const [enseignants, setEnseignants] = useState<Array<{
+    id: string;
+    lastName: string;
+    firstName: string;
+    position: string;
+    grade: string;
+  }>>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -19,19 +25,21 @@ const FormEtudiant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
   }
 
   const fields = [
-    { label: "Établissement", id: "etablissement", type: "text" },
-    { label: "Année de master", id: "annee_master", type: "number" },
+    { label: "Institution", id: "institution", type: "text", required: true },
+    { label: "Année de master", id: "masterYear", type: "number", required: true },
+
   ]
+
   useEffect(() => {
     const fetchEnseignants = async () => {
       setIsLoading(true)
       setError("")
 
       try {
-        const response = await axios.get("http://localhost:8000/enseignants")
+        const response = await api.get("/teachers-researchers")
         setEnseignants(response.data)
       } catch (error) {
-        setError("Erreur lors de la récupération des enseignants. Veuillez réessayer.")
+        setError("Erreur lors de la récupération des enseignants-chercheurs. Veuillez réessayer.")
         console.error("Erreur lors de la récupération des enseignants:", error)
       } finally {
         setIsLoading(false)
@@ -43,14 +51,23 @@ const FormEtudiant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
 
   return (
     <div className="space-y-4">
-      {fields.map((field) => (
-        <div key={field.id}>
-          <InputField label={field.label} id={field.id} value={data[field.id] ?? ""} onChange={handleChange} type={field.type} />
-        </div>
-      ))}
+      <div className="grid grid-cols-2 gap-4">
+        {fields.map((field) => (
+          <InputField
+            key={field.id}
+            label={field.label}
+            id={field.id}
+            type={field.type}
+            value={data[field.id] ?? ""}
+            onChange={handleChange}
+            required={field.required !== false}
+          />
+        ))}
+      </div>
+
       <div>
-        <label htmlFor="encadrant" className="block text-sm font-medium text-gray-700 mb-1">
-          Encadrant
+        <label htmlFor="supervisorId" className="block text-sm font-medium text-gray-700 mb-1">
+          Encadrant (Enseignant-Chercheur)
         </label>
         {error && (
           <div className="text-red-500 text-sm mb-2">
@@ -60,13 +77,13 @@ const FormEtudiant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
         {isLoading ? (
           <div className="flex items-center space-x-2 py-2">
             <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-            <span className="text-sm text-gray-500">Chargement des enseignants...</span>
+            <span className="text-sm text-gray-500">Chargement des enseignants-chercheurs...</span>
           </div>
         ) : (
           <select
-            id="encadrant"
-            name="encadrant"
-            value={data.encadrant ?? ""}
+            id="supervisorId"
+            name="supervisorId"
+            value={data.supervisorId ?? ""}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none bg-white"
             required
@@ -74,7 +91,7 @@ const FormEtudiant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
             <option value="">Sélectionner un encadrant</option>
             {enseignants.map((enseignant) => (
               <option key={enseignant.id} value={enseignant.id}>
-                {enseignant.nom} {enseignant.prenom}
+                {enseignant.lastName} {enseignant.firstName} ({enseignant.position})
               </option>
             ))}
           </select>
@@ -84,4 +101,4 @@ const FormEtudiant: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
   )
 }
 
-export default FormEtudiant
+export default MasterStudent

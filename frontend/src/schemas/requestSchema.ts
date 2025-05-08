@@ -7,17 +7,16 @@ const dateValidation = {
     .string()
     .min(1, { message: "La date de fin est requise" })
     .refine(
-      (date, ctx) => {
-        const { startDate } = ctx.parent;
-        if (!startDate) return true;
-        return new Date(date) >= new Date(startDate);
+      (endDate) => {
+        const startDate = z.string().parse(endDate);
+        return new Date(endDate) >= new Date(startDate);
       },
       { message: "La date de fin doit être après la date de début" }
     ),
 };
 
 // Schéma pour la demande de stage
-export const stageSchema = z.object({
+export const internshipRequestSchema = z.object({
   company: z.string().min(1, { message: "Le nom de l'entreprise est requis" }),
   companyEmail: z
     .string()
@@ -42,7 +41,7 @@ export const stageSchema = z.object({
 });
 
 // Schéma pour la demande de mission
-export const missionSchema = z.object({
+export const missionRequestSchema = z.object({
   objective: z.string().min(1, { message: "L'objectif est requis" }),
   country: z.string().min(1, { message: "Le pays est requis" }),
   location: z.string().min(1, { message: "Le lieu est requis" }),
@@ -50,42 +49,41 @@ export const missionSchema = z.object({
 });
 
 // Schéma pour la demande d'événement scientifique
-export const scientificEventSchema = z.object({
-  location: z.string().min(1, { message: "Le lieu est requis" }),
-  title: z.string().min(1, { message: "Le titre de l'événement est requis" }),
-  articleAccepted: z.boolean().optional().default(false),
-  fileUrl: z
-    .string()
-    .optional()
-    .superRefine((val, ctx) => {
-      if (ctx.parent.articleAccepted && !val) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            "L'URL de la première page est requise lorsque l'article est accepté",
-        });
-      }
-    }),
-  ...dateValidation,
-});
+export const scientificEventRequestSchema = z
+  .object({
+    location: z.string().min(1, { message: "Le lieu est requis" }),
+    title: z.string().min(1, { message: "Le titre de l'événement est requis" }),
+    articlesAccepted: z.boolean().optional().default(false),
+    articleCover: z.string().optional(),
+    ...dateValidation,
+  })
+  .superRefine((data, ctx) => {
+    if (data.articlesAccepted && !data.articleCover) {
+      ctx.addIssue({
+        path: ["articleCover"],
+        code: z.ZodIssueCode.custom,
+        message:
+          "L'URL de la première page est requise lorsque l'article est accepté",
+      });
+    }
+  });
 
 // Schéma pour l'inscription d'article
-export const articleRegistrationSchema = z.object({
+export const articleRegistrationRequestSchema = z.object({
   conference: z.string().min(1, { message: "La conférence est requise" }),
-  location: z.string().min(1, { message: "Le lieu est requis" }),
-  date: z.string().min(1, { message: "La date est requise" }),
-  fees: z.number().min(0, {
+
+  amount: z.string().min(0, {
     message: "Le montant des frais doit être supérieur ou égal à 0",
   }),
+  date: z.string().min(1, { message: "La date est requise" }),
 });
 
 // Schéma pour le prêt de matériel
-export const equipmentLoanSchema = z.object({
-  name: z.string().min(1, { message: "Le nom du matériel est requis" }),
-  type: z.string().min(1, { message: "Le type de matériel est requis" }),
-  equipmentName: z
+export const equipmentLoanRequestSchema = z.object({
+  categoryId: z
     .string()
-    .min(1, { message: "Le nom du matériel est requis" }),
+    .min(1, { message: "Les infos de l'equipement sont requis " }),
+  equipmentId: z.string().optional(),
   quantity: z
     .number()
     .min(1, { message: "La quantité doit être supérieure à 0" })
@@ -98,36 +96,17 @@ export const equipmentLoanSchema = z.object({
     .refine((val) => !isNaN(val) && val > 0, {
       message: "La quantité doit être un nombre supérieur à 0",
     }),
-  note: z.string().optional(),
+  notes: z.string().optional(),
   ...dateValidation,
 });
 
 // Schéma pour l'achat de matériel
-export const equipmentPurchaseSchema = z.object({
+export const equipmentPurchaseRequestSchema = z.object({
+  equipmentType: z
+    .string()
+    .min(1, { message: "Le type de matériel est requis" }),
   name: z.string().min(1, { message: "Le nom du matériel est requis" }),
-  type: z.string().min(1, { message: "Le type de matériel est requis" }),
-  specifications: z
-    .union([
-      z.record(z.string(), z.any()), // Format objet libre
-      z.array(
-        z.object({
-          key: z.string(),
-          value: z.any(),
-        })
-      ),
-    ])
-    .transform((val) => {
-      // Normalise en format objet pour le stockage
-      if (Array.isArray(val)) {
-        return val.reduce((acc, { key, value }) => {
-          if (key) acc[key] = value;
-          return acc;
-        }, {});
-      }
-      return val;
-    })
-    .optional()
-    .default({}),
+  specifications: z.record(z.string(), z.any()).optional().default({}),
   quantity: z
     .number()
     .min(1, { message: "La quantité doit être supérieure à 0" })
@@ -140,6 +119,9 @@ export const equipmentPurchaseSchema = z.object({
     .refine((val) => !isNaN(val) && val > 0, {
       message: "La quantité doit être un nombre supérieur à 0",
     }),
-  note: z.string().optional(),
-  ...dateValidation,
+  costEstimation: z.string().min(0, {
+    message: "L'estimation de coût doit être supérieure ou égale à 0",
+  }),
+  photo: z.string().optional(),
+  notes: z.string().optional(),
 });

@@ -7,24 +7,28 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+
 } from '../../ui/form';
 
 const ArticleRegistrationForm: React.FC = () => {
-  const { control } = useFormContext();
+  const { control, formState: { errors } } = useFormContext();
+
+  const getFieldClass = (fieldName: string) => {
+    return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
+  };
 
   return (
     <div className="space-y-4">
       <FormField
         control={control}
         name="conference"
+        key="conference"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Conférence *</FormLabel>
+            <FormLabel>Conférence</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} className={getFieldClass('conference')} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -32,13 +36,13 @@ const ArticleRegistrationForm: React.FC = () => {
       <FormField
         control={control}
         name="location"
+        key="location"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Lieu *</FormLabel>
+            <FormLabel>Lieu</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} className={getFieldClass('location')} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -46,30 +50,40 @@ const ArticleRegistrationForm: React.FC = () => {
       <FormField
         control={control}
         name="date"
+        key="date"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Date *</FormLabel>
+            <FormLabel>Date</FormLabel>
             <FormControl>
               <div className="relative">
-                <Input type="date" {...field} />
+                <Input
+                  type="date"
+                  {...field}
+                  className={getFieldClass('date')}
+                />
                 <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
               </div>
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
 
       <FormField
         control={control}
-        name="fees"
+        name="amount"
+        key="amount"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Frais d'inscription (€) *</FormLabel>
+            <FormLabel>Frais d'inscription (DT)</FormLabel>
             <FormControl>
-              <Input type="number" step="0.01" min="0" {...field} />
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                {...field}
+                className={getFieldClass('amount')}
+              />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
