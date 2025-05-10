@@ -52,6 +52,23 @@ async function main() {
         enseignant: true,
       },
     });
+    const enseignantChercheur = await prisma.user.create({
+      data: {
+        email: "testa@gmail.com",
+        password: await bcrypt.hash("testa123", 10),
+        role: Role.ENSEIGNANT,
+        enseignant: {
+          create: {
+            nom: "Testa",
+            prenom: "Test",
+            fonction: "Enseignant-chercheur",
+            grade: Grade.Professeur,
+            etablissement: "Université IreSCoMath",
+          },
+        },
+         }
+
+    });
 
     console.log("Directeur créé:", directeurUser.email);
 

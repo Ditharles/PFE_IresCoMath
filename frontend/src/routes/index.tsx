@@ -13,9 +13,12 @@ import Home from "../pages/Home";
 import GestionMembres from "../pages/directeur/GestionMembres";
 import RoleBasedRoute from "../components/routes/RoleBasedRoute";
 
+
 import PasswordForget from "../pages/password-forget";
 import PasswordReset from "../pages/password-reset";
 import MemberAddRequest from "../pages/MemberAddRequest";
+import NouvelleDemande from "../pages/NouvelleDemande";
+import Profile from "../pages/auth/Profile";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -69,10 +72,14 @@ const routes: RouteObject[] = [
                 element: <AdditionalInfo />
             },
             {
-                path: "demande/:type",
+                path: "nouvelle-demande",
                 element: <NouvelleDemande />
             },
-
+            {
+                path: "profile",
+                element: <Profile />
+            },
+               
         ]
     },
 
