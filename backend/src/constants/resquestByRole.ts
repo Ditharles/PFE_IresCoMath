@@ -3,20 +3,18 @@ import { RequestType, Role } from "../../generated/prisma";
 export const requestByRole: Record<Role, RequestType[]> = {
   [Role.ENSEIGNANT]: [
     RequestType.MISSION,
-    RequestType.CONFERENCE,
+    RequestType.CONFERENCE_NATIONAL,
     RequestType.EQUIPMENT_PURCHASE,
     RequestType.EQUIPMENT_LOAN,
-    RequestType.TRAVEL_ACCOMMODATION,
+   
     RequestType.REPAIR_MAINTENANCE,
-    RequestType.CONTRACTUAL,
     RequestType.ARTICLE_REGISTRATION,
   ],
   [Role.DIRECTEUR]: [
     RequestType.MISSION,
-    RequestType.CONFERENCE,
+    RequestType.CONFERENCE_NATIONAL,
     RequestType.EQUIPMENT_PURCHASE,
     RequestType.EQUIPMENT_LOAN,
-    RequestType.TRAVEL_ACCOMMODATION,
     RequestType.REPAIR_MAINTENANCE,
     RequestType.CONTRACTUAL,
     RequestType.ARTICLE_REGISTRATION,
@@ -26,7 +24,8 @@ export const requestByRole: Record<Role, RequestType[]> = {
     RequestType.INTERNSHIP,
     RequestType.EQUIPMENT_PURCHASE,
     RequestType.EQUIPMENT_LOAN,
-    RequestType.TRAVEL_ACCOMMODATION,
+    RequestType.CONFERENCE_NATIONAL,
+    RequestType.ARTICLE_REGISTRATION,
   ],
   [Role.ADMIN]: [],
 };

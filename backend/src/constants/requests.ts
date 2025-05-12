@@ -4,13 +4,20 @@ export const requestFields = {
   status: true,
   createdAt: true,
   notes: true,
+  user: {
+    select: {
+      id: true,
 
+      role: true,
+    },
+  },
   purchaseRequest: {
     select: {
       id: true,
       equipmentType: true,
       name: true,
       quantity: true,
+      url: true,
       photo: true,
       specifications: true,
       costEstimation: true,
@@ -47,9 +54,9 @@ export const requestFields = {
   stage: {
     select: {
       id: true,
-      company: true,
-      companyEmail: true,
-      companyPhone: true,
+      organization: true,
+      organizationEmail: true,
+      organizationUrl: true,
       supervisor: true,
       supervisorEmail: true,
       supervisorPhone: true,
@@ -62,17 +69,21 @@ export const requestFields = {
   mission: {
     select: {
       id: true,
-      location: true,
+      hostOrganization: true,
       objective: true,
       country: true,
       startDate: true,
       endDate: true,
+      specificDocument: true,
+      document: true,
     },
   },
   scientificEvent: {
     select: {
       id: true,
       location: true,
+      urlEvent: true,
+      mailAcceptation: true,
       title: true,
       articlesAccepted: true,
       articleCover: true,
@@ -84,6 +95,8 @@ export const requestFields = {
     select: {
       id: true,
       conference: true,
+      urlConference: true,
+      articleCover: true,
       amount: true,
     },
   },

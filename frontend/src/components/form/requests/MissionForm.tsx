@@ -8,107 +8,155 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '../../ui/form';
+import FileUpload from '../../FileUpload';
 
 const MissionForm: React.FC = () => {
   const { control, formState: { errors } } = useFormContext();
 
-  // Fonction pour obtenir la classe CSS en fonction des erreurs
   const getFieldClass = (fieldName: string) => {
     return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
   };
 
   return (
-    <div className="space-y-4">
-      <FormField
-        control={control}
-        name="objective"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Objectif</FormLabel>
-            <FormControl>
-              <Textarea 
-                {...field} 
-                rows={3} 
-                className={getFieldClass('objective')}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="country"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Pays</FormLabel>
-            <FormControl>
-              <Input 
-                {...field} 
-                className={getFieldClass('country')}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="location"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Lieu</FormLabel>
-            <FormControl>
-              <Input 
-                {...field} 
-                className={getFieldClass('location')}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-6">
+      {/* Section Organisation d'accueil */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Organisation d'accueil</h3>
         <FormField
           control={control}
-          name="startDate"
+          name="hostOrganization"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date de début</FormLabel>
+              <FormLabel>Nom de l'organisation *</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Input 
-                    type="date" 
-                    {...field} 
-                    className={getFieldClass('startDate')}
-                  />
-                  <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                </div>
+                <Input 
+                  {...field} 
+                  className={getFieldClass('hostOrganization')}
+                />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+      </div>
+
+      {/* Section Détails de la mission */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Détails de la mission</h3>
+        <FormField
+          control={control}
+          name="objective"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Objectif *</FormLabel>
+              <FormControl>
+                <Textarea 
+                  {...field} 
+                  rows={3} 
+                  className={getFieldClass('objective')}
+                  placeholder="Décrivez les objectifs de la mission..."
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name="country"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pays *</FormLabel>
+              <FormControl>
+                <Input 
+                  {...field} 
+                  className={getFieldClass('country')}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
+      {/* Section Période */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Période de la mission</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={control}
+            name="startDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de début *</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      className={getFieldClass('startDate')}
+                    />
+                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="endDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de fin *</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      className={getFieldClass('endDate')}
+                    />
+                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
+      {/* Section Documents */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Documents</h3>
         
         <FormField
           control={control}
-          name="endDate"
+          name="specificDocument"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date de fin</FormLabel>
+              <FormLabel>Documents spécifiques</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Input 
-                    type="date" 
-                    {...field} 
-                    className={getFieldClass('endDate')}
-                  />
-                  <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                </div>
+                <FileUpload
+                  endpoint="specificDocuments"
+                  maxFiles={5}
+                  acceptedTypes={['application/pdf', 'image/*']}
+                  headerText="Televerser les documents pour appuyer votre demande (optionnel)"
+                  subHeaderText="Formats PDF ou images"
+                  onFileUploaded={field.onChange}
+                 
+                />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+
+    
       </div>
     </div>
   );

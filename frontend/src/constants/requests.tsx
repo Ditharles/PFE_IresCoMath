@@ -5,10 +5,10 @@ import { RequestType } from "../types/request";
 export const REQUEST_TYPE_LABELS = {
     [RequestType.MISSION]: "Mission",
     [RequestType.INTERNSHIP]: "Stage",
-    [RequestType.CONFERENCE]: "Conférence",
+    [RequestType.CONFERENCE_NATIONAL]: "Conférence national",
     [RequestType.EQUIPMENT_PURCHASE]: "Achat Matériel",
     [RequestType.EQUIPMENT_LOAN]: "Prêt Matériel",
-    [RequestType.TRAVEL_ACCOMMODATION]: "Voyage & Hébergement",
+    
     [RequestType.REPAIR_MAINTENANCE]: "Réparation & Maintenance",
     [RequestType.CONTRACTUAL]: "Contractuel",
     [RequestType.ARTICLE_REGISTRATION]: "Inscription Article"

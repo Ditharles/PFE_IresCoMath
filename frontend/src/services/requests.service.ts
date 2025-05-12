@@ -24,17 +24,26 @@ class RequestsService {
     return api.delete(`/requests/${id}`);
   }
   async rejectRequest(id: string, rejectReason: string) {
-    return api.post(`/requests/reject-request/${id}`, {
+    return api.post(`/requests/approve-request/${id}`, {
       isApproved: false,
       rejectReason,
     });
   }
 
-  async approveRequest(id: string, rejectReason?: string) {
+  async approveRequest(id: string) {
     return api.post(`/requests/approve-request/${id}`, {
       isApproved: true,
-      rejectReason,
     });
+  }
+
+  async addDocuments(id: string, documents: string[]) {
+    return await api.post(`/requests/add-document/${id}`, {
+      documents: documents,
+    });
+  }
+
+  async completeRequest(id: string) {
+    return await api.post(`/requests/complete-request/${id}`);
   }
 }
 

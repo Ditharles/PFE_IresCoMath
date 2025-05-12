@@ -82,7 +82,7 @@ const routes: RouteObject[] = [
             },
             
             {
-                path: "demandes/:id",
+                path: "demande/:id",
                 element: <RequestDetails />
             }
 

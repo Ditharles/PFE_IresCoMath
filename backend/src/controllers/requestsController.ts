@@ -7,6 +7,7 @@ import {
   EquipmentLoanRequest,
   EquipmentType,
   RequestStatus,
+  Prisma,
 } from "../../generated/prisma";
 import { requestByRole } from "../constants/resquestByRole";
 import { ERROR_MESSAGES, validateRequestBody } from "../utils/authUtils";
@@ -23,52 +24,8 @@ import {
 import { extendRequestFields, requestFields } from "../constants/requests";
 import { getRequestById } from "../services/request.service";
 
-// Fonctions d'aide
-const isStudent = (role: Role): boolean =>
-  role === Role.DOCTORANT || role === Role.MASTER;
-
-const getUserFullName = (user: {
-  lastName: string;
-  firstName: string;
-}): string => `${user.lastName} ${user.firstName}`;
-
-const sendRequestNotifications = async (user: any, requestType: string) => {
-  try {
-    // Notification to requester
-    await NotificationsService.createNotification({
-      userId: user.userId,
-      ...NotificationTemplates.REQUEST_RECEIVED(requestType),
-    });
-
-    // Notification to director
-    const director = await getDirector();
-    if (director) {
-      await NotificationsService.createNotification({
-        userId: director.id,
-        ...NotificationTemplates.NEW_REQUEST_DIRECTOR(
-          getUserFullName(user),
-          requestType
-        ),
-      });
-    }
-
-    if (isStudent(user.role)) {
-      const supervisor = await getSupervisor(user.id);
-      if (supervisor) {
-        await NotificationsService.createNotification({
-          userId: supervisor.id,
-          ...NotificationTemplates.NEW_REQUEST_SUPERVISOR(
-            getUserFullName(user),
-            requestType
-          ),
-        });
-      }
-    }
-  } catch (error) {
-    console.error("Error sending notifications:", error);
-  }
-};
-
+import { sendRequestNotifications } from "../utils/notificationUtils";
+import { sendMailAfterRequestsValidation } from "../services/mail.service";
 export const getPossibleRequests = (req: AuthRequest, res: Response) => {
   res.status(200).json(requestByRole[req.user.role as Role]);
 };
@@ -113,15 +70,14 @@ export const getRequest = async (req: AuthRequest, res: Response) => {
     if (!request) {
       res.status(404).json({ message: "Request not found" });
     }
-
-    res.status(200).json({ request, user: req.user });
+    const user = await getUserByID(request!.user.id);
+    res.status(200).json({ request, user: user });
   } catch (error) {
     console.error("Error fetching request:", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 export const getAllRequests = async (req: AuthRequest, res: Response) => {
-  console.log(req.user);
   try {
     const requests = await prisma.request.findMany({
       select: extendRequestFields,
@@ -131,7 +87,7 @@ export const getAllRequests = async (req: AuthRequest, res: Response) => {
       const user = await getUserByID(request.user.id);
       formattedRequests.push({ ...request, user });
     }
-    console.log("donnees", formattedRequests);
+    console.log(formattedRequests[0]);
     res.status(200).json(formattedRequests);
   } catch (error) {
     console.error(error);
@@ -146,49 +102,89 @@ export const submitEquipmentPurchaseRequest = async (
   const requiredFields = [
     "name",
     "equipmentType",
-    "costEstimation",
     "quantity",
-    "specifications",
+    "costEstimation",
   ];
 
-  if (!validateRequestBody(req.body, requiredFields)) {
-    return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+  // Validation de chaque item
+  for (const [index, item] of req.body.items.entries()) {
+    if (!validateRequestBody(item, requiredFields)) {
+      return res.status(400).json({
+        message: `Item ${index + 1}: ${ERROR_MESSAGES.MISSING_FIELDS}`,
+        itemIndex: index,
+      });
+    }
   }
 
   try {
-    const request = await prisma.request.create({
-      data: {
-        type: RequestType.EQUIPMENT_PURCHASE,
-        userId: req.user.userId,
-        notes: req.body.notes || null,
-      },
-    });
+    // Création des requêtes en transaction
+    const results = await prisma.$transaction(
+      req.body.items.map(
+        (item: {
+          notes: any;
+          equipmentType: string;
+          name: any;
+          specifications: any;
+          costEstimation: any;
+          url: any;
+          quantity: any;
+          photo: any;
+        }) =>
+          prisma.request.create({
+            data: {
+              type: RequestType.EQUIPMENT_PURCHASE,
+              userId: req.user.userId,
+              notes: item.notes || null,
+              status: RequestStatus.PENDING,
+              purchaseRequest: {
+                create: {
+                  equipmentType: item.equipmentType as EquipmentType,
+                  name: item.name,
+                  url: item.url || null,
+                  specifications: item.specifications || {},
+                  costEstimation: Number(item.costEstimation),
+                  quantity: Number(item.quantity),
+                  photo: item.photo || null,
+                },
+              },
+            },
+            include: { purchaseRequest: true },
+          })
+      )
+    );
 
-    const equipmentRequest = await prisma.purchaseRequest.create({
-      data: {
-        requestId: request.id,
-        equipmentType: req.body.equipmentType as EquipmentType,
-        name: req.body.name,
-        specifications: req.body.specifications || {},
-        costEstimation: Number(req.body.costEstimation),
-        quantity: req.body.quantity,
-        photo: req.body.photo || null,
-      },
-    });
-
-    await sendRequestNotifications(req.user, "achat de matériel");
+    await sendRequestNotifications(
+      req.user,
+      `Lot de ${req.body.items.length} demandes d'achat soumis avec succès`
+    );
 
     res.status(200).json({
-      message: "Demande de matériel soumise avec succès",
-      request,
-      equipmentRequest,
+      message: `${results.length} demandes créées`,
+      requestIds: results.map((r) => r.id),
+      count: results.length,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+    console.error("Erreur transaction:", error);
+
+    // Gestion des erreurs Prisma
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return res.status(400).json({
+        message: "Une requête existe déjà avec ces paramètres",
+      });
+    }
+
+    res.status(500).json({
+      message: ERROR_MESSAGES.INTERNAL_ERROR,
+      details:
+        process.env.NODE_ENV === "development"
+          ? (error as Error).message
+          : undefined,
+    });
   }
 };
-
 export const submitEquipmentLendRequest = async (
   req: AuthRequest,
   res: Response
@@ -234,12 +230,8 @@ export const submitEquipmentLendRequest = async (
 
 export const submitRequestStage = async (req: AuthRequest, res: Response) => {
   const requiredFields = [
-    "company",
-    "companyEmail",
-    "companyPhone",
-    "supervisor",
-    "supervisorEmail",
-    "supervisorPhone",
+    "organization",
+    "organizationEmail",
     "letter",
     "country",
     "startDate",
@@ -262,12 +254,12 @@ export const submitRequestStage = async (req: AuthRequest, res: Response) => {
     const stageRequest = await prisma.requestStage.create({
       data: {
         requestId: request.id,
-        company: req.body.company,
-        companyEmail: req.body.companyEmail,
-        companyPhone: req.body.companyPhone,
-        supervisor: req.body.supervisor,
-        supervisorEmail: req.body.supervisorEmail,
-        supervisorPhone: req.body.supervisorPhone,
+        organization: req.body.organization,
+        organizationEmail: req.body.organizationEmail,
+        organizationUrl: req.body.organizationUrl || null,
+        supervisor: req.body.supervisor || null,
+        supervisorEmail: req.body.supervisorEmail || null,
+        supervisorPhone: req.body.supervisorPhone || null,
         letter: req.body.letter,
         country: req.body.country,
         startDate: new Date(req.body.startDate),
@@ -294,7 +286,7 @@ export const submitMissionRequest = async (req: AuthRequest, res: Response) => {
     "country",
     "startDate",
     "endDate",
-    "location",
+    "hostOrganization",
   ];
 
   if (!validateRequestBody(req.body, requiredFields)) {
@@ -311,9 +303,14 @@ export const submitMissionRequest = async (req: AuthRequest, res: Response) => {
 
     const missionRequest = await prisma.mission.create({
       data: {
-        requestId: request.id,
+        request: {
+          connect: {
+            id: request.id,
+          },
+        },
         objective: req.body.objective,
-        location: req.body.location,
+        hostOrganization: req.body.hostOrganization,
+        specificDocument: req.body.specificDocument || [],
         country: req.body.country,
         startDate: new Date(req.body.startDate),
         endDate: new Date(req.body.endDate),
@@ -340,6 +337,7 @@ export const submitScientificEventRequest = async (
   const requiredFields = [
     "location",
     "title",
+    "mailAcceptation",
     "articlesAccepted",
     "startDate",
     "endDate",
@@ -351,7 +349,7 @@ export const submitScientificEventRequest = async (
   try {
     const request = await prisma.request.create({
       data: {
-        type: RequestType.CONFERENCE,
+        type: RequestType.CONFERENCE_NATIONAL,
         userId: req.user.userId,
         notes: req.body.notes || null,
       },
@@ -362,6 +360,8 @@ export const submitScientificEventRequest = async (
         requestId: request.id,
 
         title: req.body.title,
+        urlEvent: req.body.urlEvent || null,
+        mailAcceptation: req.body.mailAcceptation,
         articlesAccepted: req.body.articlesAccepted,
         articleCover: req.body.articleCover || null,
         location: req.body.location,
@@ -387,7 +387,7 @@ export const submitArticleRegistrationRequest = async (
   req: AuthRequest,
   res: Response
 ) => {
-  const requiredFields = ["conference", "amount"];
+  const requiredFields = ["articleCover", "amount"];
 
   if (!validateRequestBody(req.body, requiredFields)) {
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
@@ -404,8 +404,10 @@ export const submitArticleRegistrationRequest = async (
     const articleRegistrationRequest = await prisma.articleRegistration.create({
       data: {
         requestId: request.id,
-
+        title: req.body.title,
+        articleCover: req.body.articleCover,
         conference: req.body.conference,
+        urlConference: req.body.urlConference || null,
         amount: req.body.amount,
       },
     });
@@ -425,17 +427,17 @@ export const submitArticleRegistrationRequest = async (
 
 export const approveRequest = async (req: AuthRequest, res: Response) => {
   try {
-    const requiredFields = ["isApproved"];
-    if (!validateRequestBody(req.body, requiredFields)) {
-      res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
-    }
     const { rejectReason, isApproved } = req.body;
     const { id } = req.params;
-    // Vérification de l'existence de la demande
+
+    // Validation du corps de la requête
+    if (!validateRequestBody(req.body, ["isApproved"])) {
+      res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+    }
+
+    // Récupération de la demande
     const request = await prisma.request.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id },
       include: {
         user: {
           include: {
@@ -448,11 +450,29 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
     });
 
     if (!request) {
-      return res
-        .status(404)
-        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
 
+    if (request!.status === RequestStatus.APPROVED) {
+      res.status(400).json({ message: "La requete a déja été approuvé " });
+    }
+    // Vérification des autorisations
+    const userRole = req.user.role as Role;
+    const requestUser = request!.user;
+
+    const isMasterOrDoctorant =
+      requestUser.role === Role.MASTER || requestUser.role === Role.DOCTORANT;
+
+    const isAuthorized =
+      userRole === Role.DIRECTEUR ||
+      (userRole === Role.ENSEIGNANT &&
+        requestUser.masterStudent?.supervisorId === req.user.id);
+
+    if (isMasterOrDoctorant && !isAuthorized) {
+      res.status(403).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
+    }
+
+    // Détermination du prochain statut
     const nextStatusMap = {
       [Role.DIRECTEUR]: {
         [RequestStatus.PENDING]: isApproved
@@ -469,76 +489,130 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
       },
     };
 
-    // Vérification des autorisations
-    if (
-      request.user.role === Role.MASTER ||
-      request.user.role === Role.DOCTORANT
-    ) {
-      const isSupervisor =
-        (req.user.role === Role.ENSEIGNANT &&
-          req.user.id === request.user?.masterStudent?.supervisorId) ||
-        req.user.role === Role.DIRECTEUR;
-      if (!isSupervisor) {
-        return res.status(403).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
-      }
+    const nextStatus = nextStatusMap[userRole]?.[request!.status];
+    console.log(request!.status);
+    if (!nextStatus) {
+      res.status(400).json({ message: ERROR_MESSAGES.INVALID_ROLE });
     }
 
-    // Vérification de la transition d'état
-    function isRole(role: any): role is Role {
-      return role === Role.DIRECTEUR || role === Role.ENSEIGNANT;
-    }
+    const updatedRequest = await prisma.request.update({
+      where: { id },
+      data: { status: nextStatus },
+    });
 
-    if (isRole(req.user.role)) {
-      const nextStatus = nextStatusMap[req.user.role]?.[request.status];
-      if (!nextStatus) {
-        return res.status(400).json({ message: ERROR_MESSAGES.INVALID_ROLE });
-      }
+    // Création de la notification et envoi d'email
+    const notificationTemplate = isApproved
+      ? userRole === Role.DIRECTEUR
+        ? NotificationTemplates.REQUEST_APPROVED_BY_DIRECTOR
+        : NotificationTemplates.REQUEST_APPROVED_BY_SUPERVISOR
+      : userRole === Role.DIRECTEUR
+      ? NotificationTemplates.REQUEST_REJECTED_BY_DIRECTOR(rejectReason)
+      : NotificationTemplates.REQUEST_REJECTED_BY_SUPERVISOR(rejectReason);
 
-      // Mise à jour du statut de la demande
-      await prisma.request.update({
-        where: {
-          id: id,
-        },
-        data: {
-          status: nextStatus,
-        },
-      });
+    await NotificationsService.createNotification({
+      userId: request!.userId,
+      ...notificationTemplate,
+    });
 
-      // Envoi des notifications
-      if (isApproved) {
-        req.user.role === Role.DIRECTEUR
-          ? await NotificationsService.createNotification({
-              userId: request.userId,
-              ...NotificationTemplates.REQUEST_APPROVED_BY_DIRECTOR,
-            })
-          : await NotificationsService.createNotification({
-              userId: request.userId,
-              ...NotificationTemplates.REQUEST_APPROVED_BY_SUPERVISOR,
-            });
-      } else {
-        req.user.role === Role.DIRECTEUR
-          ? await NotificationsService.createNotification({
-              userId: request.userId,
-              ...NotificationTemplates.REQUEST_REJECTED_BY_DIRECTOR(
-                rejectReason
-              ),
-            })
-          : await NotificationsService.createNotification({
-              userId: request.userId,
-              ...NotificationTemplates.REQUEST_REJECTED_BY_SUPERVISOR(
-                rejectReason
-              ),
-            });
-      }
-    } else {
-      return res.status(400).json({ message: ERROR_MESSAGES.INVALID_ROLE });
-    }
+    await sendMailAfterRequestsValidation(
+      { ...updatedRequest, user: request!.user },
+      userRole,
+      nextStatus,
+      !isApproved ? rejectReason : undefined
+    );
 
-    res
-      .status(200)
-      .json({ message: isApproved ? "Demande approuvée" : "Demande rejetée" });
+    res.status(200).json({
+      message: isApproved ? "Demande approuvée" : "Demande rejetée",
+      data: updatedRequest,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error in approveRequest:", error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const addDocuments = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    console.log(req.body);
+    const requiredFields = ["documents"];
+    if (!validateRequestBody(req.body, requiredFields)) {
+      res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+    }
+
+    const request = await getRequestById(id);
+
+    if (
+      !request &&
+      !(
+        request!.type in
+        [
+          RequestType.CONFERENCE_NATIONAL,
+          RequestType.REPAIR_MAINTENANCE,
+          RequestType.MISSION,
+        ]
+      )
+    ) {
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
+
+    if (request?.status !== RequestStatus.APPROVED) {
+      res.status(400).json({ message: "La demande doit être approuvée" });
+    }
+
+    if (!request?.mission) {
+      res
+        .status(400)
+        .json({ message: "Données mission manquantes pour cette demande" });
+    }
+
+    const doc = [...(request!.mission!.document || []), ...req.body.documents];
+
+    const updatedRequest = await prisma.mission.update({
+      where: { id: request!.mission!.id },
+      data: { document: doc },
+    });
+
+    res.status(200).json({
+      message: "Les documents ont été ajoutés avec succès",
+    });
+  } catch (error) {
+    console.error("Erreur dans addDocuments:", error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+
+export const completeRequest = async (req: AuthRequest, res: Response) => {
+
+  const {id}=req.params;
+  try {
+    const request = await getRequestById(id);
+
+    if (!request) {
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
+
+    if (request?.status !== RequestStatus.APPROVED) {
+      res.status(400).json({ message: "La demande doit être approuvée" });
+    }
+
+    if (!request?.mission) {
+      res
+        .status(400)
+        .json({ message: "Données mission manquantes pour cette demande" });
+    }
+
+    const updatedRequest = await prisma.request.update({
+      where: { id: request!.id },
+      data: { status: RequestStatus.COMPLETED },
+    });
+
+    res.status(200).json({
+      message: "Demande terminée avec succès",
+    });
+  } catch (error) {
+    console.error("Error completing request:", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };

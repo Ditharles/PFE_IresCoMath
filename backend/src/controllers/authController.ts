@@ -24,7 +24,6 @@ import {
 import {
   checkUserExists,
   createUserRequest,
-  sendEmail,
   checkSupervisorExists,
   createSession,
   createUser,
@@ -32,6 +31,7 @@ import {
   createMasterStudent,
   createTeacherResearcher,
 } from "../services/auth.service";
+
 import { AuthHandler } from "../types/auth";
 import {
   ERROR_MESSAGES,
@@ -43,6 +43,7 @@ import {
   generateRandomToken,
 } from "../utils/authUtils";
 import { RequestRole, requestRoleMap } from "../utils/validateUtils";
+import { sendInitialEmail } from "../services/mail.service";
 
 // Fonction pour la création des requêtes d'authentification
 const registerUser = async (
@@ -76,7 +77,7 @@ const registerUser = async (
       return;
     }
 
-    await sendEmail(
+    await sendInitialEmail(
       emailString,
       data.lastName,
       data.firstName,
@@ -101,7 +102,7 @@ const registerUser = async (
 
 // Exported functions
 export const registerTeacherResearcher: AuthHandler = async (req, res) => {
-  console.log(req.body);
+  
   const requiredFields = [
     "lastName",
     "firstName",
@@ -128,7 +129,7 @@ export const registerTeacherResearcher: AuthHandler = async (req, res) => {
 };
 
 export const registerMasterStudent: AuthHandler = async (req, res) => {
-  console.log(req.body);
+  
   const requiredFields = [
     "lastName",
     "firstName",
@@ -137,7 +138,7 @@ export const registerMasterStudent: AuthHandler = async (req, res) => {
     "masterYear",
     "supervisorId",
   ];
-  console.log(req.body);
+  
   if (!validateRequestBody(req.body, requiredFields)) {
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
@@ -152,7 +153,7 @@ export const registerMasterStudent: AuthHandler = async (req, res) => {
 };
 
 export const registerDoctoralStudent: AuthHandler = async (req, res) => {
-  console.log(req.body);
+  
   const requiredFields = [
     "lastName",
     "firstName",
@@ -179,7 +180,7 @@ export const registerDoctoralStudent: AuthHandler = async (req, res) => {
 
 export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
+  
   try {
     const user = await prisma.user.findUnique({
       where: { email },
@@ -424,7 +425,7 @@ export const resendConfirmLink: AuthHandler = async (req, res) => {
         .status(400)
         .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
-    await sendEmail(
+    await sendInitialEmail(
       userDb.email,
       userDb.lastName,
       userDb.firstName,
@@ -463,7 +464,7 @@ export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
         .status(400)
         .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
-    await sendEmail(
+    await sendInitialEmail(
       userDb.email,
       userDb.lastName,
       userDb.firstName,
@@ -567,7 +568,7 @@ export const forgetPassword: AuthHandler = async (req, res) => {
       "reset-password"
     );
 
-    await sendEmail(
+    await sendInitialEmail(
       user.email,
       lastName,
       firstName,

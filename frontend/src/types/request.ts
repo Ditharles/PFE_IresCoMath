@@ -1,10 +1,11 @@
+import { User } from "./Member";
+
 export enum RequestType {
   MISSION = "MISSION",
   INTERNSHIP = "INTERNSHIP",
-  CONFERENCE = "CONFERENCE",
+  CONFERENCE_NATIONAL = "CONFERENCE_NATIONAL",
   EQUIPMENT_PURCHASE = "EQUIPMENT_PURCHASE",
   EQUIPMENT_LOAN = "EQUIPMENT_LOAN",
-  TRAVEL_ACCOMMODATION = "TRAVEL_ACCOMMODATION",
   REPAIR_MAINTENANCE = "REPAIR_MAINTENANCE",
   CONTRACTUAL = "CONTRACTUAL",
   ARTICLE_REGISTRATION = "ARTICLE_REGISTRATION",
@@ -13,10 +14,9 @@ export enum RequestType {
 export const requestUrl: Record<RequestType, string> = {
   [RequestType.MISSION]: "mission",
   [RequestType.INTERNSHIP]: "internship",
-  [RequestType.CONFERENCE]: "conference",
+  [RequestType.CONFERENCE_NATIONAL]: "conference-national",
   [RequestType.EQUIPMENT_PURCHASE]: "equipment/purchase",
-  [RequestType.EQUIPMENT_LOAN]: "equipment/rent",
-  [RequestType.TRAVEL_ACCOMMODATION]: "travel-accommodation",
+  [RequestType.EQUIPMENT_LOAN]: "equipment/loan",
   [RequestType.REPAIR_MAINTENANCE]: "repair-maintenance",
   [RequestType.CONTRACTUAL]: "contractual",
   [RequestType.ARTICLE_REGISTRATION]: "article-registration",
@@ -62,28 +62,22 @@ export type BaseRequest = {
   status: RequestStatus;
   createdAt: Date;
   notes?: string;
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: Role;
-  };
+  user: User;
 };
 
 // Specific request types
-type PurchaseRequest = {
+export type PurchaseRequest = {
   id: string;
-  
   equipmentType: EquipmentType;
   name: string;
   quantity: number;
+  url?: string;
   photo?: string;
   specifications: Record<string, unknown>;
   costEstimation: number;
 };
 
-type EquipmentLoanRequest = {
+export type EquipmentLoanRequest = {
   id: string;
   equipment?: {
     id: string;
@@ -104,32 +98,36 @@ type EquipmentLoanRequest = {
   endDate: Date;
 };
 
-type RequestStage = {
+export type RequestStage = {
   id: string;
-  company: string;
-  companyEmail: string;
-  companyPhone: string;
-  supervisor: string;
-  supervisorEmail: string;
-  supervisorPhone: string;
+  organization: string;
+  organizationEmail: string;
+  organizationUrl?: string;
+  supervisor?: string;
+  supervisorEmail?: string;
+  supervisorPhone?: string;
   letter: string;
   country: string;
   startDate: Date;
   endDate: Date;
 };
 
-type Mission = {
+export type Mission = {
   id: string;
-  location: string;
+  hostOrganization: string;
   objective: string;
   country: string;
   startDate: Date;
   endDate: Date;
+  specificDocument: string[];
+  document: string[];
 };
 
-type ScientificEvent = {
+export type ScientificEvent = {
   id: string;
   location: string;
+  urlEvent?: string;
+  mailAcceptation: string;
   title: string;
   articlesAccepted: boolean;
   articleCover?: string;
@@ -137,17 +135,20 @@ type ScientificEvent = {
   endDate: Date;
 };
 
-type ArticleRegistration = {
+export type ArticleRegistration = {
   id: string;
-  conference: string;
+  title: string;
+  conference?: string;
+  urlConference?: string;
+  articleCover: string;
   amount: string;
 };
 
 // Main Request type that combines all possibilities
 export type Request = BaseRequest & {
-  purchaseRequest?: PurchaseRequest;
+  purchaseRequest?: PurchaseRequest[];
   equipmentLoanRequest?: EquipmentLoanRequest;
-  requestStage?: RequestStage;
+  stage?: RequestStage;
   mission?: Mission;
   scientificEvent?: ScientificEvent;
   articleRegistration?: ArticleRegistration;
@@ -161,9 +162,16 @@ export type PrismaRequestResult = {
   createdAt: Date;
   notes?: string | null;
   purchaseRequests: PurchaseRequest[];
-  loanRequests: EquipmentLoanRequest[];
-  stages: RequestStage[];
-  missions: Mission[];
-  scientificEvents: ScientificEvent[];
-  articleRegistrations: ArticleRegistration[];
+  loanRequest: EquipmentLoanRequest | null;
+  stage: RequestStage | null;
+  mission: Mission | null;
+  scientificEvent: ScientificEvent | null;
+  articleRegistration: ArticleRegistration | null;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: Role;
+  };
 };

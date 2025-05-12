@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/input';
-import { Calendar, FileText, X } from 'lucide-react';
+import { Calendar, FileText, X, Globe } from 'lucide-react';
 import { FormControl, FormField, FormItem, FormLabel } from '../../ui/form';
 import FileUpload from '../../FileUpload';
 
@@ -15,8 +15,8 @@ const InternshipForm: React.FC = () => {
 
   const handleLetterUpload = (fileUrl: string[] | string) => {
     if (fileUrl) {
-      setUploadedLetter(fileUrl[0]);
-      setValue('letter', fileUrl[0]);
+      setUploadedLetter(Array.isArray(fileUrl) ? fileUrl[0] : fileUrl);
+      setValue('letter', Array.isArray(fileUrl) ? fileUrl[0] : fileUrl);
     }
   };
 
@@ -27,18 +27,18 @@ const InternshipForm: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Section Infos entreprise */}
+      {/* Section Infos organisation */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">Informations de l'entreprise</h3>
+        <h3 className="text-lg font-medium">Informations de l'organisation</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={control}
-            name="company"
+            name="organization"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Entreprise</FormLabel>
+                <FormLabel>Organisation</FormLabel>
                 <FormControl>
-                  <Input {...field} className={getFieldClass('company')} />
+                  <Input {...field} className={getFieldClass('organization')} />
                 </FormControl>
               </FormItem>
             )}
@@ -58,30 +58,33 @@ const InternshipForm: React.FC = () => {
         </div>
       </div>
 
-      {/* Section Coordonnées entreprise */}
+      {/* Section Coordonnées organisation */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">Coordonnées de l'entreprise</h3>
+        <h3 className="text-lg font-medium">Coordonnées de l'organisation</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={control}
-            name="companyEmail"
+            name="organizationEmail"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email entreprise *</FormLabel>
+                <FormLabel>Email organisation *</FormLabel>
                 <FormControl>
-                  <Input type="email" {...field} className={getFieldClass('companyEmail')} />
+                  <Input type="email" {...field} className={getFieldClass('organizationEmail')} />
                 </FormControl>
               </FormItem>
             )}
           />
           <FormField
             control={control}
-            name="companyPhone"
+            name="organizationUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Téléphone entreprise *</FormLabel>
+                <FormLabel>Site web</FormLabel>
                 <FormControl>
-                  <Input {...field} className={getFieldClass('companyPhone')} />
+                  <div className="relative">
+                    <Input type="url" {...field} className={getFieldClass('organizationUrl')} />
+                    <Globe className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -89,51 +92,8 @@ const InternshipForm: React.FC = () => {
         </div>
       </div>
 
-      {/* Section Responsable */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Responsable</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <FormField
-            control={control}
-            name="supervisor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Responsable *</FormLabel>
-                <FormControl>
-                  <Input {...field} className={getFieldClass('supervisor')} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="supervisorEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email responsable *</FormLabel>
-                <FormControl>
-                  <Input type="email" {...field} className={getFieldClass('supervisorEmail')} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="supervisorPhone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Téléphone responsable *</FormLabel>
-                <FormControl>
-                  <Input {...field} className={getFieldClass('supervisorPhone')} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
-
-      {/* Section Dates */}
-      <div className="space-y-4">
+     {/* Section Dates */}
+     <div className="space-y-4">
         <h3 className="text-lg font-medium">Période de stage</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
@@ -169,9 +129,53 @@ const InternshipForm: React.FC = () => {
         </div>
       </div>
 
+      {/* Section Responsable (optionnel) */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Responsable (optionnel)</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <FormField
+            control={control}
+            name="supervisor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom responsable</FormLabel>
+                <FormControl>
+                  <Input {...field} className={getFieldClass('supervisor')} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="supervisorEmail"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email responsable</FormLabel>
+                <FormControl>
+                  <Input type="email" {...field} className={getFieldClass('supervisorEmail')} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="supervisorPhone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Téléphone responsable</FormLabel>
+                <FormControl>
+                  <Input {...field} className={getFieldClass('supervisorPhone')} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
+ 
       {/* Section Lettre d'invitation */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">Lettre d'invitation</h3>
+        <h3 className="text-lg font-medium">Lettre d'invitation *</h3>
         <div className="space-y-4">
           {uploadedLetter ? (
             <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 shadow-sm">
@@ -186,7 +190,11 @@ const InternshipForm: React.FC = () => {
                   Voir la lettre
                 </a>
               </div>
-              <button onClick={removeLetter} className="p-1 rounded-full hover:bg-gray-200">
+              <button 
+                type="button"
+                onClick={removeLetter} 
+                className="p-1 rounded-full hover:bg-gray-200"
+              >
                 <X className="h-4 w-4 text-red-500" />
               </button>
             </div>
@@ -195,9 +203,10 @@ const InternshipForm: React.FC = () => {
               endpoint="stageLetter"
               maxFiles={1}
               acceptedTypes={['application/pdf', 'image/*']}
-              headerText="Téléverser la lettre d'invitation"
+              headerText="Téléverser la lettre d'invitation (obligatoire)"
               subHeaderText="Format PDF ou image"
               onFileUploaded={handleLetterUpload}
+            
             />
           )}
         </div>

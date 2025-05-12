@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Validation commune pour les dates
 const dateValidation = {
   startDate: z.string().min(1, { message: "La date de début est requise" }),
   endDate: z
@@ -17,91 +16,109 @@ const dateValidation = {
 
 // Schéma pour la demande de stage
 export const internshipRequestSchema = z.object({
-  company: z.string().min(1, { message: "Le nom de l'entreprise est requis" }),
-  companyEmail: z
+  organization: z
+    .string()
+    .min(1, { message: "Le nom de l'organisation est requis" }),
+  organizationEmail: z
     .string()
     .min(1, { message: "L'adresse email est requise" })
     .email({ message: "Adresse email invalide" }),
-  companyPhone: z
+  organizationUrl: z
     .string()
-    .min(1, { message: "Le numéro de l'entreprise est requis" }),
-  supervisor: z
-    .string()
-    .min(1, { message: "Le nom du responsable est requis" }),
+    .url({ message: "URL invalide" })
+    .optional()
+    .or(z.literal("")),
+  supervisor: z.string().optional(),
   supervisorEmail: z
     .string()
-    .min(1, { message: "L'adresse email est requise" })
-    .email({ message: "Adresse email invalide" }),
-  supervisorPhone: z
-    .string()
-    .min(1, { message: "Le numéro de l'entreprise est requis" }),
-  letter: z.string().optional(),
+    .email({ message: "Adresse email invalide" })
+    .optional()
+    .or(z.literal("")),
+  supervisorPhone: z.string().optional(),
+  letter: z.string().min(1, { message: "La lettre d'acceptation est requise" }),
   country: z.string().min(1, { message: "Le pays est requis" }),
   ...dateValidation,
 });
 
 // Schéma pour la demande de mission
 export const missionRequestSchema = z.object({
+  hostOrganization: z
+    .string()
+    .min(1, { message: "L'organisation d'accueil est requise" }),
   objective: z.string().min(1, { message: "L'objectif est requis" }),
   country: z.string().min(1, { message: "Le pays est requis" }),
-  location: z.string().min(1, { message: "Le lieu est requis" }),
+  specificDocument: z.array(z.string()).optional(),
+
   ...dateValidation,
 });
 
-// Schéma pour la demande d'événement scientifique
+// Schéma pour la demande d'événement scientifique (conférence nationale)
 export const scientificEventRequestSchema = z
   .object({
     location: z.string().min(1, { message: "Le lieu est requis" }),
+    urlEvent: z
+      .string()
+      .url({ message: "URL invalide" })
+      .optional()
+      .or(z.literal("")),
+    mailAcceptation: z
+      .string()
+      .min(1, { message: "L'email d'acceptation est requis" }),
     title: z.string().min(1, { message: "Le titre de l'événement est requis" }),
-    articlesAccepted: z.boolean().optional().default(false),
+    articlesAccepted: z.boolean(),
     articleCover: z.string().optional(),
     ...dateValidation,
   })
-  .superRefine((data, ctx) => {
-    if (data.articlesAccepted && !data.articleCover) {
-      ctx.addIssue({
-        path: ["articleCover"],
-        code: z.ZodIssueCode.custom,
-        message:
-          "L'URL de la première page est requise lorsque l'article est accepté",
-      });
-    }
+  .refine((data) => !data.articlesAccepted || data.articleCover, {
+    message:
+      "L'URL de la première page est requise lorsque l'article est accepté",
+    path: ["articleCover"],
   });
 
 // Schéma pour l'inscription d'article
 export const articleRegistrationRequestSchema = z.object({
-  conference: z.string().min(1, { message: "La conférence est requise" }),
-
-  amount: z.string().min(0, {
-    message: "Le montant des frais doit être supérieur ou égal à 0",
+  title: z.string().min(1, { message: "Le titre est requis" }),
+  conference: z.string().optional(),
+  urlConference: z
+    .string()
+    .url({ message: "URL invalide" })
+    .optional()
+    .or(z.literal("")),
+  articleCover: z
+    .string()
+    .min(1, { message: "La couverture de l'article est requise" }),
+  amount: z.string().min(1, {
+    message: "Le montant des frais est requis",
   }),
-  date: z.string().min(1, { message: "La date est requise" }),
 });
 
 // Schéma pour le prêt de matériel
-export const equipmentLoanRequestSchema = z.object({
-  categoryId: z
-    .string()
-    .min(1, { message: "Les infos de l'equipement sont requis " }),
-  equipmentId: z.string().optional(),
-  quantity: z
-    .number()
-    .min(1, { message: "La quantité doit être supérieure à 0" })
-    .or(
-      z
-        .string()
-        .min(1)
-        .transform((val) => Number(val))
-    )
-    .refine((val) => !isNaN(val) && val > 0, {
-      message: "La quantité doit être un nombre supérieur à 0",
-    }),
-  notes: z.string().optional(),
-  ...dateValidation,
-});
+export const equipmentLoanRequestSchema = z
+  .object({
+    categoryId: z.string().optional(),
+    equipmentId: z.string().optional(),
+    quantity: z
+      .number()
+      .min(1, { message: "La quantité doit être supérieure à 0" })
+      .or(
+        z
+          .string()
+          .min(1)
+          .transform((val) => Number(val))
+      )
+      .refine((val) => !isNaN(val) && val > 0, {
+        message: "La quantité doit être un nombre supérieur à 0",
+      }),
+    notes: z.string().optional(),
+    ...dateValidation,
+  })
+  .refine((data) => data.categoryId || data.equipmentId, {
+    message:
+      "Vous devez sélectionner soit une catégorie, soit un équipement spécifique",
+    path: ["categoryId"],
+  });
 
-// Schéma pour l'achat de matériel
-export const equipmentPurchaseRequestSchema = z.object({
+export const equipmentItemSchema = z.object({
   equipmentType: z
     .string()
     .min(1, { message: "Le type de matériel est requis" }),
@@ -119,9 +136,26 @@ export const equipmentPurchaseRequestSchema = z.object({
     .refine((val) => !isNaN(val) && val > 0, {
       message: "La quantité doit être un nombre supérieur à 0",
     }),
-  costEstimation: z.string().min(0, {
-    message: "L'estimation de coût doit être supérieure ou égale à 0",
+  costEstimation: z.string().min(1, {
+    message: "L'estimation de coût est requise",
   }),
+  url: z.string().url({ message: "URL invalide" }).optional().or(z.literal("")),
   photo: z.string().optional(),
-  notes: z.string().optional(),
+});
+
+export const equipmentPurchaseRequestSchema = z.object({
+  items: z
+    .array(equipmentItemSchema)
+    .min(1, {
+      message: "Au moins un article doit être ajouté",
+    })
+    .default([
+      {
+        equipmentType: "",
+        name: "",
+        specifications: {},
+        quantity: 0,
+        costEstimation: "0",
+      },
+    ]),
 });

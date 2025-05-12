@@ -10,9 +10,10 @@ import {
 } from "../utils/validateUtils";
 import {
   fetchDataByRole,
-  sendMailAfterValidation,
+
 } from "../services/validate.service";
 
+import { sendMailAfterValidation } from "../services/mail.service";
 const prisma = new PrismaClient();
 
 // Liste des requêtes en attente de validation

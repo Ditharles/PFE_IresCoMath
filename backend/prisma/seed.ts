@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-
 import prisma from "../src/utils/db";
 import { Grade, Role, EquipmentType } from "../generated/prisma";
 
@@ -9,19 +8,19 @@ async function main() {
   try {
     await cleanDatabase();
 
-    // Créer un administrateur
+    // Création des utilisateurs (identique à votre version originale)
     const adminPassword = await bcrypt.hash("admin123", 10);
     const adminUser = await prisma.user.create({
       data: {
         email: "admin@irescomath.com",
         password: adminPassword,
         role: Role.ADMIN,
-        cin: "ADMIN12345", // Ajout du champ cin
+        cin: "ADMIN12345",
         admin: {
           create: {
             lastName: "Admin",
             firstName: "Système",
-            cin: "ADMIN12345", // Ajout du champ cin
+            cin: "ADMIN12345",
           },
         },
       },
@@ -30,21 +29,18 @@ async function main() {
       },
     });
 
-    console.log("Administrateur créé:", adminUser.email);
-
-    // Créer un enseignant-chercheur directeur
     const directeurPassword = await bcrypt.hash("directeur123", 10);
     const directeurUser = await prisma.user.create({
       data: {
         email: "directeur@irescomath.com",
         password: directeurPassword,
         role: Role.DIRECTEUR,
-        cin: "DIR123456", // Ajout du champ cin
+        cin: "DIR123456",
         teacherResearcher: {
           create: {
             lastName: "Directeur",
             firstName: "Laboratoire",
-            cin: "DIR123456", // Ajout du champ cin
+            cin: "DIR123456",
             position: "Directeur de laboratoire",
             grade: Grade.Professeur,
             institution: "Université IreSCoMath",
@@ -57,7 +53,6 @@ async function main() {
       },
     });
 
-    // Créer un enseignant-chercheur quelconque
     const enseignantChercheurPassword = await bcrypt.hash("enseignant123", 10);
     const enseignantChercheurUser = await prisma.user.create({
       data: {
@@ -69,7 +64,7 @@ async function main() {
           create: {
             lastName: "Enseignant",
             firstName: "Chercheur",
-            cin: "ENS123456", // Ajout du champ cin
+            cin: "ENS123456",
             position: "Enseignant chercheur",
             grade: Grade.Professeur,
             institution: "Université IreSCoMath",
@@ -82,7 +77,6 @@ async function main() {
       },
     });
 
-    //Créer un etudiant master quelconque
     const etudiantMasterPassword = await bcrypt.hash("etudiant123", 10);
     const etudiantMasterUser = await prisma.user.create({
       data: {
@@ -106,7 +100,6 @@ async function main() {
       },
     });
 
-    // Créer un étudiant doctorant
     const doctorantPassword = await bcrypt.hash("doctorant123", 10);
     const doctorantUser = await prisma.user.create({
       data: {
@@ -130,272 +123,215 @@ async function main() {
       },
     });
 
-    console.log(
-      "Directeur créé:",
-      directeurUser.email,
-      "\nMot de passe: directeur123"
-    );
-    console.log(
-      "Enseignant Chercheur créé:",
-      enseignantChercheurUser.email,
-      "\nMot de passe: enseignant123"
-    );
-    console.log(
-      "Etudiant Master créé:",
-      etudiantMasterUser.email,
-      "\nMot de passe: etudiant123"
-    );
-    console.log(
-      "Doctorant créé:",
-      doctorantUser.email,
-      "\nMot de passe: doctorant123"
-    );
+    console.log("Utilisateurs créés avec succès");
 
-    // Création des catégories d'équipements
+    // Création des catégories d'équipements adaptées à votre laboratoire
     console.log("Création des catégories d'équipements...");
 
-    // Catégorie Fournitures
-    const fournituresCategory = await prisma.equipmentCategory.create({
-      data: {
-        type: EquipmentType.SUPPLIES,
-        name: "Fournitures scientifiques",
-        quantity: 100,
-      },
-    });
-
-    // Catégorie Consommables
-    const consommablesCategory = await prisma.equipmentCategory.create({
-      data: {
-        type: EquipmentType.CONSUMABLES,
-        name: "Consommables informatiques",
-        quantity: 75,
-      },
-    });
-
-    // Catégorie Équipements
-    const equipmentsCategory = await prisma.equipmentCategory.create({
+    // Catégorie Cartes de développement
+    const devBoardsCategory = await prisma.equipmentCategory.create({
       data: {
         type: EquipmentType.EQUIPMENT,
-        name: "Matériel informatique",
-        quantity: 30,
-      },
-    });
-
-    // Catégorie Outils
-    const outilsCategory = await prisma.equipmentCategory.create({
-      data: {
-        type: EquipmentType.TOOLS,
-        name: "Instruments scientifiques",
+        name: "Cartes de développement",
         quantity: 20,
       },
     });
 
-    // Catégorie mathématiques
-    const mathCategory = await prisma.equipmentCategory.create({
+    // Catégorie Périphériques de présentation
+    const presentationCategory = await prisma.equipmentCategory.create({
       data: {
         type: EquipmentType.EQUIPMENT,
-        name: "Équipements mathématiques",
+        name: "Périphériques de présentation",
+        quantity: 10,
+      },
+    });
+
+    // Catégorie Réseau
+    const networkCategory = await prisma.equipmentCategory.create({
+      data: {
+        type: EquipmentType.EQUIPMENT,
+        name: "Équipements réseau",
+        quantity: 5,
+      },
+    });
+
+    // Catégorie Stockage
+    const storageCategory = await prisma.equipmentCategory.create({
+      data: {
+        type: EquipmentType.EQUIPMENT,
+        name: "Stockage de données",
         quantity: 15,
       },
     });
 
-    // Création des équipements
+    // Catégorie Capteurs
+    const sensorsCategory = await prisma.equipmentCategory.create({
+      data: {
+        type: EquipmentType.EQUIPMENT,
+        name: "Capteurs et modules",
+        quantity: 25,
+      },
+    });
+
+    // Création des équipements spécifiques à votre laboratoire
     console.log("Création des équipements...");
 
-    // Équipements de fournitures scientifiques
-    await prisma.equipment.create({
+    // Cartes ESP32
+    const esp32Boards = await prisma.equipment.create({
       data: {
-        name: "Carnets de notes scientifiques",
-        categoryId: fournituresCategory.id,
+        name: "Carte ESP32",
+        categoryId: devBoardsCategory.id,
         specifications: {
-          marque: "MathWrite",
-          description: "Papier spécial avec grilles logarithmiques et semi-log",
-          stockDisponible: 50,
+          marque: "Espressif",
+          modele: "ESP32-WROOM-32",
+          cpu: "Dual-core Xtensa LX6",
+          vitesse: "240 MHz",
+          memoire: "520KB SRAM, 16MB Flash",
+          wifi: "802.11 b/g/n",
+          bluetooth: "Bluetooth 4.2",
+          ports: "GPIO, ADC, DAC, UART, SPI, I2C",
+          stockDisponible: 8,
+          numeroSerie: "ESP32-2023-001",
+          etat: "Neuf"
         },
-        acquisitionDate: new Date("2024-01-15"),
+        acquisitionDate: new Date("2023-01-15"),
       },
     });
 
-    await prisma.equipment.create({
+    // Cartes Raspberry Pi
+    const raspberryPis = await prisma.equipment.create({
       data: {
-        name: "Tableau blanc effaçable",
-        categoryId: fournituresCategory.id,
+        name: "Carte Raspberry Pi",
+        categoryId: devBoardsCategory.id,
         specifications: {
-          dimensions: "120x180cm",
-          type: "Magnétique",
-          accessoires: ["Marqueurs", "Effaceurs", "Aimants"],
-          stockDisponible: 10,
+          marque: "Raspberry Pi Foundation",
+          modele: "Raspberry Pi 4 Model B",
+          cpu: "Quad-core Cortex-A72",
+          vitesse: "1.5GHz",
+          ram: "4GB LPDDR4",
+          stockage: "MicroSD",
+          ports: "2x USB 3.0, 2x USB 2.0, 2x HDMI, Gigabit Ethernet",
+          connectivite: "Wi-Fi 802.11ac, Bluetooth 5.0",
+          stockDisponible: 6,
+          numeroSerie: "RPI4-2023-002",
+          etat: "Neuf"
         },
-        acquisitionDate: new Date("2024-02-10"),
+        acquisitionDate: new Date("2023-02-10"),
       },
     });
 
-    // Équipements consommables informatiques
-    await prisma.equipment.create({
+    // Capteur Data Show
+    const dataShowSensor = await prisma.equipment.create({
       data: {
-        name: "Cartouches d'encre pour imprimante laser",
-        categoryId: consommablesCategory.id,
+        name: "Capteur Data Show",
+        categoryId: sensorsCategory.id,
         specifications: {
-          compatibilite: "HP LaserJet Pro",
-          couleurs: ["Noir", "Cyan", "Magenta", "Jaune"],
-          capacite: "3000 pages",
-          stockDisponible: 24,
+          marque: "Vernier",
+          modele: "GDX-DSH",
+          typeCapteur: "Multifonction",
+          interfaces: "USB, Bluetooth",
+          compatibilite: "Windows, macOS, Chrome OS, iOS, Android",
+          stockDisponible: 3,
+          numeroSerie: "VRN-DSH-2023-003",
+          etat: "Excellent"
         },
-        acquisitionDate: new Date("2024-03-05"),
+        acquisitionDate: new Date("2023-03-05"),
       },
     });
 
-    await prisma.equipment.create({
+    // Pointeur laser
+    const laserPointer = await prisma.equipment.create({
       data: {
-        name: "Disques SSD externes",
-        categoryId: consommablesCategory.id,
+        name: "Pointeur laser",
+        categoryId: presentationCategory.id,
         specifications: {
-          capacite: "1TB",
-          interface: "USB 3.1",
-          vitesseLecture: "550MB/s",
-          vitesseEcriture: "520MB/s",
-          stockDisponible: 15,
+          marque: "Logitech",
+          modele: "Spotlight",
+          couleur: "Rouge",
+          portee: "100m",
+          autonomie: "3 mois (usage normal)",
+          connectivite: "USB rechargeable",
+          stockDisponible: 5,
+          numeroSerie: "LOG-SPT-2023-004",
+          etat: "Très bon"
         },
-        acquisitionDate: new Date("2024-03-08"),
+        acquisitionDate: new Date("2023-03-15"),
       },
     });
 
-    // Équipements informatiques
-    const stationCalcul = await prisma.equipment.create({
+    // Switch réseau
+    const networkSwitch = await prisma.equipment.create({
       data: {
-        name: "Station de travail hautes performances",
-        categoryId: equipmentsCategory.id,
+        name: "Switch réseau",
+        categoryId: networkCategory.id,
         specifications: {
-          marque: "Dell",
-          modele: "Precision 7865",
-          processeur: "AMD Ryzen Threadripper PRO",
-          ram: "128GB DDR5",
-          stockage: "2TB NVMe + 8TB SSD RAID",
-          carteGraphique: "NVIDIA RTX A6000",
-          systemeExploitation: "Linux Ubuntu 22.04 LTS",
-          numeroSerie: "PREC7865-2024-001",
-          etat: "Excellent",
+          marque: "TP-Link",
+          modele: "TL-SG108",
+          ports: "8 ports Gigabit",
+          vitesse: "10/100/1000 Mbps",
+          type: "Non géré",
+          alimentation: "Interne",
+          stockDisponible: 2,
+          numeroSerie: "TPL-SG108-2023-005",
+          etat: "Neuf"
         },
-        acquisitionDate: new Date("2023-11-20"),
+        acquisitionDate: new Date("2023-04-01"),
       },
     });
 
-    await prisma.equipment.create({
+    // Disque dur externe
+    const externalHdd = await prisma.equipment.create({
       data: {
-        name: "Cluster de calcul parallèle",
-        categoryId: equipmentsCategory.id,
+        name: "Disque dur externe",
+        categoryId: storageCategory.id,
         specifications: {
-          nœuds: 8,
-          processeurParNœud: "2x Intel Xeon Gold 6338",
-          ramParNœud: "512GB",
-          stockageTotal: "100TB",
-          réseau: "InfiniBand 200Gb/s",
-          framework: "SLURM + OpenMPI",
-          numeroSerie: "CLSTR-HPC-2023-001",
-          etat: "Excellent",
-        },
-        acquisitionDate: new Date("2023-08-15"),
-      },
-    });
-
-    // Instruments scientifiques
-    await prisma.equipment.create({
-      data: {
-        name: "Oscilloscope numérique",
-        categoryId: outilsCategory.id,
-        specifications: {
-          marque: "Tektronix",
-          modele: "MSO64B",
-          bande: "6 GHz",
-          canaux: 4,
-          tauxEchantillonnage: "25 GS/s",
-          ecran: '15.6" HD',
-          numeroSerie: "TK-MSO64B-2022-005",
-          etat: "Très bon",
-          dernierEtalonnage: "2024-01-15",
-        },
-        acquisitionDate: new Date("2022-06-12"),
-      },
-    });
-
-    await prisma.equipment.create({
-      data: {
-        name: "Capteurs à effet Hall",
-        categoryId: outilsCategory.id,
-        specifications: {
-          marque: "Lake Shore",
-          modele: "HGCT-3020",
-          plageChampMagnetique: "±2 Tesla",
-          resolution: "0.1 mT",
-          interfaceConnexion: "USB + GPIB",
-          numeroSerie: "HALL-3020-023",
-          etat: "Excellent",
-          dernierEtalonnage: "2024-02-10",
-        },
-        acquisitionDate: new Date("2023-05-18"),
-      },
-    });
-
-    // Équipements mathématiques
-    await prisma.equipment.create({
-      data: {
-        name: "Logiciel de calcul symbolique (licence)",
-        categoryId: mathCategory.id,
-        specifications: {
-          nom: "Mathematica",
-          version: "13.2",
-          typeLicence: "Réseau (50 utilisateurs)",
-          modules: [
-            "Machine Learning",
-            "Signal Processing",
-            "Finance Platform",
-          ],
-          dateExpiration: "2025-12-31",
-          stockDisponible: 1,
+          marque: "Western Digital",
+          modele: "My Passport",
+          capacite: "2TB",
+          interface: "USB 3.0",
+          vitesse: "5Gbps",
+          dimensions: "110 x 82 x 15 mm",
+          poids: "230g",
+          stockDisponible: 4,
+          numeroSerie: "WD-MP2TB-2023-006",
+          etat: "Neuf"
         },
         acquisitionDate: new Date("2023-04-10"),
       },
     });
 
-    await prisma.equipment.create({
-      data: {
-        name: "GPU pour calcul tensoriel",
-        categoryId: mathCategory.id,
-        specifications: {
-          marque: "NVIDIA",
-          modele: "A100",
-          memoire: "80GB HBM2e",
-          performance: "19.5 TFLOPS FP64",
-          tenseurCores: 432,
-          supportCUDA: "Version 11.4",
-          numeroSerie: "A100-2023-007",
-          etat: "Neuf",
-        },
-        acquisitionDate: new Date("2023-10-05"),
-      },
-    });
-
-    // Création d'un historique d'emprunt d'équipement
+    // Création d'historiques d'emprunt
     await prisma.equipmentHistory.create({
       data: {
-        equipmentId: stationCalcul.id,
+        equipmentId: esp32Boards.id,
         userId: etudiantMasterUser.id,
-        borrowDate: new Date("2024-04-01"),
-        returnDate: new Date("2024-04-15"),
+        borrowDate: new Date("2023-05-01"),
+        returnDate: new Date("2023-05-15"),
+       
       },
     });
 
-    // Ajout d'un emprunt en cours pour un doctorant
     await prisma.equipmentHistory.create({
       data: {
-        equipmentId: stationCalcul.id,
+        equipmentId: raspberryPis.id,
         userId: doctorantUser.id,
-        borrowDate: new Date("2024-04-20"),
-        returnDate: null, // Emprunt en cours (pas encore retourné)
+        borrowDate: new Date("2023-05-10"),
+        returnDate: null, // Emprunt en cours
+       
       },
     });
 
-    console.log("Catégories d'équipements et équipements créés avec succès!");
+    await prisma.equipmentHistory.create({
+      data: {
+        equipmentId: dataShowSensor.id,
+        userId: enseignantChercheurUser.id,
+        borrowDate: new Date("2023-04-20"),
+        returnDate: new Date("2023-05-20"),
+      
+      },
+    });
+
+    console.log("Équipements et historiques créés avec succès!");
     console.log("Seed terminé avec succès!");
   } catch (error) {
     console.error("Erreur durant le processus de seed:", error);
@@ -405,11 +341,9 @@ async function main() {
   }
 }
 
-// Fonction pour nettoyer la base de données de manière sécurisée
 async function cleanDatabase() {
   console.log("Nettoyage de la base de données...");
 
-  // Liste des tables à nettoyer dans l'ordre pour respecter les contraintes de clés étrangères
   const tables = [
     { name: "Session", model: prisma.session },
     { name: "Notification", model: prisma.notification },
@@ -436,17 +370,14 @@ async function cleanDatabase() {
     { name: "User", model: prisma.user },
   ];
 
-  // Nettoyer chaque table avec gestion des erreurs
   for (const table of tables) {
     try {
       await (table.model as any).deleteMany({});
       console.log(`Table ${table.name} nettoyée avec succès.`);
     } catch (error: any) {
-      // Si la table n'existe pas encore (erreur P2021), on ignore simplement et on continue
       if (error.code === "P2021") {
         console.log(`Table ${table.name} n'existe pas encore, on continue.`);
       } else {
-        // Pour les autres types d'erreurs, on les affiche mais on continue
         console.warn(
           `Avertissement lors du nettoyage de la table ${table.name}:`,
           error.message

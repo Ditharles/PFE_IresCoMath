@@ -237,6 +237,7 @@ model PurchaseRequest {
   requestId       String      @unique
   equipmentType    EquipmentType
   name            String
+  url String? 
   quantity        Float
   photo           String?
   specifications  Json
@@ -260,12 +261,12 @@ model RequestStage {
   id                String    @id @default(uuid())
   request           Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
   requestId         String    @unique 
-  company           String
-  companyEmail      String
-  companyPhone      String
-  supervisor        String
-  supervisorEmail   String
-  supervisorPhone   String
+  organization           String
+  organizationEmail      String
+  organizationUrl      String?
+  supervisor        String?
+  supervisorEmail   String?
+  supervisorPhone   String?
   letter            String
   country           String
   startDate         DateTime
@@ -276,12 +277,13 @@ model Mission {
   id          String    @id @default(uuid())
   request     Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
   requestId   String    @unique 
-  location String
+  hostOrganization String
   objective String
   country     String
   startDate   DateTime
   endDate     DateTime
-
+  specificDocument String[]
+  document String[]
 }
 
 model ScientificEvent {
@@ -289,6 +291,8 @@ model ScientificEvent {
   request         Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
   requestId       String    @unique 
   location        String
+  urlEvent String ?
+  mailAcceptation String 
   title           String
   articlesAccepted Boolean
   articleCover    String?
@@ -299,8 +303,11 @@ model ScientificEvent {
 model ArticleRegistration {
   id          String    @id @default(uuid())
   request     Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  title String
   requestId   String    @unique 
-  conference  String
+  conference  String ?
+  urlConference String ?
+  articleCover String
   amount      String 
 }
 
@@ -314,10 +321,9 @@ enum EquipmentType {
 enum RequestType {
   MISSION
   INTERNSHIP
-  CONFERENCE
+  CONFERENCE_NATIONAL
   EQUIPMENT_PURCHASE
-  EQUIPMENT_LOAN
-  TRAVEL_ACCOMMODATION
+  EQUIPMENT_LOAN 
   REPAIR_MAINTENANCE
   CONTRACTUAL
   ARTICLE_REGISTRATION

@@ -1,5 +1,6 @@
 import { RequestHandler, Router } from "express";
 import {
+  addDocuments,
   approveRequest,
   getAllRequests,
   getPossibleRequests,
@@ -54,3 +55,5 @@ router.post(
   checkRole(["DIRECTEUR", "ENSEIGNANT"]),
   approveRequest as RequestHandler
 );
+
+router.post("/add-document/:id", addDocuments as RequestHandler);

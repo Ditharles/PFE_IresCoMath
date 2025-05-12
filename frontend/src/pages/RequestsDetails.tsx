@@ -5,59 +5,40 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
-import { Separator } from "../components/ui/separator";
 import {
-    XCircle, Briefcase, MapPin,
-    Box, Wrench, FileText, ArrowLeft
+    FileText, ArrowLeft, Calendar
 } from "lucide-react";
 import { formatDate } from "../utils/utils";
 import { toast } from "../components/Toast";
 import LoadingOverlay from "../components/LoadingOverlay";
 import RequestsService from "../services/requests.service";
-import {
-    RequestType,
-    EquipmentTypeList
-} from "../types/request";
-import RequestActions from "../components/dashboard/requests/RequestActions";
+import { RequestStatus, RequestType, Role } from "../types/request";
+import RequestActions from "../components/dashboard/requests/request/RequestActions";
 import { REQUEST_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_TRANSLATIONS } from "../constants/requests";
-import { User } from "../types/Member";
-import { Request } from "../types/request";
-
-// Composant helper pour afficher un détail
-const DetailItem = ({ label, value }) => (
-    <div className="flex flex-col">
-        <span className="text-sm text-gray-500 mb-1">{label}</span>
-        <span className="font-medium">
-            {value != null ? value.toString() : "Non spécifié"}
-        </span>
-    </div>
-);
-
-// Composant générique pour les sections de détails
-const DetailSection = ({ icon, title, children }) => (
-    <div className="space-y-4">
-        <div className="flex items-center gap-2">
-            {icon}
-            <h3 className="font-semibold">{title}</h3>
-        </div>
-        <Separator />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {children}
-        </div>
-    </div>
-);
+import { useAuth } from "../contexts/AuthContext";
+import { DetailItem } from "../components/dashboard/requests/request/DetailItem";
+import { DetailSection } from "../components/dashboard/requests/request/DetailSection";
+import { NotFoundComponent } from "../components/dashboard/requests/request/NotFoundComponent";
+import { FileListViewer } from "../components/dashboard/requests/request/FileListViewer";
+import { MissionDetails } from "../components/dashboard/requests/request/details/MissionDetails";
+import { InternshipDetails } from "../components/dashboard/requests/request/details/InternshipDetails";
+import EquipmentPurchaseDetails from "../components/dashboard/requests/request/details/EquipmentPurchaseDetails";
+import EquipmentLoanDetails from "../components/dashboard/requests/request/details/EquipmentLoanDetails";
+import { ArticleRegistrationDetails } from "../components/dashboard/requests/request/details/ArticleRegistrationDetails";
 
 const RequestDetails = () => {
+    const { user } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
-    const [requestData, setRequestData] = useState<
-        { request: Request; user: User }>({ request: {}, user: {} });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [requestData, setRequestData] = useState<{ request: any; user: any }>({ request: {}, user: {} });
     const [loading, setLoading] = useState(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [previewFile, setPreviewFile] = useState<string | null>(null);
     const requestService = useMemo(() => new RequestsService(), []);
 
-    const { request, user } = requestData;
+    const { request } = requestData;
 
-    // Récupération des données de la demande
     const fetchRequest = async () => {
         if (!id) return;
 
@@ -84,119 +65,65 @@ const RequestDetails = () => {
         fetchRequest();
     }, [id]);
 
-    // Affichage des détails spécifiques selon le type de demande
     const renderRequestSpecificDetails = () => {
         if (!request) return null;
 
         switch (request.type) {
             case RequestType.MISSION:
                 return request.mission && (
-                    <DetailSection
-                        icon={<MapPin className="h-5 w-5 text-blue-500" />}
-                        title="Détails de la mission"
-                    >
-                        <DetailItem label="Pays" value={request.mission.country} />
-                        <DetailItem label="Localisation" value={request.mission.location} />
-                        <DetailItem label="Objectif" value={request.mission.objective} />
-                        <DetailItem label="Date de début" value={formatDate(request.mission.startDate)} />
-                        <DetailItem label="Date de fin" value={formatDate(request.mission.endDate)} />
-                    </DetailSection>
+                    <MissionDetails mission={request.mission} onPreview={setPreviewFile} status={request.status} fetchData={fetchRequest} />
                 );
 
             case RequestType.INTERNSHIP:
-                return request.requestStage && (
-                    <DetailSection
-                        icon={<Briefcase className="h-5 w-5 text-purple-500" />}
-                        title="Détails du stage"
-                    >
-                        <DetailItem label="Entreprise" value={request.requestStage.company} />
-                        <DetailItem label="Pays" value={request.requestStage.country} />
-                        <DetailItem label="Superviseur" value={request.requestStage.supervisor} />
-                        <DetailItem label="Email superviseur" value={request.requestStage.supervisorEmail} />
-                        <DetailItem label="Date de début" value={formatDate(request.requestStage.startDate)} />
-                        <DetailItem label="Date de fin" value={formatDate(request.requestStage.endDate)} />
-                    </DetailSection>
-                );
-
-            case RequestType.CONFERENCE:
-                return request.scientificEvent && (
-                    <DetailSection
-                        icon={<FileText className="h-5 w-5 text-green-500" />}
-                        title="Détails de la conférence"
-                    >
-                        <DetailItem label="Titre" value={request.scientificEvent.title} />
-                        <DetailItem label="Localisation" value={request.scientificEvent.location} />
-                        <DetailItem
-                            label="Articles acceptés"
-                            value={request.scientificEvent.articlesAccepted ? "Oui" : "Non"}
-                        />
-                        <DetailItem label="Date de début" value={formatDate(request.scientificEvent.startDate)} />
-                        <DetailItem label="Date de fin" value={formatDate(request.scientificEvent.endDate)} />
-                    </DetailSection>
+                return request.stage && (
+                    <InternshipDetails stage={request.stage} onPreview={setPreviewFile} />
                 );
 
             case RequestType.EQUIPMENT_PURCHASE:
-                return request.purchaseRequest && (
-                    <DetailSection
-                        icon={<Box className="h-5 w-5 text-orange-500" />}
-                        title="Détails de l'achat"
-                    >
-                        <DetailItem label="Nom" value={request.purchaseRequest.name} />
-                        <DetailItem
-                            label="Type"
-                            value={EquipmentTypeList[request.purchaseRequest.equipmentType]}
-                        />
-                        <DetailItem label="Quantité" value={request.purchaseRequest.quantity} />
-                        <DetailItem
-                            label="Coût estimé"
-                            value={`${request.purchaseRequest.costEstimation} €`}
-                        />
-                        {request.purchaseRequest.specifications && (
-                            <DetailItem
-                                label="Spécifications"
-                                value={typeof request.purchaseRequest.specifications === 'object'
-                                    ? JSON.stringify(request.purchaseRequest.specifications)
-                                    : request.purchaseRequest.specifications}
-                            />
-                        )}
-                    </DetailSection>
-                );
+                return request.purchaseRequest && <EquipmentPurchaseDetails purchaseRequest={request.purchaseRequest} onPreview={setPreviewFile} />
 
             case RequestType.EQUIPMENT_LOAN:
-                return request.equipmentLoanRequest && (
-                    <DetailSection
-                        icon={<Wrench className="h-5 w-5 text-blue-500" />}
-                        title="Détails du prêt"
-                    >
-                        {request.equipmentLoanRequest.equipment ? (
-                            <>
-                                <DetailItem label="Équipement" value={request.equipmentLoanRequest.equipment.name} />
-                                <DetailItem
-                                    label="Catégorie"
-                                    value={request.equipmentLoanRequest.equipment.category.name}
-                                />
-                            </>
-                        ) : request.equipmentLoanRequest.category ? (
-                            <DetailItem
-                                label="Catégorie"
-                                value={request.equipmentLoanRequest.category.name}
-                            />
-                        ) : null}
-                        <DetailItem label="Quantité" value={request.equipmentLoanRequest.quantity} />
-                        <DetailItem label="Date de début" value={formatDate(request.equipmentLoanRequest.startDate)} />
-                        <DetailItem label="Date de fin" value={formatDate(request.equipmentLoanRequest.endDate)} />
-                    </DetailSection>
+                return request.loanRequest && (
+                    <EquipmentLoanDetails loanRequest={request.loanRequest} />
                 );
 
             case RequestType.ARTICLE_REGISTRATION:
                 return request.articleRegistration && (
-                    <DetailSection
-                        icon={<FileText className="h-5 w-5 text-purple-500" />}
-                        title="Détails de l'inscription"
-                    >
-                        <DetailItem label="Conférence" value={request.articleRegistration.conference} />
-                        <DetailItem label="Montant" value={`${request.articleRegistration.amount} €`} />
-                    </DetailSection>
+                    <ArticleRegistrationDetails articleRegistration={request.articleRegistration} onPreview={setPreviewFile} />
+                );
+
+            case RequestType.CONFERENCE_NATIONAL:
+                return request.scientificEvent && (
+                    <>
+                        <DetailSection
+                            icon={<Calendar className="h-5 w-5 text-red-500" />}
+                            title="Détails de la conférence"
+                        >
+                            <DetailItem label="Titre" value={request.scientificEvent.title} />
+                            <DetailItem label="Lieu" value={request.scientificEvent.location} />
+                            {request.scientificEvent.urlEvent && (
+                                <DetailItem label="URL de l'événement" value={request.scientificEvent.urlEvent} />
+                            )}
+                            <DetailItem label="Email d'acceptation" value={request.scientificEvent.mailAcceptation} />
+                            <DetailItem label="Articles acceptés" value={request.scientificEvent.articlesAccepted ? "Oui" : "Non"} />
+                            <DetailItem label="Date de début" value={formatDate(request.scientificEvent.startDate)} />
+                            <DetailItem label="Date de fin" value={formatDate(request.scientificEvent.endDate)} />
+                        </DetailSection>
+
+                        {request.scientificEvent.articleCover && (
+                            <DetailSection
+                                icon={<FileText className="h-5 w-5 text-green-500" />}
+                                title="Documents associés"
+                            >
+                                <DetailItem label="Couverture de l'article">
+                                    <FileListViewer
+                                        files={[request.scientificEvent.articleCover]}
+                                        onPreview={setPreviewFile}
+                                    />
+                                </DetailItem>
+                            </DetailSection>
+                        )}
+                    </>
                 );
 
             default:
@@ -204,22 +131,8 @@ const RequestDetails = () => {
         }
     };
 
-    // Si la requête n'est pas trouvée
     if (!request && !loading) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <div className="text-center">
-                    <XCircle className="mx-auto h-12 w-12 text-gray-400" />
-                    <h3 className="mt-2 text-lg font-medium">Demande non trouvée</h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                        La demande que vous recherchez n'existe pas ou a été supprimée.
-                    </p>
-                    <Button className="mt-4" onClick={() => navigate("/requests")}>
-                        Retour aux demandes
-                    </Button>
-                </div>
-            </div>
-        );
+        return <NotFoundComponent />;
     }
 
     return (
@@ -230,44 +143,43 @@ const RequestDetails = () => {
                 <Button
                     variant="ghost"
                     className="mb-4"
-                    onClick={() => navigate("/requests")}
+                    onClick={() => user?.role === Role.DIRECTEUR ? navigate("/demandes") : navigate("/historique")}
                 >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Retour aux demandes
                 </Button>
 
                 {request && (
-                    <Card className="shadow-lg">
+                    <Card className="shadow-lg mb-6">
                         <CardHeader className="border-b bg-white">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <CardTitle className="text-2xl font-bold">
-                                        Demande {REQUEST_TYPE_LABELS[request.type]}
+                                        Demande {REQUEST_TYPE_LABELS[request.type as RequestType]}
                                     </CardTitle>
                                     <CardDescription className="text-base">
                                         Créée le {formatDate(request.createdAt)}
                                     </CardDescription>
                                 </div>
-                                <Badge className={STATUS_BADGE_VARIANTS[request.status]}>
-                                    {STATUS_TRANSLATIONS[request.status]}
+                                <Badge className={STATUS_BADGE_VARIANTS[request.status as RequestStatus]}>
+                                    {STATUS_TRANSLATIONS[request.status as RequestStatus]}
                                 </Badge>
                             </div>
                         </CardHeader>
 
                         <CardContent className="p-6 space-y-6">
-                            {/* Informations de base */}
                             <DetailSection
                                 icon={<FileText className="h-5 w-5 text-gray-500" />}
                                 title="Informations générales"
                             >
-                                {user && (
+                                {requestData.user && (
                                     <>
                                         <DetailItem
                                             label="Demandeur"
-                                            value={`${user.firstName} ${user.lastName}`}
+                                            value={`${requestData.user.firstName} ${requestData.user.lastName}`}
                                         />
-                                        <DetailItem label="Email" value={user.email} />
-                                        <DetailItem label="Rôle" value={user.role} />
+                                        <DetailItem label="Email" value={requestData.user.email} />
+                                        <DetailItem label="Rôle" value={requestData.user.role} />
                                     </>
                                 )}
                                 <DetailItem
@@ -279,11 +191,9 @@ const RequestDetails = () => {
                                 )}
                             </DetailSection>
 
-                            {/* Détails spécifiques */}
                             {renderRequestSpecificDetails()}
                         </CardContent>
 
-                        {/* Actions */}
                         <CardFooter className="flex justify-end p-6 bg-gray-50">
                             <RequestActions
                                 requestData={requestData}

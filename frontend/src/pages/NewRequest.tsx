@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Send, Info } from 'lucide-react';
@@ -5,13 +7,12 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import ArticleRegistrationForm from '../components/form/requests/ArticleRegistrationForm';
-
 import LoadingOverlay from '../components/LoadingOverlay';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 import { Toast, toast } from '../components/Toast';
-// Schémas de validation Zod
+
 import {
   internshipRequestSchema,
   missionRequestSchema,
@@ -26,10 +27,10 @@ import RequestsService from '../services/requests.service';
 import InternshipForm from '../components/form/requests/InternshipForm';
 import MissionForm from '../components/form/requests/MissionForm';
 import ScientificEventForm from '../components/form/requests/ScientificEvent.Form';
-
-import { z } from 'zod';
 import EquipmentLoanForm from '../components/form/requests/EquipementLoanForm';
 import EquipmentPurchaseForm from '../components/form/requests/EquipementPurchaseForm';
+
+import { z } from 'zod';
 
 const NewRequest: React.FC = () => {
   const { type } = useParams<{ type: string }>();
@@ -38,28 +39,25 @@ const NewRequest: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const requestService = new RequestsService();
 
-
-  // Conversion des types français vers les types du schéma Prisma
-  const getTypeRequest = () => {
+  const mapTypeToRequest = (): RequestType => {
     switch (type) {
       case 'stage': return RequestType.INTERNSHIP;
       case 'mission': return RequestType.MISSION;
-      case 'conference': return RequestType.CONFERENCE;
+      case 'conference-national': return RequestType.CONFERENCE_NATIONAL;
       case 'inscription-article': return RequestType.ARTICLE_REGISTRATION;
       case 'pret-materiel': return RequestType.EQUIPMENT_LOAN;
       case 'achat-materiel': return RequestType.EQUIPMENT_PURCHASE;
       case 'reparation-maintenance': return RequestType.REPAIR_MAINTENANCE;
-      case 'voyage-hebergement': return RequestType.TRAVEL_ACCOMMODATION;
       case 'contractuel': return RequestType.CONTRACTUAL;
       default: return RequestType.CONTRACTUAL;
     }
   };
 
-  const getValidationSchema = () => {
+  const mapTypeToSchema = () => {
     switch (type) {
       case 'stage': return internshipRequestSchema;
       case 'mission': return missionRequestSchema;
-      case 'conference': return scientificEventRequestSchema;
+      case 'conference-national': return scientificEventRequestSchema;
       case 'inscription-article': return articleRegistrationRequestSchema;
       case 'pret-materiel': return equipmentLoanRequestSchema;
       case 'achat-materiel': return equipmentPurchaseRequestSchema;
@@ -68,38 +66,36 @@ const NewRequest: React.FC = () => {
   };
 
   const methods = useForm({
-    resolver: zodResolver(getValidationSchema()),
+    resolver: zodResolver(mapTypeToSchema()),
     mode: 'onBlur',
     defaultValues: {}
   });
 
   const { handleSubmit, reset, formState: { errors, isValid } } = methods;
-  console.log(errors)
+
   useEffect(() => {
     reset();
-    setSubmitError(null); // Réinitialise les erreurs à chaque changement de type
+    setSubmitError(null);
   }, [type, reset]);
 
-  const onSubmit = async (data: any) => {
+  const handleFormSubmit = async (formData: any) => {
     if (!isValid) {
       toast.error('Veuillez remplir correctement tous les champs requis');
       return;
     }
+    console.log("try");
 
     setIsSubmitting(true);
     setSubmitError(null);
-
+    console.log(errors);
     try {
-      const response = await requestService.createRequest(data, getTypeRequest());
-      console.log(response)
-
+      const response = await requestService.createRequest(formData, mapTypeToRequest());
       toast.success(response.data.message || "Demande créée avec succès");
       setTimeout(() => {
         navigate("/accueil");
       }, 2000);
-
-    } catch (error: unknown) {
-      const errorMessage = error?.response?.data?.message ||
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message ||
         error.message ||
         "Une erreur inattendue est survenue";
       setSubmitError(errorMessage);
@@ -113,22 +109,21 @@ const NewRequest: React.FC = () => {
     switch (type) {
       case 'stage': return 'Demande de Stage';
       case 'mission': return 'Demande de Mission';
-      case 'conference': return 'Conférence Scientifique';
+      case 'conference-national': return 'Conférence Nationale';
       case 'inscription-article': return 'Inscription d\'Article';
       case 'pret-materiel': return 'Prêt de Matériel';
       case 'achat-materiel': return 'Achat de Matériel';
       case 'reparation-maintenance': return 'Réparation/Maintenance';
-      case 'voyage-hebergement': return 'Voyage/Hébergement';
       case 'contractuel': return 'Demande Contractuelle';
       default: return 'Nouvelle Demande';
     }
   };
 
-  const renderForm = () => {
+  const renderCorrespondingForm = () => {
     switch (type) {
       case 'stage': return <InternshipForm />;
       case 'mission': return <MissionForm />;
-      case 'conference': return <ScientificEventForm />;
+      case 'conference-national': return <ScientificEventForm />;
       case 'inscription-article': return <ArticleRegistrationForm />;
       case 'pret-materiel': return <EquipmentLoanForm />;
       case 'achat-materiel': return <EquipmentPurchaseForm />;
@@ -167,16 +162,15 @@ const NewRequest: React.FC = () => {
         </CardHeader>
 
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(handleFormSubmit)}>
             <CardContent className="space-y-4 animate-slideIn">
-              {renderForm()}
+              {renderCorrespondingForm()}
             </CardContent>
 
             <CardFooter className="flex justify-end gap-3 mt-8">
               <Button
                 type="reset"
                 variant="outline"
-
                 disabled={isSubmitting}
               >
                 Annuler
@@ -200,7 +194,7 @@ const NewRequest: React.FC = () => {
       </Card>
     </div>
   );
-
 };
 
 export default NewRequest;
+
