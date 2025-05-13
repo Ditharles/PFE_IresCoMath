@@ -5,16 +5,20 @@ import express, {
   Response,
 } from "express";
 import dotenv from "dotenv";
-import authRoutes from "./routes/authRoutes";
-import validateRoutes from "./routes/validateRoutes";
-import usersRoutes from "./routes/usersRoutes";
+import authRoutes from "./routes/auth.routes";
+import validateRoutes from "./routes/validate.routes";
+import usersRoutes from "./routes/users.routes";
 import helmet from "helmet";
 import cors from "cors";
 import { PrismaClient } from "../generated/prisma";
 import { createRouteHandler } from "uploadthing/express";
 import { uploadRouter } from "./uploadthing";
-import { verify } from "crypto";
+
 import { verifyToken } from "./middleware/verifyToken";
+import requestsRoutes from "./routes/requests.routes";
+import notificationsRoutes from "./routes/notifications.routes";
+import equipmentsRoutes from "./routes/equipments.routes";
+import { checkRole } from "./middleware/checkRole";
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -34,8 +38,14 @@ app.use(helmet());
 app.use("/auth/", authRoutes);
 app.use("/validate/", validateRoutes);
 app.use("/users/", verifyToken as RequestHandler, usersRoutes);
-app.use("/requests/,", verifyToken as RequestHandler, usersRoutes);
-
+app.use("/requests/", verifyToken as RequestHandler, requestsRoutes);
+app.use("/notifications/", verifyToken as RequestHandler, notificationsRoutes);
+app.use(
+  "/equipments/",
+  verifyToken as RequestHandler,
+  checkRole(["ADMIN", "DIRECTEUR"]),
+  equipmentsRoutes
+);
 app.use(
   "/api/uploadthing",
   createRouteHandler({
@@ -46,11 +56,12 @@ app.use(
   })
 );
 
-app.get("/enseignants", async (req, res) => {
+app.get("/teachers-researchers", async (req, res) => {
   try {
-    const data = await prisma.enseignantChercheur.findMany({
-      select: { id: true, nom: true, prenom: true },
+    const data = await prisma.teacherResearcher.findMany({
+      select: { id: true, lastName: true, firstName: true },
     });
+
     res.json(data);
   } catch (error) {
     console.error(error);

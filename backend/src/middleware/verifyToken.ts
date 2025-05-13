@@ -1,8 +1,8 @@
 import jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "../../generated/prisma";
-import { getUser } from "../controllers/authController";
-import { getUserByID } from "../utils/authUtils";
+import { getUser } from "../controllers/auth.controller";
+import { getUserByID } from "../services/auth.service";
 
 const prisma = new PrismaClient();
 
@@ -42,12 +42,19 @@ export const verifyToken = async (
       },
     });
 
-    if (!session) {
-      return res.status(401).json({ message: "Session non trouvée" });
+    if (!session || !session.user) {
+      return res
+        .status(401)
+        .json({ message: "Session ou utilisateur non trouvé" });
     }
 
-    req.user = getUserByID(session.user.id);
-    next();
+    const user = await getUserByID(session.user.id);
+    if (!user) {
+      return res.status(401).json({ message: "Utilisateur introuvable" });
+    }
+    console.log(user.role);
+    req.user = user;
+    return next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
       return res.status(401).json({ message: "Token expiré" });

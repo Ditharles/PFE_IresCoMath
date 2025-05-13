@@ -13,9 +13,13 @@ import Home from "../pages/Home";
 import GestionMembres from "../pages/directeur/GestionMembres";
 import RoleBasedRoute from "../components/routes/RoleBasedRoute";
 
-import PasswordForget from "../pages/password-forget";
-import PasswordReset from "../pages/password-reset";
+import PasswordForget from "../pages/auth/password-forget";
+import PasswordReset from "../pages/auth/password-reset";
 import MemberAddRequest from "../pages/MemberAddRequest";
+import NewRequest from "../pages/NewRequest";
+import NewRequests from "../pages/NewRequests";
+import Historique from "../pages/Historique";
+import RequestDetails from "../pages/RequestsDetails";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -53,7 +57,7 @@ const routes: RouteObject[] = [
             {
                 path: "password-reset/:token",
                 element: <PasswordReset />
-            },
+            }
         ],
     },
     //Routes necessitant une connexion
@@ -69,9 +73,18 @@ const routes: RouteObject[] = [
                 element: <AdditionalInfo />
             },
             {
-                path: "demande/:type",
-                element: <NouvelleDemande />
+                path: "nouvelle-demande",
+                element: <NewRequests />
             },
+            {
+                path: "nouvelle-demande/:type",
+                element: <NewRequest />
+            },
+            
+            {
+                path: "demande/:id",
+                element: <RequestDetails />
+            }
 
         ]
     },
@@ -84,6 +97,28 @@ const routes: RouteObject[] = [
                 path: "membres",
                 element: <GestionMembres />
             },
+            {
+                path: "membre",
+                element: <MemberAddRequest />
+            },
+            {
+                path: "demandes",
+                element: <Historique />
+            }
+        ]
+    },
+    {
+        element: <RoleBasedRoute allowedRoles={["DOCTORANT", "MASTER", "ENSEIGNANT"]} />,
+        children: [
+            {
+                path: "historique",
+                element: <Historique />
+            }
+        ]
+    },
+    {
+        element: <RoleBasedRoute allowedRoles={["DOCTORANT", "MASTER", "ENSEIGNANT"]} />,
+        children: [
             {
                 path: "membre",
                 element: <MemberAddRequest />

@@ -1,7 +1,6 @@
 import api from "../api/axios";
 
 import {
-  getToken,
   isAuthenticated,
   removesTokens,
   removeUser,
@@ -25,27 +24,23 @@ class AuthService {
     }
   }
   async login(email: string, password: string) {
-    try {
-      if (isAuthenticated()) {
-        return;
-      }
-      const response = await api.post("/auth/login", { email, password });
-      const { accessToken, refreshToken, user } = response.data;
-      setToken("accessToken", accessToken);
-      setToken("refreshToken", refreshToken);
-      setUser(user);
-      return user;
-    } catch (error) {
-      console.error("Une erreur s'est produite lors de la connexion:", error);
-      throw error;
+    if (isAuthenticated()) {
+      return;
     }
+    const response = await api.post("/auth/login", { email, password });
+    const { accessToken, refreshToken, user } = response.data;
+    setToken("accessToken", accessToken);
+    setToken("refreshToken", refreshToken);
+    setUser(user);
+    return response;
   }
 
   async logout() {
     try {
       console.log("Déconnexion en cours");
-      console.log(getToken("accessToken"));
-      await api.get("/auth/logout");
+
+      const response= await api.get("/auth/logout");
+      return response;
     } catch (error) {
       console.error("Une erreur s'est produite lors de la déconnexion:", error);
       throw error;
@@ -56,123 +51,55 @@ class AuthService {
   }
 
   async register(credentials: unknown, role: string) {
-    try {
-      const response = await api.post(`/auth/register/${role}`, credentials);
-      return response;
-    } catch (error) {
-      console.error("Une erreur s'est produite lors de l'inscription:", error);
-      throw error;
-    }
+    const response = await api.post(`/auth/register/${role}`, credentials);
+    return response;
   }
 
   async confirmRequest(token: string) {
-    try {
-      const response = await api.get(`/auth/confirm-request/${token}`);
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-      throw error;
-    }
+    const response = await api.get(`/auth/confirm-request/${token}`);
+    return response;
   }
 
   async resendConfirmationEmail(token: string) {
-    try {
-      const response = await api.get("/auth/resend-confirmation-link", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-    }
+    const response = await api.get("/auth/resend-confirmation-link", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response;
   }
 
   async resendConfirmationEmailWithEmail(email: string) {
-    try {
-      const response = await api.post("/auth/resend-confirmation-link", {
-        email,
-      });
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-      throw error;
-    }
+    const response = await api.post("/auth/resend-confirmation-link", {
+      email,
+    });
+    return response;
   }
 
   async forgotPassword(email: string) {
-    try {
-      const response = await api.post("/auth/forgot-password", { email });
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-      throw error;
-    }
+    const response = await api.post("/auth/forgot-password", { email });
+    return response;
   }
 
   async confirmResetPassword(token: string) {
-    try {
-      const response = await api.get(`/auth/confirm-reset-password/${token}`);
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-      throw error;
-    }
+    const response = await api.get(`/auth/confirm-reset-password/${token}`);
+    return response;
   }
   async resetPassword(token: string, password: string) {
-    try {
-      const response = await api.post(`/auth/reset-password/${token}`, {
-        password,
-      });
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-      throw error;
-    }
+    const response = await api.post(`/auth/reset-password/${token}`, {
+      password,
+    });
+    return response;
   }
   async verifyValidationUser(token: string) {
-    try {
-      const response = await api.get(`/auth/validate-account/${token}`);
-      setUser(response.data.user);
-      setToken("accessToken", response.data.accessToken);
-      setToken("refreshToken", response.data.refreshToken);
+    const response = await api.get(`/auth/validate-account/${token}`);
+    setUser(response.data.user);
+    setToken("accessToken", response.data.accessToken);
+    setToken("refreshToken", response.data.refreshToken);
 
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-      throw error;
-    }
+    return response;
   }
-  async submitAdditionalInfo(data: any) {
-    try {
-      const response = await api.post("/auth/submit-additional-info", data);
-      return response;
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la confirmation:",
-        error
-      );
-      throw error;
-    }
+  async submitAdditionalInfo(data: unknown) {
+    const response = await api.post("/auth/submit-additional-info", data);
+    return response;
   }
 }
 

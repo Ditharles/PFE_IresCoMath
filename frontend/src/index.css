@@ -23,13 +23,11 @@
   @apply bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition;
 }
 
-<<<<<<< HEAD
 
 .input {
   @apply w-full p-2 border rounded-md block;
 }
 
-=======
 @theme inline {
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -243,4 +241,3 @@
     @apply bg-background text-foreground;
   }
 }
->>>>>>> origin/main

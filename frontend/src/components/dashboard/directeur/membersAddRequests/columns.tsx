@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-// components/membres/columns.tsx
 import { ColumnDef } from "@tanstack/react-table"
 import { RequestUser, RequestStatus } from "../../../../types/MemberAddRequest"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../ui/dropdown-menu"
@@ -12,7 +11,6 @@ import { Input } from "../../../ui/input"
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogFooter } from "../../../ui/dialog"
 import { determineRequestRole } from "../../../../utils/membersUtils"
 
-
 const manageUserService = new ManageUserService();
 const requestStatusStrings = {
     [RequestStatus.APPROVED]: "Approuvé",
@@ -22,8 +20,8 @@ const requestStatusStrings = {
 
 export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
     {
-        accessorFn: (row) => `${row.nom} ${row.prenom}`,
-        id: "nomComplet",
+        accessorFn: (row) => `${row.lastName} ${row.firstName}`,
+        id: "fullName",
         header: "Nom & Prénom",
         enableColumnFilter: true,
         cell: ({ row }) => {
@@ -33,7 +31,7 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
             return (
                 <div className="font-medium">
                     <a href={`membre/?id=${id}&role=${role}`}>
-                        {row.getValue("nomComplet")}
+                        {row.getValue("fullName")}
                     </a>
                 </div>
             );
@@ -50,11 +48,11 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
         enableColumnFilter: true,
         cell: ({ row }) => {
             const original = row.original;
-            if ("annee_these" in original) {
+            if ("thesisYear" in original) {
                 return "Doctorant";
-            } else if ("annee_master" in original) {
+            } else if ("masterYear" in original) {
                 return "Étudiant Master";
-            } else if ("fonction" in original) {
+            } else if ("position" in original) {
                 return "Enseignant Chercheur";
             }
             return "Inconnu";
@@ -116,8 +114,11 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem><a href={`/membre?id=${original.id}&role=$
-                                {determineRequestRole(original) as Role}`}>Voir le profil</a></DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <a href={`/membre?id=${original.id}&role=${determineRequestRole(original) as Role}`}>
+                                    Voir le profil
+                                </a>
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={handleAccept}>Approuver</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setIsOpen(true)}>Rejeter</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive">Supprimer</DropdownMenuItem>

@@ -18,6 +18,7 @@ const publicRoutes = [
   "/auth/confirm-request",
   "/auth/resend-confirmation-email",
   "/auth/forgot-password",
+
 ];
 
 // Ajout du token d'accès au header de la requête si nécessaire

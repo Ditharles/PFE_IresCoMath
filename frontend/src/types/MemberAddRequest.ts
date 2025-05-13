@@ -1,58 +1,63 @@
-type RequestDoctorant = {
+type DoctoralStudentRequest = {
   id?: string;
-  nom: string;
-  prenom: string;
+  lastName: string;
+  firstName: string;
   email: string;
-  annee_these: number;
+  thesisYear: number;
   createdAt: Date;
-  directeur_these_id: string;
-  directeur_these?: { id: string; nom: string; prenom: string };
+  thesisSupervisorId: string;
+  thesisSupervisor?: { id: string; lastName: string; firstName: string };
   status: RequestStatus;
   rejectionReason?: string;
   photo?: string;
-  isConfirm?: boolean;
+  isConfirmed?: boolean;
 };
 
-type RequestMaster = {
+type MasterStudentRequest = {
   id: string;
-  nom: string;
-  prenom: string;
+  lastName: string;
+  firstName: string;
   email: string;
-  annee_master: number;
+  masterYear: number;
   createdAt: Date;
-  encadrant_id: string;
-  encadrant?: { id: string; nom: string; prenom: string };
+  supervisorId: string;
+  supervisor?: { id: string; lastName: string; firstName: string };
   status: RequestStatus;
   rejectionReason?: string;
   photo?: string;
-  isConfirm?: boolean;
+  isConfirmed?: boolean;
 };
 
-type RequestEnseignantChercheur = {
+type TeacherResearcherRequest = {
   id: string;
-  nom: string;
-  prenom: string;
+  lastName: string;
+  firstName: string;
   email: string;
-  fonction: string;
+  position: string;
   grade: Grade;
-  etablissement: string;
+  institution: string;
   status: RequestStatus;
-  isConfirm?: boolean;
+  isConfirmed?: boolean;
   rejectionReason?: string;
   photo?: string;
   createdAt: Date;
 };
 
 export type RequestUser =
-  | RequestDoctorant
-  | RequestMaster
-  | RequestEnseignantChercheur;
-export enum RequestStatus {
-  PENDING = "PENDING",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
-}
+  | DoctoralStudentRequest
+  | MasterStudentRequest
+  | TeacherResearcherRequest;
 
+export enum RequestStatus {
+  PENDING= "PENDING",
+  APPROVED= "APPROVED",
+  APPROVED_BY_SUPERVISOR= "APPROVED_BY_SUPERVISOR",
+  APPROVED_BY_DIRECTOR= "APPROVED_BY_DIRECTOR",
+  REJECTED= "REJECTED",
+  REJECTED_BY_SUPERVISOR= "REJECTED_BY_SUPERVISOR",
+  REJECTED_BY_DIRECTOR= "REJECTED_BY_DIRECTOR",
+  COMPLETED= "COMPLETED",
+}
 export enum Grade {
   Assistant,
   MaitreAssistant,
