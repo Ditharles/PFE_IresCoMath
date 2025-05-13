@@ -19,6 +19,7 @@ export interface CommonFields {
   telephone: string;
   email: string;
   cin: string;
+  password: string; 
 }
 
 export interface BaseSpecificFields {

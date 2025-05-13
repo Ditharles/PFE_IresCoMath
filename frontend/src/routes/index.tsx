@@ -76,7 +76,7 @@ const routes: RouteObject[] = [
                 element: <NouvelleDemande />
             },
             {
-                path: "profile",
+                path: "profil",
                 element: <Profile />
             },
                

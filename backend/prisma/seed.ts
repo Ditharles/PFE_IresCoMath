@@ -15,6 +15,7 @@ async function main() {
       data: {
         email: "admin@irescomath.com",
         password: adminPassword,
+        
         role: Role.ADMIN,
         admin: {
           create: {

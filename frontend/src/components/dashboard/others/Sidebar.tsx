@@ -12,7 +12,7 @@ const SidebarOthers = ({ darkMode = false }: { darkMode?: boolean }) => {
   const location = useLocation();
 
   const items: SidebarItem[] = [
-    { name: "Historique", path: "/demandes", icon: History },
+    { name: "Historique", path: "/historique", icon: History },
     { name: "Nouvelle demande", path: "/nouvelle-demande", icon: FilePlus2 },
     { name: "Profil", path: "/profil", icon: User },
     { name: "Paramètres", path: "/parametres", icon: Settings },
