@@ -146,7 +146,7 @@ export type ArticleRegistration = {
 
 // Main Request type that combines all possibilities
 export type Request = BaseRequest & {
-  purchaseRequest?: PurchaseRequest[];
+  purchaseRequest?: PurchaseRequest;
   equipmentLoanRequest?: EquipmentLoanRequest;
   stage?: RequestStage;
   mission?: Mission;

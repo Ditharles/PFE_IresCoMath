@@ -11,7 +11,6 @@ import {
 import { Notification, NotificationStatus, NotificationType } from "../types/notifications"
 import NotificationsService from "../services/notifcations.service"
 
-
 interface NotificationsPanelProps {
   darkMode: boolean
   onClose: () => void
@@ -30,7 +29,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
     const fetchNotifications = async () => {
       try {
         const response = await notificationService.getNotifications()
-        setNotificationsList(response.data)
+        setNotificationsList(response.data.sort((a: Notification, b: Notification) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
       } catch (error) {
         console.error("Error fetching notifications:", error)
       }

@@ -4,7 +4,7 @@ import {
   getWaitingList,
   validateRequest,
   resendValidationMail,
-} from "../controllers/validateController";
+} from "../controllers/validate.controller";
 import { checkRole } from "../middleware/checkRole";
 import { verifyToken } from "../middleware/verifyToken";
 

@@ -419,3 +419,32 @@ export const sendMailAfterRequestsValidation = async (
 
   await sendEmail(emailData);
 };
+
+// Fonction pour l'email après complétion de la demande
+export const sendMailAfterRequestCompletion = async (
+  request: any,
+  user: { firstName: string; lastName: string; email: string; role: Role }
+) => {
+  const requestLink = "http://localhost:5173/demande/" + request.id;
+
+  const emailData: EmailData = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    subject: "Votre demande est complété avec succès",
+    link: requestLink,
+    buttonText: "Voir ma demande",
+    mainContent: `
+      <p>Nous vous informons que votre demande (#${request.id}) a été complétée avec succès.</p>
+      
+      <p>Le processus de traitement est maintenant terminé. Vous pouvez consulter les détails de votre demande en cliquant sur le bouton ci-dessous :</p>
+    `,
+    additionalInfo: `
+      <p>Merci pour votre confiance et votre patience durant ce processus.</p>
+      
+      <p>Si vous avez des questions ou besoin d'assistance supplémentaire, n'hésitez pas à contacter notre équipe.</p>
+    `,
+  };
+
+  await sendEmail(emailData);
+};

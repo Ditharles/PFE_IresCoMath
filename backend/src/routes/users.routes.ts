@@ -1,6 +1,6 @@
 import { Express, RequestHandler, Router } from "express";
-import { getUser } from "../controllers/usersController";
-import { getUsers } from "../controllers/usersController";
+import { getUser } from "../controllers/users.controller";
+import { getUsers } from "../controllers/users.controller";
 
 const router: Router = Router();
 

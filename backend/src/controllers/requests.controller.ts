@@ -25,7 +25,10 @@ import { extendRequestFields, requestFields } from "../constants/requests";
 import { getRequestById } from "../services/request.service";
 
 import { sendRequestNotifications } from "../utils/notificationUtils";
-import { sendMailAfterRequestsValidation } from "../services/mail.service";
+import {
+  sendMailAfterRequestCompletion,
+  sendMailAfterRequestsValidation,
+} from "../services/mail.service";
 export const getPossibleRequests = (req: AuthRequest, res: Response) => {
   res.status(200).json(requestByRole[req.user.role as Role]);
 };
@@ -68,7 +71,7 @@ export const getRequest = async (req: AuthRequest, res: Response) => {
     const request = await getRequestById(requestId);
 
     if (!request) {
-      res.status(404).json({ message: "Request not found" });
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
     const user = await getUserByID(request!.user.id);
     res.status(200).json({ request, user: user });
@@ -489,6 +492,8 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
       },
     };
 
+    
+    
     const nextStatus = nextStatusMap[userRole]?.[request!.status];
     console.log(request!.status);
     if (!nextStatus) {
@@ -572,7 +577,10 @@ export const addDocuments = async (req: AuthRequest, res: Response) => {
       where: { id: request!.mission!.id },
       data: { document: doc },
     });
-
+    await NotificationsService.createNotification({
+      userId: request!.user.id,
+      ...NotificationTemplates.DOCUMENTS_ADDED(request!.id),
+    });
     res.status(200).json({
       message: "Les documents ont été ajoutés avec succès",
     });
@@ -582,10 +590,8 @@ export const addDocuments = async (req: AuthRequest, res: Response) => {
   }
 };
 
-
 export const completeRequest = async (req: AuthRequest, res: Response) => {
-
-  const {id}=req.params;
+  const { id } = req.params;
   try {
     const request = await getRequestById(id);
 
@@ -597,17 +603,26 @@ export const completeRequest = async (req: AuthRequest, res: Response) => {
       res.status(400).json({ message: "La demande doit être approuvée" });
     }
 
-    if (!request?.mission) {
-      res
-        .status(400)
-        .json({ message: "Données mission manquantes pour cette demande" });
-    }
-
     const updatedRequest = await prisma.request.update({
       where: { id: request!.id },
       data: { status: RequestStatus.COMPLETED },
     });
 
+    // Récupérer les informations de l'utilisateur
+    let user = await getUserByID(request!.user.id);
+
+    // Envoyer l'email de confirmation
+    await sendMailAfterRequestCompletion(updatedRequest, {
+      firstName: user!.firstName || "",
+      lastName: user!.lastName || "",
+      email: user!.email,
+      role: user!.role,
+    });
+
+    await NotificationsService.createNotification({
+      userId: request!.user.id,
+      ...NotificationTemplates.REQUEST_COMPLETED(request!.id),
+    });
     res.status(200).json({
       message: "Demande terminée avec succès",
     });

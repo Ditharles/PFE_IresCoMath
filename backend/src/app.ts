@@ -5,9 +5,9 @@ import express, {
   Response,
 } from "express";
 import dotenv from "dotenv";
-import authRoutes from "./routes/authRoutes";
-import validateRoutes from "./routes/validateRoutes";
-import usersRoutes from "./routes/usersRoutes";
+import authRoutes from "./routes/auth.routes";
+import validateRoutes from "./routes/validate.routes";
+import usersRoutes from "./routes/users.routes";
 import helmet from "helmet";
 import cors from "cors";
 import { PrismaClient } from "../generated/prisma";
@@ -15,9 +15,10 @@ import { createRouteHandler } from "uploadthing/express";
 import { uploadRouter } from "./uploadthing";
 
 import { verifyToken } from "./middleware/verifyToken";
-import requestsRoutes from "./routes/requestsRoutes";
-import notificationsRoutes from "./routes/notificationsRoutes";
-import equipmentsRoutes from "./routes/equipmentsRoutes";
+import requestsRoutes from "./routes/requests.routes";
+import notificationsRoutes from "./routes/notifications.routes";
+import equipmentsRoutes from "./routes/equipments.routes";
+import { checkRole } from "./middleware/checkRole";
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -39,7 +40,12 @@ app.use("/validate/", validateRoutes);
 app.use("/users/", verifyToken as RequestHandler, usersRoutes);
 app.use("/requests/", verifyToken as RequestHandler, requestsRoutes);
 app.use("/notifications/", verifyToken as RequestHandler, notificationsRoutes);
-app.use("/equipments/", verifyToken as RequestHandler, equipmentsRoutes);
+app.use(
+  "/equipments/",
+  verifyToken as RequestHandler,
+  checkRole(["ADMIN", "DIRECTEUR"]),
+  equipmentsRoutes
+);
 app.use(
   "/api/uploadthing",
   createRouteHandler({

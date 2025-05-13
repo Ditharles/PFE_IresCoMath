@@ -1,7 +1,7 @@
 import jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "../../generated/prisma";
-import { getUser } from "../controllers/authController";
+import { getUser } from "../controllers/auth.controller";
 import { getUserByID } from "../services/auth.service";
 
 const prisma = new PrismaClient();
@@ -54,7 +54,7 @@ export const verifyToken = async (
     }
     console.log(user.role);
     req.user = user;
-    return next(); 
+    return next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
       return res.status(401).json({ message: "Token expiré" });

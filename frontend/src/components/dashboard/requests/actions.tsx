@@ -9,7 +9,13 @@ import { useAuth } from "../../../contexts/AuthContext";
 import RequestsService from "../../../services/requests.service";
 import { Request, RequestStatus, Role } from "../../../types/request";
 
-const ActionsCell = ({ request }: { request: Request }) => {
+interface ActionsCellProps {
+    request: Request;
+    onRequestUpdate: (updatedRequest: Request) => void;
+    onRequestDelete: (deletedRequestId: string) => void;
+}
+
+const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellProps) => {
     const { user } = useAuth();
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [openRejectDialog, setOpenRejectDialog] = useState(false);
@@ -20,10 +26,9 @@ const ActionsCell = ({ request }: { request: Request }) => {
 
     const requestService = new RequestsService();
     const isOwner = user.id === request.user.id;
-
     const isSupervisor = user.role === Role.ENSEIGNANT && user.id === request.user.supervisorId;
     const isDirector = user.role === Role.DIRECTEUR;
-    
+
     const canEdit = isOwner && request.status === RequestStatus.PENDING;
     const canDelete = isOwner && request.status === RequestStatus.PENDING;
 
@@ -35,13 +40,14 @@ const ActionsCell = ({ request }: { request: Request }) => {
     }
 
     const canReject = canApprove;
+    const canComplete = isDirector && request.status === RequestStatus.APPROVED;
 
-    const canComplete= isDirector && request.status === RequestStatus.APPROVED;
     const handleDelete = async () => {
         try {
             setIsSubmitting(true);
             const response = await requestService.deleteRequest(request.id);
             toast.success(response?.data?.message || "Demande supprimée avec succès");
+            onRequestDelete(request.id);
         } catch (error) {
             console.error("Delete request error:", error);
             toast.error("Une erreur est survenue lors de la suppression");
@@ -56,6 +62,14 @@ const ActionsCell = ({ request }: { request: Request }) => {
             setIsSubmitting(true);
             const response = await requestService.approveRequest(request.id);
             toast.success(response.data.message || "Demande approuvée avec succès");
+            
+            const updatedRequest = {
+                ...request,
+                status: isDirector 
+                    ? RequestStatus.APPROVED 
+                    : RequestStatus.APPROVED_BY_SUPERVISOR
+            };
+            onRequestUpdate(updatedRequest);
         } catch (error) {
             toast.error('Erreur lors de l\'approbation de la demande');
             console.error('Error approving request:', error);
@@ -74,6 +88,16 @@ const ActionsCell = ({ request }: { request: Request }) => {
             setIsSubmitting(true);
             await requestService.rejectRequest(request.id, rejectReason);
             toast.success('Demande rejetée avec succès');
+            
+            const updatedRequest = {
+                ...request,
+                status: isDirector 
+                    ? RequestStatus.REJECTED_BY_DIRECTOR 
+                    : RequestStatus.REJECTED_BY_SUPERVISOR,
+                rejectReason
+            };
+            onRequestUpdate(updatedRequest);
+            
             setOpenRejectDialog(false);
             setRejectReason('');
         } catch (error) {
@@ -89,13 +113,20 @@ const ActionsCell = ({ request }: { request: Request }) => {
             setIsSubmitting(true);
             const response = await requestService.completeRequest(request.id);
             toast.success(response.data.message || "Demande terminée avec succès");
+            
+            const updatedRequest = {
+                ...request,
+                status: RequestStatus.COMPLETED
+            };
+            onRequestUpdate(updatedRequest);
         } catch (error) {
             toast.error('Erreur lors de la terminaison de la demande');
             console.error('Error completing request:', error);
         } finally {
             setIsSubmitting(false);
         }
-    }
+    };
+
     return (
         <div className="flex items-center gap-2">
             <DropdownMenu>

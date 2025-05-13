@@ -5,7 +5,7 @@ import {
   getUnreadNumberNotifications,
   readAllNotifications,
   readNotification,
-} from "../controllers/notificationsController";
+} from "../controllers/notifications.controller";
 import { get } from "http";
 
 const router = express.Router();

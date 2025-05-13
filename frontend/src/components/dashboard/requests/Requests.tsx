@@ -5,7 +5,6 @@ import { toast } from "../../Toast";
 import { Request } from "../../../types/request";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { Input } from "../../ui/input";
-
 import { BaseDataTable } from "../BaseDataTable";
 import RequestStats from "./RequestsStats";
 import ManageRequestsService from "../../../services/manageRequests.service";
@@ -88,6 +87,24 @@ const Requests = () => {
         fetchData();
     }, []);
 
+    // Mise à jour locale d'une demande
+    const handleRequestUpdate = (updatedRequest: Request) => {
+        setRequests(prevRequests =>
+            prevRequests.map(request =>
+                request.id === updatedRequest.id ? updatedRequest : request
+            )
+        );
+        setStats(calculateStats(requests));
+    };
+
+    // Suppression locale d'une demande
+    const handleRequestDelete = (deletedRequestId: string) => {
+        setRequests(prevRequests =>
+            prevRequests.filter(request => request.id !== deletedRequestId)
+        );
+        setStats(calculateStats(requests));
+    };
+
     // Filtrer les données pour les statistiques
     const getFilteredStats = () => {
         let filteredData = requests;
@@ -110,8 +127,6 @@ const Requests = () => {
 
         return calculateStats(filteredData);
     };
-
-
 
     return (
         <div className="space-y-6">
@@ -149,7 +164,6 @@ const Requests = () => {
                         <SelectValue placeholder="Filtrer par type" />
                     </SelectTrigger>
                     <SelectContent>
-
                         <SelectItem value="INTERNSHIP">Stage</SelectItem>
                         <SelectItem value="MISSION">Mission</SelectItem>
                         <SelectItem value="CONFERENCE">Conférence</SelectItem>
@@ -163,7 +177,6 @@ const Requests = () => {
                         <SelectValue placeholder="Filtrer par statut" />
                     </SelectTrigger>
                     <SelectContent>
-
                         <SelectItem value="PENDING">En attente</SelectItem>
                         <SelectItem value="APPROVED">Approuvé</SelectItem>
                         <SelectItem value="APPROVED_BY_SUPERVISOR">Approuvé par le superviseur</SelectItem>
@@ -181,7 +194,7 @@ const Requests = () => {
 
             {/* Tableau des demandes */}
             <BaseDataTable
-                columns={columns}
+                columns={columns({ onRequestUpdate: handleRequestUpdate, onRequestDelete: handleRequestDelete })}
                 data={requests}
                 isLoading={isLoading}
                 onRefresh={fetchData}

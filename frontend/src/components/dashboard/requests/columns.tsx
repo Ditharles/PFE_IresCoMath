@@ -1,4 +1,3 @@
-
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "../../ui/badge";
 import { RequestStatus } from "../../../types/MemberAddRequest";
@@ -7,11 +6,9 @@ import { REQUEST_TYPE_LABELS, STATUS_BADGE_VARIANTS } from "../../../constants/r
 import { formatDate } from "../../../utils/utils";
 import ActionsCell from "./actions";
 
-
-
 const getRequestDetails = (request: Request): string => {
-    if ('requestStage' in request && request.requestStage?.organization) {
-        return request.requestStage.organization;
+    if ('stage' in request && request.stage?.organization) {
+        return request.stage.organization;
     }
     if ('mission' in request && request.mission?.country) {
         return request.mission.country;
@@ -31,7 +28,14 @@ const getRequestDetails = (request: Request): string => {
     }
     return "-";
 };
-export const columns: ColumnDef<Request>[] = [
+
+export const columns = ({
+    onRequestUpdate,
+    onRequestDelete
+}: {
+    onRequestUpdate: (updatedRequest: Request) => void;
+    onRequestDelete: (deletedRequestId: string) => void;
+}): ColumnDef<Request>[] => [
     {
         accessorKey: "createdAt",
         header: "Date",
@@ -70,6 +74,12 @@ export const columns: ColumnDef<Request>[] = [
     {
         id: "actions",
         header: "Actions",
-        cell: ({ row }) => <ActionsCell request={row.original} />,
+        cell: ({ row }) => (
+            <ActionsCell 
+                request={row.original} 
+                onRequestUpdate={onRequestUpdate}
+                onRequestDelete={onRequestDelete}
+            />
+        ),
     },
 ];

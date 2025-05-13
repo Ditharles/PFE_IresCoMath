@@ -2,6 +2,7 @@ import { RequestHandler, Router } from "express";
 import {
   addDocuments,
   approveRequest,
+  completeRequest,
   getAllRequests,
   getPossibleRequests,
   getRequest,
@@ -12,7 +13,7 @@ import {
   submitMissionRequest,
   submitRequestStage,
   submitScientificEventRequest,
-} from "../controllers/requestsController";
+} from "../controllers/requests.controller";
 import { checkRole } from "../middleware/checkRole";
 
 const router: Router = Router();
@@ -57,3 +58,5 @@ router.post(
 );
 
 router.post("/add-document/:id", addDocuments as RequestHandler);
+
+router.post("/complete-request/:id", completeRequest as RequestHandler);

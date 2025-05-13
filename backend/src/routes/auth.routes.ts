@@ -1,6 +1,5 @@
 import express, { RequestHandler } from "express";
 import {
-
   login,
   confirmRequest,
   submitAdditionalInfo,
@@ -16,13 +15,16 @@ import {
   registerDoctoralStudent,
   registerMasterStudent,
   registerTeacherResearcher,
-} from "../controllers/authController";
+} from "../controllers/auth.controller";
 import { verifyToken } from "../middleware/verifyToken";
 
 const router = express.Router();
 
 // Routes d'inscription
-router.post("/register/enseignant", registerTeacherResearcher as RequestHandler);
+router.post(
+  "/register/enseignant",
+  registerTeacherResearcher as RequestHandler
+);
 router.post("/register/master", registerMasterStudent as RequestHandler);
 router.post("/register/doctorant", registerDoctoralStudent as RequestHandler);
 
