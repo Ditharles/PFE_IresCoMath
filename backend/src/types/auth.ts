@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Role, Grade, RequestStatus, User } from "../../generated/prisma";
 
 export interface AuthRequest extends Request {
-  user: User;
+  user: any;
 }
 
 export interface AuthResponse extends Response {
@@ -15,38 +15,42 @@ export type AuthHandler = (
   next?: NextFunction
 ) => Promise<any>;
 
-export interface RequestEnseignant {
-  nom: string;
-  prenom: string;
+export interface TeacherResearcherRequest {
+  lastName: string;
+  firstName: string;
   email: string;
   photo: string;
-  fonction: string;
+  position: string;
   grade: Grade;
-  etablissement: string;
+  institution: string;
   status: RequestStatus;
+  cin: string;
 }
 
-export interface RequestDoctorant {
-  nom: string;
-  prenom: string;
+export interface DoctoralStudentRequest {
+  lastName: string;
+  firstName: string;
   email: string;
-  annee_these: string;
-  directeur_these?: { id: string };
-  directeur_these_id: string;
+  thesisYear: string;
+  thesisSupervisorId: string;
   status: RequestStatus;
+  cin: string;
 }
 
-export interface RequestMaster {
-  nom: string;
-  prenom: string;
+export interface MasterStudentRequest {
+  lastName: string;
+  firstName: string;
   email: string;
-  annee_master: string;
-  encadrant?: { id: string };
-  encadrant_id: string;
+  masterYear: string;
+  supervisorId: string;
   status: RequestStatus;
+  cin: string;
 }
 
-export type RequestType = RequestEnseignant | RequestDoctorant | RequestMaster;
+export type UserRequest =
+  | TeacherResearcherRequest
+  | DoctoralStudentRequest
+  | MasterStudentRequest;
 
 export interface LoginRequest {
   email: string;

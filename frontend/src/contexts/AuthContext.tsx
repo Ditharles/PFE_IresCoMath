@@ -1,12 +1,14 @@
 import { createContext, useState, ReactNode, useContext } from "react";
-import { getUser } from "../utils/tokens.utils";
+import { getUser, removesTokens, removeUser } from "../utils/tokens.utils";
 import AuthService from "../services/auth.service";
+import { AxiosResponse } from "axios";
 
 interface AuthContextType {
     user: ReturnType<typeof getUser>;
     isLoggedIn: boolean;
-    login(email: string, password: string): Promise<void>;
-    logout(): Promise<void>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    login(email: string, password: string): Promise<AxiosResponse<unknown, unknown> | undefined>;
+    logout(): Promise<AxiosResponse<unknown, unknown> | undefined>;
     loginSession(): Promise<void>;
 
 }
@@ -19,7 +21,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authService = new AuthService();
 
     const login = async (email: string, password: string) => {
-      
         const response = await authService.login(email, password);
         setUser(getUser());
         setIsLoggedIn(true);
@@ -27,14 +28,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = async () => {
-        await authService.logout();
+        const response = await authService.logout();
         setUser(null);
+        removesTokens();
+        removeUser();
         setIsLoggedIn(false);
+        return response
     };
     const loginSession = async () => {
 
         setUser(getUser());
         setIsLoggedIn(true);
+
 
     };
 

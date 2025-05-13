@@ -3,12 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Toast, toast } from "../../components/Toast";
 import AuthService from "../../services/auth.service";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 type TokenStatus = "validating" | "valid" | "invalid";
 
 const authService = new AuthService();
 const ValidationConfirme: React.FC = () => {
+const {loginSession} = useAuth();
 
   const { token } = useParams<{ token: string }>();
 
@@ -29,6 +31,7 @@ const ValidationConfirme: React.FC = () => {
         if (response.status === 200) {
           setTokenStatus("valid");
           toast.success("Votre email a été confirmé avec succès!");
+          loginSession();
 
           navigate("/informations-supplementaires");
         } else {

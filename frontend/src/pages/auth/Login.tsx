@@ -3,10 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { Toast, toast } from "../../components/Toast";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import {  useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 const LoginPage: React.FC = () => {
-  const {  login } = useAuth(); ;
+  const { login } = useAuth();;
   const authService = new AuthService();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -18,13 +18,14 @@ const LoginPage: React.FC = () => {
     setIsSubmitting(true);
     try {
       if (login) {
-        await login(email, password);
-        toast.success("Connexion réussie !");
+        const response = await login(email, password);
+        toast.success(response.data.message || "Connexion réussie !");
         setTimeout(() => {
           navigate("/accueil");
-      }, 3000);}
+        }, 3000);
+      }
     } catch (error) {
-      toast.error("Une erreur s'est produite lors de la connexion.");
+      toast.error(response.data.message || "Une erreur s'est produite lors de la connexion.");
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -68,13 +69,13 @@ const LoginPage: React.FC = () => {
               className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
               required
             />
-</div>
-{/* Lien "Mot de passe oublié ?" */}
-<div className="text-right mt-2">
-  <Link to="/password-forget" className="text-blue-500 hover:underline text-sm">
-    Mot de passe oublié ?
-  </Link>
-</div>
+          </div>
+          {/* Lien "Mot de passe oublié ?" */}
+          <div className="text-right mt-2">
+            <Link to="/password-forget" className="text-blue-500 hover:underline text-sm">
+              Mot de passe oublié ?
+            </Link>
+          </div>
           <button
             type="submit"
             disabled={isSubmitting}

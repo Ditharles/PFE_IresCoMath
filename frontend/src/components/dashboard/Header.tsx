@@ -1,5 +1,7 @@
 import { BellIcon, MoonIcon, SunIcon } from "lucide-react"
 import { getUser } from "../../utils/tokens.utils"
+import { useEffect, useState } from "react"
+import NotificationsService from "../../services/notifcations.service"
 
 interface HeaderProps {
 
@@ -17,7 +19,15 @@ interface HeaderProps {
 export const Header = ({ darkMode, setDarkMode, showUserProfile, setShowUserProfile, showNotifications, setShowNotifications, searchQuery, setSearchQuery }: HeaderProps) => {
 
     const user = getUser();
-    const unreadNotificationsCount = 2
+    const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
+    const notificationService = new NotificationsService();
+    useEffect(() => {
+        const fetchUnreadNotificationsCount = async () => {
+            const count = await notificationService.getUnreadNumberNotifications();
+            setUnreadNotificationsCount(count.data);
+        };
+        fetchUnreadNotificationsCount();
+    })
     const toggleDarkMode = () => {
         setDarkMode(!darkMode)
     }

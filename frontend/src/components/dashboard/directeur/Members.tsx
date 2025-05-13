@@ -1,10 +1,8 @@
-// MembersPage.jsx
 import { useState, useCallback, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
 import { Button } from "../../ui/button";
 import { toast } from "../../Toast";
 import { ManageUserService } from "../../../services/manageUser.service";
-
 
 import Filters from "../Filters";
 import MembersAddRequests from "./membersAddRequests/MembersAddRequests";
@@ -39,7 +37,7 @@ const Members = () => {
         members,
         searchQuery,
         filterRole,
-        undefined, 
+        undefined,
         activeTab
     );
 
@@ -62,11 +60,9 @@ const Members = () => {
                 ...membersRequestList.data.ENSEIGNANT,
             ];
             setMembersRequest(allMembersRequest);
-            console.log(allMembersRequest)
-            // Récupérer les membres
+
             const membersList = await manageUserService.getUsers();
             setMembers(membersList.data);
-            console.log(members)
         } catch (error) {
             console.error("Error fetching data:", error);
             toast.error("Erreur lors de la récupération des données");
@@ -77,7 +73,7 @@ const Members = () => {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+    }, []);
 
     // Exporter les données en CSV
     const handleExportToCSV = (type: string = "members") => {
@@ -131,7 +127,6 @@ const Members = () => {
                 <MembersList
                     members={filteredMembers}
                     isLoading={isLoading}
-
                     onRefresh={fetchData}
                     exportToCSV={handleExportToCSV}
                 />

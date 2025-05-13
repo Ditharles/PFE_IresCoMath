@@ -1,4 +1,3 @@
-// MembersList.jsx
 import { useMemo } from "react";
 import { FileDown, UserPlus } from "lucide-react";
 import {
@@ -16,6 +15,7 @@ import { BaseDataTable } from "../../BaseDataTable";
 import { columns as membersColumns } from "./columns"
 import { RoleEnum } from "../../../../types/common";
 import { User } from "../../../../types/Member";
+
 const MembersList = ({
     members,
     isLoading,
@@ -29,10 +29,10 @@ const MembersList = ({
 }) => {
     // Calcul des statistiques des rôles pour les membres
     const memberRoleCounts = useMemo(() => {
-        const determineRole = (user:User) => {
-            if ("annee_these" in user) return RoleEnum.DOCTORANT;
-            if ("annee_master" in user) return RoleEnum.MASTER;
-            if ("fonction" in user) return RoleEnum.ENSEIGNANT;
+        const determineRole = (user: User) => {
+            if ("thesisYear" in user) return RoleEnum.DOCTORANT;
+            if ("masterYear" in user) return RoleEnum.MASTER;
+            if ("position" in user) return RoleEnum.ENSEIGNANT;
             return RoleEnum.ADMIN;
         };
 

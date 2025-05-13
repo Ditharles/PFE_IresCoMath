@@ -2,22 +2,23 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from 'react-router-dom';
 import AuthService from "../../services/auth.service";
 import RoleSelector from "../../components/form/RoleSelector";
-import FormDoctorant from "../../components/form/FormDoctorant";
-import FormEtudiant from "../../components/form/FormEtudiant";
-import FormEnseignant from "../../components/form/FormEnseignant";
+
 import type { BaseSpecificFields, CommonFields, Role } from "../../types/common";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { Toast, toast } from "../../components/Toast";
 import FileUpload from "../../components/FileUpload";
 import InputField from "../../components/form/InputField";
 import SubmitButtons from "../../components/form/SubmitButtons";
+import DoctorantStudent from "../../components/form/DoctorantStudent";
+import MasterStudent from "../../components/form/MasterStudent";
+import TeacherResearcher from "../../components/form/TeacherResearcher";
 
 const Inscription: React.FC = () => {
   const [role, setRole] = useState<Role | null>(null);
-  const [commonFields, setCommonFields] = useState({
-    nom: "",
-    prenom: "",
-    telephone: "",
+  const [commonFields, setCommonFields] = useState<CommonFields>({
+    lastName: "",
+    firstName: "",
+    phone: "",
     email: "",
     cin: ""
   });
@@ -50,16 +51,15 @@ const Inscription: React.FC = () => {
   const handleProfilePhotoUpdate = useCallback((photoLink: string) => {
     setSpecificFields((prev) => ({
       ...prev,
-      photo: photoLink
+      photo: photoLink[0],
     }));
-
   }, []);
 
   const resetForm = useCallback(() => {
     setCommonFields({
-      nom: "",
-      prenom: "",
-      telephone: "",
+      lastName: "",
+      firstName: "",
+      phone: "",
       email: "",
       cin: "",
     });
@@ -78,10 +78,13 @@ const Inscription: React.FC = () => {
       return;
     }
 
-    const photo = specificFields.photo ? specificFields.photo[0] || "" : "";
-    const requestData = { ...commonFields, role, ...specificFields, photo };
+    const requestData = {
+      ...commonFields,
+      role,
+      ...specificFields,
 
-    console.log(requestData);
+    };
+
     try {
       const response = await authService.register(requestData, role);
       setStatus("success");
@@ -124,21 +127,21 @@ const Inscription: React.FC = () => {
   );
 };
 
-const CommonFieldsInputs: React.FC<{ commonFields: CommonFields, handleChangeCommon: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ commonFields, handleChangeCommon }) => (
-  <>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <InputField label="Nom" id="nom" value={commonFields.nom} onChange={handleChangeCommon} />
-      <InputField label="Prénom" id="prenom" value={commonFields.prenom} onChange={handleChangeCommon} />
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <InputField label="Téléphone" id="telephone" value={commonFields.telephone} onChange={handleChangeCommon} />
-      <InputField label="Email" id="email" type="email" value={commonFields.email} onChange={handleChangeCommon} />
-    </div>
-    <InputField label="CIN" id="cin" value={commonFields.cin} onChange={handleChangeCommon} />
-  </>
-);
-
-
+const CommonFieldsInputs: React.FC<{ commonFields: CommonFields, handleChangeCommon: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ commonFields, handleChangeCommon }) => {
+  return (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InputField label="Nom" id="lastName" type="text" value={commonFields.lastName} onChange={handleChangeCommon} />
+        <InputField label="Prénom" id="firstName" type="text" value={commonFields.firstName} onChange={handleChangeCommon} />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InputField label="Téléphone" id="phone" type="text" value={commonFields.phone} onChange={handleChangeCommon} />
+        <InputField label="Email" id="email" type="email" value={commonFields.email} onChange={handleChangeCommon} />
+      </div>
+      <InputField label="CIN" id="cin" value={commonFields.cin} onChange={handleChangeCommon} type="text" />
+    </>
+  );
+};
 
 const RoleSelection = ({ role, setRole }) => (
   <div className="py-4">
@@ -150,9 +153,9 @@ const RoleSelection = ({ role, setRole }) => (
 const AdditionalInfo = ({ role, specificFields, setSpecificFields }) => (
   <div className="border-t pt-6">
     <h2 className="text-lg font-semibold mb-4 text-gray-700">Informations supplémentaires</h2>
-    {role === "DOCTORANT" && <FormDoctorant data={specificFields} onChange={setSpecificFields} />}
-    {role === "MASTER" && <FormEtudiant data={specificFields} onChange={setSpecificFields} />}
-    {role === "ENSEIGNANT" && <FormEnseignant data={specificFields} onChange={setSpecificFields} />}
+    {role === "DOCTORANT" && <DoctorantStudent data={specificFields} onChange={setSpecificFields} />}
+    {role === "MASTER" && <MasterStudent data={specificFields} onChange={setSpecificFields} />}
+    {role === "ENSEIGNANT" && <TeacherResearcher data={specificFields} onChange={setSpecificFields} />}
   </div>
 );
 
@@ -171,9 +174,7 @@ const ProfilePhotoUpload = ({ specificFields, handleProfilePhotoUpdate }) => (
         {specificFields.photo.length} photo(s) téléchargée(s) avec succès
       </div>
     )}
-
   </div>
 );
-
 
 export default Inscription;
