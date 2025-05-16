@@ -14,7 +14,6 @@ async function main() {
       data: {
         email: "admin@irescomath.com",
         password: adminPassword,
-        
         role: Role.ADMIN,
         cin: "ADMIN12345",
         admin: {
@@ -52,23 +51,6 @@ async function main() {
       include: {
         teacherResearcher: true,
       },
-    });
-    const enseignantChercheur = await prisma.user.create({
-      data: {
-        email: "testa@gmail.com",
-        password: await bcrypt.hash("testa123", 10),
-        role: Role.ENSEIGNANT,
-        enseignant: {
-          create: {
-            nom: "Testa",
-            prenom: "Test",
-            fonction: "Enseignant-chercheur",
-            grade: Grade.Professeur,
-            etablissement: "Université IreSCoMath",
-          },
-        },
-         }
-
     });
 
     const enseignantChercheurPassword = await bcrypt.hash("enseignant123", 10);

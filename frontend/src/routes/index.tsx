@@ -20,6 +20,7 @@ import NewRequest from "../pages/NewRequest";
 import NewRequests from "../pages/NewRequests";
 import Historique from "../pages/Historique";
 import RequestDetails from "../pages/RequestsDetails";
+import Profile from "../pages/Profile";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -84,7 +85,8 @@ const routes: RouteObject[] = [
             {
                 path: "demande/:id",
                 element: <RequestDetails />
-            }
+            },
+            { path: "profile", element: <Profile /> },
 
         ]
     },
