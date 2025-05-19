@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AuthService from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
-import { Toast, toast } from "../../components/Toast";
+import {toast } from "sonner";
 
 const authService = new AuthService();
 
@@ -27,8 +27,7 @@ const PasswordForget = () => {
       <div className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Mot de passe oublié</h2>
 
-        <Toast />
-
+      
         <form onSubmit={handleSubmit} className="flex flex-col">
           <input
             type="email"

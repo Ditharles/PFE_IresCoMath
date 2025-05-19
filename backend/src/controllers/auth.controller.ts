@@ -102,7 +102,6 @@ const registerUser = async (
 
 // Exported functions
 export const registerTeacherResearcher: AuthHandler = async (req, res) => {
-  
   const requiredFields = [
     "lastName",
     "firstName",
@@ -129,7 +128,6 @@ export const registerTeacherResearcher: AuthHandler = async (req, res) => {
 };
 
 export const registerMasterStudent: AuthHandler = async (req, res) => {
-  
   const requiredFields = [
     "lastName",
     "firstName",
@@ -138,7 +136,7 @@ export const registerMasterStudent: AuthHandler = async (req, res) => {
     "masterYear",
     "supervisorId",
   ];
-  
+
   if (!validateRequestBody(req.body, requiredFields)) {
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
@@ -153,7 +151,6 @@ export const registerMasterStudent: AuthHandler = async (req, res) => {
 };
 
 export const registerDoctoralStudent: AuthHandler = async (req, res) => {
-  
   const requiredFields = [
     "lastName",
     "firstName",
@@ -180,7 +177,7 @@ export const registerDoctoralStudent: AuthHandler = async (req, res) => {
 
 export const login: AuthHandler = async (req, res) => {
   const { email, password } = req.body;
-  
+
   try {
     const user = await prisma.user.findUnique({
       where: { email },
@@ -655,41 +652,55 @@ export const resetPassword: AuthHandler = async (req, res) => {
 
 export const refreshToken: AuthHandler = async (req, res) => {
   try {
-    const accessToken = Array.isArray(req.headers.accessToken)
-      ? req.headers.accessToken[0]
-      : (req.headers.accessToken as string) || "";
+    const refreshTokenValue =
+      (req.headers.refreshToken as string)?.trim() || "";
+    const authHeader = req.headers.authorization;
 
-    const refreshTokenValue = Array.isArray(req.headers.refreshToken)
-      ? req.headers.refreshToken[0]
-      : (req.headers.refreshToken as string) || "";
-
-    if (!accessToken || !refreshTokenValue) {
+    if (!refreshTokenValue) {
+      return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
+    }
+    if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
     }
 
+    const accessTokenValue = authHeader.split(" ")[1]?.trim() || "";
+
     try {
-      const decoded = jwt.verify(refreshTokenValue, JWT_REFRESH_SECRET_KEY) as {
-        token: string;
-      };
+      const decodedRefresh = jwt.verify(
+        refreshTokenValue,
+        JWT_REFRESH_SECRET_KEY
+      ) as { token: string };
+
       const session = await prisma.session.findUnique({
-        where: { refreshToken: decoded.token },
+        where: { refreshToken: decodedRefresh.token },
       });
       if (!session) {
         return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
       }
-      if (session?.accessToken !== accessToken) {
+
+      const decodedAccess = jwt.decode(accessTokenValue) as {
+        token?: string;
+      } | null;
+      if (!decodedAccess?.token) {
         return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
       }
-      const newAccessTokenValue = generateRandomToken(64);
-      const refreshToken = session.refreshToken;
-      if (!refreshToken) {
-        throw new Error("Token de rafraîchissement manquant");
+
+      if (decodedAccess.token !== session.accessToken) {
+        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
       }
+
+      const newAccessTokenValue = generateRandomToken(64);
       const { accessToken: newAccessToken } = generateTokens(
         newAccessTokenValue,
-        refreshToken
+        session.refreshToken
       );
-      res.status(200).json({ accessToken: newAccessToken });
+
+      await prisma.session.update({
+        where: { id: session.id },
+        data: { accessToken: newAccessToken },
+      });
+
+      return res.status(200).json({ accessToken: newAccessToken });
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
@@ -700,11 +711,10 @@ export const refreshToken: AuthHandler = async (req, res) => {
       throw error;
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+    console.error("Refresh token error:", error);
+    return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
-
 export const getUser: AuthHandler = async (req, res) => {
   const id = req.user.userId;
   console.log(id);

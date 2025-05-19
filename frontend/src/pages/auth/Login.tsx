@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
-import { Toast, toast } from "../../components/Toast";
+import {toast } from "sonner";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-purple-100 flex items-center justify-center">
-      <Toast />
+     
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md relative">
         {isSubmitting && (
           <LoadingOverlay

@@ -7,7 +7,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../
 import FileUpload from '../../FileUpload';
 import { Button } from '../../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
-import { EquipmentType, EquipmentTypeList } from '../../../types/request';
+import { EquipmentType, EquipmentTypeList } from '../../../types/equipment';
 import Specifications from './Specifications';
 
 interface EquipmentItemState {

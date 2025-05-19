@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthService from "../../services/auth.service";
-import { Toast, toast } from "../../components/Toast";
+import { toast } from "sonner";
 
 
 const authService = new AuthService();
@@ -33,7 +33,7 @@ const PasswordReset = () => {
       <div className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Réinitialiser le mot de passe</h2>
 
-        <Toast />
+
         <form onSubmit={handleSubmit} className="flex flex-col">
           <input
             type="password"

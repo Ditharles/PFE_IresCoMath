@@ -3,6 +3,8 @@ import {
   addDocuments,
   approveRequest,
   completeRequest,
+  deleteRequest,
+  editRequest,
   getAllRequests,
   getPossibleRequests,
   getRequest,
@@ -60,3 +62,8 @@ router.post(
 router.post("/add-document/:id", addDocuments as RequestHandler);
 
 router.post("/complete-request/:id", completeRequest as RequestHandler);
+
+
+router.post("/edit-request/:id", editRequest as RequestHandler);
+
+router.delete("/delete-request/:id", deleteRequest as RequestHandler);

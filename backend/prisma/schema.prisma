@@ -187,7 +187,9 @@ model EquipmentCategory {
   id        String     @id @default(uuid())
   type      EquipmentType
   name      String
+  description String?
   quantity  Int
+  photo String[]
   equipments Equipment[]
   equipmentLoanRequests EquipmentLoanRequest[]
 }
@@ -199,8 +201,9 @@ model Equipment {
   categoryId     String
   specifications Json
   acquisitionDate DateTime
+photo String []
   history        EquipmentHistory[]
-
+status EquipmentStatus @default(AVAILABLE)
   EquipmentLoanRequest EquipmentLoanRequest[]
 }
 
@@ -319,6 +322,12 @@ enum EquipmentType {
   TOOLS
 }
 
+enum EquipmentStatus {
+   AVAILABLE
+  LOANED
+  PENDING_DELIVERY 
+  OWNER_POSSESSION 
+}
 enum RequestType {
   MISSION
   INTERNSHIP

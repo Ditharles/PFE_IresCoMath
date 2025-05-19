@@ -1,30 +1,33 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-    Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
-} from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
+
 import {
     FileText, ArrowLeft, Calendar
 } from "lucide-react";
-import { formatDate } from "../utils/utils";
-import { toast } from "../components/Toast";
-import LoadingOverlay from "../components/LoadingOverlay";
-import RequestsService from "../services/requests.service";
-import { RequestStatus, RequestType, Role } from "../types/request";
-import RequestActions from "../components/dashboard/requests/request/RequestActions";
-import { REQUEST_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_TRANSLATIONS } from "../constants/requests";
-import { useAuth } from "../contexts/AuthContext";
-import { DetailItem } from "../components/dashboard/requests/request/DetailItem";
-import { DetailSection } from "../components/dashboard/requests/request/DetailSection";
-import { NotFoundComponent } from "../components/dashboard/requests/request/NotFoundComponent";
-import { FileListViewer } from "../components/dashboard/requests/request/FileListViewer";
-import { MissionDetails } from "../components/dashboard/requests/request/details/MissionDetails";
-import { InternshipDetails } from "../components/dashboard/requests/request/details/InternshipDetails";
-import EquipmentPurchaseDetails from "../components/dashboard/requests/request/details/EquipmentPurchaseDetails";
-import EquipmentLoanDetails from "../components/dashboard/requests/request/details/EquipmentLoanDetails";
-import { ArticleRegistrationDetails } from "../components/dashboard/requests/request/details/ArticleRegistrationDetails";
+
+import { DetailItem } from "../../components/dashboard/requests/request/DetailItem";
+import { ArticleRegistrationDetails } from "../../components/dashboard/requests/request/details/ArticleRegistrationDetails";
+import EquipmentLoanDetails from "../../components/dashboard/requests/request/details/EquipmentLoanDetails";
+import EquipmentPurchaseDetails from "../../components/dashboard/requests/request/details/EquipmentPurchaseDetails";
+import { InternshipDetails } from "../../components/dashboard/requests/request/details/InternshipDetails";
+import { MissionDetails } from "../../components/dashboard/requests/request/details/MissionDetails";
+import { DetailSection } from "../../components/dashboard/requests/request/DetailSection";
+import { FileListViewer } from "../../components/dashboard/requests/request/FileListViewer";
+import { NotFoundComponent } from "../../components/dashboard/requests/request/NotFoundComponent";
+import RequestActions from "../../components/dashboard/requests/request/RequestActions";
+import LoadingOverlay from "../../components/LoadingOverlay";
+import { REQUEST_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_TRANSLATIONS } from "../../constants/requests";
+import { useAuth } from "../../contexts/AuthContext";
+import RequestsService from "../../services/requests.service";
+import { RequestStatus } from "../../types/MemberAddRequest";
+import { RequestType, Role } from "../../types/request";
+import { formatDate } from "../../utils/utils";
+
+import { Button } from "../../components/ui/button";
+import { toast } from "sonner";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+
 
 const RequestDetails = () => {
     const { user } = useAuth();

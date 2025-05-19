@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FileDown, RefreshCw } from "lucide-react";
 import { Button } from "../../ui/button";
-import { toast } from "../../Toast";
+import { toast } from "sonner";
 import { Request } from "../../../types/request";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { Input } from "../../ui/input";
@@ -14,126 +14,156 @@ import { exportDataToCSV } from "../../../utils/membersUtils";
 import { useAuth } from "../../../contexts/AuthContext";
 import RequestsService from "../../../services/requests.service";
 
-const Requests = () => {
+interface RequestsProps {
+    filterStatuses?: RequestStatus[];
+}
+
+interface RequestStatsData {
+    byType: Record<string, number>;
+    byStatus: Record<RequestStatus, number>;
+    total: number;
+}
+
+const DEFAULT_STATS: RequestStatsData = {
+    byType: {},
+    byStatus: {
+        [RequestStatus.PENDING]: 0,
+        [RequestStatus.APPROVED]: 0,
+        [RequestStatus.APPROVED_BY_SUPERVISOR]: 0,
+        [RequestStatus.APPROVED_BY_DIRECTOR]: 0,
+        [RequestStatus.REJECTED]: 0,
+        [RequestStatus.REJECTED_BY_SUPERVISOR]: 0,
+        [RequestStatus.REJECTED_BY_DIRECTOR]: 0,
+        [RequestStatus.COMPLETED]: 0
+    },
+    total: 0
+};
+
+const Requests: React.FC<RequestsProps> = ({ filterStatuses }) => {
     const { user } = useAuth();
     const [requests, setRequests] = useState<Request[]>([]);
+    const [filteredRequests, setFilteredRequests] = useState<Request[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [stats, setStats] = useState({
-        byType: {},
-        byStatus: {},
-        total: 0
-    });
+    const [stats, setStats] = useState<RequestStatsData>(DEFAULT_STATS);
 
     // Filtres
     const [globalFilter, setGlobalFilter] = useState("");
     const [typeFilter, setTypeFilter] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
 
-    const manageRequestService = new ManageRequestsService();
-    const requestsService = new RequestsService();
+    const manageRequestService = useMemo(() => new ManageRequestsService(), []);
+    const requestsService = useMemo(() => new RequestsService(), []);
 
-    // Calculer les statistiques
-    const calculateStats = (data: Request[]) => {
-        const stats: {
-            byType: { [key: string]: number };
-            byStatus: { [key in RequestStatus]: number };
-            total: number;
-        } = {
+    const calculateStats = useCallback((data: Request[]): RequestStatsData => {
+        const newStats: RequestStatsData = {
             byType: {},
-            byStatus: {
-                [RequestStatus.PENDING]: 0,
-                [RequestStatus.APPROVED]: 0,
-                [RequestStatus.APPROVED_BY_SUPERVISOR]: 0,
-                [RequestStatus.APPROVED_BY_DIRECTOR]: 0,
-                [RequestStatus.REJECTED]: 0,
-                [RequestStatus.REJECTED_BY_SUPERVISOR]: 0,
-                [RequestStatus.REJECTED_BY_DIRECTOR]: 0,
-                [RequestStatus.COMPLETED]: 0
-            },
+            byStatus: { ...DEFAULT_STATS.byStatus },
             total: data.length
         };
 
         data.forEach(request => {
-            stats.byType[request.type] = (stats.byType[request.type] || 0) + 1;
-            stats.byStatus[request.status] = (stats.byStatus[request.status] || 0) + 1;
+            newStats.byType[request.type] = (newStats.byType[request.type] || 0) + 1;
+            newStats.byStatus[request.status] += 1;
         });
 
-        return stats;
-    };
+        if (filterStatuses) {
+            const filteredByStatus: Partial<Record<RequestStatus, number>> = {};
+            filterStatuses.forEach(status => {
+                if (newStats.byStatus[status] !== undefined) {
+                    filteredByStatus[status] = newStats.byStatus[status];
+                }
+            });
+            return {
+                ...newStats,
+                byStatus: filteredByStatus as Record<RequestStatus, number>
+            };
+        }
 
-    // Charger les données
-    const fetchData = async () => {
+        return newStats;
+    }, [filterStatuses]);
+
+    const applyFilters = useCallback(() => {
+        let filtered = [...requests];
+
+        if (globalFilter) {
+            const searchTerm = globalFilter.toLowerCase();
+            filtered = filtered.filter(request =>
+                request.user.firstName.toLowerCase().includes(searchTerm) ||
+                request.user.lastName.toLowerCase().includes(searchTerm) ||
+                request.user.email.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        if (typeFilter) {
+            filtered = filtered.filter(request => request.type === typeFilter);
+        }
+
+        if (statusFilter) {
+            filtered = filtered.filter(request => request.status === statusFilter);
+        }
+
+        setFilteredRequests(filtered);
+        setStats(calculateStats(filtered));
+    }, [requests, globalFilter, typeFilter, statusFilter, calculateStats]);
+
+    useEffect(() => {
+        applyFilters();
+    }, [applyFilters]);
+
+    const fetchData = useCallback(async () => {
         setIsLoading(true);
         try {
-            if (user.role === "DIRECTEUR") {
-                const response = await manageRequestService.getAllRequests();
-                setRequests(response.data);
-                setStats(calculateStats(response.data));
-            }
-            else {
-                const response = await requestsService.getRequests();
-                setRequests(response.data);
-                setStats(calculateStats(response.data));
-            }
+            const response = user.role === "DIRECTEUR"
+                ? await manageRequestService.getAllRequests()
+                : await requestsService.getRequests();
+
+            const initialFilteredRequests = filterStatuses
+                ? response.data.filter((request: { status: RequestStatus; }) => filterStatuses.includes(request.status))
+                : response.data;
+
+            setRequests(initialFilteredRequests);
+            setFilteredRequests(initialFilteredRequests);
+            setStats(calculateStats(initialFilteredRequests));
         } catch (error) {
             console.error("Error fetching requests:", error);
             toast.error("Erreur lors de la récupération des demandes");
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [user.role, filterStatuses, manageRequestService, requestsService, calculateStats]);
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
-    // Mise à jour locale d'une demande
     const handleRequestUpdate = (updatedRequest: Request) => {
-        setRequests(prevRequests =>
-            prevRequests.map(request =>
-                request.id === updatedRequest.id ? updatedRequest : request
-            )
-        );
-        setStats(calculateStats(requests));
+        fetchData();
     };
 
-    // Suppression locale d'une demande
-    const handleRequestDelete = (deletedRequestId: string) => {
-        setRequests(prevRequests =>
-            prevRequests.filter(request => request.id !== deletedRequestId)
-        );
-        setStats(calculateStats(requests));
-    };
+    const handleRequestDelete = useCallback((deletedRequestId: string) => {
+        setRequests(prevRequests => {
+            const updatedRequests = prevRequests.filter(request => request.id !== deletedRequestId);
+            setFilteredRequests(updatedRequests);
+            setStats(calculateStats(updatedRequests));
+            return updatedRequests;
+        });
+    }, [calculateStats]);
 
-    // Filtrer les données pour les statistiques
-    const getFilteredStats = () => {
-        let filteredData = requests;
-
-        if (globalFilter) {
-            filteredData = filteredData.filter(request =>
-                request.user.firstName.toLowerCase().includes(globalFilter.toLowerCase()) ||
-                request.user.lastName.toLowerCase().includes(globalFilter.toLowerCase()) ||
-                request.user.email.toLowerCase().includes(globalFilter.toLowerCase())
-            );
-        }
-
-        if (typeFilter) {
-            filteredData = filteredData.filter(request => request.type === typeFilter);
-        }
-
-        if (statusFilter) {
-            filteredData = filteredData.filter(request => request.status === statusFilter);
-        }
-
-        return calculateStats(filteredData);
-    };
+    const handleExport = useCallback(() => {
+        exportDataToCSV(filteredRequests, "demandes");
+    }, [filteredRequests]);
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Gestion des demandes</h1>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => exportDataToCSV(requests, "demandes")}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleExport}
+                        disabled={isLoading}
+                    >
                         <FileDown className="h-4 w-4 mr-2" />
                         Exporter
                     </Button>
@@ -149,7 +179,6 @@ const Requests = () => {
                 </div>
             </div>
 
-            {/* Filtres supplémentaires */}
             <div className="flex flex-wrap gap-4">
                 <div className="w-full md:w-auto">
                     <Input
@@ -177,25 +206,53 @@ const Requests = () => {
                         <SelectValue placeholder="Filtrer par statut" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="PENDING">En attente</SelectItem>
-                        <SelectItem value="APPROVED">Approuvé</SelectItem>
-                        <SelectItem value="APPROVED_BY_SUPERVISOR">Approuvé par le superviseur</SelectItem>
-                        <SelectItem value="APPROVED_BY_DIRECTOR">Approuvé par le directeur</SelectItem>
-                        <SelectItem value="REJECTED">Rejeté</SelectItem>
-                        <SelectItem value="REJECTED_BY_SUPERVISOR">Rejeté par le superviseur</SelectItem>
-                        <SelectItem value="REJECTED_BY_DIRECTOR">Rejeté par le directeur</SelectItem>
-                        <SelectItem value="COMPLETED">Complété</SelectItem>
+                        {!filterStatuses && (
+                            <>
+                                <SelectItem value="PENDING">En attente</SelectItem>
+                                <SelectItem value="APPROVED">Approuvé</SelectItem>
+                                <SelectItem value="APPROVED_BY_SUPERVISOR">Approuvé par le superviseur</SelectItem>
+                                <SelectItem value="APPROVED_BY_DIRECTOR">Approuvé par le directeur</SelectItem>
+                                <SelectItem value="REJECTED">Rejeté</SelectItem>
+                                <SelectItem value="REJECTED_BY_SUPERVISOR">Rejeté par le superviseur</SelectItem>
+                                <SelectItem value="REJECTED_BY_DIRECTOR">Rejeté par le directeur</SelectItem>
+                                <SelectItem value="COMPLETED">Complété</SelectItem>
+                            </>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.PENDING) && (
+                            <SelectItem value="PENDING">En attente</SelectItem>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.APPROVED) && (
+                            <SelectItem value="APPROVED">Approuvé</SelectItem>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.APPROVED_BY_SUPERVISOR) && (
+                            <SelectItem value="APPROVED_BY_SUPERVISOR">Approuvé par le superviseur</SelectItem>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.APPROVED_BY_DIRECTOR) && (
+                            <SelectItem value="APPROVED_BY_DIRECTOR">Approuvé par le directeur</SelectItem>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.REJECTED) && (
+                            <SelectItem value="REJECTED">Rejeté</SelectItem>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.REJECTED_BY_SUPERVISOR) && (
+                            <SelectItem value="REJECTED_BY_SUPERVISOR">Rejeté par le superviseur</SelectItem>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.REJECTED_BY_DIRECTOR) && (
+                            <SelectItem value="REJECTED_BY_DIRECTOR">Rejeté par le directeur</SelectItem>
+                        )}
+                        {filterStatuses?.includes(RequestStatus.COMPLETED) && (
+                            <SelectItem value="COMPLETED">Complété</SelectItem>
+                        )}
                     </SelectContent>
                 </Select>
             </div>
 
             {/* Statistiques */}
-            <RequestStats stats={getFilteredStats()} />
+            <RequestStats stats={stats} filterStatuses={filterStatuses} />
 
             {/* Tableau des demandes */}
             <BaseDataTable
                 columns={columns({ onRequestUpdate: handleRequestUpdate, onRequestDelete: handleRequestDelete })}
-                data={requests}
+                data={filteredRequests}
                 isLoading={isLoading}
                 onRefresh={fetchData}
             />
@@ -203,4 +260,4 @@ const Requests = () => {
     );
 };
 
-export default Requests;
+export default React.memo(Requests);

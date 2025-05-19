@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CheckCircle, AlertCircle, Mail, Loader2 } from "lucide-react";
-import { Toast, toast } from "../../components/Toast";
+import { toast } from "sonner";
 import AuthService from "../../services/auth.service";
 
 type TokenStatus = "validating" | "valid" | "invalid" | "expired";
@@ -79,7 +79,7 @@ export default function ConfirmationEmail() {
       toast.success("Un nouveau lien de confirmation a été envoyé à votre adresse email.");
     } catch (error) {
       console.error("Error requesting new confirmation email:", error);
-      toast.error(response);
+      toast.error(error.response.data.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -197,7 +197,7 @@ export default function ConfirmationEmail() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-      <Toast />
+
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">{renderContent()}</div>
     </div>
   );

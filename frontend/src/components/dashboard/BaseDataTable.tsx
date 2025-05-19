@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     useReactTable,
     ColumnFiltersState,
@@ -25,6 +25,10 @@ interface BaseDataTableProps<TData> {
     isLoading?: boolean;
 }
 
+interface CustomColumnMeta {
+    filterVariant?: string;
+    filterSelectOptions: Array<{ value: string; label: string }>;
+}
 export function BaseDataTable<TData>({
     columns,
     data,
@@ -153,14 +157,35 @@ export function BaseDataTable<TData>({
                                     </div>
                                     {showFilters && header.column.getCanFilter() && (
                                         <div className="mt-2">
-                                            <Input
-                                                className="h-8 text-sm"
-                                                placeholder={`Filtrer ${String(header.column.columnDef.header || '')}...`}
-                                                value={(header.column.getFilterValue() as string) ?? ""}
-                                                onChange={(event) => header.column.setFilterValue(event.target.value)}
-                                            />
+                                            {(header.column.columnDef.meta as CustomColumnMeta)?.filterVariant === "select" &&
+                                                Array.isArray((header.column.columnDef.meta as CustomColumnMeta)?.filterSelectOptions) ? (
+                                                <Select
+                                                    value={(header.column.getFilterValue() as string) ?? ""}
+                                                    onValueChange={(value) => header.column.setFilterValue(value)}
+                                                >
+                                                    <SelectTrigger className="h-8 text-sm">
+                                                        <SelectValue placeholder={`Filtrer ${String(header.column.columnDef.header || '')}`} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+
+                                                        {(header.column.columnDef.meta as CustomColumnMeta).filterSelectOptions.map((option: { value: string; label: string }) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            ) : (
+                                                <Input
+                                                    className="h-8 text-sm"
+                                                    placeholder={`Filtrer ${String(header.column.columnDef.header || '')}...`}
+                                                    value={(header.column.getFilterValue() as string) ?? ""}
+                                                    onChange={(event) => header.column.setFilterValue(event.target.value)}
+                                                />
+                                            )}
                                         </div>
                                     )}
+
                                 </TableHead>
                             ))}
                         </TableRow>

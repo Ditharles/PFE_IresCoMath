@@ -18,7 +18,6 @@ const publicRoutes = [
   "/auth/confirm-request",
   "/auth/resend-confirmation-email",
   "/auth/forgot-password",
-
 ];
 
 // Ajout du token d'accès au header de la requête si nécessaire
@@ -41,9 +40,9 @@ api.interceptors.request.use(
 // Les erreurs d'authentification
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response && error.response.status === 401) {
-      refreshToken();
+      await refreshToken();
     }
     return Promise.reject(error);
   }
@@ -51,9 +50,19 @@ api.interceptors.response.use(
 
 async function refreshToken() {
   try {
+    console.log("esaaie lors de la tentaitf de raffraichissement")
     const refreshToken = getToken("refreshToken");
+    
     if (!refreshToken) throw new Error("Refresh token not found");
-    const response = await api.post("/auth/refresh-token", { refreshToken });
+    const response = await api.post(
+      "/auth/refresh-token",
+      {},
+      {
+        headers: {
+          refreshToken: refreshToken || "",
+        },
+      }
+    );
     const { accessToken } = response.data;
     setToken("accessToken", accessToken);
     return accessToken;

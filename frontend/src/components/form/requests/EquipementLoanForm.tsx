@@ -1,11 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { Calendar, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Input } from '../../ui/input';
 import { Textarea } from '../../ui/textarea';
-import { EquipmentType, EquipmentTypeList } from '../../../types/request';
+
 import EquipmentService from '../../../services/equipment.service';
+import { EquipmentType, EquipmentTypeList } from '../../../types/equipment';
+
+import { DatePicker } from '../DatePicker';
 
 
 interface EquipmentCategory {
@@ -133,46 +136,22 @@ const EquipmentLoanForm: React.FC = () => {
     }
   }, [maxQuantity, setValue, trigger, errors.quantity]);
 
-  // Effet pour charger les catégories au chargement du composant
   React.useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-  // Effet pour gérer les changements de catégorie
+
   React.useEffect(() => {
     if (selectedCategoryId) {
       handleCategoryChange(selectedCategoryId);
     }
   }, [selectedCategoryId, handleCategoryChange]);
 
-  // Fonction utilitaire pour les classes CSS
   const getFieldClass = useCallback((fieldName: string) => {
     return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
   }, [errors]);
 
-  // Création d'un composant pour les champs de date pour éviter la duplication
-  const DateField = useCallback(({ name, label }: { name: string, label: string }) => (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <div className="relative">
-              <Input
-                type="date"
-                {...field}
-                className={getFieldClass(name)}
-              />
-              <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  ), [control, getFieldClass]);
+
 
   return (
     <div className="space-y-4">
@@ -302,10 +281,37 @@ const EquipmentLoanForm: React.FC = () => {
         )}
       />
 
-      {/* Date fields - using our reusable component */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <DateField name="startDate" label="Date de début" />
-        <DateField name="endDate" label="Date de fin" />
+        <FormField
+          control={control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de début</FormLabel>
+              <FormControl>
+
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="endDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de dfin</FormLabel>
+              <FormControl>
+
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
       </div>
 
       {/* Notes */}

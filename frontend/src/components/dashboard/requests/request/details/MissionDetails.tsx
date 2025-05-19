@@ -8,7 +8,7 @@ import { FileListViewer } from "../FileListViewer";
 import FileUpload from "../../../../FileUpload";
 import { Button } from "../../../../ui/button";
 import RequestsService from "../../../../../services/requests.service";
-import { toast } from "../../../../Toast";
+import { toast } from "sonner";
 
 export const MissionDetails = ({
     fetchData,

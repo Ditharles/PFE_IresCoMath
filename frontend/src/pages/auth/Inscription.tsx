@@ -5,7 +5,7 @@ import RoleSelector from "../../components/form/RoleSelector";
 
 import type { BaseSpecificFields, CommonFields, Role } from "../../types/common";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import { Toast, toast } from "../../components/Toast";
+import { toast } from "sonner";
 import FileUpload from "../../components/FileUpload";
 import InputField from "../../components/form/InputField";
 import SubmitButtons from "../../components/form/SubmitButtons";
@@ -100,7 +100,7 @@ const Inscription: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 relative">
-      <Toast />
+    
       {loading && <LoadingOverlay loadingText="Traitement en cours..." />}
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8 relative">
         <h1 className="text-3xl font-bold mb-8 text-center text-gray-900">Inscription</h1>

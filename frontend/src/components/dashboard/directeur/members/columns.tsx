@@ -8,7 +8,11 @@ import { MoreHorizontal } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../../../ui/dialog";
 import { Input } from "../../../ui/input";
 import { ManageUserService } from "../../../../services/manageUser.service";
-import { toast } from "../../../Toast";
+import { toast } from "sonner";
+
+import { ROLE_TRANSLATIONS } from "../../../../constants/members";
+
+import { Role } from "../../../../types/request";
 
 const manageUserService = new ManageUserService();
 const deleteUser = async (id: string, password: string) => {
@@ -40,16 +44,22 @@ export const columns: ColumnDef<User>[] = [
         id: "role",
         header: "Rôle",
         enableColumnFilter: true,
+        accessorFn: (row) => (row as User).role,
         cell: ({ row }) => {
-            const original = row.original;
-            if ("thesisYear" in original) {
-                return "Doctorant";
-            } else if ("masterYear" in original) {
-                return "Étudiant Master";
-            } else if ("position" in original) {
-                return "Enseignant Chercheur";
-            }
-            return "Inconnu";
+
+
+            return (
+                <div className="capitalize">
+                    {ROLE_TRANSLATIONS[row.original.role as Role]}
+                </div>
+            )
+        },
+        meta: {
+            filterVariant: 'select',
+            filterSelectOptions: Object.entries(ROLE_TRANSLATIONS).map(([value, label]) => ({
+                value,
+                label
+            }))
         }
     },
     {
@@ -86,7 +96,7 @@ export const columns: ColumnDef<User>[] = [
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogContent className="sm:max-w-md">
+                        <DialogContent className="sm:max-w-md" >
                             <DialogHeader>
                                 <DialogTitle>Confirmer la suppression</DialogTitle>
                             </DialogHeader>

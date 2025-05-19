@@ -45,6 +45,9 @@ class RequestsService {
   async completeRequest(id: string) {
     return await api.post(`/requests/complete-request/${id}`);
   }
+  async editRequest(id: string, credentials: unknown) {
+    return await api.post(`/requests/edit-request/${id}`, credentials);
+  }
 }
 
 export default RequestsService;

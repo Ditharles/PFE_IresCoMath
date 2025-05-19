@@ -29,6 +29,7 @@ import {
   sendMailAfterRequestCompletion,
   sendMailAfterRequestsValidation,
 } from "../services/mail.service";
+import { get } from "http";
 export const getPossibleRequests = (req: AuthRequest, res: Response) => {
   res.status(200).json(requestByRole[req.user.role as Role]);
 };
@@ -492,8 +493,6 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
       },
     };
 
-    
-    
     const nextStatus = nextStatusMap[userRole]?.[request!.status];
     console.log(request!.status);
     if (!nextStatus) {
@@ -625,6 +624,94 @@ export const completeRequest = async (req: AuthRequest, res: Response) => {
     });
     res.status(200).json({
       message: "Demande terminée avec succès",
+    });
+  } catch (error) {
+    console.error("Error completing request:", error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const editRequest = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+
+  const prismaModelByRequestType = {
+    [RequestType.MISSION]: prisma.mission,
+    [RequestType.INTERNSHIP]: prisma.requestStage,
+    [RequestType.CONFERENCE_NATIONAL]: prisma.scientificEvent,
+    [RequestType.EQUIPMENT_PURCHASE]: prisma.purchaseRequest,
+    [RequestType.EQUIPMENT_LOAN]: prisma.equipmentLoanRequest,
+    [RequestType.ARTICLE_REGISTRATION]: prisma.articleRegistration,
+    [RequestType.REPAIR_MAINTENANCE]: prisma.scientificEvent, // à corriger
+  };
+
+  const requestRelationFieldByType = {
+    [RequestType.MISSION]: "mission",
+    [RequestType.INTERNSHIP]: "stage",
+    [RequestType.CONFERENCE_NATIONAL]: "scientificEvent",
+    [RequestType.EQUIPMENT_PURCHASE]: "purchaseRequest",
+    [RequestType.EQUIPMENT_LOAN]: "loanRequest",
+    [RequestType.ARTICLE_REGISTRATION]: "articleRegistration",
+    [RequestType.REPAIR_MAINTENANCE]: "scientificEvent", // à corriger
+  };
+
+  try {
+    const request = await getRequestById(id);
+
+    if (!request) {
+      return res
+        .status(404)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
+
+    const prismaModel = prismaModelByRequestType[request.type as RequestType];
+    const relationField =
+      requestRelationFieldByType[request.type as RequestType];
+
+    if (!prismaModel || !relationField) {
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
+
+    const relationId = request[relationField]?.id;
+    if (!relationId) {
+      return res.status(404).json({ message: "Relation introuvable" });
+    }
+
+    const { type, ...updateData } = req.body;
+
+    const updatedRequest = await prismaModel.update({
+      where: { id: relationId },
+      data: updateData,
+    });
+
+    const sendData = {
+      ...request,
+      [relationField]: updatedRequest,
+    };
+
+    return res.status(200).json({
+      message: "Demande modifiée avec succès",
+      data: sendData,
+    });
+  } catch (error) {
+    console.error("Erreur lors de la modification de la demande:", error);
+    return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+export const deleteRequest = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  try {
+    const request = await getRequestById(id);
+    if (!request) {
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
+    const deletedRequest = await prisma.request.delete({
+      where: { id: request!.id },
+    });
+    res.status(200).json({
+      message: "Demande supprimée avec succès",
+      data: deletedRequest,
     });
   } catch (error) {
     console.error("Error completing request:", error);

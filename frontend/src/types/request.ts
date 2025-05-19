@@ -1,3 +1,4 @@
+import { EquipmentType } from "./equipment";
 import { User } from "./Member";
 
 export enum RequestType {
@@ -7,7 +8,7 @@ export enum RequestType {
   EQUIPMENT_PURCHASE = "EQUIPMENT_PURCHASE",
   EQUIPMENT_LOAN = "EQUIPMENT_LOAN",
   REPAIR_MAINTENANCE = "REPAIR_MAINTENANCE",
-  CONTRACTUAL = "CONTRACTUAL",
+ 
   ARTICLE_REGISTRATION = "ARTICLE_REGISTRATION",
 }
 
@@ -18,7 +19,6 @@ export const requestUrl: Record<RequestType, string> = {
   [RequestType.EQUIPMENT_PURCHASE]: "equipment/purchase",
   [RequestType.EQUIPMENT_LOAN]: "equipment/loan",
   [RequestType.REPAIR_MAINTENANCE]: "repair-maintenance",
-  [RequestType.CONTRACTUAL]: "contractual",
   [RequestType.ARTICLE_REGISTRATION]: "article-registration",
 };
 
@@ -32,20 +32,6 @@ export enum RequestStatus {
   REJECTED = "REJECTED",
   COMPLETED = "COMPLETED",
 }
-
-export enum EquipmentType {
-  SUPPLIES = "SUPPLIES",
-  CONSUMABLES = "CONSUMABLES",
-  EQUIPMENT = "EQUIPMENT",
-  TOOLS = "TOOLS",
-}
-
-export const EquipmentTypeList: Record<EquipmentType, string> = {
-  [EquipmentType.SUPPLIES]: "Fournitures",
-  [EquipmentType.CONSUMABLES]: "Consommables",
-  [EquipmentType.EQUIPMENT]: "Équipement",
-  [EquipmentType.TOOLS]: "Outillage",
-};
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -143,6 +129,8 @@ export type ArticleRegistration = {
   articleCover: string;
   amount: string;
 };
+
+export type extendLoanRequest = BaseRequest & EquipmentLoanRequest;
 
 // Main Request type that combines all possibilities
 export type Request = BaseRequest & {

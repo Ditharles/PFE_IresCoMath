@@ -1,8 +1,8 @@
-import React from 'react';
+
 import { useFormContext } from 'react-hook-form';
 import { Textarea } from '../../ui/textarea';
 import { Input } from '../../ui/input';
-import { Calendar } from 'lucide-react';
+
 import {
   FormControl,
   FormField,
@@ -11,6 +11,8 @@ import {
   FormMessage,
 } from '../../ui/form';
 import FileUpload from '../../FileUpload';
+
+import { DatePicker } from '../DatePicker';
 
 const MissionForm: React.FC = () => {
   const { control, formState: { errors } } = useFormContext();
@@ -31,8 +33,8 @@ const MissionForm: React.FC = () => {
             <FormItem>
               <FormLabel>Nom de l'organisation *</FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
+                <Input
+                  {...field}
                   className={getFieldClass('hostOrganization')}
                 />
               </FormControl>
@@ -52,9 +54,9 @@ const MissionForm: React.FC = () => {
             <FormItem>
               <FormLabel>Objectif *</FormLabel>
               <FormControl>
-                <Textarea 
-                  {...field} 
-                  rows={3} 
+                <Textarea
+                  {...field}
+                  rows={3}
                   className={getFieldClass('objective')}
                   placeholder="Décrivez les objectifs de la mission..."
                 />
@@ -71,8 +73,8 @@ const MissionForm: React.FC = () => {
             <FormItem>
               <FormLabel>Pays *</FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
+                <Input
+                  {...field}
                   className={getFieldClass('country')}
                 />
               </FormControl>
@@ -83,57 +85,43 @@ const MissionForm: React.FC = () => {
       </div>
 
       {/* Section Période */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Période de la mission</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={control}
-            name="startDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date de début *</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      className={getFieldClass('startDate')}
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={control}
-            name="endDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date de fin *</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      className={getFieldClass('endDate')}
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de début</FormLabel>
+              <FormControl>
+
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="endDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de dfin</FormLabel>
+              <FormControl>
+
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
       </div>
 
       {/* Section Documents */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Documents</h3>
-        
+
         <FormField
           control={control}
           name="specificDocument"
@@ -148,7 +136,7 @@ const MissionForm: React.FC = () => {
                   headerText="Televerser les documents pour appuyer votre demande (optionnel)"
                   subHeaderText="Formats PDF ou images"
                   onFileUploaded={field.onChange}
-                 
+
                 />
               </FormControl>
               <FormMessage />
@@ -156,7 +144,7 @@ const MissionForm: React.FC = () => {
           )}
         />
 
-    
+
       </div>
     </div>
   );

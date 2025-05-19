@@ -60,3 +60,4 @@ export const generateTokens = (
 export const validateRequestBody = (body: any, requiredFields: string[]) => {
   return requiredFields.every((field) => body.hasOwnProperty(field));
 };
+

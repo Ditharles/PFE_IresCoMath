@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FileUpload from "../../components/FileUpload";
 import { useAuth } from "../../contexts/AuthContext";
 import AuthService from "../../services/auth.service";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { Button } from "../../components/ui/button";
 
 import InputField from "../../components/form/InputField";

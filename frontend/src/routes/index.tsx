@@ -16,10 +16,17 @@ import RoleBasedRoute from "../components/routes/RoleBasedRoute";
 import PasswordForget from "../pages/auth/password-forget";
 import PasswordReset from "../pages/auth/password-reset";
 import MemberAddRequest from "../pages/MemberAddRequest";
-import NewRequest from "../pages/NewRequest";
-import NewRequests from "../pages/NewRequests";
+
+import CategoriesPage from "../pages/equipment/Categories";
+import EquipmentsPage from "../pages/equipment/Equipments";
+import CategoryPage from "../pages/equipment/Category";
+import NewRequest from "../pages/requests/NewRequest";
+import NewRequests from "../pages/requests/NewRequests";
+import RequestDetails from "../pages/requests/RequestsDetails";
 import Historique from "../pages/Historique";
-import RequestDetails from "../pages/RequestsDetails";
+import AddCategory from "../pages/equipment/AddCategory";
+import AddEquipment from "../pages/equipment/AddEquipment";
+import EquipmentPage from "../pages/equipment/Equipment";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -80,7 +87,7 @@ const routes: RouteObject[] = [
                 path: "nouvelle-demande/:type",
                 element: <NewRequest />
             },
-            
+
             {
                 path: "demande/:id",
                 element: <RequestDetails />
@@ -104,6 +111,39 @@ const routes: RouteObject[] = [
             {
                 path: "demandes",
                 element: <Historique />
+            },
+            {
+                path: "demandes/:status",
+                element: <Historique />
+            }
+            ,
+            {
+                path: "materiels",
+                element: <EquipmentsPage />
+            },
+            {
+                path: "materiels/:status",
+                element: <EquipmentsPage />
+            },
+            {
+                path: "materiel/:id",
+                element: <EquipmentPage />
+            },
+            {
+                path: "materiels/inventaire",
+                element: <CategoriesPage />
+            },
+            {
+                path: "materiels/categories/:id",
+                element: <CategoryPage />
+            },
+            {
+                path: "materiels/categories/ajouter",
+                element: <AddCategory />
+            },
+            {
+                path: "materiels/nouveau-materiel",
+                element: <AddEquipment />
             }
         ]
     },

@@ -8,3 +8,4 @@ export const formatDate = (dateString: string | number | Date | null) => {
         year: "numeric",
     }).format(date);
 };
+

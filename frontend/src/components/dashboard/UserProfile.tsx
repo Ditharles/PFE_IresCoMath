@@ -11,7 +11,7 @@ import {
 
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
-import { toast } from "../Toast"
+import { toast } from "sonner"
 import { AxiosResponse } from "axios"
 
 

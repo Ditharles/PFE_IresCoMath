@@ -1,13 +1,17 @@
 import { z } from "zod";
 
 const dateValidation = {
-  startDate: z.string().min(1, { message: "La date de début est requise" }),
+  startDate: z
+    .date()
+    .min(new Date(), {
+      message: "La date de début ne peut pas etre avant aujourd'hui",
+    }),
   endDate: z
-    .string()
-    .min(1, { message: "La date de fin est requise" })
+    .date()
+    .min(new Date(), { message: "La date de fin est requise" })
     .refine(
       (endDate) => {
-        const startDate = z.string().parse(endDate);
+        const startDate = z.date().parse(endDate);
         return new Date(endDate) >= new Date(startDate);
       },
       { message: "La date de fin doit être après la date de début" }

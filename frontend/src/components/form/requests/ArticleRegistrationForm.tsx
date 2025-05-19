@@ -13,8 +13,9 @@ import { X } from 'lucide-react';
 import FileUpload from '../../FileUpload';
 
 const ArticleRegistrationForm: React.FC = () => {
-  const { control, setValue, formState: { errors } } = useFormContext();
-  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
+  const { control, setValue, formState: { errors }, getValues } = useFormContext();
+  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(getValues('articleCover') || null);
+
 
   const getFieldClass = (fieldName: string) => {
     return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';

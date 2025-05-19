@@ -1,3 +1,11 @@
+import { z } from "zod";
+import ArticleRegistrationForm from "../components/form/requests/ArticleRegistrationForm";
+import EquipmentLoanForm from "../components/form/requests/EquipementLoanForm";
+import EquipmentPurchaseForm from "../components/form/requests/EquipementPurchaseForm";
+import InternshipForm from "../components/form/requests/InternshipForm";
+import MissionForm from "../components/form/requests/MissionForm";
+import ScientificEventForm from "../components/form/requests/ScientificEvent.Form";
+import { editInternshipRequestSchema, editScientificEventRequestSchema, editArticleRegistrationRequestSchema, editEquipmentLoanRequestSchema, editEquipmentPurchaseRequestSchema, editMissionRequestSchema } from "../schemas/editRequestSchema";
 import { RequestStatus } from "../types/MemberAddRequest";
 import { RequestType } from "../types/request";
 
@@ -8,7 +16,7 @@ export const REQUEST_TYPE_LABELS = {
     [RequestType.CONFERENCE_NATIONAL]: "Conférence national",
     [RequestType.EQUIPMENT_PURCHASE]: "Achat Matériel",
     [RequestType.EQUIPMENT_LOAN]: "Prêt Matériel",
-    
+
     [RequestType.REPAIR_MAINTENANCE]: "Réparation & Maintenance",
     [RequestType.CONTRACTUAL]: "Contractuel",
     [RequestType.ARTICLE_REGISTRATION]: "Inscription Article"
@@ -35,3 +43,25 @@ export const STATUS_TRANSLATIONS = {
     [RequestStatus.REJECTED_BY_DIRECTOR]: "Rejeté par directeur",
     [RequestStatus.COMPLETED]: "Terminé"
 };
+
+
+export const SCHEMA_MAP: { [key in RequestType]: z.ZodObject<any> } = {
+    [RequestType.INTERNSHIP]: editInternshipRequestSchema,
+    [RequestType.CONFERENCE_NATIONAL]: editScientificEventRequestSchema,
+    [RequestType.ARTICLE_REGISTRATION]: editArticleRegistrationRequestSchema,
+    [RequestType.EQUIPMENT_LOAN]: editEquipmentLoanRequestSchema,
+    [RequestType.EQUIPMENT_PURCHASE]: editEquipmentPurchaseRequestSchema,
+    [RequestType.MISSION]: editMissionRequestSchema,
+    [RequestType.REPAIR_MAINTENANCE]: editScientificEventRequestSchema,// Add this line
+};
+
+export const FORM_COMPONENTS: { [key in RequestType]: React.ComponentType<any> } = {
+    [RequestType.INTERNSHIP]: InternshipForm,
+    [RequestType.CONFERENCE_NATIONAL]: ScientificEventForm,
+    [RequestType.ARTICLE_REGISTRATION]: ArticleRegistrationForm,
+    [RequestType.EQUIPMENT_LOAN]: EquipmentLoanForm,
+    [RequestType.EQUIPMENT_PURCHASE]: EquipmentPurchaseForm,
+    [RequestType.MISSION]: MissionForm,
+    [RequestType.REPAIR_MAINTENANCE]: ScientificEventForm, // a corriger
+};
+

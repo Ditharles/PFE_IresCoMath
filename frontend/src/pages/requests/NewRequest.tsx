@@ -6,31 +6,23 @@ import { ChevronLeft, Send, Info } from 'lucide-react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import ArticleRegistrationForm from '../components/form/requests/ArticleRegistrationForm';
-import LoadingOverlay from '../components/LoadingOverlay';
-import { Button } from '../components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
-import { Toast, toast } from '../components/Toast';
 
-import {
-  internshipRequestSchema,
-  missionRequestSchema,
-  scientificEventRequestSchema,
-  articleRegistrationRequestSchema,
-  equipmentLoanRequestSchema,
-  equipmentPurchaseRequestSchema
-} from '../schemas/requestSchema';
-import { RequestType } from '../types/request';
-
-import RequestsService from '../services/requests.service';
-import InternshipForm from '../components/form/requests/InternshipForm';
-import MissionForm from '../components/form/requests/MissionForm';
-import ScientificEventForm from '../components/form/requests/ScientificEvent.Form';
-import EquipmentLoanForm from '../components/form/requests/EquipementLoanForm';
-import EquipmentPurchaseForm from '../components/form/requests/EquipementPurchaseForm';
 
 import { z } from 'zod';
+import { toast } from 'sonner';
+import ArticleRegistrationForm from '../../components/form/requests/ArticleRegistrationForm';
+import EquipmentLoanForm from '../../components/form/requests/EquipementLoanForm';
+import EquipmentPurchaseForm from '../../components/form/requests/EquipementPurchaseForm';
+import InternshipForm from '../../components/form/requests/InternshipForm';
+import MissionForm from '../../components/form/requests/MissionForm';
+import ScientificEventForm from '../../components/form/requests/ScientificEvent.Form';
+import LoadingOverlay from '../../components/LoadingOverlay';
+import { Alert, AlertTitle, AlertDescription } from '../../components/ui/alert';
+import { Button } from '../../components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
+import { internshipRequestSchema, missionRequestSchema, scientificEventRequestSchema, articleRegistrationRequestSchema, equipmentLoanRequestSchema, equipmentPurchaseRequestSchema } from '../../schemas/requestSchema';
+import RequestsService from '../../services/requests.service';
+import { RequestType } from '../../types/request';
 
 const NewRequest: React.FC = () => {
   const { type } = useParams<{ type: string }>();
@@ -82,14 +74,13 @@ const NewRequest: React.FC = () => {
     console.log(isValid)
     if (!isValid) {
       toast.error('Veuillez remplir correctement tous les champs requis');
-      console.log(errors);
+
       return;
     }
-    console.log("try");
 
     setIsSubmitting(true);
     setSubmitError(null);
-    console.log(errors);
+
     try {
       const response = await requestService.createRequest(formData, mapTypeToRequest());
       toast.success(response.data.message || "Demande créée avec succès");
@@ -144,7 +135,7 @@ const NewRequest: React.FC = () => {
   return (
     <div className="animate-fadeIn h-full relative">
       {isSubmitting && <LoadingOverlay />}
-      <Toast />
+
       <div className="mb-6">
         <Button
           variant="ghost"

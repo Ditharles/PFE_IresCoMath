@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from '../../../ui/dialog';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -8,17 +10,19 @@ import { Role } from '../../../../types/request';
 import { Button } from '../../../ui/button';
 import { DialogHeader, DialogFooter } from '../../../ui/dialog';
 import { Textarea } from '../../../ui/textarea';
+import EditRequest from './EditRequest';
 
 
 interface RequestActionsProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     requestData: any;
-    onActionComplete?: () => void;
+    onActionComplete: () => void;
 }
 
 const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionComplete }) => {
+    const [openEditModal, setOpenEditModal] = useState(false);
     const { user } = useAuth();
-
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [openRejectDialog, setOpenRejectDialog] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState('');
@@ -43,10 +47,6 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
 
     const canReject = canApprove;
 
-    const handleEdit = () => {
-        //TODO: A voir si on va effectuer une redirection ou un pop a remplir 
-
-    };
 
     const handleDelete = async () => {
         try {
@@ -103,7 +103,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
             {canEdit && (
                 <Button
                     variant="outline"
-                    onClick={handleEdit}
+                    onClick={() => setIsEditModalOpen(true)}
                     disabled={isSubmitting}
                 >
                     Modifier
@@ -124,7 +124,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                         onOpenChange={setIsDeleteDialogOpen}
 
                     >
-                        <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto">
+                        <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto" >
                             <DialogHeader>
                                 <DialogTitle>Confirmer la suppression</DialogTitle>
                             </DialogHeader>
@@ -164,7 +164,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                             Rejeter
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto">
+                    <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto" >
                         <DialogHeader>
                             <DialogTitle>Motif de rejet</DialogTitle>
                             <DialogDescription>
@@ -196,6 +196,15 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+            )}
+
+            {isEditModalOpen && requestData.request && (
+                <EditRequest
+                    request={requestData.request}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSuccess={onActionComplete}
+                    isOpen={isEditModalOpen}
+                />
             )}
         </div>
     );

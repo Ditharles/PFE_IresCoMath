@@ -77,6 +77,13 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
                 </span>
             )
         },
+        meta: {
+            filterVariant: 'select',
+            filterSelectOptions: Object.entries(requestStatusStrings).map(([value, label]) => ({
+                value,
+                label
+            }))
+        }
     },
     {
         id: "actions",
@@ -127,7 +134,7 @@ export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
 
                     <Dialog open={isOpen} onOpenChange={setIsOpen}>
                         <div className={`${isOpen ? 'fixed inset-0 bg-black/20 backdrop-blur-sm z-40' : ''}`} />
-                        <DialogContent className="sm:max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-lg p-6 shadow-lg">
+                        <DialogContent className="sm:max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-lg p-6 shadow-lg" >
                             <DialogHeader>
                                 <DialogTitle>Motif du rejet</DialogTitle>
                             </DialogHeader>

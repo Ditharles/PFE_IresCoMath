@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, FormEvent, ChangeEvent } from "r
 import axios from "axios";
 import { Mail, Loader2, Send, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Toast, toast } from "../../components/Toast";
+import { toast } from "sonner";
 import AuthService from "../../services/auth.service";
 
 const ResendEmail = () => {
@@ -93,7 +93,7 @@ const ResendEmail = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-            <Toast />
+
             <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
                 <div className="flex justify-center mb-6">
                     <div className="rounded-full bg-blue-100 p-3">

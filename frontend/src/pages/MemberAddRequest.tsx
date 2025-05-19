@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ManageUserService } from "../services/manageUser.service";
 import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { Role, RoleEnum } from "../types/common";
-import { Toast, toast } from "../components/Toast";
+import { toast } from "sonner";
 import LoadingOverlay from "../components/LoadingOverlay";
 import { RequestUser } from "../types/MemberAddRequest";
 import { Badge } from "../components/ui/badge";
@@ -292,7 +292,7 @@ const MemberAddRequest = () => {
             DIRECTEUR: "Directeur",
             DOCTORANT: "Doctorant",
             MASTER: "Master",
-           
+
         };
 
         return roleMapping[role] || role;
@@ -302,7 +302,7 @@ const MemberAddRequest = () => {
         <div className={`min-h-screen flex flex-col ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-800"}`}>
             {loading && <LoadingOverlay loadingText="Chargement des données..." />}
 
-            <Toast />
+
 
             <div className="container mx-auto py-8 px-4">
                 <Card className="shadow-lg">

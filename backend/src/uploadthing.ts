@@ -32,7 +32,11 @@ export const uploadRouter = {
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
-
+categoryPhotos: f({
+  image: { maxFileSize: "4MB", maxFileCount: 1 },
+}).onUploadComplete(async ({ file }) => {
+  return { url: file.ufsUrl };
+}),
   equipmentPhotosRequest: f({
     image: { maxFileSize: "4MB", maxFileCount: 5 },
   }).onUploadComplete(async ({ file }) => {
