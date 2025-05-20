@@ -6,24 +6,34 @@ import { useAuth } from "../contexts/AuthContext";
 import AuthService from "../services/auth.service";
 import { isAuthenticated } from "../utils/tokens.utils";
 import { Button } from "../components/ui/button";
-import { Pencil, Trash2, Image } from "lucide-react";
-
+import { Pencil, Trash2, Image, Check } from "lucide-react";
 import { generateReactHelpers } from "@uploadthing/react";
+import { cn } from '../lib/utils';
 
-const { useUploadThing: uploadThing } = generateReactHelpers();
+const { useUploadThing } = generateReactHelpers();
+
+type Profile = {
+  username: string;
+  userMail: string;
+  role: string;
+  about: string;
+  imageUrl: string;
+};
 
 export default function Profile() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<Profile>({
     username: '',
+    userMail: '',
     role: '',
     about: '',
     imageUrl: '',
   });
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
   const authService = new AuthService();
 
-  const { startUpload, isUploading } = uploadThing('profileImage', {
+  const { startUpload, isUploading } = useUploadThing('profileImage', {
     onClientUploadComplete: (res) => {
       if (res?.[0]?.url) {
         setProfile(prev => ({ ...prev, imageUrl: res[0].url }));
@@ -37,18 +47,22 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       if (!isAuthenticated()) return;
-      
+
       try {
+        setLoading(true);
         const response = await authService.getUser();
         const userData = response.data;
         setProfile({
-          username: userData.username || userData.email,
+          username: `${userData.firstName} ${userData.lastName}`,
+          userMail: userData.email,
           role: userData.role,
           about: userData.about || '',
           imageUrl: userData.imageUrl || '',
         });
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Erreur lors du chargement du profil:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -57,10 +71,10 @@ export default function Profile() {
 
   const translateRole = (role: string) => {
     const roleMapping: Record<string, string> = {
-      ADMIN: "Administrator",
-      ENSEIGNANT: "Teacher",
-      DIRECTEUR: "Director",
-      DOCTORANT: "PhD Student",
+      ADMIN: "Administrateur",
+      ENSEIGNANT: "Enseignant-Chercheur",
+      DIRECTEUR: "Directeur",
+      DOCTORANT: "Doctorant",
       MASTER: "Master",
     };
     return roleMapping[role] || role;
@@ -70,6 +84,21 @@ export default function Profile() {
     setProfile(prev => ({ ...prev, imageUrl: '' }));
   };
 
+  const handleSave = async () => {
+    try {
+      const [firstName, lastName] = profile.username.split(' ');
+      await authService.submitAdditionalInfo({
+        firstName,
+        lastName,
+        about: profile.about,
+        imageUrl: profile.imageUrl
+      });
+      setEditMode(false);
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
@@ -77,62 +106,72 @@ export default function Profile() {
           <CardHeader className="border-b bg-white">
             <div className="flex justify-between items-center">
               <div>
-                <CardTitle className="text-2xl font-bold">My Profile</CardTitle>
-                <CardDescription>Manage your personal information</CardDescription>
+                <CardTitle className="text-2xl font-bold">Mon Profil</CardTitle>
+                <CardDescription>Gérez vos informations personnelles</CardDescription>
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant={editMode ? "destructive" : "outline"}
                 onClick={() => setEditMode(!editMode)}
                 className="gap-2"
               >
                 <Pencil className="h-4 w-4" />
-                {editMode ? 'Cancel' : 'Edit Profile'}
+                {editMode ? 'Annuler' : 'Modifier'}
               </Button>
             </div>
           </CardHeader>
 
           <CardContent className="p-6 space-y-6">
             <div className="flex items-start gap-6">
-              {/* Section Photo avec icônes toujours visibles */}
               <div className="relative">
-                <img
-                  src={profile.imageUrl || '/placeholder-user.png'}
-                  alt="Profile"
-                  className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
-                />
-
-                <div className="absolute -bottom-2 -right-2 flex gap-2 bg-white p-1 rounded-full shadow-md border">
-                  {/* Icône Galerie */}
-                  <label 
-                    htmlFor="profileImage"
-                    className="cursor-pointer p-1 hover:bg-gray-100 rounded-full"
-                    title="Change photo"
-                  >
-                    <Image className="h-5 w-5 text-gray-600" />
-                    <input
-                      id="profileImage"
-                      type="file"
-                      className="hidden"
-                      onChange={async (e) => {
-                        if (e.target.files?.[0]) {
-                          await startUpload([e.target.files[0]]);
-                        }
-                      }}
-                      accept="image/*"
+                <div className={cn(
+                  "w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200",
+                  isUploading && "opacity-50"
+                )}>
+                  {profile.imageUrl ? (
+                    <img
+                      src={profile.imageUrl}
+                      alt="Photo de profil"
+                      className="w-full h-full object-cover"
                     />
-                  </label>
-                  
-                  {/* Icône Suppression */}
-                  {profile.imageUrl && (
-                    <button
-                      onClick={handleImageDelete}
-                      className="p-1 hover:bg-gray-100 rounded-full text-red-500"
-                      title="Delete photo"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span>Pas de photo</span>
+                    </div>
                   )}
                 </div>
+
+                {editMode && (
+                  <div className="absolute -bottom-2 -right-2 flex gap-2 bg-white p-1 rounded-full shadow-md border">
+                    <label 
+                      htmlFor="profileImage"
+                      className="cursor-pointer p-1 hover:bg-gray-100 rounded-full"
+                      title="Changer la photo"
+                    >
+                      <Image className="h-5 w-5 text-gray-600" />
+                      <input
+                        id="profileImage"
+                        type="file"
+                        className="hidden"
+                        onChange={async (e) => {
+                          if (e.target.files?.[0]) {
+                            await startUpload([e.target.files[0]]);
+                          }
+                        }}
+                        accept="image/*"
+                      />
+                    </label>
+                    
+                    {profile.imageUrl && (
+                      <button
+                        onClick={handleImageDelete}
+                        className="p-1 hover:bg-gray-100 rounded-full text-red-500"
+                        title="Supprimer la photo"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1">
@@ -158,17 +197,17 @@ export default function Profile() {
 
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-1">
-                <h3 className="text-sm font-medium text-gray-500">Username</h3>
-                <p className="text-base">{profile.username}</p>
+                <h3 className="text-sm font-medium text-gray-500">Email</h3>
+                <p className="text-base">{profile.userMail}</p>
               </div>
 
               <div className="space-y-1">
-                <h3 className="text-sm font-medium text-gray-500">Role</h3>
+                <h3 className="text-sm font-medium text-gray-500">Rôle</h3>
                 <p className="text-base">{translateRole(profile.role)}</p>
               </div>
 
               <div className="space-y-1">
-                <h3 className="text-sm font-medium text-gray-500">About Me</h3>
+                <h3 className="text-sm font-medium text-gray-500">À propos de moi</h3>
                 <p className="text-base">
                   {editMode ? (
                     <textarea
@@ -178,26 +217,34 @@ export default function Profile() {
                       rows={4}
                     />
                   ) : (
-                    profile.about || 'No description provided'
+                    profile.about || 'Aucune description fournie'
                   )}
                 </p>
               </div>
             </div>
 
+            <Separator />
+
+            <div>
+              <h3 className="text-lg font-medium mb-2">Étudiants Supervisés</h3>
+              <Badge variant="outline" className="text-sm">
+                Étudiants en Master (4)
+              </Badge>
+            </div>
+
             {editMode && (
               <div className="flex justify-end gap-4 pt-4">
                 <Button 
-                  onClick={async () => {
-                    try {
-                      await authService.submitAdditionalInfo(profile);
-                      setEditMode(false);
-                    } catch (error) {
-                      console.error('Update error:', error);
-                    }
-                  }}
+                  onClick={handleSave}
                   disabled={isUploading}
+                  className="gap-2"
                 >
-                  {isUploading ? 'Saving...' : 'Save Changes'}
+                  {isUploading ? 'Enregistrement...' : (
+                    <>
+                      <Check className="h-4 w-4" />
+                      Enregistrer
+                    </>
+                  )}
                 </Button>
               </div>
             )}
