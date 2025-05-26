@@ -21,6 +21,9 @@ import NewRequests from "../pages/NewRequests";
 import Historique from "../pages/Historique";
 import RequestDetails from "../pages/RequestsDetails";
 import Profile from "../pages/Profile";
+import MemberDetails from "../pages/directeur/MemberDetails";
+
+
 const routes: RouteObject[] = [
     {
         index: true,
@@ -127,6 +130,15 @@ const routes: RouteObject[] = [
             }
         ]
     },
+     {
+    element: <RoleBasedRoute allowedRoles={["DIRECTEUR", "ENSEIGNANT", "DOCTORANT", "MASTER"]} />,
+    children: [
+      {
+        path: "membre/:id/:role",
+        element: <MemberDetails />,
+      }
+    ]
+  },
 
 
     //404
