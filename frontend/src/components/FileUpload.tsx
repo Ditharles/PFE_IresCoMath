@@ -122,7 +122,7 @@ const FileUpload = ({
                         uploadIcon: isLoading ? "hidden" : "text-blue-500",
                         label: isLoading ? "hidden" : "text-gray-700",
                         allowedContent: isLoading ? "hidden" : "text-gray-500 text-sm",
-                        button: isLoading ? "hidden" : "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                        button: isLoading ? "hidden" : "bg-blue-600 text-foreground px-4 py-2 rounded-md hover:bg-blue-700"
                     }}
                 />
             )}

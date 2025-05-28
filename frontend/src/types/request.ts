@@ -8,7 +8,7 @@ export enum RequestType {
   EQUIPMENT_PURCHASE = "EQUIPMENT_PURCHASE",
   EQUIPMENT_LOAN = "EQUIPMENT_LOAN",
   REPAIR_MAINTENANCE = "REPAIR_MAINTENANCE",
- 
+
   ARTICLE_REGISTRATION = "ARTICLE_REGISTRATION",
 }
 
@@ -61,6 +61,8 @@ export type PurchaseRequest = {
   photo?: string;
   specifications: Record<string, unknown>;
   costEstimation: number;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type EquipmentLoanRequest = {
@@ -82,6 +84,8 @@ export type EquipmentLoanRequest = {
   quantity: number;
   startDate: Date;
   endDate: Date;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type RequestStage = {
@@ -96,6 +100,8 @@ export type RequestStage = {
   country: string;
   startDate: Date;
   endDate: Date;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type Mission = {
@@ -107,6 +113,8 @@ export type Mission = {
   endDate: Date;
   specificDocument: string[];
   document: string[];
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type ScientificEvent = {
@@ -119,6 +127,8 @@ export type ScientificEvent = {
   articleCover?: string;
   startDate: Date;
   endDate: Date;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type ArticleRegistration = {
@@ -128,6 +138,8 @@ export type ArticleRegistration = {
   urlConference?: string;
   articleCover: string;
   amount: string;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type extendLoanRequest = BaseRequest & EquipmentLoanRequest;

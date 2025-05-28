@@ -136,7 +136,7 @@ const EquipmentPage = () => {
     };
 
     return (
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen" style={{ background: "var(--background)", color: "var(--foreground)" }}>
             {isLoading && <LoadingOverlay loadingText="Chargement de l'équipement..." />}
 
             <div className="container py-8 space-y-6">

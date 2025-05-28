@@ -44,7 +44,7 @@ const MembersList = ({
     }, [members]);
 
     return (
-        <Card>
+        <Card >
             <CardHeader>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                     <div>
@@ -70,8 +70,8 @@ const MembersList = ({
             </CardHeader>
             <CardContent>
                 {/* Statistiques des membres */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <Card>
+                <div className="bg-primary grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <Card className=" text-primary-foreground">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Membres par rôle
@@ -79,13 +79,13 @@ const MembersList = ({
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-2 flex-wrap">
-                                <Badge variant="outline" className="bg-blue-50">
+                                <Badge variant="outline" className=" text-secondary-foreground">
                                     Doctorants: {memberRoleCounts[RoleEnum.DOCTORANT]}
                                 </Badge>
-                                <Badge variant="outline" className="bg-purple-50">
+                                <Badge variant="outline" className="text-secondary-foreground">
                                     Masters: {memberRoleCounts[RoleEnum.MASTER]}
                                 </Badge>
-                                <Badge variant="outline" className="bg-cyan-50">
+                                <Badge variant="outline" className="text-secondary-foreground">
                                     Enseignants: {memberRoleCounts[RoleEnum.ENSEIGNANT]}
                                 </Badge>
                             </div>

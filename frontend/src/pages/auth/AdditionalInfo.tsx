@@ -70,7 +70,7 @@ const AdditionalInfo = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-8 rounded-lg shadow-md">
+    <div className="max-w-md mx-auto mt-10 bg-background p-8 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
         Finalisation de votre compte
       </h2>

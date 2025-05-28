@@ -1,11 +1,10 @@
-import { BellIcon, MoonIcon, SunIcon } from "lucide-react"
+import { BellIcon } from "lucide-react"
 import { getUser } from "../../utils/tokens.utils"
 import { useEffect, useState } from "react"
 import NotificationsService from "../../services/notifcations.service"
+import { ModeToggle } from "../ui/mode-toogle"
 
 interface HeaderProps {
-    darkMode?: boolean
-    setDarkMode: (darkMode: boolean) => void
     showUserProfile: boolean
     setShowUserProfile: (showUserProfile: boolean) => void
     showNotifications: boolean
@@ -14,20 +13,18 @@ interface HeaderProps {
     setSearchQuery: (searchQuery: string) => void
 }
 
-export const Header = ({ 
-    darkMode, 
-    setDarkMode, 
-    showUserProfile, 
-    setShowUserProfile, 
-    showNotifications, 
-    setShowNotifications, 
-    searchQuery, 
-    setSearchQuery 
+export const Header = ({
+    showUserProfile,
+    setShowUserProfile,
+    showNotifications,
+    setShowNotifications,
+    searchQuery,
+    setSearchQuery
 }: HeaderProps) => {
     const user = getUser();
     const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
     const notificationService = new NotificationsService();
-    
+
     useEffect(() => {
         const fetchUnreadNotificationsCount = async () => {
             const count = await notificationService.getUnreadNumberNotifications();
@@ -35,10 +32,6 @@ export const Header = ({
         };
         fetchUnreadNotificationsCount();
     }, [])
-
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode)
-    }
 
     const toggleUserProfile = () => {
         if (showNotifications) setShowNotifications(false)
@@ -52,26 +45,37 @@ export const Header = ({
 
     return (
         <header
-            className={`fixed top-0 left-0 w-full z-50 shadow-sm py-3 px-6 flex items-center justify-between ${darkMode ? "bg-gray-800" : "bg-white"}`}
+            className="fixed top-0 left-0 w-full z-50 shadow-sm py-3 px-6 flex items-center justify-between"
+            style={{
+                background: "var(--background)",
+                color: "var(--foreground)",
+                borderBottom: "1px solid var(--border)"
+            }}
         >
             {/* Logo avec meilleur positionnement et taille */}
             <div className="flex items-center">
-                <img 
-                    src="./src/assets/logo-ires.png" 
-                    alt="logo" 
-                    className="h-10 object-contain"  // Ajustez la hauteur selon vos besoins
+                <img
+                    src="./src/assets/logo-ires.png"
+                    alt="logo"
+                    className="h-10 object-contain"
+                    style={{ background: "var(--card)", borderRadius: "var(--radius-lg)" }}
                 />
             </div>
 
             <div className="flex items-center space-x-4">
                 {/* Barre de recherche */}
-                <div className={`relative hidden md:block ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <div className="relative hidden md:block">
                     <input
                         type="text"
                         placeholder="Search..."
-                        className={`pl-10 pr-4 py-2 rounded-md w-64 ${darkMode ? "bg-gray-700 border-gray-600" : "border-gray-300"} border focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        className="pl-10 pr-4 py-2 rounded-md w-64 border focus:outline-none"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{
+                            background: "var(--input)",
+                            color: "var(--foreground)",
+                            borderColor: "var(--border)"
+                        }}
                     />
                     <svg
                         className="absolute left-3 top-2.5 h-5 w-5"
@@ -79,6 +83,7 @@ export const Header = ({
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
+                        style={{ color: "var(--muted-foreground)" }}
                     >
                         <path
                             strokeLinecap="round"
@@ -92,41 +97,43 @@ export const Header = ({
                 {/* Bouton de notifications */}
                 <button
                     onClick={toggleNotifications}
-                    className={`relative p-2 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className="relative p-2 rounded-full hover:bg-hover focus:outline-none focus:ring-2"
                     aria-label="Notifications"
+                    style={{
+                        background: "var(--card)",
+                        color: "var(--foreground)"
+                    }}
                 >
                     <BellIcon className="h-6 w-6" />
                     {unreadNotificationsCount > 0 && (
-                        <span className="absolute top-0 right-0 flex h-5 w-5 rounded-full bg-red-500 text-white text-xs items-center justify-center">
+                        <span className="absolute top-0 right-0 flex h-5 w-5 rounded-full bg-notification text-notification-foreground text-xs items-center justify-center">
                             {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
                         </span>
                     )}
                 </button>
 
-                {/* Bouton dark/light mode */}
-                <button
-                    onClick={toggleDarkMode}
-                    className={`p-2 rounded-full ${darkMode ? "text-yellow-300 hover:bg-gray-700" : "text-gray-700 hover:bg-gray-100"} focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                    aria-label="Toggle dark mode"
-                >
-                    {darkMode ? <SunIcon className="h-6 w-6" /> : <MoonIcon className="h-6 w-6" />}
-                </button>
+                {/* Ajout du mode toggle */}
+                <ModeToggle />
 
                 {/* Bouton de profil utilisateur */}
                 <button
                     onClick={toggleUserProfile}
-                    className={`relative overflow-hidden rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className="relative overflow-hidden rounded-full focus:outline-none focus:ring-2"
                     aria-label="User profile"
+                    style={{
+                        background: "var(--card)",
+                        color: "var(--foreground)"
+                    }}
                 >
                     {user.photo ? (
                         <img
                             src={user.photo}
                             alt={user.name}
-                            className="h-10 w-10 rounded-full object-cover border-2 border-transparent hover:border-blue-500 transition-all"
+                            className="h-10 w-10 rounded-full object-cover border-2 border-transparent hover:border-primary transition-all"
                         />
                     ) : (
                         <div
-                            className={`h-10 w-10 rounded-full flex items-center justify-center ${darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"}`}
+                            className="h-10 w-10 rounded-full flex items-center justify-center"
                         >
                             {user.name ? (
                                 <span className="font-medium">

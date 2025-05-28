@@ -96,7 +96,7 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                 Retour
             </Button>
 
-            <Card className="w-full">
+            <Card className="w-full" style={{ background: "var(--card)", color: "var(--card-foreground)", borderRadius: "var(--radius-lg)" }}>
                 <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
                     <CardTitle className="text-2xl font-bold">Détails de l'équipement</CardTitle>
                     <Button
@@ -104,6 +104,11 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                         size="sm"
                         onClick={() => setIsEditModalOpen(true)}
                         aria-label="Modifier l'équipement"
+                        style={{
+                            background: "var(--secondary)",
+                            color: "var(--secondary-foreground)",
+                            border: "1px solid var(--border)"
+                        }}
                     >
                         <Pencil className="h-4 w-4 mr-2" />
                         Modifier
@@ -117,7 +122,10 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                     >
                         <DetailItem label="Nom" value={equipment.name} />
                         <DetailItem label="Statut">
-                            <Badge variant={getStatusBadgeVariant()}>
+                            <Badge variant={getStatusBadgeVariant()} style={{
+                                background: "var(--accent)",
+                                color: "var(--accent-foreground)"
+                            }}>
                                 {STATUS_LABELS[equipment.status] || equipment.status}
                             </Badge>
                         </DetailItem>
@@ -130,7 +138,10 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                             </Link>
                         </DetailItem>
                         <DetailItem label="Type">
-                            <Badge variant={getTypeBadgeVariant()}>
+                            <Badge variant={getTypeBadgeVariant()} style={{
+                                background: "var(--secondary)",
+                                color: "var(--secondary-foreground)"
+                            }}>
                                 {TYPE_LABELS[equipment.category.type] || equipment.category.type}
                             </Badge>
                         </DetailItem>

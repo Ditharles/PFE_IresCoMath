@@ -77,7 +77,7 @@ const DoctorantStudent: React.FC<SpecificFieldsProps> = ({ data, onChange }) => 
               name="thesisSupervisorId"
               value={data.thesisSupervisorId ?? ""}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-background"
               required
             >
               <option value="">Sélectionner votre directeur de thèse</option>

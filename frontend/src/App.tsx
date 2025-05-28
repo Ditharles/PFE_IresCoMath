@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import routes from "./routes";
 import Layout from './components/dashboard/Layout';
 import { Toaster } from './components/ui/sonner';
+import { ThemeProvider } from './components/theme-provider';
 
 
 function AppContent() {
@@ -21,10 +22,12 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Toaster richColors position="top-right" />
-        <AppContent />
-      </AuthProvider>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <AuthProvider>
+          <Toaster richColors position="top-right" />
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

@@ -48,8 +48,33 @@ const RequestDetails = () => {
         try {
             setLoading(true);
             const response = await requestService.getRequestDetails(id);
+            let requestDetails = response.data.request;
+            switch (requestDetails.type) {
+                case RequestType.MISSION:
+                    requestDetails.mission.awaitForm = requestDetails.awaitForm;
+                    requestDetails.mission.signForm = requestDetails.signForm;
+                    break;
+                case RequestType.INTERNSHIP:
+                    requestDetails.stage.awaitForm = requestDetails.awaitForm;
+                    requestDetails.stage.signForm = requestDetails.signForm;
+                    break;
+                case RequestType.EQUIPMENT_PURCHASE:
+                    requestDetails.purchaseRequest.awaitForm = requestDetails.awaitForm;
+                    requestDetails.purchaseRequest.signForm = requestDetails.signForm;
+                    break;
+                case RequestType.EQUIPMENT_LOAN:
+                    requestDetails.loanRequest.awaitForm = requestDetails.awaitForm;
+                    requestDetails.loanRequest.signForm = requestDetails.signForm;
+                    break;
+                case RequestType.ARTICLE_REGISTRATION:
+                    requestDetails.articleRegistration.awaitForm = requestDetails.awaitForm;
+                    requestDetails.articleRegistration.signForm = requestDetails.signForm;
+                    break;
+                default:
+                    break;
+            }
             setRequestData({
-                request: response.data.request,
+                request: requestDetails,
                 user: response.data.user
             });
         } catch (error) {
@@ -139,7 +164,7 @@ const RequestDetails = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen" style={{ background: "var(--background)", color: "var(--foreground)" }}>
             {loading && <LoadingOverlay loadingText="Chargement des détails..." />}
 
             <div className="container mx-auto py-8 px-4">
@@ -154,7 +179,7 @@ const RequestDetails = () => {
 
                 {request && (
                     <Card className="shadow-lg mb-6">
-                        <CardHeader className="border-b bg-white">
+                        <CardHeader className="border-b bg-background">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <CardTitle className="text-2xl font-bold">

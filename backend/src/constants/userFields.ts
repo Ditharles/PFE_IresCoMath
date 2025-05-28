@@ -37,7 +37,7 @@ export const userFields = {
   teacherResearcher: { select: teacherResearcherFields },
   doctoralStudent: { select: doctoralStudentFields },
   masterStudent: { select: masterStudentFields },
-  admin: { select: { lastName: true, firstName: true } },
+  admin: true,
 };
 
 export const doctoralStudentRequestFields = {

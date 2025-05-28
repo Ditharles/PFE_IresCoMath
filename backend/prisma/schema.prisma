@@ -190,7 +190,7 @@ model Equipment {
   name                 String
   category             EquipmentCategory      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId           String
-  notes               String?
+  notes                String?
   cost                 Float?
   bill                 String?
   specifications       Json

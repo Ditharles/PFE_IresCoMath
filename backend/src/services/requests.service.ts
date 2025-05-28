@@ -88,5 +88,6 @@ export const getRequestById = async (requestId: string) => {
     },
     select: requestFields,
   });
+
   return request;
 };

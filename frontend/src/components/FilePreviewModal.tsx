@@ -69,7 +69,7 @@ const FilePreviewModal = ({
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-[90vw] max-h-[90vh] w-full bg-transparent border-0 shadow-none p-0 overflow-hidden">
-                <div className="relative z-10 h-full w-full bg-white dark:bg-gray-900 backdrop-blur-md rounded-2xl shadow-xl p-6 flex justify-center items-center overflow-hidden">
+                <div className="relative z-10 h-full w-full bg-background text-foreground backdrop-blur-md rounded-2xl shadow-xl p-6 flex justify-center items-center overflow-hidden">
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"

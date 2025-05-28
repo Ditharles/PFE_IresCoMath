@@ -107,7 +107,7 @@ const ActionsCell = ({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                     align="end"
-                    className="min-w-[200px] bg-white rounded-md shadow-lg p-1 border border-gray-100"
+                    className="min-w-[200px] bg-background rounded-md shadow-lg p-1 border border-border"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <DropdownMenuLabel className="px-2 py-1 text-sm font-semibold text-gray-700">

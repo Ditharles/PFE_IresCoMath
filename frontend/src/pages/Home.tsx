@@ -7,13 +7,13 @@ const Home = () => {
         return <Navigate to={'/accueil'} replace />
     }
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen" style={{ background: "var(--background)", color: "var(--foreground)" }}>
 
-            <header className="border-b bg-white">
+            <header className="border-b" style={{ background: "var(--card)", color: "var(--card-foreground)" }}>
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                         <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">AD</span>
+                            <span className="text-foreground font-bold text-xl">AD</span>
                         </div>
                         <span className="text-xl font-bold">IresCoMath</span>
                     </div>
@@ -35,7 +35,7 @@ const Home = () => {
                         <a href="/login" className="font-medium text-gray-600 hover:text-blue-600 transition-colors">
                             Connexion
                         </a>
-                        <a href="/inscription" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
+                        <a href="/inscription" className="bg-blue-600 hover:bg-blue-700 text-foreground font-medium py-2 px-4 rounded">
                             Inscription
                         </a>
                     </div>
@@ -43,7 +43,7 @@ const Home = () => {
             </header>
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-b from-blue-50 to-white py-16 md:py-24">
+            <section className="bg-gradient-to-b from-blue-50 to-white py-16 md:py-24" style={{ background: "var(--background)" }}>
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 mb-10 md:mb-0">
@@ -54,22 +54,22 @@ const Home = () => {
                                 Votre plateforme de gestion des demandes administratives et de matériels. Simplifiez vos processus et optimisez votre gestion.
                             </p>
                             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                                <a href="/inscription" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded flex items-center">
+                                <a href="/inscription" className="bg-blue-600 hover:bg-blue-700 text-foreground font-medium py-2 px-4 rounded flex items-center">
                                     Commencer maintenant
                                     <ArrowRightIcon className="ml-2 h-4 w-4" />
                                 </a>
-                                <a href="#features" className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-medium py-2 px-4 rounded">
+                                <a href="#features" className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-foreground font-medium py-2 px-4 rounded">
                                     En savoir plus
                                 </a>
                             </div>
                         </div>
-                  
+
                     </div>
                 </div>
             </section>
 
             {/* Features Section */}
-            <section id="features" className="py-16 bg-white">
+            <section id="features" className="py-16" style={{ background: "var(--card)" }}>
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Nos fonctionnalités</h2>
@@ -96,7 +96,7 @@ const Home = () => {
             </section>
 
             {/* About Section */}
-            <section id="about" className="py-16 bg-gray-50">
+            <section id="about" className="py-16" style={{ background: "var(--muted)" }}>
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 mb-10 md:mb-0 md:pr-10">
@@ -180,17 +180,17 @@ const Home = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-16 bg-blue-600 text-white">
+            <section className="py-16 bg-blue-600 text-foreground" style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}>
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-3xl font-bold mb-6">Prêt à simplifier votre gestion ?</h2>
                     <p className="text-xl mb-8 max-w-2xl mx-auto">
                         Inscrivez-vous dès aujourd'hui et commencez à optimiser vos processus administratifs et de gestion des matériels.
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                        <a href="/inscription" className="bg-white text-blue-600 hover:bg-gray-100 font-medium py-2 px-4 rounded">
+                        <a href="/inscription" className="bg-background text-blue-600 hover:bg-gray-100 font-medium py-2 px-4 rounded">
                             S'inscrire maintenant
                         </a>
-                        <a href="/login" className="border border-white text-white hover:bg-blue-700 font-medium py-2 px-4 rounded">
+                        <a href="/login" className="border border-white text-foreground hover:bg-blue-700 font-medium py-2 px-4 rounded">
                             Se connecter
                         </a>
                     </div>
@@ -198,19 +198,19 @@ const Home = () => {
             </section>
 
             {/* Footer */}
-            <footer id="contact" className="bg-gray-900 text-gray-300 py-12">
+            <footer id="contact" className="py-12" style={{ background: "var(--sidebar)", color: "var(--sidebar-foreground)" }}>
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div>
                             <div className="flex items-center space-x-2 mb-4">
                                 <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                                    <span className="text-white font-bold text-xl">AD</span>
+                                    <span className="text-foreground font-bold text-xl">AD</span>
                                 </div>
-                                <span className="text-xl font-bold text-white">Admin IresCoMath</span>
+                                <span className="text-xl font-bold text-foreground">Admin IresCoMath</span>
                             </div>
                             <p className="mb-4">Votre plateforme de gestion des demandes administratives et de matériels.</p>
                             <div className="flex space-x-4">
-                                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <a href="#" className="text-gray-400 hover:text-foreground transition-colors">
                                     <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path
                                             fillRule="evenodd"
@@ -219,7 +219,7 @@ const Home = () => {
                                         />
                                     </svg>
                                 </a>
-                                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <a href="#" className="text-gray-400 hover:text-foreground transition-colors">
                                     <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path
                                             fillRule="evenodd"
@@ -228,7 +228,7 @@ const Home = () => {
                                         />
                                     </svg>
                                 </a>
-                                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <a href="#" className="text-gray-400 hover:text-foreground transition-colors">
                                     <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
                                     </svg>
@@ -236,62 +236,62 @@ const Home = () => {
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-white font-semibold text-lg mb-4">Liens rapides</h3>
+                            <h3 className="text-foreground font-semibold text-lg mb-4">Liens rapides</h3>
                             <ul className="space-y-2">
                                 <li>
-                                    <a href="/" className="hover:text-white transition-colors">
+                                    <a href="/" className="hover:text-foreground transition-colors">
                                         Accueil
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#features" className="hover:text-white transition-colors">
+                                    <a href="#features" className="hover:text-foreground transition-colors">
                                         Fonctionnalités
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#about" className="hover:text-white transition-colors">
+                                    <a href="#about" className="hover:text-foreground transition-colors">
                                         À propos
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/login" className="hover:text-white transition-colors">
+                                    <a href="/login" className="hover:text-foreground transition-colors">
                                         Connexion
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/inscription" className="hover:text-white transition-colors">
+                                    <a href="/inscription" className="hover:text-foreground transition-colors">
                                         Inscription
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <h3 className="text-white font-semibold text-lg mb-4">Ressources</h3>
+                            <h3 className="text-foreground font-semibold text-lg mb-4">Ressources</h3>
                             <ul className="space-y-2">
                                 <li>
-                                    <a href="#" className="hover:text-white transition-colors">
+                                    <a href="#" className="hover:text-foreground transition-colors">
                                         Documentation
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:text-white transition-colors">
+                                    <a href="#" className="hover:text-foreground transition-colors">
                                         Tutoriels
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:text-white transition-colors">
+                                    <a href="#" className="hover:text-foreground transition-colors">
                                         FAQ
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:text-white transition-colors">
+                                    <a href="#" className="hover:text-foreground transition-colors">
                                         Support
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <h3 className="text-white font-semibold text-lg mb-4">Contact</h3>
+                            <h3 className="text-foreground font-semibold text-lg mb-4">Contact</h3>
                             <ul className="space-y-2">
                                 <li className="flex items-start">
                                     <svg

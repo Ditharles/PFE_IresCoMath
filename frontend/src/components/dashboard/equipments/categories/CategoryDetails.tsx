@@ -49,7 +49,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour
             </Button>
-            <Card className="w-full">
+            <Card className="w-full" style={{ background: "var(--card)", color: "var(--card-foreground)", borderRadius: "var(--radius-lg)" }}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-2xl font-bold">Détails de la catégorie</CardTitle>
                     <Button
@@ -57,6 +57,11 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                         size="sm"
                         onClick={() => setIsEditModalOpen(true)}
                         aria-label="Modifier la catégorie"
+                        style={{
+                            background: "var(--secondary)",
+                            color: "var(--secondary-foreground)",
+                            border: "1px solid var(--border)"
+                        }}
                     >
                         <Pencil className="h-4 w-4 mr-2" />
                         Modifier
@@ -64,7 +69,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                 </CardHeader>
 
                 <CardContent className="grid gap-4">
-                    <Separator className="my-2" />
+                    <Separator className="my-2" style={{ background: "var(--border)" }} />
 
                     {/* Section principale avec les informations */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -75,7 +80,10 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
 
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-muted-foreground">Type</p>
-                            <Badge variant={getTypeBadgeVariant()}>
+                            <Badge variant={getTypeBadgeVariant()} style={{
+                                background: "var(--accent)",
+                                color: "var(--accent-foreground)"
+                            }}>
                                 {category.type}
                             </Badge>
                         </div>
@@ -91,7 +99,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                         </div>
                     </div>
 
-                    <Separator className="my-4" />
+                    <Separator className="my-4" style={{ background: "var(--border)" }} />
 
                     {/* Section description */}
                     <div className="space-y-1">
@@ -101,7 +109,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                         </p>
                     </div>
 
-                    <Separator className="my-4" />
+                    <Separator className="my-4" style={{ background: "var(--border)" }} />
 
                     {/* Section photos */}
                     {category.photo && category.photo.length > 0 && (
@@ -110,8 +118,8 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                                 <p className="text-sm font-medium text-muted-foreground">Photos</p>
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     {category.photo.map((photo, index) => (
-                                        <div 
-                                            key={index} 
+                                        <div
+                                            key={index}
                                             className="w-32 h-32 rounded-md overflow-hidden border cursor-pointer hover:opacity-80 transition-opacity"
                                             onClick={() => setSelectedPhoto(photo)}
                                         >
@@ -143,7 +151,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
             />
 
             <FilePreviewModal
-                isOpen={!!selectedPhoto  }
+                isOpen={!!selectedPhoto}
                 onClose={() => setSelectedPhoto(null)}
                 fileUrl={selectedPhoto || ""}
                 fileName={`Photo de ${category.name}`}

@@ -1,4 +1,3 @@
-
 import api from "../api/axios";
 
 class TemplateService {
@@ -33,6 +32,13 @@ class TemplateService {
 
   async updateTemplate(id: string, credentials: unknown) {
     const response = await api.put(`/templates/${id}`, credentials);
+    return response;
+  }
+
+  async sendSignForm(requestId: string, url: string) {
+    const response = await api.post(`/templates/${requestId}/sign-form`, {
+      url,
+    });
     return response;
   }
 }

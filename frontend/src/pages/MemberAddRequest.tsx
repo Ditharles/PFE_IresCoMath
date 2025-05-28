@@ -299,7 +299,7 @@ const MemberAddRequest = () => {
     };
 
     return (
-        <div className={`min-h-screen flex flex-col ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-800"}`}>
+        <div className={`min-h-screen flex flex-col`} style={{ background: "var(--background)", color: "var(--foreground)" }}>
             {loading && <LoadingOverlay loadingText="Chargement des données..." />}
 
 
@@ -354,7 +354,7 @@ const MemberAddRequest = () => {
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <div className={`${isOpen ? 'fixed inset-0 bg-black/20 backdrop-blur-sm z-40' : ''}`} />
-                <DialogContent className="sm:max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-lg p-6 shadow-lg">
+                <DialogContent className="sm:max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-background rounded-lg p-6 shadow-lg">
                     <DialogHeader>
                         <DialogTitle>Motif du rejet</DialogTitle>
                     </DialogHeader>

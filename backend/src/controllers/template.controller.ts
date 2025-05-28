@@ -2,7 +2,6 @@ import {
   downloadFile,
   extractTextFromDocx,
   findPlaceHolders,
-  modifyText,
   updateAllForm,
   validateTemplate,
 } from "../services/template.service";
@@ -10,12 +9,6 @@ import { AuthRequest } from "../types/auth";
 import { Response } from "express";
 import { ERROR_MESSAGES, validateRequestBody } from "../utils/authUtils";
 import prisma from "../utils/db";
-import { Prisma, RequestType } from "../../generated/prisma";
-import { getRequest } from "./requests.controller";
-import { getRequestById } from "../services/requests.service";
-import { getUserByID } from "../services/auth.service";
-import { utapi } from "../uploadthing";
-import { defineValueMap } from "../utils/templates";
 
 export const getTemplates = async (req: AuthRequest, res: Response) => {
   try {
@@ -85,6 +78,12 @@ export const updateTemplate = async (req: AuthRequest, res: Response) => {
       res.status(400).json({ message: "ID du template manquant" });
     }
 
+    const findTemplate = await prisma.template.findUnique({
+      where: { id: req.params.id },
+    });
+    if (!findTemplate) {
+      res.status(404).json({ message: "Template non trouvé" });
+    }
     const template = await prisma.template.update({
       where: { id: req.params.id },
       data: {
@@ -92,9 +91,16 @@ export const updateTemplate = async (req: AuthRequest, res: Response) => {
         updatedAt: new Date(),
       },
     });
-    const { status, message } = await updateAllForm(template);
-    if (status !== 200) {
-      res.status(status).json({ message });
+
+    if (
+      findTemplate!.for !== template.for ||
+      findTemplate!.placeholders.length !== template.placeholders.length ||
+      findTemplate!.url !== template.url
+    ) {
+      const { status, message } = await updateAllForm(template);
+      if (status !== 200) {
+        res.status(status).json({ message });
+      }
     }
     res.status(200).json({
       message: "Template mis à jour avec succès",
@@ -188,7 +194,7 @@ export const deleteTemplate = async (req: AuthRequest, res: Response) => {
     const template = await prisma.template.delete({
       where: { id: req.params.id },
     });
-    const request = await prisma.request.updateMany({
+    await prisma.request.updateMany({
       where: {
         type: template.for,
         signForm: null,

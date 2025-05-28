@@ -116,7 +116,7 @@ export default function ConfirmationEmail() {
             <div className="flex flex-col space-y-4">
               <Link
                 to="/login"
-                className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="bg-blue-600 text-foreground py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 Se connecter
               </Link>
@@ -170,7 +170,7 @@ export default function ConfirmationEmail() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-blue-600 text-foreground py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isSubmitting ? (
                   <>
@@ -198,7 +198,7 @@ export default function ConfirmationEmail() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
 
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">{renderContent()}</div>
+      <div className="max-w-md w-full bg-background rounded-xl shadow-lg p-8">{renderContent()}</div>
     </div>
   );
 }

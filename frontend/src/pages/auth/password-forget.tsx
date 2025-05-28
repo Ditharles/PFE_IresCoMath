@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AuthService from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
-import {toast } from "sonner";
+import { toast } from "sonner";
 
 const authService = new AuthService();
 
@@ -24,10 +24,10 @@ const PasswordForget = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-96">
+      <div className="bg-background p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Mot de passe oublié</h2>
 
-      
+
         <form onSubmit={handleSubmit} className="flex flex-col">
           <input
             type="email"
@@ -39,7 +39,7 @@ const PasswordForget = () => {
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-foreground p-2 rounded hover:bg-blue-600"
           >
             Envoyer
           </button>

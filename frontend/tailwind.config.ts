@@ -2,7 +2,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: "class", // ← active le dark mode via class
+  darkMode: "class", // ← doit être "class"
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}", // ← scanne tous les fichiers dans src

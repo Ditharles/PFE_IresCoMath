@@ -75,7 +75,7 @@ async function main() {
         id: true,
         teacherResearcher: {
           select: {
-            userId: true,
+            id: true,
           },
         },
       },
@@ -94,7 +94,7 @@ async function main() {
         masterStudent: {
           create: {
             masterYear: 2023,
-            supervisorId: enseignantChercheurUser.teacherResearcher!.userId,
+            supervisorId: enseignantChercheurUser.teacherResearcher!.id,
           },
         },
       },
@@ -113,8 +113,7 @@ async function main() {
         doctoralStudent: {
           create: {
             thesisYear: 2022,
-            thesisSupervisorId:
-              enseignantChercheurUser.teacherResearcher!.userId,
+            thesisSupervisorId: enseignantChercheurUser.teacherResearcher!.id,
           },
         },
       },

@@ -254,7 +254,7 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
             {/* Reject Dialog */}
             {canReject && (
                 <Dialog open={openRejectDialog} onOpenChange={setOpenRejectDialog}>
-                    <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto">
+                    <DialogContent className="bg-background p-6 rounded-lg max-w-md w-full m-auto">
                         <DialogHeader>
                             <DialogTitle>Motif de rejet</DialogTitle>
                             <DialogDescription>

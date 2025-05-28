@@ -4,10 +4,9 @@ import {
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
 import { ScrollArea } from "../../../components/ui/scroll-area";
-import path from "path";
 import { ClipboardList } from "lucide-react";
 
-const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
+const SidebarDirector = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const menuItems = [
@@ -52,8 +51,8 @@ const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
 
     return (
         <aside
-            className={` h-full relative w-64 p-4 shadow-md z-40 
-        ${darkMode ? "bg-gray-800" : "bg-white"}`}
+            className="h-full relative w-64 p-4 shadow-md z-40 bg-sidebar text-sidebar-foreground"
+
         >
             <div className="flex flex-col h-full fixed">
 
@@ -67,8 +66,8 @@ const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
                             const Icon = item.icon;
 
                             const buttonClass = active
-                                ? darkMode ? "bg-blue-900 text-blue-100" : "bg-blue-100 text-blue-700"
-                                : darkMode ? "hover:bg-gray-700 text-gray-300" : "hover:bg-gray-100 text-gray-700";
+                                ? "bg-accent text-accent-foreground "
+                                : "hover:bg-hover ";
 
                             if (hasSubmenus) {
                                 return (
@@ -91,12 +90,8 @@ const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
                                                                 to={submenu.path}
                                                                 className={`block rounded-md px-4 py-2 text-sm transition-colors
                                   ${isActive(submenu.path)
-                                                                        ? darkMode
-                                                                            ? "bg-blue-800/50 text-blue-100"
-                                                                            : "bg-blue-50 text-blue-600"
-                                                                        : darkMode
-                                                                            ? "hover:bg-gray-700 text-gray-400"
-                                                                            : "hover:bg-gray-50 text-gray-600"
+                                                                        ? "bg-accent text-accent-foreground"
+                                                                        : "hover:bg-secondary hover:text-accent-foreground"
                                                                     }`}
                                                             >
                                                                 {submenu.name}
@@ -114,7 +109,8 @@ const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
                                 <li key={index}>
                                     <Link
                                         to={item.path}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${buttonClass}`}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${buttonClass} text-sidebar-   accent-foreground`}
+
                                     >
                                         {Icon && <Icon className="w-4 h-4" />}
                                         <span>{item.name}</span>

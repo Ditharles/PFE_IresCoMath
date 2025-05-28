@@ -7,6 +7,8 @@ export const requestFields = {
   status: true,
   createdAt: true,
   notes: true,
+  awaitForm: true,
+  signForm: true,
   user: {
     select: {
       id: true,

@@ -30,6 +30,7 @@ import EquipmentPage from "../pages/equipment/Equipment";
 import { Calendar } from "../components/ui/calendar";
 import { TemplateList } from "../pages/templates/List";
 import AddTemplate from "../pages/templates/Add";
+import EditTemplate from "../pages/templates/Edit";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -155,6 +156,10 @@ const routes: RouteObject[] = [
             {
                 path: "templates/ajouter",
                 element: <AddTemplate />
+            },
+            {
+                path: "templates/modifier/:id",
+                element: <EditTemplate />
             }
         ]
     },

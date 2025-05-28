@@ -24,7 +24,7 @@ const Categories = () => {
         setIsLoading(true);
         try {
             const response = await equipmentService.getAllCategories();
-            
+
             setCategories(response.data);
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -61,7 +61,7 @@ const Categories = () => {
     );
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 " >
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Gestion des catégories d'équipement</h1>
                 <div className="flex gap-2">

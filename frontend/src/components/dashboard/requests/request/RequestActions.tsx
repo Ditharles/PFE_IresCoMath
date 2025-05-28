@@ -124,7 +124,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                         onOpenChange={setIsDeleteDialogOpen}
 
                     >
-                        <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto" >
+                        <DialogContent className="bg-background p-6 rounded-lg max-w-md w-full m-auto" >
                             <DialogHeader>
                                 <DialogTitle>Confirmer la suppression</DialogTitle>
                             </DialogHeader>
@@ -164,7 +164,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                             Rejeter
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto" >
+                    <DialogContent className="bg-background p-6 rounded-lg max-w-md w-full m-auto" >
                         <DialogHeader>
                             <DialogTitle>Motif de rejet</DialogTitle>
                             <DialogDescription>

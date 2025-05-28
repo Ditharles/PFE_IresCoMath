@@ -54,7 +54,7 @@ export const DatePicker = ({ value, onChange, className }: DatePickerProps) => {
             </Button>
 
             {showCalendar && (
-                <div className="absolute  z-50 mt-1 bg-white border rounded-md shadow-lg p-2">
+                <div className="absolute  z-50 mt-1 bg-background border rounded-md shadow-lg p-2">
                     <Calendar
                         mode="single"
                         selected={value}

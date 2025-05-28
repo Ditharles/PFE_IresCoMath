@@ -100,9 +100,9 @@ const Inscription: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 relative">
-    
+
       {loading && <LoadingOverlay loadingText="Traitement en cours..." />}
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8 relative">
+      <div className="max-w-3xl mx-auto bg-background rounded-xl shadow-lg p-8 relative">
         <h1 className="text-3xl font-bold mb-8 text-center text-gray-900">Inscription</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <CommonFieldsInputs commonFields={commonFields} handleChangeCommon={handleChangeCommon} />
