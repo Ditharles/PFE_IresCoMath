@@ -9,110 +9,103 @@ datasource db {
 }
 
 model User {
-  id               String               @id @default(uuid())
-  email            String               @unique
-  password         String
-  role             Role
-  phone            String?
-  cin              String?              // Ajout de cin
-  sessions         Session[]
-  notifications    Notification[]
-  doctoralStudent  DoctoralStudent?
-  masterStudent    MasterStudent?
+  id                String             @id @default(uuid())
+  email             String             @unique
+  password          String
+  firstName         String
+  lastName          String
+  photo             String?
+  role              Role
+  phone             String?
+  cin               String?
+  sessions          Session[]
+  notifications     Notification[]
+  doctoralStudent   DoctoralStudent?
+  masterStudent     MasterStudent?
   teacherResearcher TeacherResearcher?
-  admin            Admin?
-  createdAt        DateTime             @default(now())
-  requests         Request[]
-  bankData         String?              @unique
-  signature        String?
+  admin             Admin?
+  createdAt         DateTime           @default(now())
+  requests          Request[]
+  bankData          String?            @unique
+  signature         String?
   equipmentHistory  EquipmentHistory[]
 
   @@index([email])
 }
 
 model DoctoralStudent {
-  id               String              @id @default(uuid())
-  lastName         String
-  firstName        String
-  cin              String              // Ajout de cin
-  thesisYear       Int
-  thesisSupervisor TeacherResearcher   @relation(fields: [thesisSupervisorId], references: [id])
+  id                 String            @id @default(uuid())
+  thesisYear         Int
+  thesisSupervisor   TeacherResearcher @relation(fields: [thesisSupervisorId], references: [id])
   thesisSupervisorId String
-  photo            String?
-  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String              @unique
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String            @unique
 
   @@index([userId])
 }
 
 model DoctoralStudentRequest {
-  id               String              @id @default(uuid())
-  lastName         String
-  firstName        String
-  email            String              @unique
-  phone            String              @unique
-  cin              String              // Ajout de cin
-  thesisYear       Int
-  createdAt        DateTime            @default(now())
-  thesisSupervisor TeacherResearcher   @relation(fields: [thesisSupervisorId], references: [id])
+  id                 String            @id @default(uuid())
+  lastName           String
+  firstName          String
+  email              String            @unique
+  phone              String            @unique
+  cin                String
+  thesisYear         Int
+  createdAt          DateTime          @default(now())
+  thesisSupervisor   TeacherResearcher @relation(fields: [thesisSupervisorId], references: [id])
   thesisSupervisorId String
-  status           RequestStatus       @default(PENDING)
-  rejectionReason  String?
-  photo            String?
-  isConfirmed      Boolean             @default(false)
+  status             RequestStatus     @default(PENDING)
+  rejectionReason    String?
+  photo              String?
+  isConfirmed        Boolean           @default(false)
 
   @@index([email])
 }
 
 model MasterStudent {
-  id               String              @id @default(uuid())
-  lastName         String
-  firstName        String
-  cin              String              // Ajout de cin
-  supervisor       TeacherResearcher   @relation(fields: [supervisorId], references: [id])
-  supervisorId     String
-  masterYear       Int
-  photo            String?
-  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String              @unique
+  id String @id @default(uuid())
+
+  supervisor   TeacherResearcher @relation(fields: [supervisorId], references: [id])
+  supervisorId String
+  masterYear   Int
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String            @unique
 
   @@index([userId])
 }
 
 model MasterStudentRequest {
-  id               String              @id @default(uuid())
-  lastName         String
-  firstName        String
-  email            String              @unique
-  phone            String
-  cin              String              // Ajout de cin
-  masterYear       Int
-  createdAt        DateTime            @default(now())
-  supervisor       TeacherResearcher   @relation(fields: [supervisorId], references: [id])
-  supervisorId     String
-  status           RequestStatus       @default(PENDING)
-  rejectionReason  String?
-  photo            String?
-  isConfirmed      Boolean             @default(false)
+  id              String            @id @default(uuid())
+  lastName        String
+  firstName       String
+  email           String            @unique
+  phone           String
+  cin             String // Ajout de cin
+  masterYear      Int
+  createdAt       DateTime          @default(now())
+  supervisor      TeacherResearcher @relation(fields: [supervisorId], references: [id])
+  supervisorId    String
+  status          RequestStatus     @default(PENDING)
+  rejectionReason String?
+  photo           String?
+  isConfirmed     Boolean           @default(false)
 
   @@index([email])
 }
 
 model TeacherResearcher {
-  id                     String                 @id @default(uuid())
-  lastName               String
-  firstName              String
-  cin                    String
-  position               String
-  grade                  Grade
-  institution            String
-  doctoralStudents       DoctoralStudent[]
-  masterStudents         MasterStudent[]
-  masterStudentRequests  MasterStudentRequest[]
+  id                      String                   @id @default(uuid())
+  position                String
+  grade                   Grade
+  institution             String
+  doctoralStudents        DoctoralStudent[]
+  masterStudents          MasterStudent[]
+  masterStudentRequests   MasterStudentRequest[]
   doctoralStudentRequests DoctoralStudentRequest[]
-  photo                  String?
-  user                   User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId                 String                 @unique
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 
   @@index([userId])
 }
@@ -124,7 +117,7 @@ model TeacherResearcherRequest {
   email           String        @unique
   position        String
   phone           String
-  cin             String        
+  cin             String
   grade           Grade
   institution     String
   status          RequestStatus @default(PENDING)
@@ -137,12 +130,9 @@ model TeacherResearcherRequest {
 }
 
 model Admin {
-  id           Int    @id @default(autoincrement())
-  lastName     String
-  firstName    String
-  cin          String 
-  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String @unique
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 
   @@index([userId])
 }
@@ -158,14 +148,15 @@ model Session {
 }
 
 model Notification {
-  id         String             @id @default(uuid())
-  title      String
-  message    String
-  type       NotificationType   
-  status     NotificationStatus @default(UNREAD)
-  createdAt  DateTime           @default(now())
-  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
+  id        String             @id @default(uuid())
+  title     String
+  message   String
+  type      NotificationType
+  status    NotificationStatus @default(UNREAD)
+  createdAt DateTime           @default(now())
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
   @@index([userId])
   @@index([status])
   @@index([type])
@@ -184,90 +175,95 @@ enum NotificationType {
 }
 
 model EquipmentCategory {
-  id        String     @id @default(uuid())
-  type      EquipmentType
-  name      String
-  description String?
-  quantity  Int
-  photo String[]
-  equipments Equipment[]
+  id                    String                 @id @default(uuid())
+  type                  EquipmentType
+  name                  String
+  description           String?
+  quantity              Int
+  photo                 String[]
+  equipments            Equipment[]
   equipmentLoanRequests EquipmentLoanRequest[]
 }
 
 model Equipment {
-  id             String             @id @default(uuid())
-  name           String
-  category       EquipmentCategory   @relation(fields: [categoryId], references: [id])
-  categoryId     String
-  specifications Json
-  acquisitionDate DateTime
-photo String []
-  history        EquipmentHistory[]
-status EquipmentStatus @default(AVAILABLE)
+  id                   String                 @id @default(uuid())
+  name                 String
+  category             EquipmentCategory      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId           String
+  notes               String?
+  cost                 Float?
+  bill                 String?
+  specifications       Json
+  acquisitionDate      DateTime
+  photo                String[]
+  history              EquipmentHistory[]
+  status               EquipmentStatus        @default(AVAILABLE)
   EquipmentLoanRequest EquipmentLoanRequest[]
 }
 
 model EquipmentHistory {
   id          String    @id @default(uuid())
-  equipment    Equipment  @relation(fields: [equipmentId], references: [id])
-  equipmentId  String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  equipmentId String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   borrowDate  DateTime
   returnDate  DateTime?
 }
 
 model Request {
-  id                String                 @id @default(uuid())
-  type              RequestType
-  user              User                   @relation(fields: [userId], references: [id])
-  userId            String
-  createdAt         DateTime               @default(now())
-  status            RequestStatus          @default(PENDING)
-  purchaseRequest PurchaseRequest?
-  loanRequest     EquipmentLoanRequest?
-  notes             String?
-  stage         RequestStage?
-  mission         Mission?
-  scientificEvent ScientificEvent?
+  id                  String                @id @default(uuid())
+  type                RequestType
+  user                User                  @relation(fields: [userId], references: [id])
+  userId              String
+  createdAt           DateTime              @default(now())
+  status              RequestStatus         @default(PENDING)
+  purchaseRequest     PurchaseRequest?
+  loanRequest         EquipmentLoanRequest?
+  notes               String?
+  stage               RequestStage?
+  mission             Mission?
+  scientificEvent     ScientificEvent?
   articleRegistration ArticleRegistration?
+  awaitForm           String?
+  signForm            String?
 }
 
 model PurchaseRequest {
-  id              String      @id @default(uuid())
-  request         Request     @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  requestId       String      @unique
-  equipmentType    EquipmentType
-  name            String
-  url String? 
-  quantity        Float
-  photo           String?
-  specifications  Json
-  costEstimation  Float
+  id             String        @id @default(uuid())
+  request        Request       @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId      String        @unique
+  equipmentType  EquipmentType
+  name           String
+  url            String?
+  quantity       Float
+  photo          String?
+  specifications Json
+  costEstimation Float
 }
 
 model EquipmentLoanRequest {
-  id           String    @id @default(uuid())
-  request      Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  requestId    String    @unique
-  category     EquipmentCategory? @relation(fields: [categoryId], references: [id])
-  categoryId    String?
-equipment Equipment ? @relation(fields: [equipmentId	],references: [id])
-equipmentId String?
-  quantity     Float
-  startDate    DateTime
-  endDate      DateTime
+  id          String             @id @default(uuid())
+  request     Request            @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId   String             @unique
+  category    EquipmentCategory? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  equipment   Equipment?         @relation(fields: [equipmentId], references: [id])
+  equipmentId String?
+  quantity    Float
+  startDate   DateTime
+  endDate     DateTime
 }
 
 model RequestStage {
-  id                String    @id @default(uuid())
-  request           Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  requestId         String    @unique 
-  organization           String
-  organizationEmail      String
-  organizationUrl      String?
+  id                String   @id @default(uuid())
+  request           Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId         String   @unique
+  organization      String
+  organizationEmail String
+  organizationUrl   String?
   supervisor        String?
   supervisorEmail   String?
   supervisorPhone   String?
@@ -278,41 +274,57 @@ model RequestStage {
 }
 
 model Mission {
-  id          String    @id @default(uuid())
-  request     Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  requestId   String    @unique 
+  id               String   @id @default(uuid())
+  request          Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId        String   @unique
   hostOrganization String
-  objective String
-  country     String
-  startDate   DateTime
-  endDate     DateTime
+  objective        String
+  country          String
+  startDate        DateTime
+  endDate          DateTime
   specificDocument String[]
-  document String[]
+  document         String[]
 }
 
 model ScientificEvent {
-  id              String    @id @default(uuid())
-  request         Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  requestId       String    @unique 
-  location        String
-  urlEvent String ?
-  mailAcceptation String 
-  title           String
+  id               String   @id @default(uuid())
+  request          Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId        String   @unique
+  location         String
+  urlEvent         String?
+  mailAcceptation  String
+  title            String
   articlesAccepted Boolean
-  articleCover    String?
-  startDate       DateTime
-  endDate         DateTime
+  articleCover     String?
+  startDate        DateTime
+  endDate          DateTime
 }
 
 model ArticleRegistration {
-  id          String    @id @default(uuid())
-  request     Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  title String
-  requestId   String    @unique 
-  conference  String ?
-  urlConference String ?
-  articleCover String
-  amount      String 
+  id            String  @id @default(uuid())
+  request       Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  title         String
+  requestId     String  @unique
+  conference    String?
+  urlConference String?
+  articleCover  String
+  amount        String
+}
+
+model Template {
+  id           String      @id @default(uuid())
+  name         String
+  for          RequestType @unique
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  url          String
+  language     Language    @default(FRANCAIS)
+  placeholders String[]
+}
+
+enum Language {
+  ARABE
+  FRANCAIS
 }
 
 enum EquipmentType {
@@ -323,19 +335,19 @@ enum EquipmentType {
 }
 
 enum EquipmentStatus {
-   AVAILABLE
+  AVAILABLE
   LOANED
-  PENDING_DELIVERY 
-  OWNER_POSSESSION 
+  PENDING_DELIVERY
+  OWNER_POSSESSION
 }
+
 enum RequestType {
   MISSION
   INTERNSHIP
   CONFERENCE_NATIONAL
   EQUIPMENT_PURCHASE
-  EQUIPMENT_LOAN 
+  EQUIPMENT_LOAN
   REPAIR_MAINTENANCE
-  CONTRACTUAL
   ARTICLE_REGISTRATION
 }
 

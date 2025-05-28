@@ -63,6 +63,7 @@ const Equipments = ({ isCategoryPage = false, equipmentsCategory, pendingDeliver
     }, [pendingDelivery]);
 
     const handleEquipmentUpdate = (updatedEquipment: Equipment) => {
+        console.log(updatedEquipment);
         setEquipments(prevEquipments =>
             prevEquipments.map(equipment =>
                 equipment.id === updatedEquipment.id ? updatedEquipment : equipment

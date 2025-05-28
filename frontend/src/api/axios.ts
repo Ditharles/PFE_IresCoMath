@@ -6,11 +6,17 @@ import {
   removeUser,
 } from "../utils/tokens.utils";
 
+// Client principal avec intercepteurs
 const api = axios.create({
   baseURL: "http://localhost:8000",
 });
 
-// Liste des routes ou méthodes qui ne nécessitent pas de token
+// Client sans intercepteurs pour le refresh
+const refreshClient = axios.create({
+  baseURL: "http://localhost:8000",
+});
+
+// Routes publiques (ne nécessitent pas de token)
 const publicRoutes = [
   "/auth/login",
   "/auth/register",
@@ -20,7 +26,7 @@ const publicRoutes = [
   "/auth/forgot-password",
 ];
 
-// Ajout du token d'accès au header de la requête si nécessaire
+// Ajout automatique du token dans les requêtes privées
 api.interceptors.request.use(
   (config) => {
     if (!publicRoutes.some((route) => config.url?.includes(route))) {
@@ -29,40 +35,51 @@ api.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
-
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Les erreurs d'authentification
+// Rafraîchissement du token en cas de 401
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response && error.response.status === 401) {
-      await refreshToken();
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const newAccessToken = await refreshToken();
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return api(originalRequest); // Rejoue la requête échouée
+      } catch (err) {
+        return Promise.reject(err); // Token expiré ou erreur fatale
+      }
     }
+
     return Promise.reject(error);
   }
 );
 
-async function refreshToken() {
+// Fonction de rafraîchissement de token
+async function refreshToken(): Promise<string> {
   try {
-    console.log("esaaie lors de la tentaitf de raffraichissement")
+    console.log("Essai lors de la tentative de rafraîchissement");
+
     const refreshToken = getToken("refreshToken");
-    
     if (!refreshToken) throw new Error("Refresh token not found");
-    const response = await api.post(
+
+    const response = await refreshClient.post(
       "/auth/refresh-token",
       {},
       {
         headers: {
-          refreshToken: refreshToken || "",
+          refreshToken: refreshToken,
         },
       }
     );
+
     const { accessToken } = response.data;
     setToken("accessToken", accessToken);
     return accessToken;

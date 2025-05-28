@@ -220,7 +220,7 @@ const EquipmentFields = () => {
                         <FormLabel>Date d'acquisition</FormLabel>
                         <FormControl>
 
-                            <DatePicker {...field} />
+                            <DatePicker className='z-100' {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>

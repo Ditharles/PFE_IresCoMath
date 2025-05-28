@@ -1,24 +1,20 @@
-
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/input';
-import { Mail } from 'lucide-react';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import FileUpload from '../../FileUpload';
-
 import { DatePicker } from '../DatePicker';
 
 const ScientificEventForm: React.FC = () => {
   const { control, watch, setValue, formState: { errors } } = useFormContext();
   const articlesAccepted = watch('articlesAccepted') || false;
 
-
   const getFieldClass = (fieldName: string) => {
     return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
   };
 
-  const handleFileUpload = (fileUrl: string[] | string) => {
+  const handleFileUpload = (fileUrl: string[] | string, fieldName: string) => {
     if (fileUrl) {
-      setValue('articleCover', Array.isArray(fileUrl) ? fileUrl[0] : fileUrl);
+      setValue(fieldName, Array.isArray(fileUrl) ? fileUrl[0] : fileUrl);
     }
   };
 
@@ -78,18 +74,18 @@ const ScientificEventForm: React.FC = () => {
         <FormField
           control={control}
           name="mailAcceptation"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Email d'acceptation *</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Input
-                    type="email"
-                    {...field}
-                    className={getFieldClass('mailAcceptation')}
-                  />
-                  <Mail className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                </div>
+                <FileUpload
+                  endpoint="mailAcceptation"
+                  maxFiles={1}
+                  acceptedTypes={['application/pdf', 'image/*']}
+                  headerText="Téléverser l'email d'acceptation"
+                  subHeaderText="PDF ou image (max 5MB)"
+                  onFileUploaded={(fileUrl) => handleFileUpload(fileUrl, 'mailAcceptation')}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -105,7 +101,7 @@ const ScientificEventForm: React.FC = () => {
           control={control}
           name="articlesAccepted"
           render={({ field }) => (
-            <FormItem className="flex items-center gap-3 px-4 py-2 shadow-sm">
+            <FormItem className="flex items-center gap-3 px-4 py-2 ">
               <FormControl>
                 <Input
                   type="checkbox"
@@ -135,7 +131,7 @@ const ScientificEventForm: React.FC = () => {
                     acceptedTypes={['application/pdf', 'image/*']}
                     headerText="Téléverser la première page"
                     subHeaderText="PDF ou image (max 5MB)"
-                    onFileUploaded={handleFileUpload}
+                    onFileUploaded={(fileUrl) => handleFileUpload(fileUrl, 'articleCover')}
                   />
                 </FormControl>
                 <FormMessage />
@@ -154,7 +150,6 @@ const ScientificEventForm: React.FC = () => {
             <FormItem className="flex-1 w-full">
               <FormLabel>Date de début</FormLabel>
               <FormControl>
-
                 <DatePicker {...field} />
               </FormControl>
               <FormMessage />
@@ -166,18 +161,15 @@ const ScientificEventForm: React.FC = () => {
           name="endDate"
           render={({ field }) => (
             <FormItem className="flex-1 w-full">
-              <FormLabel>Date de dfin</FormLabel>
+              <FormLabel>Date de fin</FormLabel>
               <FormControl>
-
                 <DatePicker {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
       </div>
-
     </div>
   );
 };

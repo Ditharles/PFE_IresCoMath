@@ -7,6 +7,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '../../ui/form';
 
 import { X } from 'lucide-react';
@@ -49,6 +50,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 className={getFieldClass('title')}
               />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -65,6 +67,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 className={getFieldClass('conference')}
               />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -86,6 +89,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 <Link className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               </div>
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -127,6 +131,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 )}
               </div>
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -147,6 +152,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 className={getFieldClass('amount')}
               />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />

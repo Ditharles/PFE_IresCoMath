@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RequestType } from '../../types/request';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Tooltip, TooltipTrigger, TooltipContent } from '../../components/ui/tooltip';
+import { HoverCard, HoverCardTrigger, HoverCardContent } from '../../components/ui/hover-card';
 import { Button } from '../../components/ui/button';
 import { Skeleton } from '../../components/ui/skeleton';
 import RequestsService from '../../services/requests.service';
@@ -15,7 +15,7 @@ import {
     Package,
     PackageCheck,
     ScrollText,
-    UserPlus
+
 } from 'lucide-react';
 
 const requestTypeDetails = {
@@ -54,11 +54,7 @@ const requestTypeDetails = {
         description: 'Frais de publication scientifique',
         icon: <ScrollText className="w-5 h-5 sm:w-6 sm:h-6" />
     },
-    [RequestType.CONTRACTUAL]: {
-        label: 'Contractuel',
-        description: 'Demande de recrutement contractuel',
-        icon: <UserPlus className="w-5 h-5 sm:w-6 sm:h-6" />
-    },
+
 };
 
 const NewRequests = () => {
@@ -88,15 +84,15 @@ const NewRequests = () => {
         fetchPossibleRequests();
     }, []);
 
-    const handleRequestClick = (requestType) => {
+    const handleRequestClick = (requestType: RequestType) => {
         const routeMap = {
             [RequestType.MISSION]: 'mission',
             [RequestType.INTERNSHIP]: 'stage',
-            [RequestType.CONFERENCE_NATIONAL]: 'conference',
+            [RequestType.CONFERENCE_NATIONAL]: 'conference-nationale',
             [RequestType.EQUIPMENT_PURCHASE]: 'achat-materiel',
             [RequestType.EQUIPMENT_LOAN]: 'pret-materiel',
             [RequestType.REPAIR_MAINTENANCE]: 'reparation-maintenance',
-            [RequestType.CONTRACTUAL]: 'contractuel',
+
             [RequestType.ARTICLE_REGISTRATION]: 'inscription-article'
         };
 
@@ -154,8 +150,8 @@ const NewRequests = () => {
                             return null;
                         }
                         return (
-                            <Tooltip key={requestType}>
-                                <TooltipTrigger asChild>
+                            <HoverCard key={requestType}>
+                                <HoverCardTrigger asChild>
                                     <Button
                                         variant="outline"
                                         className="h-24 sm:h-32 w-full flex flex-col items-center justify-center gap-2 sm:gap-3 p-2 sm:p-4 hover:bg-secondary/80 transition-colors"
@@ -164,12 +160,16 @@ const NewRequests = () => {
                                         {details.icon}
                                         <span className="text-base sm:text-lg font-semibold text-center line-clamp-2">{details.label}</span>
                                     </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top" align="center" className="max-w-[200px] text-center">
-                                    <p className="font-medium">{details.label}</p>
-                                    <p className="text-muted-foreground text-sm">{details.description}</p>
-                                </TooltipContent>
-                            </Tooltip>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-64">
+                                    <div className="space-y-1">
+                                        <h4 className="text-sm font-semibold">{details.label}</h4>
+                                        <p className="text-sm text-muted-foreground">
+                                            {details.description}
+                                        </p>
+                                    </div>
+                                </HoverCardContent>
+                            </HoverCard>
                         );
                     })}
                 </div>

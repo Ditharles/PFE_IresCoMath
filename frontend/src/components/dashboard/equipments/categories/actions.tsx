@@ -16,6 +16,7 @@ import { Button } from "../../../ui/button";
 import EditCategory from "./EditCategory";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../../../ui/dropdown-menu";
 import { EquipmentCategory } from "../../../../types/equipment";
+import EquipmentService from "../../../../services/equipment.service";
 
 interface ActionsCellProps {
     category: EquipmentCategory;
@@ -40,7 +41,10 @@ const ActionsCell = ({
     const handleDelete = async () => {
         try {
             setIsSubmitting(true);
+            const response = await new EquipmentService().deleteCategory(category.id);
             onCategoryDelete(category.id);
+
+            toast.success(response.data.message);
         } catch (error) {
             console.error("Erreur lors de la suppression de la catégorie:", error);
             toast.error("Une erreur est survenue lors de la suppression");
@@ -78,14 +82,14 @@ const ActionsCell = ({
         }
     ];
 
-   
+
     const handleMenuItemClick = (actionFn) => {
-      
+
         setDropdownOpen(false);
 
-     
+
         setTimeout(() => {
-            
+
             actionFn();
         }, 100);
     };

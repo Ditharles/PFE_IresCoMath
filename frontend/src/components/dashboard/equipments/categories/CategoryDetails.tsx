@@ -9,6 +9,7 @@ import { Separator } from "../../../ui/separator";
 import EditCategory from "./EditCategory";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import FilePreviewModal from "../../../FilePreviewModal";
 
 interface CategoryDetailsProps {
     category: EquipmentCategory;
@@ -16,7 +17,9 @@ interface CategoryDetailsProps {
 
 const CategoryDetails = ({ category }: CategoryDetailsProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-const navigate = useNavigate();
+    const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+    const navigate = useNavigate();
+
     const getTypeBadgeVariant = (): "default" | "secondary" | "outline" => {
         switch (category.type) {
             case "EQUIPMENT":
@@ -38,13 +41,13 @@ const navigate = useNavigate();
 
     return (
         <>
-        <Button
+            <Button
                 variant="ghost"
-                className="mb-4 cursor-pointer"
-                onClick={() => navigate('/materiels/inventaire')}
+                className="cursor-pointer"
+                onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Retour à la liste des categories
+                Retour
             </Button>
             <Card className="w-full">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -82,44 +85,48 @@ const navigate = useNavigate();
                             <p className="text-lg">{category.quantity}</p>
                         </div>
 
-                    <div className="space-y-1">
-                        <p className="text-sm font-medium text-muted-foreground">Équipements disponibles</p>
-                        <p className="text-lg">{availableCount}</p>
-                    </div>
-                </div>
-
-                <Separator className="my-4" />
-
-                {/* Section description */}
-                <div className="space-y-1">
-                    <p className="text-sm font-medium text-muted-foreground">Description</p>
-                    <p className="text-sm bg-muted/50 p-2 rounded">
-                        {category.description || "Aucune description fournie"}
-                    </p>
-                </div>
-
-                <Separator className="my-4" />
-
-                {/* Section photos */}
-                {category.photo && category.photo.length > 0 && (
-                    <>
                         <div className="space-y-1">
-                            <p className="text-sm font-medium text-muted-foreground">Photos</p>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                                {category.photo.map((photo, index) => (
-                                    <div key={index} className="w-32 h-32 rounded-md overflow-hidden border">
-                                        <img 
-                                            src={photo} 
-                                            alt={`Photo ${index + 1} de ${category.name}`}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
+                            <p className="text-sm font-medium text-muted-foreground">Équipements disponibles</p>
+                            <p className="text-lg">{availableCount}</p>
                         </div>
-                        <Separator className="my-4" />
-                    </>
-                )}
+                    </div>
+
+                    <Separator className="my-4" />
+
+                    {/* Section description */}
+                    <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Description</p>
+                        <p className="text-sm bg-muted/50 p-2 rounded">
+                            {category.description || "Aucune description fournie"}
+                        </p>
+                    </div>
+
+                    <Separator className="my-4" />
+
+                    {/* Section photos */}
+                    {category.photo && category.photo.length > 0 && (
+                        <>
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">Photos</p>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {category.photo.map((photo, index) => (
+                                        <div 
+                                            key={index} 
+                                            className="w-32 h-32 rounded-md overflow-hidden border cursor-pointer hover:opacity-80 transition-opacity"
+                                            onClick={() => setSelectedPhoto(photo)}
+                                        >
+                                            <img
+                                                src={photo}
+                                                alt={`Photo ${index + 1} de ${category.name}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <Separator className="my-4" />
+                        </>
+                    )}
 
                     {/* Section ID */}
                     <div className="space-y-1">
@@ -129,10 +136,17 @@ const navigate = useNavigate();
                 </CardContent>
             </Card>
 
-            <EditCategory 
+            <EditCategory
                 category={category}
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
+            />
+
+            <FilePreviewModal
+                isOpen={!!selectedPhoto  }
+                onClose={() => setSelectedPhoto(null)}
+                fileUrl={selectedPhoto || ""}
+                fileName={`Photo de ${category.name}`}
             />
         </>
     );

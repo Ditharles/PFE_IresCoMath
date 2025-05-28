@@ -20,6 +20,7 @@ import {
 import { Equipment } from "../../../types/equipment";
 import { Button } from "../../ui/button";
 import EditEquipment from "./EditEquipment";
+import EquipmentService from "../../../services/equipment.service";
 
 interface ActionsCellProps {
     equipment: Equipment;
@@ -34,6 +35,7 @@ const ActionsCell = ({
     onDelete,
     className = ""
 }: ActionsCellProps) => {
+    const equipmentService = new EquipmentService();
     const navigate = useNavigate();
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -43,7 +45,7 @@ const ActionsCell = ({
     const handleDelete = useCallback(async () => {
         try {
             setIsSubmitting(true);
-            // await deleteEquipmentService(equipment.id);
+            await equipmentService.deleteEquipment(equipment.id);
             toast.success("Équipement supprimé avec succès");
             onDelete(equipment.id);
             setIsDeleteDialogOpen(false);

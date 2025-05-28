@@ -2,11 +2,11 @@ import { Response } from "express";
 import { AuthRequest } from "../types/auth";
 import prisma from "../utils/db";
 import { ERROR_MESSAGES, validateRequestBody } from "../utils/authUtils";
+import { createCategory, switchCategory } from "../utils/equipment";
 
 export const getAllCategories = async (req: AuthRequest, res: Response) => {
   try {
     const equipmentCategories = await prisma.equipmentCategory.findMany();
-
     res.status(200).json(equipmentCategories);
   } catch (error) {
     console.log(error);
@@ -17,14 +17,15 @@ export const getAllCategories = async (req: AuthRequest, res: Response) => {
 export const getCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) res.status(400).json({ message: "L'id est obligatoire" });
+    if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
+
     const category = await prisma.equipmentCategory.findUnique({
-      where: { id: req.params.id },
-      include: {
-        equipments: true,
-      },
+      where: { id },
+      include: { equipments: true },
     });
-    if (!category) res.status(404).json({ message: "Categorie introuvable" });
+
+    if (!category)
+      return res.status(404).json({ message: "Categorie introuvable" });
     res.status(200).json(category);
   } catch (error) {
     console.log(error);
@@ -35,11 +36,8 @@ export const getCategory = async (req: AuthRequest, res: Response) => {
 export const getAllEquipments = async (req: AuthRequest, res: Response) => {
   try {
     const equipments = await prisma.equipment.findMany({
-      include: {
-        category: true,
-      },
+      include: { category: true },
     });
-    console.log(equipments[0]);
     res.status(200).json(equipments);
   } catch (error) {
     console.log(error);
@@ -50,30 +48,30 @@ export const getAllEquipments = async (req: AuthRequest, res: Response) => {
 export const getEquipment = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) res.status(400).json({ message: "L'id est obligatoire" });
+    if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
+
     const equipment = await prisma.equipment.findUnique({
-      where: { id: req.params.id },
-      include: {
-        category: true,
-      }
+      where: { id },
+      include: { category: true },
     });
+
+    if (!equipment)
+      return res.status(404).json({ message: "Appareil introuvable" });
     res.status(200).json(equipment);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
 export const editEquipment = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) {
-      res.status(400).json({ message: "L'id est obligatoire" });
-    }
+    if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
 
     const equipment = await prisma.equipment.findUnique({ where: { id } });
-    if (!equipment) {
-      res.status(404).json({ message: "Appareil introuvable" });
-    }
+    if (!equipment)
+      return res.status(404).json({ message: "Appareil introuvable" });
 
     const {
       name,
@@ -83,64 +81,29 @@ export const editEquipment = async (req: AuthRequest, res: Response) => {
       specifications = {},
       acquisitionDate,
       status,
+      cost,
     } = req.body;
 
     const requiredFields = ["name", "categoryId"];
     if (!validateRequestBody(req.body, requiredFields)) {
-      res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+      return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
 
-    let finalCategoryId = categoryId;
+    // Utilisation de switchCategory pour gérer le changement de catégorie
+    const result = await switchCategory(
+      categoryId,
+      categories,
+      "edit",
+      name,
+      photo,
+      specifications,
+      acquisitionDate,
+      Number(cost),
+      id
+    );
 
-    // Création d'une nouvelle catégorie si "autre" est sélectionné
-    if (categoryId === "autre") {
-      if (!categories || !validateRequestBody(categories, ["name", "type"])) {
-        res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
-      }
-
-      const existingCategory = await prisma.equipmentCategory.findFirst({
-        where: { name: { contains: categories.name, mode: "insensitive" } },
-      });
-
-      if (existingCategory) {
-        res.status(400).json({
-          message: "Une catégorie avec un nom similaire existe déjà.",
-        });
-      }
-
-      const newCategory = await prisma.equipmentCategory.create({
-        data: {
-          name: categories.name,
-          type: categories.type,
-          photo: photo ?? [],
-          quantity: 0,
-        },
-      });
-
-      finalCategoryId = newCategory.id;
-    }
-
-    if (finalCategoryId !== equipment.categoryId) {
-      await prisma.equipment.update({
-        where: { id },
-        data: {
-          category: { connect: { id: finalCategoryId } },
-        },
-      });
-
-      await prisma.equipmentCategory.update({
-        where: { id: equipment.categoryId },
-        data: {
-          quantity: { decrement: 1 },
-        },
-      });
-
-      await prisma.equipmentCategory.update({
-        where: { id: finalCategoryId },
-        data: {
-          quantity: { increment: 1 },
-        },
-      });
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: result.message });
     }
 
     // Mise à jour des autres champs
@@ -152,12 +115,16 @@ export const editEquipment = async (req: AuthRequest, res: Response) => {
         specifications,
         acquisitionDate,
         status,
+        cost: Number(cost),
       },
+      include: { category: true },
     });
 
-    res
-      .status(200)
-      .json({ message: "Équipement mis à jour", equipment: updatedEquipment });
+    res.status(200).json({
+      message: "Équipement mis à jour",
+      equipment: updatedEquipment,
+      category: result.category,
+    });
   } catch (error) {
     console.error("Erreur lors de la modification de l'équipement:", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
@@ -168,35 +135,16 @@ export const addCategory = async (req: AuthRequest, res: Response) => {
   try {
     const requiredFields = ["name", "type"];
     if (!validateRequestBody(req.body, requiredFields)) {
-      res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
-    }
-    const existingCategory = await prisma.equipmentCategory.findFirst({
-      where: {
-        name: {
-          contains: req.body.name,
-          mode: "insensitive",
-        },
-      },
-    });
-
-    if (existingCategory) {
-      res
-        .status(400)
-        .json({ message: "Une catégorie avec un nom similaire existe déjà" });
+      return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
 
-    const category = await prisma.equipmentCategory.create({
-      data: {
-        name: req.body.name,
-        type: req.body.type,
-        photo: req.body.photo ?? [],
-        quantity: 0,
-      },
-    });
-    if (!category) {
-      res.status(404).json({ message: "Echec de la création de la catégorie" });
-    }
-    res.status(200).json({ message: "Catégorie ajoutée avec succès" });
+    const { status, message, category } = await createCategory(
+      req.body.name,
+      req.body.type,
+      req.body.photo
+    );
+
+    res.status(status).json({ message, category });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
@@ -206,21 +154,20 @@ export const addCategory = async (req: AuthRequest, res: Response) => {
 export const editCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) res.status(400).json({ message: "L'id est obligatoire" });
+    if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
+
     const category = await prisma.equipmentCategory.findUnique({
-      where: { id: req.params.id },
+      where: { id },
     });
+    if (!category)
+      return res.status(404).json({ message: "Categorie introuvable" });
+
     const { name, type, description, photo } = req.body;
-    if (!category) res.status(404).json({ message: "Categorie introuvable" });
     await prisma.equipmentCategory.update({
-      where: { id: req.params.id },
-      data: {
-        name,
-        type,
-        description,
-        photo,
-      },
+      where: { id },
+      data: { name, type, description, photo },
     });
+
     res.status(200).json({ message: "Catégorie modifiée avec succès" });
   } catch (error) {
     console.log(error);
@@ -231,20 +178,21 @@ export const editCategory = async (req: AuthRequest, res: Response) => {
 export const deleteCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) res.status(400).json({ message: "L'id est obligatoire" });
-    const category = await prisma.equipmentCategory.findUnique({
-      where: { id: req.params.id },
-    });
-    if (!category) res.status(404).json({ message: "Categorie introuvable" });
-    await prisma.equipmentCategory.delete({
-      where: { id: req.params.id },
-    });
-    res.status(200).json({ message: "Catégorie supprimée avec succès" });
+    if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
+
+    const result = await switchCategory(id, undefined, "removeCat");
+
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: result.message });
+    }
+
+    res.status(200).json({ message: result.message });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
+
 export const addEquipment = async (req: AuthRequest, res: Response) => {
   try {
     const { body } = req;
@@ -255,91 +203,36 @@ export const addEquipment = async (req: AuthRequest, res: Response) => {
       photo,
       specifications,
       acquisitionDate,
+      status,
+      cost,
     } = body;
 
     const requiredFields = ["name", "categoryId", "specifications"];
     if (!validateRequestBody(body, requiredFields)) {
-      res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+      return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
 
-    if (categoryId === "autre") {
-      if (!categories) {
-        res.status(400).json({
-          message:
-            "Vous devez enregistrer la catégorie si vous choisissez 'autre'.",
-        });
-      }
+    // Utilisation de switchCategory pour gérer l'ajout
+    const result = await switchCategory(
+      categoryId,
+      categories,
+      "add",
+      name,
+      photo,
+      specifications,
+      acquisitionDate,
+      Number(cost),
+      status
+    );
 
-      const requiredCategoryFields = ["name", "type"];
-      if (!validateRequestBody(categories, requiredCategoryFields)) {
-        res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
-      }
-
-      const [existingEquipment, existingCategory] = await Promise.all([
-        prisma.equipment.findFirst({
-          where: {
-            name: { contains: name, mode: "insensitive" },
-          },
-        }),
-        prisma.equipmentCategory.findFirst({
-          where: {
-            name: { contains: categories.name, mode: "insensitive" },
-          },
-        }),
-      ]);
-
-      if (existingEquipment) {
-        res
-          .status(400)
-          .json({ message: "Un appareil avec un nom similaire existe déjà" });
-      }
-      if (existingCategory) {
-        res
-          .status(400)
-          .json({ message: "Une catégorie avec un nom similaire existe déjà" });
-      }
-
-      const category = await prisma.equipmentCategory.create({
-        data: {
-          name: categories.name,
-          type: categories.type,
-          photo: photo ?? [],
-          equipments: {
-            create: {
-              name,
-              photo: photo ?? [],
-              specifications,
-              acquisitionDate,
-            },
-          },
-          quantity: 0,
-        },
-      });
-
-      if (!category) {
-        res.status(404).json({
-          message: "Echec de la création de la catégorie et de l'equipement",
-        });
-      }
-
-      res.status(200).json({ message: "Appareil ajouté avec succès" });
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: result.message });
     }
 
-    const equipment = await prisma.equipment.create({
-      data: {
-        name,
-        category: { connect: { id: categoryId } },
-        photo: photo ?? [],
-        specifications,
-        acquisitionDate,
-      },
+    res.status(200).json({
+      message: "Appareil ajouté avec succès",
+      equipment: result.equipment,
     });
-
-    if (!equipment) {
-      res.status(404).json({ message: "Echec de la création de l'equipement" });
-    }
-
-    res.status(200).json({ message: "Appareil ajouté avec succès" });
   } catch (error) {
     console.error("Error in addEquipment:", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
@@ -349,14 +242,18 @@ export const addEquipment = async (req: AuthRequest, res: Response) => {
 export const deleteEquipment = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) res.status(400).json({ message: "L'id est obligatoire" });
-    const equipment = await prisma.equipment.findUnique({
-      where: { id: req.params.id },
+    if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
+
+    const equipment = await prisma.equipment.findUnique({ where: { id } });
+    if (!equipment)
+      return res.status(404).json({ message: "Appareil introuvable" });
+
+    await prisma.equipmentCategory.update({
+      where: { id: equipment.categoryId },
+      data: { quantity: { decrement: 1 } },
     });
-    if (!equipment) res.status(404).json({ message: "Appareil introuvable" });
-    await prisma.equipment.delete({
-      where: { id: req.params.id },
-    });
+
+    await prisma.equipment.delete({ where: { id } });
     res.status(200).json({ message: "Appareil supprimé avec succès" });
   } catch (error) {
     console.log(error);

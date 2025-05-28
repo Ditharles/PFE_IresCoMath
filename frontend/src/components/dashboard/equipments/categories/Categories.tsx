@@ -53,7 +53,7 @@ const Categories = () => {
             prevCategories.filter(category => category.id !== deletedCategoryId)
         );
     };
-    console.log(categories);
+
 
     const filteredCategories = categories && categories.filter(category =>
         category.name.toLowerCase().includes(globalFilter.toLowerCase()) ||

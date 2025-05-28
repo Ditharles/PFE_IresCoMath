@@ -2,9 +2,8 @@ import { Pencil, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { useNavigate } from "react-router-dom";
-
-import { CalendarDays, Clock, Package, User, HashIcon } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { CalendarDays, Clock, Package, User, HashIcon, Image, Settings2, FileText } from "lucide-react";
 
 import { Equipment } from "../../../types/equipment";
 import { Card, CardHeader, CardTitle, CardContent } from "../../ui/card";
@@ -13,9 +12,7 @@ import { DetailSection } from "../requests/request/DetailSection";
 import EditEquipment from "./EditEquipment";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
-import { Image } from "lucide-react";
-import { Settings2 } from "lucide-react";
-
+import FilePreviewModal from "../../FilePreviewModal";
 
 interface EquipmentDetailsProps {
     equipment: Equipment;
@@ -24,7 +21,23 @@ interface EquipmentDetailsProps {
 
 const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+    const [selectedBill, setSelectedBill] = useState<string | null>(null);
     const navigate = useNavigate();
+
+    const STATUS_LABELS: Record<string, string> = {
+        AVAILABLE: "Disponible",
+        LOANED: "Emprunté",
+        PENDING_DELIVERY: "En attente",
+        OWNER_POSSESSION: "Propriétaire"
+    };
+
+    const TYPE_LABELS: Record<string, string> = {
+        EQUIPMENT: "Équipement",
+        SUPPLIES: "Fourniture",
+        CONSUMABLES: "Consommable",
+        TOOLS: "Outil"
+    };
 
     const getStatusBadgeVariant = (): "default" | "secondary" | "destructive" | "outline" => {
         switch (equipment.status) {
@@ -57,22 +70,34 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
     };
 
     if (!equipment) {
-        return <div>Aucune données disponibles</div>;
+        return (
+            <div className="flex flex-col items-center justify-center h-64">
+                <p className="text-muted-foreground">Aucune donnée disponible</p>
+                <Button
+                    variant="ghost"
+                    className="mt-4"
+                    onClick={() => navigate('/materiels')}
+                >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Retour à la liste
+                </Button>
+            </div>
+        );
     }
 
     return (
-        <>
+        <div className="space-y-6">
             <Button
                 variant="ghost"
-                className="mb-4 cursor-pointer"
-                onClick={() => navigate('/materiels')}
+                className="cursor-pointer"
+                onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Retour à la liste
+                Retour
             </Button>
 
             <Card className="w-full">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
                     <CardTitle className="text-2xl font-bold">Détails de l'équipement</CardTitle>
                     <Button
                         variant="outline"
@@ -93,13 +118,20 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                         <DetailItem label="Nom" value={equipment.name} />
                         <DetailItem label="Statut">
                             <Badge variant={getStatusBadgeVariant()}>
-                                {equipment.status}
+                                {STATUS_LABELS[equipment.status] || equipment.status}
                             </Badge>
                         </DetailItem>
-                        <DetailItem label="Catégorie" value={equipment.category.name} />
+                        <DetailItem label="Catégorie">
+                            <Link
+                                to={`/materiels/categories/${equipment.category.id}`}
+                                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                            >
+                                {equipment.category.name}
+                            </Link>
+                        </DetailItem>
                         <DetailItem label="Type">
                             <Badge variant={getTypeBadgeVariant()}>
-                                {equipment.category.type}
+                                {TYPE_LABELS[equipment.category.type] || equipment.category.type}
                             </Badge>
                         </DetailItem>
                     </DetailSection>
@@ -114,12 +146,6 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                                 value={format(new Date(equipment.acquisitionDate), "PPP", { locale: fr })}
                             />
                         )}
-                        {/* <DetailItem
-                            label="Date de création"
-                            value={equipment.history.length > 0 ?
-                                format(new Date(equipment.history[0].createdAt), "PPP", { locale: fr }) :
-                                "Non disponible"}
-                        /> */}
                     </DetailSection>
 
                     {equipment.specifications && Object.keys(equipment.specifications).length > 0 && (
@@ -145,7 +171,11 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                             <div className="col-span-2">
                                 <div className="flex flex-wrap gap-4">
                                     {equipment.photo.map((photo, index) => (
-                                        <div key={index} className="w-32 h-32 rounded-md overflow-hidden border">
+                                        <div
+                                            key={index}
+                                            className="w-32 h-32 rounded-md overflow-hidden border hover:shadow-md transition-shadow cursor-pointer"
+                                            onClick={() => setSelectedPhoto(photo)}
+                                        >
                                             <img
                                                 src={photo}
                                                 alt={`Photo ${index + 1} de ${equipment.name}`}
@@ -158,14 +188,31 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                         </DetailSection>
                     )}
 
+                    {equipment.bill && (
+                        <DetailSection
+                            icon={<FileText size={18} />}
+                            title="Facture"
+                        >
+                            <div className="col-span-2">
+                                <div
+                                    className="flex items-center gap-2 p-4 rounded-md border hover:shadow-md transition-shadow cursor-pointer"
+                                    onClick={() => setSelectedBill(equipment.bill || null)}
+                                >
+                                    <FileText className="h-6 w-6" />
+                                    <span>Voir la facture</span>
+                                </div>
+                            </div>
+                        </DetailSection>
+                    )}
+
                     {equipment.history && equipment.history.length > 0 && (
                         <DetailSection
                             icon={<Clock size={18} />}
-                            title="Historique d'emprunt"
+                            title="Historique"
                         >
                             <div className="col-span-2 space-y-4">
                                 {equipment.history.map((historyItem) => (
-                                    <div key={historyItem.id} className="bg-muted/50 p-4 rounded-lg">
+                                    <div key={historyItem.id} className="bg-muted/50 p-4 rounded-lg hover:bg-muted/70 transition-colors">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <DetailItem
                                                 label="Date d'emprunt"
@@ -177,9 +224,14 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                                                     value={format(new Date(historyItem.returnDate), "PPP", { locale: fr })}
                                                 />
                                             )}
-                                            <User size={16} className="inline mr-1" /> <DetailItem
+                                            <DetailItem
                                                 label="Utilisateur"
-                                                value={historyItem.userId}
+                                                value={
+                                                    <div className="flex items-center">
+                                                        <User size={16} className="inline mr-2" />
+                                                        {historyItem.userId}
+                                                    </div>
+                                                }
                                             />
                                         </div>
                                     </div>
@@ -202,12 +254,22 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                 equipment={equipment}
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
-                onSuccess={() => {
+                onSuccess={(updatedEquipment) => {
                     setIsEditModalOpen(false);
-                    onUpdate(equipment);
+                    onUpdate(updatedEquipment);
                 }}
             />
-        </>
+
+            <FilePreviewModal
+                isOpen={!!selectedPhoto || !!selectedBill}
+                onClose={() => {
+                    setSelectedPhoto(null);
+                    setSelectedBill(null);
+                }}
+                fileUrl={selectedPhoto || selectedBill || ""}
+                fileName={`${selectedPhoto ? `Photo de ${equipment.name}` : `Facture de ${equipment.name}`}`}
+            />
+        </div>
     );
 };
 

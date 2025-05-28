@@ -45,7 +45,10 @@ router.post("/mission", submitMissionRequest as RequestHandler);
 
 router.post("/internship", submitRequestStage as RequestHandler);
 
-router.post("/conference", submitScientificEventRequest as RequestHandler);
+router.post(
+  "/conference-national",
+  submitScientificEventRequest as RequestHandler
+);
 
 router.post(
   "/article-registration",
@@ -63,7 +66,8 @@ router.post("/add-document/:id", addDocuments as RequestHandler);
 
 router.post("/complete-request/:id", completeRequest as RequestHandler);
 
-
 router.post("/edit-request/:id", editRequest as RequestHandler);
 
 router.delete("/delete-request/:id", deleteRequest as RequestHandler);
+
+router.post("/submit-sign-form/:id", submitRequestStage as RequestHandler);

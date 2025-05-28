@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import prisma from "../utils/db";
 
-import { Role } from "../utils/validateUtils";
-import { Grade } from "../../generated/prisma";
+import { Grade, Role } from "../../generated/prisma";
 import {
   masterStudentFields,
   teacherResearcherFields,
   doctoralStudentFields,
 } from "../constants/userFields";
 import { getUserByID } from "../services/auth.service";
+import { AuthRequest } from "../types/auth";
 
 interface UpdateUserRequest extends Request {
   body: {
@@ -60,11 +60,31 @@ export const getUsers = async (req: Request, res: Response) => {
   res.status(200).json(usersFront);
 };
 
-export const getUser = async (req: Request, res: Response) => {
-  const user = await getUserByID(req.params.id);
-
+export const getUser = async (req: AuthRequest, res: Response) => {
+  const requester = req.user;
+  const user = await getUserByID(req.params.id, requester?.role);
   if (!user) {
     return res.status(404).json({ message: "Utilisateur introuvable." });
+  }
+  if (
+    requester.role === Role.ENSEIGNANT &&
+    ![Role.DOCTORANT, Role.MASTER].includes(user.role as Role) &&
+    user.supervisorId !== requester.id &&
+    user.thesisSupervisorId !== requester.id
+  ) {
+    return res.status(403).json({
+      message: "Vous ne pouvez pas accéder aux informations de cet utilisateur",
+    });
+  }
+
+  if (
+    [Role.DOCTORANT, Role.MASTER].includes(requester.role) &&
+    (user.id != requester.supervisorId ||
+      user.id != requester.thesisSupervisorId)
+  ) {
+    return res.status(403).json({
+      message: "Vous ne pouvez pas accéder aux informations de cet utilisateur",
+    });
   }
 
   res.status(200).json(user);
@@ -102,6 +122,8 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
     const updatedUser = await prisma.user.update({
       where: { id },
       data: {
+        lastName,
+        firstName,
         role: role as Role,
       },
     });
@@ -116,8 +138,6 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
         await prisma.doctoralStudent.updateMany({
           where: { userId: id },
           data: {
-            lastName,
-            firstName,
             thesisYear,
             thesisSupervisorId,
           },
@@ -127,8 +147,6 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
         await prisma.masterStudent.updateMany({
           where: { userId: id },
           data: {
-            lastName,
-            firstName,
             masterYear,
             supervisorId,
           },
@@ -138,8 +156,6 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
         await prisma.teacherResearcher.updateMany({
           where: { userId: id },
           data: {
-            lastName,
-            firstName,
             position,
             grade,
             institution,

@@ -64,11 +64,7 @@ router.get(
 router.post("/reset-password/:token", resetPassword as RequestHandler);
 
 // Route de rafraîchissement du token
-router.post(
-  "/refresh-token",
-  verifyToken as RequestHandler,
-  refreshToken as RequestHandler
-);
+router.post("/refresh-token", refreshToken as RequestHandler);
 
 // Route pour les informations de l'utilisateur
 router.get(

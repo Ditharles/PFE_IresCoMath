@@ -199,6 +199,7 @@ export const login: AuthHandler = async (req, res) => {
     });
 
     if (!user) {
+      console.log("Utilisateur non trouvé");
       return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
 
@@ -206,7 +207,7 @@ export const login: AuthHandler = async (req, res) => {
     if (!isPasswordCorrect) {
       console.log("Mot de passe incorrect");
       return res
-        .status(400)
+        .status(403)
         .json({ message: ERROR_MESSAGES.INCORRECT_PASSWORD });
     }
 
@@ -337,7 +338,16 @@ export const validateAccount: AuthHandler = async (req, res) => {
     const password = "123"; // à remplacer par un mot de passe généré ou envoyé
     const cryptPassword = await bcrypt.hash(password, 10);
 
-    const user = await createUser(email, role, cryptPassword);
+    const user = await createUser(
+      email,
+      role,
+      cryptPassword,
+      request.firstName,
+      request.lastName,
+      request.cin,
+      request.phone,
+      request.photo || null
+    );
 
     if (role === "DOCTORANT") {
       await createDoctoralStudent(request as DoctoralStudentRequest, user.id);
@@ -519,45 +529,14 @@ export const forgetPassword: AuthHandler = async (req, res) => {
 
     const user = await prisma.user.findUnique({
       where: { email },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        teacherResearcher: {
-          select: {
-            lastName: true,
-            firstName: true,
-          },
-        },
-        masterStudent: {
-          select: {
-            lastName: true,
-            firstName: true,
-          },
-        },
-        doctoralStudent: {
-          select: {
-            lastName: true,
-            firstName: true,
-          },
-        },
-      },
     });
 
     if (!user) {
       return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
 
-    const lastName =
-      user.teacherResearcher?.lastName ||
-      user.masterStudent?.lastName ||
-      user.doctoralStudent?.lastName ||
-      "Utilisateur";
-    const firstName =
-      user.teacherResearcher?.firstName ||
-      user.masterStudent?.firstName ||
-      user.doctoralStudent?.firstName ||
-      "";
+    const lastName = user?.lastName || "Utilisateur";
+    const firstName = user?.firstName ?? "";
 
     const resetToken = generateTokenLink(
       user.email,
@@ -732,12 +711,6 @@ export const getUser: AuthHandler = async (req, res) => {
         },
         doctoralStudent: {
           select: doctoralStudentFields,
-        },
-        admin: {
-          select: {
-            lastName: true,
-            firstName: true,
-          },
         },
       },
     });

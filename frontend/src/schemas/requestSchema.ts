@@ -1,11 +1,9 @@
 import { z } from "zod";
 
 const dateValidation = {
-  startDate: z
-    .date()
-    .min(new Date(), {
-      message: "La date de début ne peut pas etre avant aujourd'hui",
-    }),
+  startDate: z.date().min(new Date(), {
+    message: "La date de début ne peut pas etre avant aujourd'hui",
+  }),
   endDate: z
     .date()
     .min(new Date(), { message: "La date de fin est requise" })
@@ -51,6 +49,7 @@ export const missionRequestSchema = z.object({
     .min(1, { message: "L'organisation d'accueil est requise" }),
   objective: z.string().min(1, { message: "L'objectif est requis" }),
   country: z.string().min(1, { message: "Le pays est requis" }),
+
   specificDocument: z.array(z.string()).optional(),
 
   ...dateValidation,

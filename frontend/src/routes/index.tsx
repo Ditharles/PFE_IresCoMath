@@ -27,6 +27,9 @@ import Historique from "../pages/Historique";
 import AddCategory from "../pages/equipment/AddCategory";
 import AddEquipment from "../pages/equipment/AddEquipment";
 import EquipmentPage from "../pages/equipment/Equipment";
+import { Calendar } from "../components/ui/calendar";
+import { TemplateList } from "../pages/templates/List";
+import AddTemplate from "../pages/templates/Add";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -144,6 +147,14 @@ const routes: RouteObject[] = [
             {
                 path: "materiels/nouveau-materiel",
                 element: <AddEquipment />
+            },
+            {
+                path: "templates",
+                element: <TemplateList />
+            },
+            {
+                path: "templates/ajouter",
+                element: <AddTemplate />
             }
         ]
     },
@@ -166,7 +177,10 @@ const routes: RouteObject[] = [
         ]
     },
 
-
+    {
+        path: "test",
+        element: <Calendar />
+    },
     //404
     {
         path: "*",

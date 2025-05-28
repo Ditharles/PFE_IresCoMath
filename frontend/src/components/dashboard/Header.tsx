@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import NotificationsService from "../../services/notifcations.service"
 
 interface HeaderProps {
-
     darkMode?: boolean
     setDarkMode: (darkMode: boolean) => void
     showUserProfile: boolean
@@ -15,19 +14,28 @@ interface HeaderProps {
     setSearchQuery: (searchQuery: string) => void
 }
 
-
-export const Header = ({ darkMode, setDarkMode, showUserProfile, setShowUserProfile, showNotifications, setShowNotifications, searchQuery, setSearchQuery }: HeaderProps) => {
-
+export const Header = ({ 
+    darkMode, 
+    setDarkMode, 
+    showUserProfile, 
+    setShowUserProfile, 
+    showNotifications, 
+    setShowNotifications, 
+    searchQuery, 
+    setSearchQuery 
+}: HeaderProps) => {
     const user = getUser();
     const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
     const notificationService = new NotificationsService();
+    
     useEffect(() => {
         const fetchUnreadNotificationsCount = async () => {
             const count = await notificationService.getUnreadNumberNotifications();
             setUnreadNotificationsCount(count.data);
         };
         fetchUnreadNotificationsCount();
-    })
+    }, [])
+
     const toggleDarkMode = () => {
         setDarkMode(!darkMode)
     }
@@ -44,15 +52,24 @@ export const Header = ({ darkMode, setDarkMode, showUserProfile, setShowUserProf
 
     return (
         <header
-            className={`fixed top-0 left-0 w-full z-50 shadow-sm py-4 px-6 flex justify-between items-center ${darkMode ? "bg-gray-800" : "bg-white"}`}
+            className={`fixed top-0 left-0 w-full z-50 shadow-sm py-3 px-6 flex items-center justify-between ${darkMode ? "bg-gray-800" : "bg-white"}`}
         >
-            <h1 className="text-2xl font-bold">LOGO</h1>
+            {/* Logo avec meilleur positionnement et taille */}
+            <div className="flex items-center">
+                <img 
+                    src="./src/assets/logo-ires.png" 
+                    alt="logo" 
+                    className="h-10 object-contain"  // Ajustez la hauteur selon vos besoins
+                />
+            </div>
+
             <div className="flex items-center space-x-4">
-                <div className={`relative ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                {/* Barre de recherche */}
+                <div className={`relative hidden md:block ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
                     <input
                         type="text"
                         placeholder="Search..."
-                        className={`pl-10 pr-4 py-2 rounded-md ${darkMode ? "bg-gray-700 border-gray-600" : "border-gray-300"} border`}
+                        className={`pl-10 pr-4 py-2 rounded-md w-64 ${darkMode ? "bg-gray-700 border-gray-600" : "border-gray-300"} border focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -75,21 +92,21 @@ export const Header = ({ darkMode, setDarkMode, showUserProfile, setShowUserProf
                 {/* Bouton de notifications */}
                 <button
                     onClick={toggleNotifications}
-                    className={`relative p-2 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`relative p-2 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     aria-label="Notifications"
                 >
                     <BellIcon className="h-6 w-6" />
                     {unreadNotificationsCount > 0 && (
-                        <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-red-500 text-white text-xs items-center justify-center">
-                            {unreadNotificationsCount}
+                        <span className="absolute top-0 right-0 flex h-5 w-5 rounded-full bg-red-500 text-white text-xs items-center justify-center">
+                            {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
                         </span>
                     )}
                 </button>
 
+                {/* Bouton dark/light mode */}
                 <button
                     onClick={toggleDarkMode}
-                    className={`p-2 rounded-full ${darkMode ? "text-yellow-300 hover:bg-gray-700" : "text-gray-700 hover:bg-gray-100"}`}
+                    className={`p-2 rounded-full ${darkMode ? "text-yellow-300 hover:bg-gray-700" : "text-gray-700 hover:bg-gray-100"} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     aria-label="Toggle dark mode"
                 >
                     {darkMode ? <SunIcon className="h-6 w-6" /> : <MoonIcon className="h-6 w-6" />}
@@ -103,34 +120,36 @@ export const Header = ({ darkMode, setDarkMode, showUserProfile, setShowUserProf
                 >
                     {user.photo ? (
                         <img
-                            src={user.photo || "/placeholder.svg"}
+                            src={user.photo}
                             alt={user.name}
                             className="h-10 w-10 rounded-full object-cover border-2 border-transparent hover:border-blue-500 transition-all"
                         />
                     ) : (
                         <div
-                            className={`h-10 w-10 rounded-full flex items-center justify-center ${darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"
-                                }`}
+                            className={`h-10 w-10 rounded-full flex items-center justify-center ${darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"}`}
                         >
-                            <svg
-                                className="h-6 w-6"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                            </svg>
+                            {user.name ? (
+                                <span className="font-medium">
+                                    {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                </span>
+                            ) : (
+                                <svg
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                    />
+                                </svg>
+                            )}
                         </div>
                     )}
-
-                    {/* Indicateur de notification (optionnel) */}
-                    <span className="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
                 </button>
             </div>
         </header>

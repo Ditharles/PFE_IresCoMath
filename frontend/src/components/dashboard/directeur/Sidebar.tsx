@@ -4,6 +4,8 @@ import {
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
 import { ScrollArea } from "../../../components/ui/scroll-area";
+import path from "path";
+import { ClipboardList } from "lucide-react";
 
 const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
     const location = useLocation();
@@ -29,6 +31,12 @@ const SidebarDirector = ({ darkMode = false }: { darkMode?: boolean }) => {
                 { name: "En cours", path: "/materiels/en-cours" }
             ]
         },
+        {
+            name: "Formulaire",
+            path: "/templates",
+            icon: ClipboardList
+        }
+        ,
         { name: "Gestion des Membres", path: "/membres", icon: Users },
         { name: "Profil", path: "/profil", icon: User },
         { name: "Paramètres", path: "/parametres", icon: Settings }

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/input';
-import {  FileText, X, Globe } from 'lucide-react';
+import { FileText, X, Globe } from 'lucide-react';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import FileUpload from '../../FileUpload';
 
 import { DatePicker } from '../DatePicker';
 
 const InternshipForm: React.FC = () => {
-  const { control, setValue, formState: { errors } ,getValues} = useFormContext();
+  const { control, setValue, formState: { errors }, getValues } = useFormContext();
   const [uploadedLetter, setUploadedLetter] = useState<string | null>(getValues('letter') || null);
 
   const getFieldClass = (fieldName: string) => {
@@ -43,6 +43,7 @@ const InternshipForm: React.FC = () => {
                 <FormControl>
                   <Input {...field} className={getFieldClass('organization')} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -55,6 +56,7 @@ const InternshipForm: React.FC = () => {
                 <FormControl>
                   <Input {...field} className={getFieldClass('country')} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -74,6 +76,7 @@ const InternshipForm: React.FC = () => {
                 <FormControl>
                   <Input type="email" {...field} className={getFieldClass('organizationEmail')} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -89,43 +92,44 @@ const InternshipForm: React.FC = () => {
                     <Globe className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                   </div>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
         </div>
       </div>
 
-     {/* Section Dates */}
-     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <FormField
-                control={control}
-                name="startDate"
-                render={({ field }) => (
-                    <FormItem className="flex-1 w-full">
-                        <FormLabel>Date de début</FormLabel>
-                        <FormControl>
+      {/* Section Dates */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de début</FormLabel>
+              <FormControl>
 
-                            <DatePicker {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-      <FormField
-                control={control}
-                name="endDate"
-                render={({ field }) => (
-                    <FormItem className="flex-1 w-full">
-                        <FormLabel>Date de dfin</FormLabel>
-                        <FormControl>
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="endDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de dfin</FormLabel>
+              <FormControl>
 
-                            <DatePicker {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-        
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
       </div>
 
       {/* Section Responsable (optionnel) */}
@@ -171,7 +175,7 @@ const InternshipForm: React.FC = () => {
         </div>
       </div>
 
- 
+
       {/* Section Lettre d'invitation */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Lettre d'invitation *</h3>
@@ -189,9 +193,9 @@ const InternshipForm: React.FC = () => {
                   Voir la lettre
                 </a>
               </div>
-              <button 
+              <button
                 type="button"
-                onClick={removeLetter} 
+                onClick={removeLetter}
                 className="p-1 rounded-full hover:bg-gray-200"
               >
                 <X className="h-4 w-4 text-red-500" />
@@ -205,7 +209,7 @@ const InternshipForm: React.FC = () => {
               headerText="Téléverser la lettre d'invitation (obligatoire)"
               subHeaderText="Format PDF ou image"
               onFileUploaded={handleLetterUpload}
-            
+
             />
           )}
         </div>

@@ -12,7 +12,6 @@ import { Form } from '../../ui/form';
 import EquipmentFields from '../../form/equipments/equipment';
 import { Equipment } from '../../../types/equipment';
 
-
 type EquipmentFormValues = z.infer<typeof editEquipmentSchema>;
 
 interface EditEquipmentProps {
@@ -32,9 +31,8 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
             id: equipment.id,
             name: equipment.name,
             categoryId: equipment.categoryId,
-
+            acquisitionDate: equipment.acquisitionDate ? new Date(equipment.acquisitionDate) : undefined,
             specifications: equipment.specifications || {},
-
             photo: equipment.photo || [],
         },
     });
@@ -45,10 +43,8 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
                 id: equipment.id,
                 name: equipment.name,
                 categoryId: equipment.categoryId,
-
                 specifications: equipment.specifications || {},
-
-
+                acquisitionDate: equipment.acquisitionDate ? new Date(equipment.acquisitionDate) : undefined,
                 photo: equipment.photo || [],
             });
         }
@@ -92,7 +88,6 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
                     <DialogHeader>
                         <div className="flex justify-between items-start">
                             <DialogTitle>Modifier l'équipement</DialogTitle>
-
                         </div>
                         <DialogDescription>
                             Modifier les détails de l'équipement {equipment.name}
@@ -109,12 +104,14 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
                                     variant="outline"
                                     onClick={handleCloseAttempt}
                                     disabled={form.formState.isSubmitting}
+                                    className="cursor-pointer"
                                 >
                                     Annuler
                                 </Button>
                                 <Button
                                     type="submit"
                                     disabled={!form.formState.isDirty || form.formState.isSubmitting}
+                                    className="cursor-pointer"
                                 >
                                     {form.formState.isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications'}
                                 </Button>
@@ -143,6 +140,7 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
                             type="button"
                             variant="outline"
                             onClick={() => setShowConfirmDialog(false)}
+                            className="cursor-pointer"
                         >
                             Continuer l'édition
                         </Button>
@@ -150,6 +148,7 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
                             type="button"
                             variant="destructive"
                             onClick={handleConfirmClose}
+                            className="cursor-pointer"
                         >
                             Quitter sans enregistrer
                         </Button>

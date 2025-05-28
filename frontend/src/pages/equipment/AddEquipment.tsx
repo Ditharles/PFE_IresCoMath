@@ -49,7 +49,7 @@ const AddEquipment = () => {
     };
 
     return (
-        <Card className="w-full mx-auto">
+        <Card className="p-4 w-full mx-auto">
             <CardHeader>
                 <CardTitle>Ajouter un equipment</CardTitle>
             </CardHeader>

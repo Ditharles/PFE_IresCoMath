@@ -6,8 +6,6 @@ import { formatDate } from "../../../../utils/utils";
 import ActionsCell from "./actions";
 import { EQUIPMENT_TYPE_LABELS } from "../../../../constants/equipments";
 
-
-
 export const columns = ({
     onCategoryUpdate,
     onCategoryDelete,
@@ -17,18 +15,23 @@ export const columns = ({
 }): ColumnDef<EquipmentCategory>[] => [
         {
             accessorKey: "name",
-            header: "Nom",
+            header: "Nom de la catégorie",
             cell: ({ row }) => (
-                <div className="font-medium">
-                    {row.getValue("name")}
+                <div className="font-medium whitespace-nowrap">
+                    <a
+                        href={`/materiels/categories/${row.original.id}`}
+                        className="hover:text-blue-600 hover:underline transition-colors"
+                    >
+                        {row.getValue("name")}
+                    </a>
                 </div>
             ),
         },
         {
             accessorKey: "type",
-            header: "Type",
+            header: "Type d'équipement",
             cell: ({ row }) => (
-                <div className="capitalize">
+                <div className="capitalize whitespace-nowrap">
                     {EQUIPMENT_TYPE_LABELS[row.getValue("type") as EquipmentType]}
                 </div>
             ),
@@ -42,21 +45,25 @@ export const columns = ({
         },
         {
             accessorKey: "quantity",
-            header: "Quantité",
+            header: "Quantité disponible",
             cell: ({ row }) => (
-                <div className="text-center">
+                <div className="text-center whitespace-nowrap">
                     {row.getValue("quantity")}
                 </div>
             ),
         },
         {
             accessorKey: "updatedAt",
-            header: "Dernière mise à jour",
-            cell: ({ row }) => formatDate(row.getValue("updatedAt")),
+            header: "Date de mise à jour",
+            cell: ({ row }) => (
+                <div className="whitespace-nowrap">
+                    {formatDate(row.getValue("updatedAt"))}
+                </div>
+            ),
         },
         {
             accessorKey: "requestsCount",
-            header: "Demandes en attente",
+            header: "Demandes en cours",
             cell: ({ row }) => {
                 const equipmentLoanRequests = row.original.equipmentLoanRequests;
                 let count = 0;
@@ -68,7 +75,10 @@ export const columns = ({
                 return (
                     <Badge
                         variant="outline"
-                        className={count > 0 ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-gray-50 text-gray-500"}
+                        className={`whitespace-nowrap ${count > 0
+                                ? "bg-blue-50 text-blue-600 border-blue-200"
+                                : "bg-gray-50 text-gray-500"
+                            }`}
                     >
                         {count} {count === 1 ? "demande" : "demandes"}
                     </Badge>
@@ -79,11 +89,13 @@ export const columns = ({
             id: "actions",
             header: "Actions",
             cell: ({ row }) => (
-                <ActionsCell
-                    category={row.original}
-                    onCategoryUpdate={onCategoryUpdate}
-                    onCategoryDelete={onCategoryDelete}
-                />
+                <div className="whitespace-nowrap">
+                    <ActionsCell
+                        category={row.original}
+                        onCategoryUpdate={onCategoryUpdate}
+                        onCategoryDelete={onCategoryDelete}
+                    />
+                </div>
             ),
         },
     ];

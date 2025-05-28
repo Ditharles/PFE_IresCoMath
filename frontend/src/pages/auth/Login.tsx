@@ -1,40 +1,41 @@
-import React, { useState, useCallback } from "react";
+import React, { useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
-import {toast } from "sonner";
+import { toast } from "sonner";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { useAuth } from "../../contexts/AuthContext";
 
 const LoginPage: React.FC = () => {
-  const { login } = useAuth();;
+  const { login } = useAuth();
   const authService = new AuthService();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
-  const handleLogin = useCallback(async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      if (login) {
-        const response = await login(email, password);
-        toast.success(response.data.message || "Connexion réussie !");
-        setTimeout(() => {
-          navigate("/accueil");
-        }, 3000);
-      }
+      const response = await authService.login(email, password);
+      console.log(response);
+      toast.success(response!.data.message || "Connexion réussie !");
+      login();
+      setTimeout(() => {
+        navigate("/accueil");
+      }, 3000);
     } catch (error) {
-      toast.error(response.data.message || "Une erreur s'est produite lors de la connexion.");
+      toast.error(error!.response?.data.message || "Une erreur s'est produite lors de la connexion.");
       console.error(error);
     } finally {
       setIsSubmitting(false);
     }
-  }, [email, password, authService]);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-purple-100 flex items-center justify-center">
-     
+
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md relative">
         {isSubmitting && (
           <LoadingOverlay

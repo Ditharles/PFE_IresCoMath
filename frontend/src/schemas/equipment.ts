@@ -11,7 +11,7 @@ export const equipmentSchema = z
     name: z.string().min(1, { message: "Le nom du matériel est requis" }),
 
     specifications: z.record(z.string(), z.any()).optional(),
-
+    status: z.string().optional(),
     acquisitionDate: z.date().optional(),
     cost: z.union([z.number(), z.string()]).optional(),
     photo: z.array(z.string()).optional(),
@@ -37,9 +37,7 @@ export const editEquipmentSchema = z
       .min(1, { message: "Le nom du matériel est requis" })
       .optional(),
     specifications: z.record(z.string(), z.any()).optional().default({}),
-    acquisitionDate: z
-      .date()
-      .min(new Date(), { message: "La date d'acquisition est requise" }),
+    acquisitionDate: z.date().optional(),
     cost: z
       .string()
       .min(1, {

@@ -1,134 +1,98 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { FormControl, FormField, FormItem, FormLabel } from '../../ui/form';
 import { Loader2 } from 'lucide-react';
 import { Input } from '../../ui/input';
 import { Textarea } from '../../ui/textarea';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 import EquipmentService from '../../../services/equipment.service';
-import { EquipmentType, EquipmentTypeList } from '../../../types/equipment';
-
+import { EquipmentType } from '../../../types/equipment';
 import { DatePicker } from '../DatePicker';
-
+import { EQUIPMENT_TYPE_LABELS } from '../../../constants/equipments';
 
 interface EquipmentCategory {
   id: string;
   name: string;
   type: EquipmentType;
   quantity: number;
+  equipments: EquipmentItem[];
 }
 
 interface EquipmentItem {
   id: string;
   name: string;
-  categoryId: string;
   specifications: Record<string, unknown>;
 }
-
-
-const initialLoadingState = {
-  categories: false,
-  equipments: false
-};
 
 const EquipmentLoanForm: React.FC = () => {
   const { control, formState: { errors }, setValue, trigger } = useFormContext();
   const equipmentService = useMemo(() => new EquipmentService(), []);
 
-  // États consolidés
   const [categories, setCategories] = useState<EquipmentCategory[]>([]);
   const [equipments, setEquipments] = useState<EquipmentItem[]>([]);
-  const [loading, setLoading] = useState(initialLoadingState);
+  const [isLoading, setIsLoading] = useState({
+    categories: false,
+    equipments: false
+  });
 
-
-  const [selectedType, setSelectedType] = useState<EquipmentType | null>(null);
-
-  // Utilisation de useWatch pour obtenir les valeurs actuelles du formulaire
+  const selectedType = useWatch({ control, name: 'type' });
   const selectedCategoryId = useWatch({ control, name: 'categoryId' });
   const selectedEquipmentId = useWatch({ control, name: 'equipmentId' });
 
-  // Mémorisation des listes filtrées pour éviter les recalculs inutiles
   const filteredCategories = useMemo(() => {
-    if (!selectedType) return [];
-
-    return categories.filter(cat => cat.type == selectedType);
+    if (!selectedType) return categories;
+    return categories.filter(cat => cat.type === selectedType);
   }, [categories, selectedType]);
 
-  const filteredEquipments = useMemo(async () => {
-    if (!selectedCategoryId) return [];
-    const response = await equipmentService.getEquipmentsByCategory(selectedCategoryId);
-    const equipments = response.data;
-    setEquipments(equipments);
-  }, [selectedCategoryId]);
+  const selectedCategory = useMemo(() =>
+    categories.find(cat => cat.id === selectedCategoryId),
+    [categories, selectedCategoryId]
+  );
 
-  const maxQuantity = useMemo(() => {
-    if (!selectedCategoryId) return null;
-    const category = categories.find(cat => cat.id === selectedCategoryId);
-    return category?.quantity || null;
-  }, [selectedCategoryId, categories]);
+  const maxQuantity = selectedCategory?.quantity || null;
 
-  // Fonctions de fetch optimisées
   const fetchCategories = useCallback(async () => {
     try {
-      setLoading(prev => ({ ...prev, categories: true }));
+      setIsLoading(prev => ({ ...prev, categories: true }));
       const response = await equipmentService.getAllCategories();
       setCategories(response.data);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     } finally {
-      setLoading(prev => ({ ...prev, categories: false }));
+      setIsLoading(prev => ({ ...prev, categories: false }));
     }
   }, [equipmentService]);
 
-  const fetchEquipmentsByCategoryId = useCallback(async (categoryId: string) => {
+  const handleTypeChange = useCallback((type: EquipmentType) => {
+    setValue('categoryId', '');
+    setValue('equipmentId', '');
+    setValue('quantity', '');
+    setEquipments([]);
+  }, [setValue]);
+
+  const handleCategoryChange = useCallback((categoryId: string) => {
     if (!categoryId) {
       setEquipments([]);
       return;
     }
 
-    try {
-      setLoading(prev => ({ ...prev, equipments: true }));
-
-      const response = await equipmentService.getEquipmentsByCategory(categoryId);
-      console.log("response", response);
-      setEquipments(response.data);
-    } catch (error) {
-      console.error('Failed to fetch equipments:', error);
-    } finally {
-      setLoading(prev => ({ ...prev, equipments: false }));
-    }
-  }, [equipmentService]);
-
-  // Gestionnaires d'événements
-  const handleTypeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-
-    const newType = e.target.value as EquipmentType;
-    console.log("valeur", newType);
-    setSelectedType(newType || null);
-    setValue('categoryId', '');
-    setValue('equipmentId', '');
-    setValue('quantity', 1);
-  }, [setValue]);
-
-  const handleCategoryChange = useCallback((categoryId: string) => {
-    if (categoryId) {
+    const category = categories.find(cat => cat.id === categoryId);
+    if (category) {
+      setValue('type', category.type);
+      setEquipments(category.equipments || []);
       setValue('equipmentId', '');
-      fetchEquipmentsByCategoryId(categoryId);
       trigger('quantity');
-    } else {
-      setEquipments([]);
     }
-  }, [setValue, fetchEquipmentsByCategoryId, trigger]);
+  }, [categories, setValue, trigger]);
 
-  // Handler pour la quantité avec validation
   const handleQuantityChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const numValue = value === '' ? 0 : Number(value);
+    const numValue = parseInt(value) || 0;
 
-    if (maxQuantity !== null && numValue > maxQuantity) {
+    if (maxQuantity && numValue > maxQuantity) {
       setValue('quantity', maxQuantity);
     } else {
-      setValue('quantity', numValue > 0 ? numValue : (value === '' ? '' : 0));
+      setValue('quantity', numValue > 0 ? numValue : '');
     }
 
     if (errors.quantity) {
@@ -136,202 +100,238 @@ const EquipmentLoanForm: React.FC = () => {
     }
   }, [maxQuantity, setValue, trigger, errors.quantity]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-
-  React.useEffect(() => {
-    if (selectedCategoryId) {
-      handleCategoryChange(selectedCategoryId);
-    }
-  }, [selectedCategoryId, handleCategoryChange]);
-
-  const getFieldClass = useCallback((fieldName: string) => {
-    return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
-  }, [errors]);
-
-
-
   return (
-    <div className="space-y-4">
-      {/* Type selection */}
-      <FormItem>
-        <FormLabel>Type de matériel</FormLabel>
-        <FormControl>
-          <select
-            value={selectedType || ''}
-            onChange={handleTypeChange}
-            className="w-full px-4 py-2 border rounded-lg outline-none transition-all"
-          >
-            <option value="">-- Choisir le type de matériel --</option>
-            {Object.entries(EquipmentTypeList).map(([key, value]) => (
-              <option key={key} value={key}>{value}</option>
-            ))}
-          </select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-
-      {/* Category selection */}
-      <FormField
-        control={control}
-        name="categoryId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Catégorie*</FormLabel>
-            <FormControl>
-              <div className="relative">
-                <select
-                  {...field}
-                  disabled={loading.categories || !selectedType}
-                  className={`w-full px-4 py-2 border rounded-lg outline-none transition-all ${getFieldClass('categoryId')} ${loading.categories ? 'opacity-50' : ''}`}
-                  onChange={(e) => {
-                    field.onChange(e);
+    <div className="space-y-6">
+      {/* Equipment Selection Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Sélection de l'équipement</h3>
+        <div className='w-full space-y-2'>
+          {/* Type selection */}
+          <FormField
+            control={control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type d'équipement</FormLabel>
+                <Select
+                  onValueChange={(value: EquipmentType) => {
+                    field.onChange(value);
+                    handleTypeChange(value);
                   }}
+                  value={field.value}
                 >
-                  <option value="">-- Choisir une catégorie --</option>
-                  {filteredCategories.map(category => (
-                    <option
-                      key={category.id}
-                      value={category.id}
-                      disabled={category.quantity <= 0}
-                    >
-                      {category.name} ({category.quantity} disponibles)
-                    </option>
-                  ))}
-                </select>
-                {loading.categories && (
-                  <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin" />
-                )}
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+                  <FormControl>
+                    <SelectTrigger className='w-full'>
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(EQUIPMENT_TYPE_LABELS).map(([type, label]) => (
+                      <SelectItem key={type} value={type}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-      {/* Equipment selection - only shown when category is selected */}
-      {selectedCategoryId && (
-        <FormField
-          control={control}
-          name="equipmentId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Matériel spécifique (optionnel)</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <select
-                    {...field}
-                    disabled={loading.equipments}
-                    className={`w-full px-4 py-2 border rounded-lg outline-none transition-all ${getFieldClass('equipmentId')} ${loading.equipments ? 'opacity-50' : ''}`}
-                  >
-                    <option value="">-- Choisir un matériel spécifique --</option>
+              </FormItem>
+            )}
+          />
+
+          {/* Category selection */}
+          <FormField
+            control={control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Catégorie d'équipement</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    handleCategoryChange(value);
+                  }}
+                  value={field.value}
+                  disabled={isLoading.categories}
+                >
+                  <FormControl>
+                    <SelectTrigger className='w-full'>
+                      {isLoading.categories ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Chargement...</span>
+                        </div>
+                      ) : (
+                        <SelectValue placeholder="Sélectionner une catégorie" />
+                      )}
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {filteredCategories.map(category => (
+                      <SelectItem
+                        key={category.id}
+                        value={category.id}
+                        disabled={category.quantity <= 0}
+                      >
+                        <div className="flex justify-between items-center">
+                          <span>{category.name}</span>
+                          <span className="text-muted-foreground ml-2">
+                            {category.quantity} disponible{category.quantity > 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+              </FormItem>
+            )}
+          />
+        </div>
+
+
+
+        {/* Equipment selection - only shown if category is selected */}
+        {selectedCategoryId && (
+          <FormField
+            control={control}
+            name="equipmentId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Modèle spécifique (optionnel)</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isLoading.equipments}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un modèle" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
                     {equipments.length > 0 ? (
                       equipments.map(equipment => (
-                        <option key={equipment.id} value={equipment.id}>
-                          {equipment.name} {equipment.specifications &&
-                            Object.entries(equipment.specifications)
-                              .filter(([_, value]) => value !== null && value !== undefined)
-                              .length > 0 ?
-                            `(${Object.entries(equipment.specifications)
-                              .filter(([_, value]) => value !== null && value !== undefined)
-                              .map(([key, value]) => `${key}: ${value}`)
-                              .join(', ')})` : ''}
-                        </option>
+                        <SelectItem key={equipment.id} value={equipment.id}>
+                          <div>
+                            <div className="font-medium">{equipment.name}</div>
+                            {equipment.specifications && (
+                              <div className="text-xs text-muted-foreground">
+                                {Object.entries(equipment.specifications)
+                                  .filter(([_, value]) => value != null)
+                                  .map(([key, value]) => `${key}: ${value}`)
+                                  .join(', ')}
+                              </div>
+                            )}
+                          </div>
+                        </SelectItem>
                       ))
                     ) : (
-                      <option disabled value="">Aucun matériel disponible</option>
+                      <div className="text-sm p-2 text-muted-foreground">
+                        Aucun équipement disponible dans cette catégorie
+                      </div>
                     )}
-                  </select>
-                  {loading.equipments && (
-                    <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin" />
-                  )}
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )}
+                  </SelectContent>
+                </Select>
 
-      {/* Quantity field */}
-      <FormField
-        control={control}
-        name="quantity"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              Quantité* {maxQuantity !== null && `(Maximum disponible: ${maxQuantity})`}
-            </FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min={1}
-                max={maxQuantity || undefined}
-                {...field}
-                onChange={handleQuantityChange}
-                onBlur={() => trigger('quantity')}
-                value={field.value === 0 ? '' : field.value}
-                className={getFieldClass('quantity')}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+              </FormItem>
+            )}
+          />
         )}
-      />
 
+        {/* Quantity field - only shown if category is selected */}
+        {selectedCategoryId && (
+          <FormField
+            control={control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Quantité demandée {maxQuantity !== null && (
+                    <span className="text-muted-foreground ml-2">
+                      (Stock disponible: {maxQuantity})
+                    </span>
+                  )}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={maxQuantity || undefined}
+                    {...field}
+                    onChange={handleQuantityChange}
+                    value={field.value}
+                    placeholder="Nombre d'unités nécessaires"
+                  />
+                </FormControl>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem className="flex-1 w-full">
-              <FormLabel>Date de début</FormLabel>
-              <FormControl>
-
-                <DatePicker {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
-          name="endDate"
-          render={({ field }) => (
-            <FormItem className="flex-1 w-full">
-              <FormLabel>Date de dfin</FormLabel>
-              <FormControl>
-
-                <DatePicker {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+              </FormItem>
+            )}
+          />
+        )}
       </div>
 
-      {/* Notes */}
-      <FormField
-        control={control}
-        name="notes"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Commentaire</FormLabel>
-            <FormControl>
-              <Textarea
-                rows={3}
-                {...field}
-                placeholder="Précisez ici toute information supplémentaire sur votre demande..."
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {/* Loan Period Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Période d'emprunt</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={control}
+            name="startDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de début</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    {...field}
+                  />
+                </FormControl>
+
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="endDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de fin</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    {...field}
+                  />
+                </FormControl>
+
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
+      {/* Additional Information Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Informations complémentaires</h3>
+        <FormField
+          control={control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Textarea
+                  rows={4}
+                  {...field}
+                  placeholder="Précisez ici toute information utile concernant votre demande..."
+                  className="resize-none"
+                />
+              </FormControl>
+
+            </FormItem>
+          )}
+        />
+      </div>
     </div>
   );
 };
