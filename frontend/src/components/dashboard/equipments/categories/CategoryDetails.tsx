@@ -40,28 +40,24 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
     const availableCount = category.equipments?.filter(e => e.status === "AVAILABLE").length || 0;
 
     return (
-        <>
+        <div className="space-y-6 bg-background text-foreground p-6 rounded-lg shadow-md">
             <Button
                 variant="ghost"
-                className="cursor-pointer"
+                className="cursor-pointer text-foreground hover:text-primary"
                 onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour
             </Button>
-            <Card className="w-full" style={{ background: "var(--card)", color: "var(--card-foreground)", borderRadius: "var(--radius-lg)" }}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-2xl font-bold">Détails de la catégorie</CardTitle>
+            <Card className="w-full bg-card text-card-foreground border-border">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-muted/50">
+                    <CardTitle className="text-2xl font-bold text-foreground">Détails de la catégorie</CardTitle>
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setIsEditModalOpen(true)}
                         aria-label="Modifier la catégorie"
-                        style={{
-                            background: "var(--secondary)",
-                            color: "var(--secondary-foreground)",
-                            border: "1px solid var(--border)"
-                        }}
+                        className="bg-background hover:bg-muted"
                     >
                         <Pencil className="h-4 w-4 mr-2" />
                         Modifier
@@ -69,47 +65,44 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                 </CardHeader>
 
                 <CardContent className="grid gap-4">
-                    <Separator className="my-2" style={{ background: "var(--border)" }} />
+                    <Separator className="my-2 bg-border" />
 
                     {/* Section principale avec les informations */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-muted-foreground">Nom</p>
-                            <p className="text-lg">{category.name}</p>
+                            <p className="text-lg text-foreground">{category.name}</p>
                         </div>
 
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-muted-foreground">Type</p>
-                            <Badge variant={getTypeBadgeVariant()} style={{
-                                background: "var(--accent)",
-                                color: "var(--accent-foreground)"
-                            }}>
+                            <Badge variant={getTypeBadgeVariant()}>
                                 {category.type}
                             </Badge>
                         </div>
 
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-muted-foreground">Quantité totale</p>
-                            <p className="text-lg">{category.quantity}</p>
+                            <p className="text-lg text-foreground">{category.quantity}</p>
                         </div>
 
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-muted-foreground">Équipements disponibles</p>
-                            <p className="text-lg">{availableCount}</p>
+                            <p className="text-lg text-foreground">{availableCount}</p>
                         </div>
                     </div>
 
-                    <Separator className="my-4" style={{ background: "var(--border)" }} />
+                    <Separator className="my-4 bg-border" />
 
                     {/* Section description */}
                     <div className="space-y-1">
                         <p className="text-sm font-medium text-muted-foreground">Description</p>
-                        <p className="text-sm bg-muted/50 p-2 rounded">
+                        <p className="text-sm bg-muted/50 p-2 rounded text-foreground">
                             {category.description || "Aucune description fournie"}
                         </p>
                     </div>
 
-                    <Separator className="my-4" style={{ background: "var(--border)" }} />
+                    <Separator className="my-4 bg-border" />
 
                     {/* Section photos */}
                     {category.photo && category.photo.length > 0 && (
@@ -120,7 +113,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                                     {category.photo.map((photo, index) => (
                                         <div
                                             key={index}
-                                            className="w-32 h-32 rounded-md overflow-hidden border cursor-pointer hover:opacity-80 transition-opacity"
+                                            className="w-32 h-32 rounded-md overflow-hidden border border-border cursor-pointer hover:opacity-80 transition-opacity"
                                             onClick={() => setSelectedPhoto(photo)}
                                         >
                                             <img
@@ -132,14 +125,14 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                                     ))}
                                 </div>
                             </div>
-                            <Separator className="my-4" />
+                            <Separator className="my-4 bg-border" />
                         </>
                     )}
 
                     {/* Section ID */}
                     <div className="space-y-1">
                         <p className="text-sm font-medium text-muted-foreground">ID de la catégorie</p>
-                        <p className="text-sm font-mono bg-muted/50 p-2 rounded break-all">{category.id}</p>
+                        <p className="text-sm font-mono bg-muted/50 p-2 rounded break-all text-foreground">{category.id}</p>
                     </div>
                 </CardContent>
             </Card>
@@ -156,7 +149,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
                 fileUrl={selectedPhoto || ""}
                 fileName={`Photo de ${category.name}`}
             />
-        </>
+        </div>
     );
 };
 

@@ -39,7 +39,7 @@ export const InternshipDetails = ({ stage, onPreview, isDirector = false }: {
     return (
         <>
             <DetailSection
-                icon={<ClipboardList className="h-5 w-5 text-purple-500" />}
+                icon={<ClipboardList className="h-5 w-5 text-primary" />}
                 title="Détails du stage"
             >
                 <DetailItem label="Organisation" value={stage.organization} />
@@ -60,7 +60,7 @@ export const InternshipDetails = ({ stage, onPreview, isDirector = false }: {
             {/* Section Formulaire */}
             {stage.letter && (
                 <DetailSection
-                    icon={<FileText className="h-5 w-5 text-green-500" />}
+                    icon={<FileText className="h-5 w-5 text-success" />}
                     title="Documents associés"
                 >
                     <DetailItem label="Lettre de stage">
@@ -117,7 +117,7 @@ export const InternshipDetails = ({ stage, onPreview, isDirector = false }: {
                                             href={stage.awaitForm}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-blue-600 underline font-medium"
+                                            className="text-primary underline font-medium"
                                             download
                                         >
                                             Télécharger le formulaire à signer

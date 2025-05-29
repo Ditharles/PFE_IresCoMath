@@ -1,10 +1,8 @@
-
 import { Loader2 } from "lucide-react"
 
 interface LoadingOverlayProps {
     loadingText?: string
     spinnerSize?: number
-    spinnerColor?: string
     overlayOpacity?: number
     showSpinner?: boolean
     showProgressBar?: boolean
@@ -12,9 +10,8 @@ interface LoadingOverlayProps {
 }
 
 export default function LoadingOverlay({
-    loadingText = "Loading...",
+    loadingText = "Chargement...",
     spinnerSize = 24,
-    spinnerColor = "#3b82f6",
     overlayOpacity = 0.7,
     showSpinner = true,
     showProgressBar = false,
@@ -22,21 +19,20 @@ export default function LoadingOverlay({
 }: LoadingOverlayProps) {
     return (
         <div
-            className="absolute inset-0 flex flex-col items-center justify-center rounded-xl"
+            className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-background/80 backdrop-blur-sm border border-border"
             style={{
-                backgroundColor: `rgba(255, 255, 255, ${overlayOpacity})`,
-                backdropFilter: "blur(2px)",
+                opacity: overlayOpacity,
                 zIndex: 50,
             }}
         >
-            {showSpinner && <Loader2 className="animate-spin mb-2" size={spinnerSize} color={spinnerColor} />}
+            {showSpinner && <Loader2 className="animate-spin mb-2 text-primary" size={spinnerSize} />}
 
-            {loadingText && <p className="text-sm font-medium text-gray-800">{loadingText}</p>}
+            {loadingText && <p className="text-sm font-medium text-foreground">{loadingText}</p>}
 
             {showProgressBar && (
-                <div className="w-3/4 mt-4 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="w-3/4 mt-4 bg-muted rounded-full h-2.5 overflow-hidden">
                     <div
-                        className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                        className="bg-primary h-2.5 rounded-full transition-all duration-300 ease-in-out"
                         style={{ width: `${progressValue}%` }}
                     ></div>
                 </div>

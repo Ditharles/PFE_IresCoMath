@@ -92,21 +92,19 @@ const CategoryFields = ({ prefix }: CategoryFieldsProps) => {
   return (
     <div className="space-y-6">
       <div className="w-full flex flex-col md:flex-row gap-4 justify-between">
-
-
         <FormField
           control={control}
           name={getFieldName('type')}
           render={({ field }) => (
             <FormItem className="">
-              <FormLabel>Type de catégorie</FormLabel>
+              <FormLabel className="text-foreground">Type de catégorie</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-background border-border">
                     <SelectValue placeholder="Sélectionnez un type" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="bg-background border-border">
                   {equipmentTypeOptions}
                 </SelectContent>
               </Select>
@@ -120,10 +118,11 @@ const CategoryFields = ({ prefix }: CategoryFieldsProps) => {
           name={getFieldName("name")}
           render={({ field }) => (
             <FormItem className="flex-1 w-full">
-              <FormLabel>Nom de la catégorie</FormLabel>
+              <FormLabel className="text-foreground">Nom de la catégorie</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Entrez le nom de la catégorie"
+                  className="bg-background border-border"
                   {...field}
                   aria-describedby="name-description"
                 />
@@ -139,11 +138,11 @@ const CategoryFields = ({ prefix }: CategoryFieldsProps) => {
         name={getFieldName("description")}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Description</FormLabel>
+            <FormLabel className="text-foreground">Description</FormLabel>
             <FormControl>
               <Textarea
                 placeholder="Entrez une description"
-                className="min-h-[120px]"
+                className="min-h-[120px] bg-background border-border"
                 {...field}
                 aria-describedby="description-description"
               />
@@ -158,7 +157,7 @@ const CategoryFields = ({ prefix }: CategoryFieldsProps) => {
         name={getFieldName("photo")}
         render={() => (
           <FormItem>
-            <FormLabel>Photos</FormLabel>
+            <FormLabel className="text-foreground">Photos</FormLabel>
             <FormControl>
               <div className="space-y-4">
                 {currentPhotos.length > 0 && (

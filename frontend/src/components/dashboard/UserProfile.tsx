@@ -63,15 +63,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
     return (
       <button
         className={`w-full flex items-center p-3 rounded-lg ${danger
-          ? "text-red-600 hover:bg-red-50"
-          : "hover:bg-gray-100"
+          ? "text-destructive hover:bg-destructive/10"
+          : "hover:bg-muted"
           }`}
       >
         <span className="mr-3">{icon}</span>
         <div className="text-left">
-          <div className={danger ? "text-red-600" : ""}>{label}</div>
+          <div className={danger ? "text-destructive" : ""}>{label}</div>
           {description && (
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-muted-foreground">
               {description}
             </div>
           )}
@@ -90,18 +90,18 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
 
       {/* Panneau latéral */}
       <div
-        className={`relative w-full max-w-md h-full bg-background text-primary shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"
+        className={`relative w-full max-w-md h-full bg-background text-foreground shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"
           }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* En-tête du panneau */}
         <div
-          className="flex items-center justify-between p-4 border-b border-gray-200"
+          className="flex items-center justify-between p-4 border-b border-border"
         >
           <h2 className="text-xl font-semibold">Profil utilisateur</h2>
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-full hover:bg-gray-100"
+            className="p-1.5 rounded-full hover:bg-muted"
             aria-label="Fermer"
           >
             <XMarkIcon className="w-6 h-6" />
@@ -111,35 +111,35 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
         {/* Contenu du panneau */}
         <div className="h-full overflow-y-auto">
           {/* Section profil */}
-          <div className="flex flex-col items-center p-6 border-b border-gray-200">
+          <div className="flex flex-col items-center p-6 border-b border-border">
             <div className="relative mb-4">
               {user.photo ? (
                 <div className="relative">
                   <img
                     src={user.photo || "/placeholder.svg"}
                     alt={user.name}
-                    className="w-24 h-24 rounded-full object-cover border-2 border-blue-500"
+                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
                   />
                   <button
-                    className="absolute bottom-0 right-0 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200"
+                    className="absolute bottom-0 right-0 p-1.5 rounded-full bg-muted hover:bg-muted/70"
                   >
                     <PencilIcon className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
                 <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center bg-gray-200"
+                  className="w-24 h-24 rounded-full flex items-center justify-center bg-muted"
                 >
-                  <UserIcon className="w-12 h-12 text-gray-500" />
+                  <UserIcon className="w-12 h-12 text-muted-foreground" />
                 </div>
               )}
             </div>
             <h2 className="text-xl font-bold">{user.name}</h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {user.email}
             </p>
             <span
-              className="mt-2 px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
+              className="mt-2 px-3 py-1 text-xs rounded-full bg-primary/10 text-primary"
             >
               {user.role}
             </span>
@@ -148,7 +148,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
           {/* Section compte */}
           <div className="p-4">
             <h3
-              className="text-xs font-semibold uppercase tracking-wider mb-3 text-gray-500"
+              className="text-xs font-semibold uppercase tracking-wider mb-3 text-muted-foreground"
             >
               COMPTE
             </h3>
@@ -174,7 +174,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
           {/* Section préférences */}
           <div className="p-4">
             <h3
-              className="text-xs font-semibold uppercase tracking-wider mb-3 text-gray-500"
+              className="text-xs font-semibold uppercase tracking-wider mb-3 text-muted-foreground"
             >
               PRÉFÉRENCES
             </h3>
@@ -190,19 +190,19 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
           {/* Section déconnexion */}
           <div className="p-4 mt-auto">
             <button
-              className="w-full flex items-center p-3 rounded-lg text-red-600 hover:bg-red-50"
+              className="w-full flex items-center p-3 rounded-lg text-destructive hover:bg-destructive/10"
               onClick={handleLogout}
             >
               <ArrowRightOnRectangleIcon className="w-5 h-5 mr-3" />
               <div className="text-left">
-                <div className="text-red-600">Se déconnecter</div>
+                <div className="text-destructive">Se déconnecter</div>
               </div>
             </button>
           </div>
 
           {/* Pied de page */}
           <div
-            className="p-4 text-xs text-center text-gray-400"
+            className="p-4 text-xs text-center text-muted-foreground"
           >
             Dernière connexion: Aujourd'hui à 10:45
           </div>

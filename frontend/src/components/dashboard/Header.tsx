@@ -45,20 +45,14 @@ export const Header = ({
 
     return (
         <header
-            className="fixed top-0 left-0 w-full z-50 shadow-sm py-3 px-6 flex items-center justify-between"
-            style={{
-                background: "var(--background)",
-                color: "var(--foreground)",
-                borderBottom: "1px solid var(--border)"
-            }}
+            className="fixed top-0 left-0 w-full z-50 shadow-sm py-3 px-6 flex items-center justify-between bg-background text-foreground border-b border-border"
         >
             {/* Logo avec meilleur positionnement et taille */}
             <div className="flex items-center">
                 <img
                     src="./src/assets/logo-ires.png"
                     alt="logo"
-                    className="h-10 object-contain"
-                    style={{ background: "var(--card)", borderRadius: "var(--radius-lg)" }}
+                    className="h-10 object-contain bg-card rounded-lg"
                 />
             </div>
 
@@ -68,14 +62,9 @@ export const Header = ({
                     <input
                         type="text"
                         placeholder="Search..."
-                        className="pl-10 pr-4 py-2 rounded-md w-64 border focus:outline-none"
+                        className="pl-10 pr-4 py-2 rounded-md w-64 border focus:outline-none bg-input text-foreground border-border"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{
-                            background: "var(--input)",
-                            color: "var(--foreground)",
-                            borderColor: "var(--border)"
-                        }}
                     />
                     <svg
                         className="absolute left-3 top-2.5 h-5 w-5"
@@ -97,16 +86,12 @@ export const Header = ({
                 {/* Bouton de notifications */}
                 <button
                     onClick={toggleNotifications}
-                    className="relative p-2 rounded-full hover:bg-hover focus:outline-none focus:ring-2"
+                    className="relative p-2 rounded-full bg-card text-foreground hover:bg-muted focus:outline-none focus:ring-2"
                     aria-label="Notifications"
-                    style={{
-                        background: "var(--card)",
-                        color: "var(--foreground)"
-                    }}
                 >
                     <BellIcon className="h-6 w-6" />
                     {unreadNotificationsCount > 0 && (
-                        <span className="absolute top-0 right-0 flex h-5 w-5 rounded-full bg-notification text-notification-foreground text-xs items-center justify-center">
+                        <span className="absolute top-0 right-0 flex h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs items-center justify-center">
                             {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
                         </span>
                     )}
@@ -118,12 +103,8 @@ export const Header = ({
                 {/* Bouton de profil utilisateur */}
                 <button
                     onClick={toggleUserProfile}
-                    className="relative overflow-hidden rounded-full focus:outline-none focus:ring-2"
+                    className="relative overflow-hidden rounded-full bg-card text-foreground focus:outline-none focus:ring-2"
                     aria-label="User profile"
-                    style={{
-                        background: "var(--card)",
-                        color: "var(--foreground)"
-                    }}
                 >
                     {user.photo ? (
                         <img
@@ -133,7 +114,7 @@ export const Header = ({
                         />
                     ) : (
                         <div
-                            className="h-10 w-10 rounded-full flex items-center justify-center"
+                            className="h-10 w-10 rounded-full flex items-center justify-center bg-muted"
                         >
                             {user.name ? (
                                 <span className="font-medium">

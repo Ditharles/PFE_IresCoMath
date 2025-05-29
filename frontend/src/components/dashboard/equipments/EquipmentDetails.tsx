@@ -86,29 +86,25 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 bg-background text-foreground p-6 rounded-lg shadow-md">
             <Button
                 variant="ghost"
-                className="cursor-pointer"
+                className="cursor-pointer text-foreground hover:text-primary"
                 onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour
             </Button>
 
-            <Card className="w-full" style={{ background: "var(--card)", color: "var(--card-foreground)", borderRadius: "var(--radius-lg)" }}>
-                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
-                    <CardTitle className="text-2xl font-bold">Détails de l'équipement</CardTitle>
+            <Card className="w-full bg-card text-card-foreground border-border">
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 bg-muted/50">
+                    <CardTitle className="text-2xl font-bold text-foreground">Détails de l'équipement</CardTitle>
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setIsEditModalOpen(true)}
                         aria-label="Modifier l'équipement"
-                        style={{
-                            background: "var(--secondary)",
-                            color: "var(--secondary-foreground)",
-                            border: "1px solid var(--border)"
-                        }}
+                        className="bg-background hover:bg-muted"
                     >
                         <Pencil className="h-4 w-4 mr-2" />
                         Modifier
@@ -117,38 +113,32 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
 
                 <CardContent className="grid gap-6">
                     <DetailSection
-                        icon={<Package size={18} />}
+                        icon={<Package size={18} className="text-primary" />}
                         title="Informations générales"
                     >
                         <DetailItem label="Nom" value={equipment.name} />
                         <DetailItem label="Statut">
-                            <Badge variant={getStatusBadgeVariant()} style={{
-                                background: "var(--accent)",
-                                color: "var(--accent-foreground)"
-                            }}>
+                            <Badge variant={getStatusBadgeVariant()}>
                                 {STATUS_LABELS[equipment.status] || equipment.status}
                             </Badge>
                         </DetailItem>
                         <DetailItem label="Catégorie">
                             <Link
                                 to={`/materiels/categories/${equipment.category.id}`}
-                                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                                className="text-primary hover:text-primary/80 hover:underline transition-colors"
                             >
                                 {equipment.category.name}
                             </Link>
                         </DetailItem>
                         <DetailItem label="Type">
-                            <Badge variant={getTypeBadgeVariant()} style={{
-                                background: "var(--secondary)",
-                                color: "var(--secondary-foreground)"
-                            }}>
+                            <Badge variant={getTypeBadgeVariant()}>
                                 {TYPE_LABELS[equipment.category.type] || equipment.category.type}
                             </Badge>
                         </DetailItem>
                     </DetailSection>
 
                     <DetailSection
-                        icon={<CalendarDays size={18} />}
+                        icon={<CalendarDays size={18} className="text-primary" />}
                         title="Dates"
                     >
                         {equipment.acquisitionDate && (
@@ -161,7 +151,7 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
 
                     {equipment.specifications && Object.keys(equipment.specifications).length > 0 && (
                         <DetailSection
-                            icon={<Settings2 size={18} />}
+                            icon={<Settings2 size={18} className="text-primary" />}
                             title="Spécifications techniques"
                         >
                             {Object.entries(equipment.specifications).map(([key, value]) => (
@@ -176,7 +166,7 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
 
                     {equipment.photo && equipment.photo.length > 0 && (
                         <DetailSection
-                            icon={<Image size={18} />}
+                            icon={<Image size={18} className="text-primary" />}
                             title="Photos"
                         >
                             <div className="col-span-2">
@@ -184,7 +174,7 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                                     {equipment.photo.map((photo, index) => (
                                         <div
                                             key={index}
-                                            className="w-32 h-32 rounded-md overflow-hidden border hover:shadow-md transition-shadow cursor-pointer"
+                                            className="w-32 h-32 rounded-md overflow-hidden border border-border hover:shadow-md transition-shadow cursor-pointer"
                                             onClick={() => setSelectedPhoto(photo)}
                                         >
                                             <img
@@ -201,16 +191,16 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
 
                     {equipment.bill && (
                         <DetailSection
-                            icon={<FileText size={18} />}
+                            icon={<FileText size={18} className="text-primary" />}
                             title="Facture"
                         >
                             <div className="col-span-2">
                                 <div
-                                    className="flex items-center gap-2 p-4 rounded-md border hover:shadow-md transition-shadow cursor-pointer"
+                                    className="flex items-center gap-2 p-4 rounded-md border border-border hover:shadow-md transition-shadow cursor-pointer bg-muted/50 hover:bg-muted"
                                     onClick={() => setSelectedBill(equipment.bill || null)}
                                 >
-                                    <FileText className="h-6 w-6" />
-                                    <span>Voir la facture</span>
+                                    <FileText className="h-6 w-6 text-muted-foreground" />
+                                    <span className="text-foreground">Voir la facture</span>
                                 </div>
                             </div>
                         </DetailSection>
@@ -218,12 +208,12 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
 
                     {equipment.history && equipment.history.length > 0 && (
                         <DetailSection
-                            icon={<Clock size={18} />}
+                            icon={<Clock size={18} className="text-primary" />}
                             title="Historique"
                         >
                             <div className="col-span-2 space-y-4">
                                 {equipment.history.map((historyItem) => (
-                                    <div key={historyItem.id} className="bg-muted/50 p-4 rounded-lg hover:bg-muted/70 transition-colors">
+                                    <div key={historyItem.id} className="bg-muted/50 p-4 rounded-lg hover:bg-muted/70 transition-colors border border-border">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <DetailItem
                                                 label="Date d'emprunt"
@@ -239,7 +229,7 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                                                 label="Utilisateur"
                                                 value={
                                                     <div className="flex items-center">
-                                                        <User size={16} className="inline mr-2" />
+                                                        <User size={16} className="inline mr-2 text-muted-foreground" />
                                                         {historyItem.userId}
                                                     </div>
                                                 }
@@ -261,25 +251,27 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                 </CardContent>
             </Card>
 
-            <EditEquipment
-                equipment={equipment}
-                isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
-                onSuccess={(updatedEquipment) => {
-                    setIsEditModalOpen(false);
-                    onUpdate(updatedEquipment);
-                }}
-            />
+            {isEditModalOpen && (
+                <EditEquipment
+                    equipment={equipment}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onUpdate={onUpdate}
+                />
+            )}
 
-            <FilePreviewModal
-                isOpen={!!selectedPhoto || !!selectedBill}
-                onClose={() => {
-                    setSelectedPhoto(null);
-                    setSelectedBill(null);
-                }}
-                fileUrl={selectedPhoto || selectedBill || ""}
-                fileName={`${selectedPhoto ? `Photo de ${equipment.name}` : `Facture de ${equipment.name}`}`}
-            />
+            {selectedPhoto && (
+                <FilePreviewModal
+                    fileUrl={selectedPhoto}
+                    onClose={() => setSelectedPhoto(null)}
+                />
+            )}
+
+            {selectedBill && (
+                <FilePreviewModal
+                    fileUrl={selectedBill}
+                    onClose={() => setSelectedBill(null)}
+                />
+            )}
         </div>
     );
 };

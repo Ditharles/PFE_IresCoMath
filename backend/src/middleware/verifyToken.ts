@@ -52,7 +52,7 @@ export const verifyToken = async (
     if (!user) {
       return res.status(401).json({ message: "Utilisateur introuvable" });
     }
-    console.log(user.role);
+
     req.user = user;
     return next();
   } catch (error) {

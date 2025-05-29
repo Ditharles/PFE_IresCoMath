@@ -86,6 +86,16 @@ export const uploadRouter = {
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
+  templateSign: f({
+    "application/msword": { maxFileSize: "4MB", maxFileCount: 1 },
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+    "application/pdf": { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof uploadRouter;

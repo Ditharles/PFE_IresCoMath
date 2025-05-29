@@ -84,27 +84,27 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
         <>
             {/* Main edit dialog */}
             <Dialog open={isOpen} onOpenChange={handleCloseAttempt}>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-foreground border-border">
+                    <DialogHeader className="bg-muted/50 p-4 rounded-t-lg">
                         <div className="flex justify-between items-start">
-                            <DialogTitle>Modifier l'équipement</DialogTitle>
+                            <DialogTitle className="text-foreground">Modifier l'équipement</DialogTitle>
                         </div>
-                        <DialogDescription>
+                        <DialogDescription className="text-muted-foreground">
                             Modifier les détails de l'équipement {equipment.name}
                         </DialogDescription>
                     </DialogHeader>
 
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 p-4">
                             <EquipmentFields />
 
-                            <DialogFooter className="gap-2 pt-4">
+                            <DialogFooter className="gap-2 pt-4 border-t border-border">
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={handleCloseAttempt}
                                     disabled={form.formState.isSubmitting}
-                                    className="cursor-pointer"
+                                    className="cursor-pointer hover:bg-muted"
                                 >
                                     Annuler
                                 </Button>
@@ -123,24 +123,24 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
 
             {/* Unsaved changes confirmation dialog */}
             <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-                <DialogContent className="max-w-md">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
+                <DialogContent className="max-w-md bg-background text-foreground border-border">
+                    <DialogHeader className="bg-muted/50 p-4 rounded-t-lg">
+                        <DialogTitle className="flex items-center gap-2 text-foreground">
                             <AlertTriangle className="h-5 w-5 text-amber-500" />
                             Modifications non enregistrées
                         </DialogTitle>
-                        <DialogDescription>
+                        <DialogDescription className="text-muted-foreground">
                             Vous avez des modifications non enregistrées. Si vous quittez maintenant,
                             ces modifications seront perdues.
                         </DialogDescription>
                     </DialogHeader>
 
-                    <DialogFooter className="gap-2 mt-4">
+                    <DialogFooter className="gap-2 mt-4 border-t border-border p-4">
                         <Button
                             type="button"
                             variant="outline"
                             onClick={() => setShowConfirmDialog(false)}
-                            className="cursor-pointer"
+                            className="cursor-pointer hover:bg-muted"
                         >
                             Continuer l'édition
                         </Button>

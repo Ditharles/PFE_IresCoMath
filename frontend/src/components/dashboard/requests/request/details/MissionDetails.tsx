@@ -64,8 +64,8 @@ export const MissionDetails = ({
     };
 
     return (
-        <div className="space-y-6">
-            <DetailSection icon={<MapPin className="h-5 w-5 text-blue-500" />} title="Détails de la mission">
+        <div className="space-y-6 bg-background text-foreground">
+            <DetailSection icon={<MapPin className="h-5 w-5 text-primary" />} title="Détails de la mission">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <DetailItem label="Organisation d'accueil" value={mission.hostOrganization} />
                     <DetailItem label="Pays" value={mission.country} />
@@ -76,7 +76,7 @@ export const MissionDetails = ({
             </DetailSection>
 
             {mission.specificDocument?.length > 0 && (
-                <DetailSection icon={<FileText className="h-5 w-5 text-green-500" />} title="Documents soumis pour appuyer la requête">
+                <DetailSection icon={<FileText className="h-5 w-5 text-primary" />} title="Documents soumis pour appuyer la requête">
                     <div className="mt-2">
                         <FileListViewer files={mission.specificDocument} onPreview={onPreview} />
                     </div>
@@ -86,7 +86,7 @@ export const MissionDetails = ({
             {status === "APPROVED" && (
                 <>
                     {mission.document?.length > 0 && (
-                        <DetailSection icon={<FileText className="h-5 w-5 text-green-500" />} title="Justificatifs existants">
+                        <DetailSection icon={<FileText className="h-5 w-5 text-primary" />} title="Justificatifs existants">
                             <div className="mt-2">
                                 <FileListViewer files={mission.document} onPreview={onPreview} />
                             </div>
@@ -94,9 +94,9 @@ export const MissionDetails = ({
                     )}
 
                     {!isDirector && (
-                        <DetailSection icon={<FileText className="h-5 w-5 text-green-500" />} title="Soumettre des justificatifs">
+                        <DetailSection icon={<FileText className="h-5 w-5 text-primary" />} title="Soumettre des justificatifs">
                             <div className="space-y-4">
-                                <div className="text-sm text-gray-600 mb-2">
+                                <div className="text-sm text-muted-foreground mb-2">
                                     {documentStates.length > 0
                                         ? `${documentStates.length} photo(s) prête(s) à être soumise(s)`
                                         : "Aucun document sélectionné"}
@@ -135,7 +135,7 @@ export const MissionDetails = ({
                     if (isDirector) {
                         formSectionContent = (
                             <div>
-                                <span className="text-sm text-gray-600 mb-2 block">
+                                <span className="text-sm text-muted-foreground mb-2 block">
                                     Téléverser le formulaire signé (format Word ou PDF)
                                 </span>
                                 <FileUpload
@@ -154,7 +154,7 @@ export const MissionDetails = ({
                         );
                     } else {
                         formSectionContent = (
-                            <div className="text-sm text-gray-600 mb-2 block">
+                            <div className="text-sm text-muted-foreground mb-2 block">
                                 Le formulaire signé sera disponible après approbation par le directeur.
                             </div>
                         );
@@ -165,7 +165,7 @@ export const MissionDetails = ({
                     );
                 }
                 return (
-                    <DetailSection icon={<FileText className="h-5 w-5 text-blue-500" />} title="Formulaire">
+                    <DetailSection icon={<FileText className="h-5 w-5 text-primary" />} title="Formulaire">
                         {isDirector && mission.awaitForm && (
                             <>
                                 <FileListViewer files={[mission.awaitForm]} onPreview={onPreview} />
@@ -175,7 +175,7 @@ export const MissionDetails = ({
                                             href={mission.awaitForm}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-blue-600 underline font-medium"
+                                            className="text-primary hover:text-primary/80 underline font-medium transition-colors"
                                             download
                                         >
                                             Télécharger le formulaire à signer

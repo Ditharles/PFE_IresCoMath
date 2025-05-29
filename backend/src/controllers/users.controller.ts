@@ -6,6 +6,7 @@ import {
   masterStudentFields,
   teacherResearcherFields,
   doctoralStudentFields,
+  userFields,
 } from "../constants/userFields";
 import { getUserByID } from "../services/auth.service";
 import { AuthRequest } from "../types/auth";
@@ -32,15 +33,7 @@ interface UpdateUserRequest extends Request {
 
 export const getUsers = async (req: Request, res: Response) => {
   const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      role: true,
-      email: true,
-      createdAt: true,
-      masterStudent: { select: masterStudentFields },
-      teacherResearcher: { select: teacherResearcherFields },
-      doctoralStudent: { select: doctoralStudentFields },
-    },
+    select: userFields,
     orderBy: {
       createdAt: "desc",
     },
@@ -51,7 +44,10 @@ export const getUsers = async (req: Request, res: Response) => {
       id: user.id,
       role: user.role,
       email: user.email,
-      createdAt: user.createdAt,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      cin: user.cin,
       ...user.masterStudent,
       ...user.teacherResearcher,
       ...user.doctoralStudent,

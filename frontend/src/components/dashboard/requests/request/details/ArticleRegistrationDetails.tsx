@@ -36,7 +36,7 @@ export const ArticleRegistrationDetails = ({ articleRegistration, isDirector = f
     return (
         <>
             <DetailSection
-                icon={<BookOpen className="h-5 w-5 text-indigo-500" />}
+                icon={<BookOpen className="h-5 w-5 text-primary" />}
                 title="Détails de l'article"
             >
                 <DetailItem label="Titre" value={articleRegistration.title} />
@@ -51,7 +51,7 @@ export const ArticleRegistrationDetails = ({ articleRegistration, isDirector = f
 
             {articleRegistration.articleCover && (
                 <DetailSection
-                    icon={<FileText className="h-5 w-5 text-green-500" />}
+                    icon={<FileText className="h-5 w-5 text-success" />}
                     title="Documents associés"
                 >
                     <DetailItem label="Couverture de l'article">
@@ -109,7 +109,7 @@ export const ArticleRegistrationDetails = ({ articleRegistration, isDirector = f
                                             href={articleRegistration.awaitForm}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-blue-600 underline font-medium"
+                                            className="text-primary underline font-medium"
                                             download
                                         >
                                             Télécharger le formulaire à signer

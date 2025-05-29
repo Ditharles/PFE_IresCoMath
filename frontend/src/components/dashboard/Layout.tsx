@@ -22,7 +22,7 @@ const Layout = ({ children }: LayoutProps) => {
     const [searchQuery, setSearchQuery] = useState("");
 
     return (
-        <div className="flex flex-col min-h-screen bg-background text-foreground">
+        <div className="flex flex-col min-h-screen bg-secondary text-foreground">
             {/* Header fixé tout en haut */}
             <div className="fixed top-0 left-0 right-0 z-50 h-16">
                 <Header
@@ -45,7 +45,7 @@ const Layout = ({ children }: LayoutProps) => {
                     {role === "DIRECTEUR" ? <SidebarDirector /> : <SidebarOthers />}
                 </div>
 
-                <main className="ml-64 flex-1 p-6 overflow-auto bg-background text-foreground">
+                <main className="ml-64 flex-1 p-6 overflow-auto bg-secondary text-foreground">
                     {children}
                 </main>
             </div>

@@ -1,4 +1,3 @@
-
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -49,26 +48,28 @@ const AddEquipment = () => {
     };
 
     return (
-        <Card className="p-4 w-full mx-auto">
-            <CardHeader>
-                <CardTitle>Ajouter un equipment</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <EquipmentFields />
-                        <div className="flex justify-end gap-4">
-                            <Button type='reset' className='w-full sm:w-auto' variant="outline">
-                                Annuler
-                            </Button>
-                            <Button type="submit" className="w-full sm:w-auto" variant="default" disabled={!isValid}>
-                                Ajouter l'équipement
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+        <div className="min-h-screen bg-background text-foreground p-4">
+            <Card className="w-full mx-auto">
+                <CardHeader>
+                    <CardTitle>Ajouter un équipement</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <EquipmentFields />
+                            <div className="flex justify-end gap-4">
+                                <Button type='reset' className='w-full sm:w-auto' variant="outline">
+                                    Annuler
+                                </Button>
+                                <Button type="submit" className="w-full sm:w-auto" variant="default" disabled={!isValid}>
+                                    Ajouter l'équipement
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 

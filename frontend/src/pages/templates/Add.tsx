@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes"; // Supprimé car non utilisé
 
 import { templateSchema } from "../../schemas/template";
 import TemplateService from "../../services/templates.service";
@@ -90,7 +90,7 @@ const AddTemplate = () => {
     const [pendingData, setPendingData] = useState<TemplateForm | null>(null);
     const templateService = new TemplateService();
     const navigate = useNavigate();
-    const { theme } = useTheme(); // récupération du thème courant
+    // const { theme } = useTheme(); // Supprimé car non utilisé
 
     const form = useForm<TemplateForm>({
         resolver: zodResolver(templateSchema),
@@ -104,6 +104,7 @@ const AddTemplate = () => {
 
     const { setValue, getValues, formState: { isValid }, reset } = form;
 
+    ;
     const handleVerify = async () => {
         setIsLoading(true);
         try {
@@ -113,7 +114,7 @@ const AddTemplate = () => {
 
             setIsVerified(true);
             const fieldName = response.data.placeholders.map(
-                (placeholder: any) => placeholder.fieldName
+                (placeholder: { fieldName: string }) => placeholder.fieldName
             );
             setValue("placeholders", fieldName, {
                 shouldValidate: true,
@@ -199,18 +200,18 @@ const AddTemplate = () => {
         icon: React.ReactNode,
         items: { tag: string; desc: string }[]
     ) => (
-        <div className="space-y-3">
-            <h4 className="font-medium flex items-center gap-2 text-sm">
+        <div className="space-y-3 p-4 rounded-md bg-muted/30 border border-border/40">
+            <h4 className="font-semibold flex items-center gap-2 text-primary">
                 {icon}
                 {title}
             </h4>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2 text-sm">
                 {items.map((item, index) => (
                     <li key={index} className="flex gap-2 items-baseline">
-                        <Badge variant="outline" className="font-mono px-2 py-1 text-xs">
+                        <Badge variant="outline" className="font-mono px-2 py-0.5 text-xs bg-background/50 border-border/40">
                             {item.tag}
                         </Badge>
-                        <span className="text-muted-foreground flex-1">
+                        <span className="text-muted-foreground/80 flex-1">
                             {item.desc}
                         </span>
                     </li>
@@ -220,43 +221,102 @@ const AddTemplate = () => {
     );
 
     return (
-        <div className="flex justify-center bg-background text-foreground min-h-screen">
-            <div className="w-full">
+        <div className="w-full flex justify-center bg-gradient-to-br from-background via-background/95 to-muted/30 text-foreground min-h-screen p-6">
+            <main className="w-full">
                 <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={() => navigate(-1)}
-                    className="mb-6 flex items-center gap-2"
+                    className="mb-6 flex items-center gap-2 bg-card/50 hover:bg-accent hover:text-accent-foreground"
                 >
                     <ArrowLeftIcon className="h-4 w-4" />
                     Retour
                 </Button>
 
-                <Card className="w-full shadow-xl border-0 bg-background text-foreground">
-                    <CardHeader className="h-full pb-6">
-                        <CardTitle className="h-full text-3xl font-bold  flex items-center gap-3">
+                <Card className="w-full shadow-xl border border-border/40 bg-card/50 backdrop-blur-sm text-card-foreground">
+                    <CardHeader className="pb-6 border-b border-border/40 bg-card/70">
+                        <CardTitle className="text-3xl font-bold flex items-center gap-3 text-primary">
                             <FileTextIcon className="h-7 w-7" />
                             Ajouter un template
                         </CardTitle>
-                        <p className=" mt-2 text-base">
+                        <p className="mt-2 text-base text-muted-foreground/80">
                             Créez un nouveau modèle de document pour vos demandes administratives.
                         </p>
                     </CardHeader>
 
-                    <CardContent className="bg-background rounded-b-lg">
+                    <CardContent className="p-6 space-y-8">
                         <Form {...form}>
                             <form
                                 onSubmit={form.handleSubmit(handleSubmit)}
                                 className="space-y-8"
                             >
-                                <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-6 mb-4">
-                                    <h3 className="font-semibold text-blue-700 mb-2 flex items-center gap-2">
-                                        <InfoIcon className="h-4 w-4" />
-                                        {!isVerified ?
-                                            (<span>Étape 1 : Informations du template</span>) :
-                                            (<span>Étape 2 :Soumettre le template</span>)}
+                                <div className="rounded-lg border border-border/40 bg-muted/50 p-6">
+                                    <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
+                                        <FileTextIcon className="h-4 w-4" />
+                                        Informations du template
                                     </h3>
                                     <TemplateFields isVerified={isVerified} />
+                                    <div className="flex justify-end mt-6">
+                                        {!isVerified ? (
+                                            <Button
+                                                type="button"
+                                                onClick={handleVerify}
+                                                disabled={isLoading || !form.getValues('url')}
+                                                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow"
+                                            >
+                                                {isLoading ? (
+                                                    <span className="animate-pulse">Vérification...</span>
+                                                ) : (
+                                                    "Vérifier le template"
+                                                )}
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                type="submit"
+                                                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow"
+                                                disabled={isLoading}
+                                            >
+                                                {isLoading ? (
+                                                    <span className="animate-pulse">En cours...</span>
+                                                ) : (
+                                                    "Créer le template"
+                                                )}
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {renderPlaceholderSection(
+                                        "Informations personnelles",
+                                        <UserIcon {...ICON_PROPS} />,
+                                        PLACEHOLDERS.personalInfo
+                                    )}
+                                    {renderPlaceholderSection(
+                                        "Champs étudiants",
+                                        <GraduationCapIcon {...ICON_PROPS} />,
+                                        PLACEHOLDERS.studentFields
+                                    )}
+                                    {renderPlaceholderSection(
+                                        "Champs enseignants",
+                                        <UserCogIcon {...ICON_PROPS} />,
+                                        PLACEHOLDERS.teacherFields
+                                    )}
+                                    {renderPlaceholderSection(
+                                        "Champs de demande",
+                                        <InfoIcon {...ICON_PROPS} />,
+                                        PLACEHOLDERS.requestFields
+                                    )}
+                                    {renderPlaceholderSection(
+                                        "Champs de mission",
+                                        <PlaneIcon {...ICON_PROPS} />,
+                                        PLACEHOLDERS.missionFields
+                                    )}
+                                    {renderPlaceholderSection(
+                                        "Champs d'équipement",
+                                        <MicroscopeIcon {...ICON_PROPS} />,
+                                        PLACEHOLDERS.equipmentFields
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row justify-end gap-4 pt-2">
@@ -268,114 +328,35 @@ const AddTemplate = () => {
                                     >
                                         Annuler
                                     </Button>
-
-                                    {isVerified ? (
-                                        <Button
-                                            type="submit"
-                                            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-foreground"
-                                            disabled={!isValid || isLoading}
-                                        >
-                                            {isLoading ? (
-                                                <span className="animate-pulse">En cours...</span>
-                                            ) : (
-                                                "Ajouter le template"
-                                            )}
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            type="button"
-                                            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-foreground"
-                                            onClick={handleVerify}
-                                            disabled={isLoading || !getValues("url")}
-                                        >
-                                            {isLoading ? (
-                                                <span className="animate-pulse">Vérification...</span>
-                                            ) : (
-                                                "Vérifier le template"
-                                            )}
-                                        </Button>
-                                    )}
                                 </div>
                             </form>
                         </Form>
                     </CardContent>
-
-                    <CardFooter
-                        className={`border-t pt-8 pb-8 rounded-b-lg ${theme === 'dark' ? 'bg-background' : 'bg-card'
-                            }`}
-                    >
-                        <div className="w-full">
-                            <div className="flex items-center gap-2 mb-6 text-sm">
-                                <InfoIcon {...ICON_PROPS} />
-                                <span className="text-muted-foreground">
-                                    Liste des placeholders disponibles
-                                </span>
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-8">
-                                {renderPlaceholderSection(
-                                    "Informations Personnelles",
-                                    <UserIcon {...ICON_PROPS} />,
-                                    PLACEHOLDERS.personalInfo
-                                )}
-                                {renderPlaceholderSection(
-                                    "Champs Spécifiques Doctorants/Étudiants",
-                                    <GraduationCapIcon {...ICON_PROPS} />,
-                                    PLACEHOLDERS.studentFields
-                                )}
-                                {renderPlaceholderSection(
-                                    "Champs Enseignants-Chercheurs",
-                                    <UserCogIcon {...ICON_PROPS} />,
-                                    PLACEHOLDERS.teacherFields
-                                )}
-                                {renderPlaceholderSection(
-                                    "Champs Génériques Demandes",
-                                    <FileTextIcon {...ICON_PROPS} />,
-                                    PLACEHOLDERS.requestFields
-                                )}
-                                {renderPlaceholderSection(
-                                    "Champs Missions/Stages",
-                                    <PlaneIcon {...ICON_PROPS} />,
-                                    PLACEHOLDERS.missionFields
-                                )}
-                                {renderPlaceholderSection(
-                                    "Champs Équipements",
-                                    <MicroscopeIcon {...ICON_PROPS} />,
-                                    PLACEHOLDERS.equipmentFields
-                                )}
-                            </div>
-                        </div>
-                    </CardFooter>
+                    <CardFooter className="bg-muted/50 border-t border-border/40" />
                 </Card>
+            </main>
 
-                <Dialog
-                    open={showOverwriteDialog}
-                    onOpenChange={setShowOverwriteDialog}
-                >
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Template existant</DialogTitle>
-                            <DialogDescription>
-                                Un template existe déjà pour ce type. Voulez-vous l'écraser ?
-                            </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowOverwriteDialog(false)}
-                            >
-                                Annuler
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                onClick={handleOverwrite}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "En cours..." : "Écraser"}
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            </div>
+            <Dialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
+                <DialogContent className="bg-card text-card-foreground">
+                    <DialogHeader>
+                        <DialogTitle>Template existant</DialogTitle>
+                        <DialogDescription className="text-muted-foreground">
+                            Un template existe déjà pour ce type de demande. Voulez-vous le remplacer ?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowOverwriteDialog(false)}
+                        >
+                            Annuler
+                        </Button>
+                        <Button onClick={handleOverwrite} disabled={isLoading}>
+                            {isLoading ? "En cours..." : "Remplacer"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

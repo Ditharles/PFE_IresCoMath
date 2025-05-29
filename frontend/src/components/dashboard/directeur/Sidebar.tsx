@@ -1,15 +1,24 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-    Users, FileText, Settings, Box, User
-} from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
-import { ScrollArea } from "../../../components/ui/scroll-area";
-import { ClipboardList } from "lucide-react";
+
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Users, FileText, Settings, Box, User, LayoutDashboard } from "lucide-react"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion"
+import { ScrollArea } from "../../../components/ui/scroll-area"
+import { ClipboardList } from "lucide-react"
+import type React from "react"
+import { cn } from "../../../lib/utils"
+import { ChartNoAxesCombined } from "lucide-react"
+
+interface SidebarMenuItem {
+    name: string
+    path: string
+    icon?: React.ElementType
+    submenus?: { name: string; path: string }[]
+}
 
 const SidebarDirector = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const menuItems = [
+    const location = useLocation()
+    const navigate = useNavigate()
+    const menuItems: SidebarMenuItem[] = [
         {
             name: "Demandes",
             path: "/demandes",
@@ -18,8 +27,8 @@ const SidebarDirector = () => {
                 { name: "En attente", path: "/demandes/en-attente" },
                 { name: "Validées", path: "/demandes/validees" },
                 { name: "Closes", path: "/demandes/closes" },
-                { name: "Rejetées", path: "/demandes/rejetees" }
-            ]
+                { name: "Rejetées", path: "/demandes/rejetees" },
+            ],
         },
         {
             name: "Matériels",
@@ -27,73 +36,85 @@ const SidebarDirector = () => {
             icon: Box,
             submenus: [
                 { name: "Inventaire global", path: "/materiels/inventaire" },
-                { name: "En cours", path: "/materiels/en-cours" }
-            ]
+                { name: "En cours", path: "/materiels/en-cours" },
+            ],
         },
-        {
-            name: "Formulaire",
-            path: "/templates",
-            icon: ClipboardList
-        }
-        ,
+        { name: "Formulaire", path: "/templates", icon: ClipboardList },
         { name: "Gestion des Membres", path: "/membres", icon: Users },
+        { name: "Statistiques", path: "/statistiques", icon: ChartNoAxesCombined },
         { name: "Profil", path: "/profil", icon: User },
-        { name: "Paramètres", path: "/parametres", icon: Settings }
-    ];
+        { name: "Paramètres", path: "/parametres", icon: Settings },
+
+    ]
 
     const isActive = (path: string) => {
-        return location.pathname === path || location.pathname.startsWith(`${path}/`);
-    };
+        return location.pathname === path || location.pathname.startsWith(`${path}/`)
+    }
 
-    const isParentActive = (item: any) => {
-        return isActive(item.path) || item.submenus?.some((sub: any) => isActive(sub.path));
-    };
+    const isParentActive = (item: SidebarMenuItem) => {
+        return isActive(item.path) || item.submenus?.some((sub) => isActive(sub.path))
+    }
 
     return (
-        <aside
-            className="h-full relative w-64 p-4 shadow-md z-40 bg-sidebar text-sidebar-foreground"
+        <aside className="h-full w-64 bg-card border-r border-border/40 shadow-sm z-40 backdrop-blur-sm">
+            <div className="h-full flex flex-col">
+                {/* Sidebar Header */}
+                <div className="flex items-center h-16 px-4 border-b border-border/40">
+                    <LayoutDashboard className="h-5 w-5 text-primary mr-2" />
+                    <h2 className="text-lg font-semibold">Direction</h2>
+                </div>
 
-        >
-            <div className="flex flex-col h-full fixed">
-
-
-
-                <ScrollArea className="flex-1">
-                    <ul className="space-y-2">
+                {/* Sidebar Content */}
+                <ScrollArea className="flex-1 py-2">
+                    <nav className="px-2 space-y-1">
                         {menuItems.map((item, index) => {
-                            const hasSubmenus = item.submenus ? item.submenus.length > 0 : false;
-                            const active = isParentActive(item);
-                            const Icon = item.icon;
-
-                            const buttonClass = active
-                                ? "bg-accent text-accent-foreground "
-                                : "hover:bg-hover ";
+                            const hasSubmenus = item.submenus && item.submenus.length > 0
+                            const active = isParentActive(item)
+                            const Icon = item.icon
 
                             if (hasSubmenus) {
                                 return (
-                                    <Accordion key={index} type="multiple" defaultValue={active ? [item.name] : []}>
-                                        <AccordionItem value={item.name}>
+                                    <Accordion
+                                        key={index}
+                                        type="multiple"
+                                        defaultValue={active ? [item.name] : []}
+                                        className="border-none"
+                                    >
+                                        <AccordionItem value={item.name} className="border-none">
                                             <AccordionTrigger
-                                                onClick={() => navigate(item.path)}
-                                                className={`px-4 py-2 rounded-md font-medium transition-colors ${buttonClass}`}
+                                                className={cn(
+                                                    "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                                                    "hover:bg-muted/80 dark:hover:bg-muted/50 gap-3 [&[data-state=open]>div>svg]:rotate-180",
+                                                    active ? "bg-primary/10 text-primary" : "text-muted-foreground",
+                                                )}
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    {Icon && <Icon className="w-4 h-4" />}
-                                                    <span>{item.name}</span>
+                                                <div className="flex items-center gap-3 flex-1">
+                                                    {Icon && <Icon className="h-4 w-4" />}
+                                                    <span
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            navigate(item.path)
+                                                        }}
+                                                        className="cursor-pointer hover:underline"
+                                                    >
+                                                        {item.name}
+                                                    </span>
                                                 </div>
                                             </AccordionTrigger>
-                                            <AccordionContent>
-                                                <ul className="pl-4 mt-1 space-y-1">
-                                                    {item.submenus?.map((submenu: { path: string; name: string }, subIndex: number) => (
+                                            <AccordionContent className="pt-1 pb-0">
+                                                <ul className="pl-7 space-y-1">
+                                                    {item.submenus?.map((submenu, subIndex) => (
                                                         <li key={subIndex}>
                                                             <Link
                                                                 to={submenu.path}
-                                                                className={`block rounded-md px-4 py-2 text-sm transition-colors
-                                  ${isActive(submenu.path)
-                                                                        ? "bg-accent text-accent-foreground"
-                                                                        : "hover:bg-secondary hover:text-accent-foreground"
-                                                                    }`}
+                                                                className={cn(
+                                                                    "flex items-center rounded-md px-3 py-1.5 text-sm transition-colors duration-200 w-full",
+                                                                    isActive(submenu.path)
+                                                                        ? "bg-accent text-accent-foreground font-medium"
+                                                                        : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-muted/50",
+                                                                )}
                                                             >
+                                                                <div className="w-1 h-1 rounded-full bg-current mr-2 opacity-60"></div>
                                                                 {submenu.name}
                                                             </Link>
                                                         </li>
@@ -102,27 +123,32 @@ const SidebarDirector = () => {
                                             </AccordionContent>
                                         </AccordionItem>
                                     </Accordion>
-                                );
+                                )
                             }
 
                             return (
-                                <li key={index}>
-                                    <Link
-                                        to={item.path}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${buttonClass} text-sidebar-   accent-foreground`}
-
-                                    >
-                                        {Icon && <Icon className="w-4 h-4" />}
-                                        <span>{item.name}</span>
-                                    </Link>
-                                </li>
-                            );
+                                <Link
+                                    key={index}
+                                    to={item.path}
+                                    className={cn(
+                                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                                        "hover:bg-muted/80 hover:text-foreground ",
+                                        active ? "bg-primary/10 text-primary" : "text-muted-foreground",
+                                    )}
+                                >
+                                    {Icon && <Icon className="h-4 w-4" />}
+                                    <span>{item.name}</span>
+                                    {active && <div className="ml-auto w-1 h-5 bg-primary rounded-full"></div>}
+                                </Link>
+                            )
                         })}
-                    </ul>
+                    </nav>
                 </ScrollArea>
+
+
             </div>
         </aside>
-    );
-};
+    )
+}
 
-export default SidebarDirector;
+export default SidebarDirector

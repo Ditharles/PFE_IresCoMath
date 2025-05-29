@@ -153,7 +153,7 @@ export const submitTemplate = async (req: AuthRequest, res: any) => {
       url,
       placeholders: placeholders as string[],
     };
-    console.log("test");
+
     const template = upsert
       ? await prisma.template.update({
           where: { for: requestType },

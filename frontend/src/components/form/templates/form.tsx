@@ -61,14 +61,25 @@ const TemplateFields = ({ isVerified, defaultValues, mode = "create" }: Template
 
     const handleFileUpload = (fileUrls: string[] | string) => {
         const url = Array.isArray(fileUrls) ? fileUrls[0] : fileUrls;
-        setValue('url', url, { shouldValidate: true });
+        setValue('url', url, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true
+        });
         setFileUrl(url);
-        setShowFileUpload(false);
-        setShowChangeFile(false);
+        // On garde la logique de visibilité pour le mode édition
+        if (mode === "edit") {
+            setShowFileUpload(false);
+            setShowChangeFile(false);
+        }
     };
 
     const handleRemoveFile = () => {
-        setValue('url', '', { shouldValidate: true });
+        setValue('url', '', {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true
+        });
         setFileUrl(null);
         setShowFileUpload(true);
         setShowChangeFile(false);

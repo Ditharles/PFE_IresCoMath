@@ -31,6 +31,7 @@ import { Badge } from "../../components/ui/badge";
 
 const RequestDetails = () => {
     const { user } = useAuth();
+    const isDirector = user?.role == Role.DIRECTEUR;
     const { id } = useParams();
     const navigate = useNavigate();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -99,16 +100,16 @@ const RequestDetails = () => {
         switch (request.type) {
             case RequestType.MISSION:
                 return request.mission && (
-                    <MissionDetails mission={request.mission} onPreview={setPreviewFile} status={request.status} fetchData={fetchRequest} />
+                    <MissionDetails mission={request.mission} onPreview={setPreviewFile} status={request.status} fetchData={fetchRequest} isDirector={isDirector} />
                 );
 
             case RequestType.INTERNSHIP:
                 return request.stage && (
-                    <InternshipDetails stage={request.stage} onPreview={setPreviewFile} />
+                    <InternshipDetails stage={request.stage} onPreview={setPreviewFile} isDirector={isDirector} />
                 );
 
             case RequestType.EQUIPMENT_PURCHASE:
-                return request.purchaseRequest && <EquipmentPurchaseDetails purchaseRequest={request.purchaseRequest} onPreview={setPreviewFile} />
+                return request.purchaseRequest && <EquipmentPurchaseDetails purchaseRequest={request.purchaseRequest} onPreview={setPreviewFile} isDirector={isDirector} />
 
             case RequestType.EQUIPMENT_LOAN:
                 return request.loanRequest && (
@@ -117,7 +118,7 @@ const RequestDetails = () => {
 
             case RequestType.ARTICLE_REGISTRATION:
                 return request.articleRegistration && (
-                    <ArticleRegistrationDetails articleRegistration={request.articleRegistration} onPreview={setPreviewFile} />
+                    <ArticleRegistrationDetails articleRegistration={request.articleRegistration} onPreview={setPreviewFile} isDirector={isDirector} />
                 );
 
             case RequestType.CONFERENCE_NATIONAL:
@@ -164,7 +165,7 @@ const RequestDetails = () => {
     }
 
     return (
-        <div className="min-h-screen" style={{ background: "var(--background)", color: "var(--foreground)" }}>
+        <div className="min-h-screen bg-background text-foreground">
             {loading && <LoadingOverlay loadingText="Chargement des détails..." />}
 
             <div className="container mx-auto py-8 px-4">
@@ -179,7 +180,7 @@ const RequestDetails = () => {
 
                 {request && (
                     <Card className="shadow-lg mb-6">
-                        <CardHeader className="border-b bg-background">
+                        <CardHeader className="border-b bg-card text-card-foreground">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <CardTitle className="text-2xl font-bold">
@@ -197,7 +198,7 @@ const RequestDetails = () => {
 
                         <CardContent className="p-6 space-y-6">
                             <DetailSection
-                                icon={<FileText className="h-5 w-5 text-gray-500" />}
+                                icon={<FileText className="h-5 w-5 text-muted-foreground" />}
                                 title="Informations générales"
                             >
                                 {requestData.user && (
@@ -222,7 +223,7 @@ const RequestDetails = () => {
                             {renderRequestSpecificDetails()}
                         </CardContent>
 
-                        <CardFooter className="flex justify-end p-6 bg-gray-50">
+                        <CardFooter className="flex justify-end p-6 bg-muted">
                             <RequestActions
                                 requestData={requestData}
                                 onActionComplete={handleActionComplete}

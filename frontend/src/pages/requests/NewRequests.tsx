@@ -137,44 +137,46 @@ const NewRequests = () => {
     }
 
     return (
-        <Card className="w-full max-w-6xl mx-auto p-2 sm:p-4">
-            <CardHeader className="px-2 py-3 sm:px-4 sm:py-6">
-                <CardTitle className="text-xl sm:text-2xl font-bold">Nouvelle Demande</CardTitle>
-            </CardHeader>
-            <CardContent className="px-2 sm:px-4">
-                <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-                    {availableRequests.map((requestType) => {
-                        const details = requestTypeDetails[requestType];
-                        if (!details) {
-                            console.warn(`Type de demande inconnu: ${requestType}`);
-                            return null;
-                        }
-                        return (
-                            <HoverCard key={requestType}>
-                                <HoverCardTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="h-24 sm:h-32 w-full flex flex-col items-center justify-center gap-2 sm:gap-3 p-2 sm:p-4 hover:bg-secondary/80 transition-colors"
-                                        onClick={() => handleRequestClick(requestType)}
-                                    >
-                                        {details.icon}
-                                        <span className="text-base sm:text-lg font-semibold text-center line-clamp-2">{details.label}</span>
-                                    </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-64">
-                                    <div className="space-y-1">
-                                        <h4 className="text-sm font-semibold">{details.label}</h4>
-                                        <p className="text-sm text-muted-foreground">
-                                            {details.description}
-                                        </p>
-                                    </div>
-                                </HoverCardContent>
-                            </HoverCard>
-                        );
-                    })}
-                </div>
-            </CardContent>
-        </Card>
+        <div className="min-h-screen bg-background text-foreground p-4">
+            <Card className="w-full max-w-6xl mx-auto">
+                <CardHeader className="px-2 py-3 sm:px-4 sm:py-6">
+                    <CardTitle className="text-xl sm:text-2xl font-bold">Nouvelle Demande</CardTitle>
+                </CardHeader>
+                <CardContent className="px-2 sm:px-4">
+                    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+                        {availableRequests.map((requestType) => {
+                            const details = requestTypeDetails[requestType];
+                            if (!details) {
+                                console.warn(`Type de demande inconnu: ${requestType}`);
+                                return null;
+                            }
+                            return (
+                                <HoverCard key={requestType}>
+                                    <HoverCardTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="h-24 sm:h-32 w-full flex flex-col items-center justify-center gap-2 sm:gap-3 p-2 sm:p-4 hover:bg-secondary/80 transition-colors"
+                                            onClick={() => handleRequestClick(requestType)}
+                                        >
+                                            {details.icon}
+                                            <span className="text-base sm:text-lg font-semibold text-center line-clamp-2">{details.label}</span>
+                                        </Button>
+                                    </HoverCardTrigger>
+                                    <HoverCardContent className="w-64 bg-card text-card-foreground">
+                                        <div className="space-y-1">
+                                            <h4 className="text-sm font-semibold">{details.label}</h4>
+                                            <p className="text-sm text-muted-foreground">
+                                                {details.description}
+                                            </p>
+                                        </div>
+                                    </HoverCardContent>
+                                </HoverCard>
+                            );
+                        })}
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 

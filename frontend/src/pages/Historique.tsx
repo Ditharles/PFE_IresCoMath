@@ -4,7 +4,6 @@ import { RequestStatus } from '../types/request';
 import { useState, useEffect } from 'react';
 
 const Historique = () => {
-    const darkMode = false;
     const { status } = useParams();
     const [filterStatuses, setFilterStatuses] = useState<RequestStatus[] | undefined>();
 
@@ -40,7 +39,7 @@ const Historique = () => {
     }, [status]);
 
     return (
-        <div className={`min-h-screen flex flex-col ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-800"}`}>
+        <div className="min-h-screen flex flex-col bg-background text-foreground">
             <Requests filterStatuses={filterStatuses} />
         </div>
     );

@@ -154,9 +154,9 @@ const Requests: React.FC<RequestsProps> = ({ filterStatuses }) => {
     }, [filteredRequests]);
 
     return (
-        <div className="space-y-6  h-full bg-background p-6 rounded-lg shadow-md">
+        <div className="space-y-6 h-full bg-background text-foreground p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Gestion des demandes</h1>
+                <h1 className="text-2xl font-bold text-foreground">Gestion des demandes</h1>
                 <div className="flex gap-2">
                     <Button
                         variant="outline"

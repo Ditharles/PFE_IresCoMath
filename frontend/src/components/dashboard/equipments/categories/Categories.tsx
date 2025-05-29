@@ -61,9 +61,9 @@ const Categories = () => {
     );
 
     return (
-        <div className="space-y-6 " >
+        <div className="space-y-6 bg-background text-foreground p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Gestion des catégories d'équipement</h1>
+                <h1 className="text-2xl font-bold text-foreground">Gestion des catégories d'équipement</h1>
                 <div className="flex gap-2">
                     <Button
                         variant="default"
@@ -99,11 +99,10 @@ const Categories = () => {
                     placeholder="Rechercher une catégorie..."
                     value={globalFilter}
                     onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="w-full md:w-[300px]"
+                    className="w-full md:w-[300px] bg-background border-border"
                 />
             </div>
             <CategoriesStats categories={filteredCategories} />
-
 
             <BaseDataTable
                 columns={columns({

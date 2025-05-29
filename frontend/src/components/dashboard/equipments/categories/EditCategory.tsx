@@ -92,21 +92,21 @@ const EditCategory = ({ category, onClose, isOpen }: EditCategoryProps) => {
     <>
       {/* Main edit dialog */}
       <Dialog open={isOpen} onOpenChange={handleCloseAttempt}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-foreground border-border">
+          <DialogHeader className="bg-muted/50 p-4 rounded-t-lg">
             <div className="flex justify-between items-start">
-              <DialogTitle>Modifier la catégorie</DialogTitle>
+              <DialogTitle className="text-foreground">Modifier la catégorie</DialogTitle>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleCloseAttempt}
                 aria-label="Fermer"
-                className="h-8 w-8"
+                className="h-8 w-8 hover:bg-muted"
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            <DialogDescription>
+            <DialogDescription className="text-muted-foreground">
               Modifier les détails de la catégorie {category.name}
             </DialogDescription>
           </DialogHeader>
@@ -114,15 +114,16 @@ const EditCategory = ({ category, onClose, isOpen }: EditCategoryProps) => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-6"
+              className="space-y-6 p-4"
             >
               <CategoryFields />
 
-              <DialogFooter className="gap-2 pt-4">
+              <DialogFooter className="gap-2 pt-4 border-t border-border">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleCloseAttempt}
+                  className="hover:bg-muted"
                 >
                   Annuler
                 </Button>
@@ -140,24 +141,25 @@ const EditCategory = ({ category, onClose, isOpen }: EditCategoryProps) => {
 
       {/* Unsaved changes confirmation dialog */}
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+        <DialogContent className="max-w-md bg-background text-foreground border-border">
+          <DialogHeader className="bg-muted/50 p-4 rounded-t-lg">
+            <DialogTitle className="flex items-center gap-2 text-foreground">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
               Modifications non enregistrées
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-muted-foreground">
               Des modifications ont été effectuées mais n'ont pas été
               enregistrées. Si vous quittez maintenant, ces modifications seront
               perdues.
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="gap-2 mt-4">
+          <DialogFooter className="gap-2 mt-4 border-t border-border p-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowConfirmDialog(false)}
+              className="hover:bg-muted"
             >
               Continuer l'édition
             </Button>

@@ -30,7 +30,7 @@ const EquipmentPurchaseDetails = ({ purchaseRequest, onPreview, isDirector = fal
     return (
         <>
             <DetailSection
-                icon={<ShoppingCart className="h-5 w-5 text-orange-500" />}
+                icon={<ShoppingCart className="h-5 w-5 text-primary" />}
                 title="Détails de l'achat"
             >
                 <DetailItem label="Type d'équipement" value={purchaseRequest.equipmentType} />
@@ -45,7 +45,7 @@ const EquipmentPurchaseDetails = ({ purchaseRequest, onPreview, isDirector = fal
 
             {purchaseRequest.photo && (
                 <DetailSection
-                    icon={<FileText className="h-5 w-5 text-green-500" />}
+                    icon={<FileText className="h-5 w-5 text-success" />}
                     title="Documents associés"
                 >
                     <DetailItem label="Photo de l'équipement">
@@ -103,7 +103,7 @@ const EquipmentPurchaseDetails = ({ purchaseRequest, onPreview, isDirector = fal
                                             href={purchaseRequest.awaitForm}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-blue-600 underline font-medium"
+                                            className="text-primary underline font-medium"
                                             download
                                         >
                                             Télécharger le formulaire à signer

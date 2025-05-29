@@ -87,9 +87,9 @@ const Equipments = ({ isCategoryPage = false, equipmentsCategory, pendingDeliver
     });
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 bg-background text-foreground p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">{isCategoryPage ? "Equipements de la categorie" : "Tous les équipements"}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{isCategoryPage ? "Equipements de la categorie" : "Tous les équipements"}</h1>
                 <div className="flex gap-2">
                     <Button
                         variant="default"
@@ -124,7 +124,7 @@ const Equipments = ({ isCategoryPage = false, equipmentsCategory, pendingDeliver
                     placeholder="Rechercher un équipement..."
                     value={globalFilter}
                     onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="w-full md:w-[300px]"
+                    className="w-full md:w-[300px] bg-background border-border"
                 />
             </div>
 

@@ -128,7 +128,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                             <DialogHeader>
                                 <DialogTitle>Confirmer la suppression</DialogTitle>
                             </DialogHeader>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-muted-foreground">
                                 Êtes-vous sûr de vouloir supprimer cette demande ? Cette action est irréversible.
                             </p>
                             <DialogFooter className="flex justify-end gap-2 mt-4">
@@ -178,7 +178,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                                 placeholder="Motif de rejet..."
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
-                                className="min-h-[120px]"
+                                className="min-h-[120px] bg-background text-foreground border-border"
                             />
                         </div>
 

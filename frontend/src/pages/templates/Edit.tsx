@@ -78,7 +78,7 @@ const EditTemplate = () => {
     };
 
     return (
-        <div className="flex justify-center">
+        <div className="flex justify-center bg-background text-foreground min-h-screen">
             <div className="w-full">
                 <Button
                     variant="ghost"
@@ -89,13 +89,13 @@ const EditTemplate = () => {
                     <ArrowLeftIcon className="h-4 w-4" />
                     Retour
                 </Button>
-                <Card className="w-full shadow-xl border-0">
+                <Card className="w-full shadow-xl border-0 bg-card text-card-foreground">
                     <CardHeader className="h-full pb-6">
                         <CardTitle className="h-full text-3xl font-bold flex items-center gap-3">
                             <FileTextIcon className="h-7 w-7" />
                             Modifier le template
                         </CardTitle>
-                        <p className="mt-2 text-base">
+                        <p className="mt-2 text-base text-muted-foreground">
                             Modifiez les informations de votre modèle de document.
                         </p>
                     </CardHeader>
@@ -105,8 +105,8 @@ const EditTemplate = () => {
                                 onSubmit={form.handleSubmit(handleSubmit)}
                                 className="space-y-8"
                             >
-                                <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-6 mb-4">
-                                    <h3 className="font-semibold text-blue-700 mb-2 flex items-center gap-2">
+                                <div className="rounded-lg border border-border bg-muted/50 p-6 mb-4">
+                                    <h3 className="font-semibold text-primary mb-2 flex items-center gap-2">
                                         <FileTextIcon className="h-4 w-4" />
                                         Modifier les informations du template
                                     </h3>
@@ -123,7 +123,7 @@ const EditTemplate = () => {
                                     </Button>
                                     <Button
                                         type="submit"
-                                        className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-foreground"
+                                        className="w-full sm:w-auto"
                                         disabled={isLoading}
                                     >
                                         {isLoading ? (
@@ -136,7 +136,7 @@ const EditTemplate = () => {
                             </form>
                         </Form>
                     </CardContent>
-                    <CardFooter />
+                    <CardFooter className="bg-muted" />
                 </Card>
             </div>
         </div>

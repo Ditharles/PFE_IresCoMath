@@ -132,7 +132,7 @@ const CategoryPage = () => {
     };
 
     return (
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen bg-background text-foreground">
             {isLoading && <LoadingOverlay loadingText="Chargement de la catégorie..." />}
 
             <div className="container py-8 space-y-6">

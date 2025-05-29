@@ -7,7 +7,6 @@ const EquipmentsPage = () => {
     const [pendingDelivery, setPendingDelivery] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(status);
         if (status === "en-cours") {
             setPendingDelivery(true);
         } else {
@@ -16,8 +15,12 @@ const EquipmentsPage = () => {
     }, [status]);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
-            <Equipments isCategoryPage={false} pendingDelivery={pendingDelivery} key={pendingDelivery} />
+        <div className="min-h-screen flex flex-col bg-background text-foreground">
+            <Equipments
+                isCategoryPage={false}
+                pendingDelivery={pendingDelivery}
+                key={status}
+            />
         </div>
     );
 };

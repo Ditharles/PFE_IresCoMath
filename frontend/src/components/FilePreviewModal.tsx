@@ -23,7 +23,7 @@ const FilePreviewModal = ({
         if (isImage) {
             return (
                 <div className="flex flex-col items-center justify-center w-full h-full p-4">
-                    <div className="max-h-[70vh] max-w-full border border-gray-300 dark:border-gray-700 rounded-lg shadow-md overflow-hidden">
+                    <div className="max-h-[70vh] max-w-full border border-border rounded-lg shadow-md overflow-hidden bg-background">
                         <img
                             src={fileUrl}
                             alt={fileName || "Image preview"}
@@ -36,7 +36,7 @@ const FilePreviewModal = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         download
-                        className="flex items-center gap-2 text-blue-600 hover:underline mt-4"
+                        className="flex items-center gap-2 text-primary hover:text-primary/80 mt-4 transition-colors"
                     >
                         <DownloadIcon className="h-4 w-4" />
                         Télécharger le fichier
@@ -50,14 +50,14 @@ const FilePreviewModal = ({
                 <iframe
                     src={fileUrl}
                     title={fileName || "File preview"}
-                    className="w-full h-[70vh] rounded-lg border border-gray-300 dark:border-gray-700 shadow-md"
+                    className="w-full h-[70vh] rounded-lg border border-border shadow-md bg-background"
                 />
                 <a
                     href={fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     download
-                    className="flex items-center gap-2 text-blue-600 hover:underline mt-4"
+                    className="flex items-center gap-2 text-primary hover:text-primary/80 mt-4 transition-colors"
                 >
                     <DownloadIcon className="h-4 w-4" />
                     Télécharger le fichier
@@ -72,7 +72,7 @@ const FilePreviewModal = ({
                 <div className="relative z-10 h-full w-full bg-background text-foreground backdrop-blur-md rounded-2xl shadow-xl p-6 flex justify-center items-center overflow-hidden">
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
                     >
                         <X className="h-6 w-6" />
                     </button>
@@ -80,8 +80,8 @@ const FilePreviewModal = ({
                         renderPreview()
                     ) : (
                         <div className="text-center p-8">
-                            <FileIcon className="mx-auto h-12 w-12 text-gray-400" />
-                            <p className="mt-2 text-gray-600">Aucun fichier à afficher</p>
+                            <FileIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                            <p className="mt-2 text-muted-foreground">Aucun fichier à afficher</p>
                         </div>
                     )}
                 </div>

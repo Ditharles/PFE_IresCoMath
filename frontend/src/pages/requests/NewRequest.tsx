@@ -28,7 +28,7 @@ const NewRequest: React.FC = () => {
 
 
 
-  
+
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,11 +59,11 @@ const NewRequest: React.FC = () => {
       default: return z.object({});
     }
   };
-  
+
 
   const methods = useForm({
     resolver: zodResolver(mapTypeToSchema()),
-    
+
     mode: 'onBlur',
     defaultValues: {}
   });
@@ -138,7 +138,7 @@ const NewRequest: React.FC = () => {
   };
 
   return (
-    <div className="animate-fadeIn h-full relative">
+    <div className="animate-fadeIn h-full relative bg-background text-foreground">
       {isSubmitting && <LoadingOverlay />}
 
       <div className="mb-6">
@@ -152,7 +152,7 @@ const NewRequest: React.FC = () => {
         </Button>
       </div>
 
-      <Card>
+      <Card className="bg-card text-card-foreground">
         <CardHeader>
           <CardTitle className="text-2xl">
             {getFormTitle()}
@@ -165,7 +165,7 @@ const NewRequest: React.FC = () => {
               {renderCorrespondingForm()}
             </CardContent>
 
-            <CardFooter className="flex justify-end gap-3 mt-8">
+            <CardFooter className="flex justify-end gap-3 mt-8 bg-muted">
               <Button
                 type="reset"
                 variant="outline"

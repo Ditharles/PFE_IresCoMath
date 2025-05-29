@@ -28,7 +28,6 @@ export const downloadFile = async (
   url: string
 ): Promise<{ status: number; message: string; data?: Buffer }> => {
   try {
-    console.log(url);
     const response = await axios.get(url, { responseType: "arraybuffer" });
     return {
       status: 200,
@@ -99,24 +98,61 @@ export const validatePlaceholders = (
   }
 };
 
+// export const modifyText = async (
+//   docxBuffer: Buffer,
+//   placeholders: string[],
+//   valueMap: Record<string, string>
+// ) => {
+//   try {
+//     console.log("placeholders", placeholders);
+//     const validation = validatePlaceholders(placeholders, valueMap);
+//     if (!validation.isValid) {
+//       throw new Error(
+//         `Champs manquants: ${validation.missingFields.join(", ")}`
+//       );
+//     }
+//     const filterValueMap = Object.fromEntries(
+//       Object.entries(valueMap).filter(([key, value]) =>
+//         placeholders.includes(key)
+//       )
+//     );
+//     console.log("filterValueMap", filterValueMap);
+//     const buffer = await createReport({
+//       template: docxBuffer,
+//       data: filterValueMap,
+//       additionalJsContext: {
+//         formatDate: (date: Date) => {
+//           return date.toLocaleDateString("fr-FR");
+//         },
+//       },
+//     });
+//     return Buffer.from(buffer);
+//   } catch (error) {
+//     throw new Error(`Erreur lors de la modification du texte`);
+//   }
+// };
+
 export const modifyText = async (
   docxBuffer: Buffer,
   placeholders: string[],
   valueMap: Record<string, string>
 ) => {
   try {
-    console.log("placeholders", placeholders);
     const validation = validatePlaceholders(placeholders, valueMap);
     if (!validation.isValid) {
       throw new Error(
         `Champs manquants: ${validation.missingFields.join(", ")}`
       );
     }
+
     const filterValueMap = Object.fromEntries(
       Object.entries(valueMap).filter(([key, value]) =>
         placeholders.includes(key)
       )
     );
+
+    const templateText = await extractTextFromDocx(docxBuffer);
+
     const buffer = await createReport({
       template: docxBuffer,
       data: filterValueMap,
@@ -125,18 +161,22 @@ export const modifyText = async (
           return date.toLocaleDateString("fr-FR");
         },
       },
+      cmdDelimiter: ["{", "}"],
+      noSandbox: false,
     });
+
     return Buffer.from(buffer);
   } catch (error) {
-    throw new Error(`Erreur lors de la modification du texte`);
+    throw new Error(
+      `Erreur lors de la modification du texte: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 };
 
 export const updateAllForm = async (template: Template) => {
-  console.log("Début updateAllForm - Template:", template);
   try {
-    // Récupération des requêtes
-    console.log("Recherche des requêtes pour le type:", template.for);
     const requests = await prisma.request.findMany({
       where: {
         type: template.for,
@@ -144,25 +184,17 @@ export const updateAllForm = async (template: Template) => {
       },
       select: extendRequestFields,
     });
-    console.log("Requêtes trouvées:", requests.length);
 
-    // Téléchargement du template
-    console.log("Téléchargement du template depuis:", template.url);
     const docxBuffer = await downloadFile(template.url);
     if (!docxBuffer.data) {
-      console.log("Erreur: Aucune donnée téléchargée");
       return {
         status: 400,
         message: "Aucune donnée téléchargée",
       };
     }
-    console.log("Template téléchargé avec succès");
 
-    // Génération des documents modifiés
-    console.log("Début de la modification des textes");
     const textMap = await Promise.all(
       requests.map(async (request) => {
-        console.log("Traitement de la requête:", request.id);
         const valueMap = defineValueMap(request, request.type);
 
         const textModified = await modifyText(
@@ -170,20 +202,15 @@ export const updateAllForm = async (template: Template) => {
           template.placeholders,
           valueMap
         );
-        console.log("Texte modifié pour requête:", textModified);
         return {
           id: request.id,
           textModified,
         };
       })
     );
-    console.log("Textes modifiés pour", textMap.length, "requêtes");
 
-    // Création des fichiers temporaires
-    console.log("Création des fichiers temporaires");
     const tmpFiles = await Promise.all(
       textMap.map(async ({ id, textModified }) => {
-        console.log("Création fichier temporaire pour requête:", id);
         const file = await tmpFile({ postfix: ".docx" });
         await writeFile(file.path, textModified);
         return {
@@ -193,14 +220,10 @@ export const updateAllForm = async (template: Template) => {
         };
       })
     );
-    console.log("Fichiers temporaires créés:", tmpFiles.length);
 
     try {
-      // Upload des fichiers avec UploadThing
-      console.log("Début de l'upload des fichiers");
       const uploadResults = await utapi.uploadFiles(
         tmpFiles.map((file) => {
-          console.log("Préparation upload pour fichier:", file.path);
           const uint8Array = new Uint8Array(fs.readFileSync(file.path));
 
           return new File([uint8Array], path.basename(file.path), {
@@ -208,34 +231,27 @@ export const updateAllForm = async (template: Template) => {
           });
         })
       );
-      console.log("Résultats upload:", uploadResults);
 
-      // Vérification des résultats
       if (
         !uploadResults ||
         !uploadResults.every((result) => result.data?.ufsUrl)
       ) {
-        console.log("Erreur: Upload incomplet ou échoué");
         return {
           status: 400,
           message: "L'upload des fichiers a échoué",
         };
       }
 
-      // Mise à jour des requêtes avec les URLs
-      console.log("Mise à jour des requêtes avec les URLs");
       const updatedRequests = await Promise.all(
         tmpFiles.map((file, index) => {
           const fileUrl = uploadResults[index].data?.ufsUrl;
           if (!fileUrl) {
-            console.log("Erreur: URL manquante pour la requête", file.id);
             return {
               status: 400,
               message: `Upload manquant pour la requête ${file.id}`,
             };
           }
 
-          console.log("Mise à jour requête", file.id, "avec URL:", fileUrl);
           return prisma.request.update({
             where: { id: file.id },
             data: {
@@ -245,23 +261,15 @@ export const updateAllForm = async (template: Template) => {
         })
       );
 
-      console.log("Mise à jour terminée avec succès");
       return {
         status: 200,
         message: "Formulaires mis à jour avec succès",
         data: updatedRequests,
       };
     } finally {
-      // Nettoyage des fichiers temporaires
-      console.log("Nettoyage des fichiers temporaires");
       await Promise.all(tmpFiles.map((file) => file.cleanup()));
     }
   } catch (error) {
-    console.error("Erreur détaillée dans updateAllForm:", error);
-    console.error(
-      "Stack trace:",
-      error instanceof Error ? error.stack : "Pas de stack trace"
-    );
     return {
       status: 500,
       message: `Échec de la mise à jour des formulaires: ${
