@@ -10,6 +10,7 @@ import { Form } from '../../components/ui/form';
 import EquipmentService from '../../services/equipment.service';
 import { useNavigate } from 'react-router-dom';
 import { equipmentSchema } from '../../schemas/equipment';
+import { ArrowLeft } from 'lucide-react';
 
 
 type EquipmentFormValues = z.infer<typeof equipmentSchema>;
@@ -48,7 +49,15 @@ const AddEquipment = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground p-4">
+        <div className="space-y-6 bg-background text-foreground p-6 rounded-lg shadow-md">
+            <Button
+                variant="ghost"
+                className="cursor-pointer text-foreground hover:text-primary"
+                onClick={() => navigate(-1)}
+            >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Retour
+            </Button>
             <Card className="w-full mx-auto">
                 <CardHeader>
                     <CardTitle>Ajouter un équipement</CardTitle>

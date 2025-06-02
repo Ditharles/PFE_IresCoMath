@@ -1,4 +1,4 @@
-import { RouteObject } from "react-router-dom";
+import { Navigate, RouteObject } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import PublicRoute from "../components/routes/PublicRoute";
 import Login from "../pages/auth/Login";
@@ -31,6 +31,9 @@ import { Calendar } from "../components/ui/calendar";
 import { TemplateList } from "../pages/templates/List";
 import AddTemplate from "../pages/templates/Add";
 import EditTemplate from "../pages/templates/Edit";
+import MembersStats from "../pages/statistiques/MembersStats";
+import EquipmentStats from "../pages/statistiques/EquipmentStats";
+import RequestsStats from "../pages/statistiques/RequestsStats";
 const routes: RouteObject[] = [
     {
         index: true,
@@ -95,7 +98,7 @@ const routes: RouteObject[] = [
             {
                 path: "demande/:id",
                 element: <RequestDetails />
-            }
+            },
 
         ]
     },
@@ -160,6 +163,21 @@ const routes: RouteObject[] = [
             {
                 path: "templates/modifier/:id",
                 element: <EditTemplate />
+            }, {
+                path: "statistiques/",
+                element: <Navigate to={"/statistiques/membres"} />
+            },
+            {
+                path: "statistiques/membres",
+                element: <MembersStats />
+            },
+            {
+                path: "statistiques/materiels",
+                element: <EquipmentStats />
+            },
+            {
+                path: "statistiques/demandes",
+                element: <RequestsStats />
             }
         ]
     },

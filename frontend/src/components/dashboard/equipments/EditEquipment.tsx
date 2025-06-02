@@ -25,12 +25,15 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
     const equipmentService = new EquipmentService();
+    console.log(equipment);
     const form = useForm<EquipmentFormValues>({
         resolver: zodResolver(editEquipmentSchema),
         defaultValues: {
             id: equipment.id,
             name: equipment.name,
-            categoryId: equipment.categoryId,
+            cost: equipment.cost,
+            categoryId: equipment.category?.id,
+            status: equipment.status,
             acquisitionDate: equipment.acquisitionDate ? new Date(equipment.acquisitionDate) : undefined,
             specifications: equipment.specifications || {},
             photo: equipment.photo || [],
@@ -42,7 +45,9 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
             form.reset({
                 id: equipment.id,
                 name: equipment.name,
-                categoryId: equipment.categoryId,
+                categoryId: equipment.category?.id,
+                cost: equipment.cost,
+                status: equipment.status,
                 specifications: equipment.specifications || {},
                 acquisitionDate: equipment.acquisitionDate ? new Date(equipment.acquisitionDate) : undefined,
                 photo: equipment.photo || [],

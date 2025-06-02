@@ -46,6 +46,12 @@ export const uploadRouter = {
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
+  repairMaintenance: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
 
   missionDocuments: f({
     pdf: { maxFileSize: "4MB", maxFileCount: 1 },

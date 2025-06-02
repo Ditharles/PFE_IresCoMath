@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 const dateValidation = {
-  startDate: z.date().min(new Date(), { message: "La date de début est requise" }),
+  startDate: z
+    .date()
+    .min(new Date(), { message: "La date de début est requise" }),
   endDate: z
     .date()
     .min(new Date(), { message: "La date de fin est requise" })
@@ -195,6 +197,15 @@ export const editEquipmentPurchaseRequestSchema = z
   })
   .partial();
 
+export const editRepairMaitenanceRequestSchema = z.object({
+  id: z.string().min(1, { message: "L'id est requis" }),
+  title: z.string().min(1, { message: "Le titre est requis" }).optional(),
+  description: z
+    .string()
+    .min(1, { message: "La description est requise" })
+    .optional(),
+  photo: z.array(z.string()).optional(),
+});
 // Union de tous les schémas d'édition
 export const editRequestSchema = z.union([
   editInternshipRequestSchema,

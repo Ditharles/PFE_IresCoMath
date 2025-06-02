@@ -47,6 +47,7 @@ export const getUsers = async (req: Request, res: Response) => {
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
+      createdAt: user.createdAt,
       cin: user.cin,
       ...user.masterStudent,
       ...user.teacherResearcher,
@@ -62,9 +63,13 @@ export const getUser = async (req: AuthRequest, res: Response) => {
   if (!user) {
     return res.status(404).json({ message: "Utilisateur introuvable." });
   }
+  function isDoctorantOrMaster(role: Role): role is "DOCTORANT" | "MASTER" {
+    return ["DOCTORANT", "MASTER"].includes(role);
+  }
+
   if (
     requester.role === Role.ENSEIGNANT &&
-    ![Role.DOCTORANT, Role.MASTER].includes(user.role as Role) &&
+    !isDoctorantOrMaster(user.role) &&
     user.supervisorId !== requester.id &&
     user.thesisSupervisorId !== requester.id
   ) {

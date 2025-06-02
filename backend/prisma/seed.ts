@@ -7,6 +7,7 @@ import {
   EquipmentStatus,
   RequestType,
 } from "../generated/prisma";
+import { create } from "domain";
 
 async function main() {
   console.log("Début de la procédure de seed...");
@@ -24,7 +25,7 @@ async function main() {
         cin: "ADMIN12345",
         firstName: "Système",
         lastName: "Admin",
-        photo: null,
+        photo: "https://randomuser.me/api/portraits/men/1.jpg",
         bankData: null,
         signature: null,
         admin: {
@@ -42,7 +43,7 @@ async function main() {
         cin: "DIR123456",
         firstName: "Laboratoire",
         lastName: "Directeur",
-        photo: "https://randomuser.me/api/portraits/men/1.jpg",
+        photo: "https://randomuser.me/api/portraits/men/2.jpg",
         teacherResearcher: {
           create: {
             position: "Directeur de laboratoire",
@@ -62,7 +63,7 @@ async function main() {
         cin: "ENS123456",
         firstName: "Chercheur",
         lastName: "Enseignant",
-        photo: "https://randomuser.me/api/portraits/men/2.jpg",
+        photo: "https://randomuser.me/api/portraits/men/3.jpg",
         teacherResearcher: {
           create: {
             position: "Enseignant chercheur",
@@ -90,7 +91,7 @@ async function main() {
         cin: "ETU123456",
         firstName: "Master",
         lastName: "Etudiant",
-        photo: "https://randomuser.me/api/portraits/men/3.jpg",
+        photo: "https://randomuser.me/api/portraits/women/1.jpg",
         masterStudent: {
           create: {
             masterYear: 2023,
@@ -109,7 +110,7 @@ async function main() {
         cin: "DOC123456",
         firstName: "Doctorat",
         lastName: "Etudiant",
-        photo: "https://randomuser.me/api/portraits/women/3.jpg",
+        photo: "https://randomuser.me/api/portraits/women/2.jpg",
         doctoralStudent: {
           create: {
             thesisYear: 2022,
@@ -130,28 +131,59 @@ async function main() {
         name: "Cartes de développement",
         description:
           "Microcontrôleurs et cartes de développement pour projets électroniques",
-        photo: ["https://example.com/carte-dev.jpg"],
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        quantity: 3,
+      },
+    });
+
+    const reseauxCategory = await prisma.equipmentCategory.create({
+      data: {
+        type: EquipmentType.EQUIPMENT,
+        name: "Objets réseaux",
+        description:
+          "Équipements réseau pour la connectivité et la communication",
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
         quantity: 5,
       },
     });
 
-    const ordinateurCategory = await prisma.equipmentCategory.create({
+    const stockageCategory = await prisma.equipmentCategory.create({
       data: {
         type: EquipmentType.EQUIPMENT,
-        name: "Ordinateurs portables",
-        description: "Ordinateurs portables pour la recherche et développement",
-        photo: ["https://example.com/laptop.jpg"],
-        quantity: 10,
+        name: "Stockage",
+        description: "Disques durs et périphériques de stockage",
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        quantity: 4,
       },
     });
 
-    const oscilloscopeCategory = await prisma.equipmentCategory.create({
+    const outilsPresentationCategory = await prisma.equipmentCategory.create({
+      data: {
+        type: EquipmentType.TOOLS,
+        name: "Outils de présentation",
+        description: "Équipements pour les présentations et conférences",
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        quantity: 8,
+      },
+    });
+
+    const capteursCategory = await prisma.equipmentCategory.create({
       data: {
         type: EquipmentType.EQUIPMENT,
-        name: "Oscilloscopes",
-        description: "Instruments de mesure électronique",
-        photo: ["https://example.com/oscilloscope.jpg"],
-        quantity: 3,
+        name: "Capteurs",
+        description: "Capteurs divers pour projets électroniques et IoT",
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        quantity: 15,
       },
     });
 
@@ -160,56 +192,243 @@ async function main() {
     // Création d'équipements
     console.log("Création d'équipements...");
 
+    // Création des cartes de développement
+    await prisma.equipment.createMany({
+      data: [
+        {
+          name: "Carte de développement Arduino Uno R3",
+          categoryId: carteDeveloppementCategory.id,
+          status: EquipmentStatus.AVAILABLE,
+          photo: [
+            "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+          ],
+          specifications: {
+            type: "Microcontrôleur",
+            tension: "5V",
+            processeur: "ATmega328P",
+            memoire: "32KB Flash, 2KB SRAM",
+          },
+          acquisitionDate: new Date("2024-01-15"),
+        },
+        {
+          name: "Carte de développement Raspberry Pi 4 Model B",
+          categoryId: carteDeveloppementCategory.id,
+          status: EquipmentStatus.AVAILABLE,
+          photo: [
+            "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+          ],
+          specifications: {
+            type: "Ordinateur monocarte",
+            processeur: "Quad-core ARM Cortex-A72",
+            memoire: "4GB RAM",
+            stockage: "MicroSD",
+          },
+          acquisitionDate: new Date("2024-02-01"),
+        },
+        {
+          name: "Carte de développement ESP32 DevKit",
+          categoryId: carteDeveloppementCategory.id,
+          status: EquipmentStatus.AVAILABLE,
+          photo: [
+            "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+          ],
+          specifications: {
+            type: "Microcontrôleur WiFi/Bluetooth",
+            processeur: "Dual-core Xtensa LX6",
+            memoire: "520KB SRAM",
+            connectivite: "WiFi 2.4GHz, Bluetooth 4.2",
+          },
+          acquisitionDate: new Date("2024-03-01"),
+        },
+      ],
+    });
+    // Création des capteurs
     await prisma.equipment.create({
       data: {
-        name: "Arduino UNO",
-        categoryId: carteDeveloppementCategory.id,
-        notes: "Pour projets étudiants",
-        cost: 25.99,
-        bill: "https://example.com/bill-arduino.pdf",
+        name: "Capteur de lumière LDR",
+        categoryId: capteursCategory.id,
+        notes: "Capteur de luminosité analogique",
+        cost: 2.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         specifications: {
-          microcontroleur: "ATmega328P",
+          type: "Photorésistance",
+          resistance: "10-100kΩ",
+          tension: "3.3V-5V",
+          sensibilite: "0.5-10 lux",
+        },
+        acquisitionDate: new Date("2025-01-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Capteur de distance HC-SR04",
+        categoryId: capteursCategory.id,
+        notes: "Capteur ultrasonique de distance",
+        cost: 3.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          type: "Ultrasonique",
+          portee: "2-400cm",
+          precision: "3mm",
           tension: "5V",
-          entree: "6-20V",
         },
-        acquisitionDate: new Date("2023-01-15"),
-        photo: ["https://example.com/arduino.jpg"],
+        acquisitionDate: new Date("2025-02-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
         status: EquipmentStatus.AVAILABLE,
       },
     });
 
     await prisma.equipment.create({
       data: {
-        name: "Raspberry Pi 4",
-        categoryId: carteDeveloppementCategory.id,
-        notes: "Modèle 8GB RAM",
+        name: "Capteur de température DHT22",
+        categoryId: capteursCategory.id,
+        notes: "Capteur de température et d'humidité",
+        cost: 5.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          type: "Température/Humidité",
+          plageTemp: "-40°C à 80°C",
+          plageHumidite: "0-100%",
+          precision: "±0.5°C",
+        },
+        acquisitionDate: new Date("2025-02-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Capteur de mouvement PIR",
+        categoryId: capteursCategory.id,
+        notes: "Détecteur de mouvement infrarouge",
+        cost: 4.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          type: "Infrarouge passif",
+          portee: "3-7m",
+          angle: "110°",
+          tension: "3.3V-5V",
+        },
+        acquisitionDate: new Date("2025-03-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Capteur de gaz MQ-2",
+        categoryId: capteursCategory.id,
+        notes: "Capteur de gaz combustible",
+        cost: 6.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          type: "Gaz",
+          plage: "0-10000ppm",
+          tension: "5V",
+          tempsReponse: "<10s",
+        },
+        acquisitionDate: new Date("2025-03-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Disque Dur Externe WD 2TB",
+        categoryId: stockageCategory.id,
+        notes: "Disque dur externe portable",
         cost: 89.99,
-        bill: "https://example.com/bill-raspberry.pdf",
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         specifications: {
-          processeur: "Broadcom BCM2711",
-          ram: "8GB",
-          ports: "2x USB 3.0, 2x USB 2.0",
+          capacite: "2TB",
+          interface: "USB 3.0",
+          vitesse: "5400 RPM",
+          dimensions: "111.5 x 82 x 21.5 mm",
         },
-        acquisitionDate: new Date("2023-02-20"),
-        photo: ["https://example.com/raspberry.jpg"],
+        acquisitionDate: new Date("2025-04-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
         status: EquipmentStatus.AVAILABLE,
       },
     });
 
     await prisma.equipment.create({
       data: {
-        name: "ThinkPad X1 Carbon",
-        categoryId: ordinateurCategory.id,
-        notes: "Pour chercheurs seniors",
-        cost: 1899.99,
-        bill: "https://example.com/bill-thinkpad.pdf",
+        name: "SSD Samsung 1TB",
+        categoryId: stockageCategory.id,
+        notes: "SSD interne haute performance",
+        cost: 129.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         specifications: {
-          processeur: "Intel i7-1165G7",
-          ram: "16GB",
-          stockage: "512GB SSD",
+          capacite: "1TB",
+          interface: "SATA III",
+          vitesseLecture: "560 MB/s",
+          vitesseEcriture: "530 MB/s",
         },
-        acquisitionDate: new Date("2023-03-10"),
-        photo: ["https://example.com/thinkpad.jpg"],
+        acquisitionDate: new Date("2025-04-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    // Création des équipements de présentation
+    await prisma.equipment.create({
+      data: {
+        name: "DataShow Epson EB-X05",
+        categoryId: outilsPresentationCategory.id,
+        notes: "Vidéoprojecteur portable",
+        cost: 499.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          resolution: "1024 x 768",
+          luminosite: "3300 lumens",
+          contraste: "15000:1",
+          poids: "2.3 kg",
+        },
+        acquisitionDate: new Date("2025-05-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Pointeur Laser Vert",
+        categoryId: outilsPresentationCategory.id,
+        notes: "Pointeur laser haute visibilité",
+        cost: 29.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          couleur: "Vert",
+          puissance: "5mW",
+          portee: "100m",
+          alimentation: "2 piles AAA",
+        },
+        acquisitionDate: new Date("2025-05-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
         status: EquipmentStatus.AVAILABLE,
       },
     });
@@ -232,7 +451,8 @@ async function main() {
             supervisor: "M. Dupont",
             supervisorEmail: "dupont@abc.com",
             supervisorPhone: "0123456789",
-            letter: "https://example.com/lettre-stage.pdf",
+            letter:
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
             country: "France",
             startDate: new Date("2023-07-01"),
             endDate: new Date("2023-08-31"),
@@ -254,7 +474,8 @@ async function main() {
             supervisor: "Dr. Martin",
             supervisorEmail: "martin@xyz.org",
             supervisorPhone: "0987654321",
-            letter: "https://example.com/lettre-stage-doctorant.pdf",
+            letter:
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
             country: "Canada",
             startDate: new Date("2023-09-01"),
             endDate: new Date("2023-12-31"),
@@ -270,9 +491,7 @@ async function main() {
         status: "PENDING",
         loanRequest: {
           create: {
-            equipmentId: (await prisma.equipment.findFirst({
-              where: { name: "Raspberry Pi 4" },
-            }))!.id,
+            categoryId: outilsPresentationCategory.id,
             quantity: 1,
             startDate: new Date("2023-06-01"),
             endDate: new Date("2023-06-15"),
@@ -294,8 +513,12 @@ async function main() {
             country: "France",
             startDate: new Date("2023-10-01"),
             endDate: new Date("2023-10-10"),
-            specificDocument: ["https://example.com/doc1.pdf"],
-            document: ["https://example.com/doc2.pdf"],
+            specificDocument: [
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            ],
+            document: [
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            ],
           },
         },
       },
@@ -310,7 +533,7 @@ async function main() {
           create: {
             equipmentType: EquipmentType.EQUIPMENT,
             name: "Microscope électronique",
-            url: "https://example.com/microscope",
+            url: "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
             quantity: 1,
             specifications: {
               grossissement: "10000x",
@@ -330,8 +553,10 @@ async function main() {
           create: {
             title: "Nouvelle méthode d'analyse mathématique",
             conference: "Conférence Internationale",
-            urlConference: "https://example.com/conference",
-            articleCover: "https://example.com/article-cover.pdf",
+            urlConference:
+              "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+            articleCover:
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
             amount: "500",
           },
         },

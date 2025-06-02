@@ -152,6 +152,7 @@ model Notification {
   title     String
   message   String
   type      NotificationType
+  url String ?
   status    NotificationStatus @default(UNREAD)
   createdAt DateTime           @default(now())
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -171,6 +172,7 @@ enum NotificationType {
   NEW_SESSION
   EQUIPMENT_BORROWED
   EQUIPMENT_RETURNED
+  REQUEST_CLOSED
   OTHER
 }
 
@@ -222,13 +224,15 @@ model Request {
   status              RequestStatus         @default(PENDING)
   purchaseRequest     PurchaseRequest?
   loanRequest         EquipmentLoanRequest?
-  notes               String?
+  repairMaintenanceRequest RepairMaintenance?
   stage               RequestStage?
   mission             Mission?
   scientificEvent     ScientificEvent?
   articleRegistration ArticleRegistration?
   awaitForm           String?
   signForm            String?
+  notes               String?
+
 }
 
 model PurchaseRequest {
@@ -311,6 +315,14 @@ model ArticleRegistration {
   amount        String
 }
 
+
+model RepairMaintenance{
+  id String @id @default(uuid())
+  request Request @relation(fields:[requestId],references: [id],onDelete: Cascade)
+  requestId String @unique
+  description String
+  photos String[]
+}
 model Template {
   id           String      @id @default(uuid())
   name         String
@@ -360,6 +372,7 @@ enum RequestStatus {
   REJECTED_BY_DIRECTOR
   REJECTED
   COMPLETED
+  CLOSED
 }
 
 enum NotificationStatus {

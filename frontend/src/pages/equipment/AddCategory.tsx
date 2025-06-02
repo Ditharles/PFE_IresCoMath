@@ -11,6 +11,7 @@ import { Form } from '../../components/ui/form';
 
 import EquipmentService from '../../services/equipment.service';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 type CategoryFormValues = z.infer<typeof categorieSchema>;
 
@@ -43,26 +44,37 @@ const AddCategory = () => {
     };
 
     return (
-        <Card className="w-full mx-auto">
-            <CardHeader>
-                <CardTitle>Ajouter une catégorie</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <CategoryFields />
-                        <div className="flex justify-end gap-4">
-                            <Button type='reset' className='w-full sm:w-auto' variant="outline">
-                                Annuler
-                            </Button>
-                            <Button type="submit" className="w-full sm:w-auto" variant="default">
-                                Ajouter la catégorie
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+        <div className="space-y-6 bg-background text-foreground p-6 rounded-lg shadow-md">
+            <Button
+                variant="ghost"
+                className="cursor-pointer text-foreground hover:text-primary"
+                onClick={() => navigate(-1)}
+            >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Retour
+            </Button>
+            <Card className="w-full mx-auto">
+
+                <CardHeader>
+                    <CardTitle>Ajouter une catégorie</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <CategoryFields />
+                            <div className="flex justify-end gap-4">
+                                <Button type='reset' className='w-full sm:w-auto' variant="outline">
+                                    Annuler
+                                </Button>
+                                <Button type="submit" className="w-full sm:w-auto" variant="default">
+                                    Ajouter la catégorie
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
+        </div >
     );
 };
 

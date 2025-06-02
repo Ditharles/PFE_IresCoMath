@@ -85,8 +85,8 @@ const Members = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <main className="flex-1 p-6 bg-background">
+        <div className="space-y-6 h-full bg-background text-foreground p-6 rounded-lg shadow-md">
+            <main className="flex-1  ">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">Gestion des membres</h1>
                     <div className="flex gap-2">
@@ -118,7 +118,7 @@ const Members = () => {
                 <MembersAddRequests
                     requests={filteredRequests}
                     isLoading={isLoading}
-                    activeTab={activeTab}
+
                     onRefresh={fetchData}
                     exportToCSV={() => handleExportToCSV('requests')}
                 />

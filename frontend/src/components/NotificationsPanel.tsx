@@ -7,6 +7,7 @@ import {
   InformationCircleIcon,
   TrashIcon,
   CheckCircleIcon,
+  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline"
 import { Notification, NotificationStatus, NotificationType } from "../types/notifications"
 import NotificationsService from "../services/notifcations.service"
@@ -142,15 +143,11 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
           }`}
         onClick={e => e.stopPropagation()}
       >
-        <div
-          className="flex items-center justify-between p-4 border-b border-border"
-        >
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center">
             <h2 className="text-xl font-semibold">Notifications</h2>
             {unreadCount > 0 && (
-              <span
-                className="ml-2 px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary"
-              >
+              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary">
                 {unreadCount} non lue{unreadCount > 1 ? 's' : ''}
               </span>
             )}
@@ -208,10 +205,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               {filteredNotifications.map(notification => (
                 <div
                   key={notification.id}
-                  className={`p-4 border-b border-border ${notification.status === NotificationStatus.UNREAD
-                    ? "bg-primary/5"
-                    : ""
-                    }`}
+                  className={`p-4 border-b border-border ${notification.status === NotificationStatus.UNREAD ? "bg-primary/5" : ""}`}
                 >
                   <div className="flex items-start">
                     <div className="flex-shrink-0 mr-3 mt-1">
@@ -219,8 +213,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                     </div>
                     <div className="flex-grow">
                       <div className="flex justify-between items-start">
-                        <h3 className={`font-medium ${notification.status === NotificationStatus.UNREAD ? "font-semibold" : ""
-                          }`}>
+                        <h3 className={`font-medium ${notification.status === NotificationStatus.UNREAD ? "font-semibold" : ""}`}>
                           {notification.title}
                         </h3>
                         <span className="text-xs text-muted-foreground">
@@ -231,6 +224,17 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                         {notification.message}
                       </p>
                       <div className="flex justify-end mt-2 space-x-2">
+                        {notification.url && (
+                          <a
+                            href={notification.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs px-2 py-1 rounded flex items-center text-blue-600 hover:bg-blue-100"
+                          >
+                            <ArrowTopRightOnSquareIcon className="w-4 h-4 mr-1" />
+                            Voir
+                          </a>
+                        )}
                         {notification.status === NotificationStatus.UNREAD && (
                           <button
                             onClick={() => markAsRead(notification.id)}

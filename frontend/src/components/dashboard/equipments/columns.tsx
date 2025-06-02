@@ -22,7 +22,7 @@ export const columns = ({
             accessorKey: "name",
             header: "Nom de l'équipement",
             cell: ({ row }) => (
-                <div className="font-medium whitespace-nowrap">
+                <div className="font-medium break-words">
                     <a
                         href={`/materiel/${row.original.id}`}
                         className="hover:text-blue-600 hover:underline transition-colors"
@@ -34,7 +34,7 @@ export const columns = ({
         },
         {
             accessorKey: "type",
-            header: "Type d'équipement",
+            header: "Type ",
             cell: ({ row }) => {
                 const category = row.original.category;
                 return (
@@ -84,7 +84,7 @@ export const columns = ({
         },
         {
             accessorKey: "requestsCount",
-            header: "Réservations en attente",
+            header: "Réservations ",
             cell: ({ row }) => {
                 const equipmentLoanRequests = row.original.equipmentLoanRequests;
                 let count = 0;
@@ -97,8 +97,8 @@ export const columns = ({
                     <Badge
                         variant={count > 0 ? "secondary" : "outline"}
                         className={`whitespace-nowrap ${count > 0
-                                ? "bg-blue-50 text-blue-600"
-                                : "bg-gray-50 text-gray-500"
+                            ? "bg-blue-50 text-blue-600"
+                            : "bg-gray-50 text-gray-500"
                             }`}
                     >
                         {count} {count === 1 ? "demande" : "demandes"}

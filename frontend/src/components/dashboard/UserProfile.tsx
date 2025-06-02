@@ -39,7 +39,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
       onClose()
     }, 300)
   }
-
+  console.log(user);
   const handleLogout = async () => {
     try {
       const response = await logout()
@@ -113,26 +113,28 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
           {/* Section profil */}
           <div className="flex flex-col items-center p-6 border-b border-border">
             <div className="relative mb-4">
-              {user.photo ? (
-                <div className="relative">
-                  <img
-                    src={user.photo || "/placeholder.svg"}
-                    alt={user.name}
-                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
-                  />
-                  <button
-                    className="absolute bottom-0 right-0 p-1.5 rounded-full bg-muted hover:bg-muted/70"
+              {
+
+                user.photo ? (
+                  <div className="relative">
+                    <img
+                      src={user.photo || "/placeholder.svg"}
+                      alt={user.name}
+                      className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                    />
+                    <button
+                      className="absolute bottom-0 right-0 p-1.5 rounded-full bg-muted hover:bg-muted/70"
+                    >
+                      <PencilIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="w-24 h-24 rounded-full flex items-center justify-center bg-muted"
                   >
-                    <PencilIcon className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center bg-muted"
-                >
-                  <UserIcon className="w-12 h-12 text-muted-foreground" />
-                </div>
-              )}
+                    <UserIcon className="w-12 h-12 text-muted-foreground" />
+                  </div>
+                )}
             </div>
             <h2 className="text-xl font-bold">{user.name}</h2>
             <p className="text-sm text-muted-foreground">

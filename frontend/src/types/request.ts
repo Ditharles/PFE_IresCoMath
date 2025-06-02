@@ -30,6 +30,7 @@ export enum RequestStatus {
   REJECTED_BY_SUPERVISOR = "REJECTED_BY_SUPERVISOR",
   REJECTED_BY_DIRECTOR = "REJECTED_BY_DIRECTOR",
   REJECTED = "REJECTED",
+  CLOSED = "CLOSED",
   COMPLETED = "COMPLETED",
 }
 
@@ -142,6 +143,13 @@ export type ArticleRegistration = {
   signForm?: string;
 };
 
+export type RepairMaintenance = {
+  id: string;
+  description: string;
+  photos: string[];
+  awaitForm?: string;
+  signForm?: string;
+};
 export type extendLoanRequest = BaseRequest & EquipmentLoanRequest;
 
 // Main Request type that combines all possibilities
@@ -152,6 +160,7 @@ export type Request = BaseRequest & {
   mission?: Mission;
   scientificEvent?: ScientificEvent;
   articleRegistration?: ArticleRegistration;
+  repairMaintenance?: RepairMaintenance;
 };
 
 // Type for the Prisma query result
@@ -167,6 +176,7 @@ export type PrismaRequestResult = {
   mission: Mission | null;
   scientificEvent: ScientificEvent | null;
   articleRegistration: ArticleRegistration | null;
+  repairMaintenance: RepairMaintenance | null;
   user: {
     id: string;
     firstName: string;

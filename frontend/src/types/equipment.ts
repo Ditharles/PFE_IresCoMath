@@ -24,6 +24,7 @@ export type Equipment = {
   id: string;
   name: string;
   categoryId: string;
+  cost: number;
   photo?: string[];
   bill?: string;
   category: {

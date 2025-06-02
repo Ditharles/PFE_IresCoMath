@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import {
-    FileText, ArrowLeft, Calendar
+    FileText, ArrowLeft
 } from "lucide-react";
 
 import { DetailItem } from "../../components/dashboard/requests/request/DetailItem";
@@ -12,11 +12,11 @@ import EquipmentPurchaseDetails from "../../components/dashboard/requests/reques
 import { InternshipDetails } from "../../components/dashboard/requests/request/details/InternshipDetails";
 import { MissionDetails } from "../../components/dashboard/requests/request/details/MissionDetails";
 import { DetailSection } from "../../components/dashboard/requests/request/DetailSection";
-import { FileListViewer } from "../../components/dashboard/requests/request/FileListViewer";
+
 import { NotFoundComponent } from "../../components/dashboard/requests/request/NotFoundComponent";
 import RequestActions from "../../components/dashboard/requests/request/RequestActions";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import { REQUEST_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_TRANSLATIONS } from "../../constants/requests";
+import { REQUEST_TYPE_LABELS } from "../../constants/requests";
 import { useAuth } from "../../contexts/AuthContext";
 import RequestsService from "../../services/requests.service";
 import { RequestStatus } from "../../types/MemberAddRequest";
@@ -26,8 +26,11 @@ import { formatDate } from "../../utils/utils";
 import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
+// import { Badge } from "../../components/ui/badge";
+import ScientificEvent from "../../components/dashboard/requests/request/details/ScientificEvent";
 
+import StatutVizualizer from "../../components/dashboard/requests/request/StatutVizualizer";
+import RepairMaintenance from "../../components/dashboard/requests/request/details/RepairMaintenance";
 
 const RequestDetails = () => {
     const { user } = useAuth();
@@ -49,7 +52,7 @@ const RequestDetails = () => {
         try {
             setLoading(true);
             const response = await requestService.getRequestDetails(id);
-            let requestDetails = response.data.request;
+            const requestDetails = response.data.request;
             switch (requestDetails.type) {
                 case RequestType.MISSION:
                     requestDetails.mission.awaitForm = requestDetails.awaitForm;
@@ -123,38 +126,12 @@ const RequestDetails = () => {
 
             case RequestType.CONFERENCE_NATIONAL:
                 return request.scientificEvent && (
-                    <>
-                        <DetailSection
-                            icon={<Calendar className="h-5 w-5 text-red-500" />}
-                            title="Détails de la conférence"
-                        >
-                            <DetailItem label="Titre" value={request.scientificEvent.title} />
-                            <DetailItem label="Lieu" value={request.scientificEvent.location} />
-                            {request.scientificEvent.urlEvent && (
-                                <DetailItem label="URL de l'événement" value={request.scientificEvent.urlEvent} />
-                            )}
-                            <DetailItem label="Email d'acceptation" value={request.scientificEvent.mailAcceptation} />
-                            <DetailItem label="Articles acceptés" value={request.scientificEvent.articlesAccepted ? "Oui" : "Non"} />
-                            <DetailItem label="Date de début" value={formatDate(request.scientificEvent.startDate)} />
-                            <DetailItem label="Date de fin" value={formatDate(request.scientificEvent.endDate)} />
-                        </DetailSection>
-
-                        {request.scientificEvent.articleCover && (
-                            <DetailSection
-                                icon={<FileText className="h-5 w-5 text-green-500" />}
-                                title="Documents associés"
-                            >
-                                <DetailItem label="Couverture de l'article">
-                                    <FileListViewer
-                                        files={[request.scientificEvent.articleCover]}
-                                        onPreview={setPreviewFile}
-                                    />
-                                </DetailItem>
-                            </DetailSection>
-                        )}
-                    </>
+                    <ScientificEvent scientificEvent={request.scientificEvent} onPreview={setPreviewFile} isDirector={isDirector} />
                 );
-
+            case RequestType.REPAIR_MAINTENANCE:
+                return request.repairMaintenance && (
+                    <RepairMaintenance repairMaintenance={request.repairMaintenance} fetchData={fetchRequest} onPreview={setPreviewFile} status={request.status} isDirector={isDirector} />
+                )
             default:
                 return null;
         }
@@ -190,11 +167,13 @@ const RequestDetails = () => {
                                         Créée le {formatDate(request.createdAt)}
                                     </CardDescription>
                                 </div>
-                                <Badge className={STATUS_BADGE_VARIANTS[request.status as RequestStatus]}>
+                                {/* <Badge className={STATUS_BADGE_VARIANTS[request.status as RequestStatus]}>
                                     {STATUS_TRANSLATIONS[request.status as RequestStatus]}
-                                </Badge>
+                                </Badge> */}
                             </div>
                         </CardHeader>
+
+                        <StatutVizualizer status={request.status as RequestStatus} />
 
                         <CardContent className="p-6 space-y-6">
                             <DetailSection

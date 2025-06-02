@@ -39,7 +39,7 @@ const Historique = () => {
     }, [status]);
 
     return (
-        <div className="min-h-screen flex flex-col bg-background text-foreground">
+        <div className="min-h-screen flex flex-col ">
             <Requests filterStatuses={filterStatuses} />
         </div>
     );

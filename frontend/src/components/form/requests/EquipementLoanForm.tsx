@@ -1,14 +1,23 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormLabel } from '../../ui/form';
-import { Loader2 } from 'lucide-react';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { Check, Loader2 } from 'lucide-react';
 import { Input } from '../../ui/input';
 import { Textarea } from '../../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../ui/popover';
+import { cn } from '../../../lib/utils';
 import EquipmentService from '../../../services/equipment.service';
 import { EquipmentType } from '../../../types/equipment';
 import { DatePicker } from '../DatePicker';
 import { EQUIPMENT_TYPE_LABELS } from '../../../constants/equipments';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../../ui/command';
+import { Button } from '../../ui/button';
+import { ChevronsUpDown } from 'lucide-react';
 
 interface EquipmentCategory {
   id: string;
@@ -27,6 +36,9 @@ interface EquipmentItem {
 const EquipmentLoanForm: React.FC = () => {
   const { control, formState: { errors }, setValue, trigger } = useFormContext();
   const equipmentService = useMemo(() => new EquipmentService(), []);
+  const [searchValue, setSearchValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const [categories, setCategories] = useState<EquipmentCategory[]>([]);
   const [equipments, setEquipments] = useState<EquipmentItem[]>([]);
@@ -41,8 +53,12 @@ const EquipmentLoanForm: React.FC = () => {
 
   const filteredCategories = useMemo(() => {
     if (!selectedType) return categories;
-    return categories.filter(cat => cat.type === selectedType);
-  }, [categories, selectedType]);
+    return categories
+      .filter(cat => cat.type === selectedType)
+      .filter(category =>
+        category.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+      );
+  }, [categories, selectedType, debouncedSearch]);
 
   const selectedCategory = useMemo(() =>
     categories.find(cat => cat.id === selectedCategoryId),
@@ -104,6 +120,14 @@ const EquipmentLoanForm: React.FC = () => {
     fetchCategories();
   }, [fetchCategories]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchValue);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchValue]);
+
   return (
     <div className="space-y-6">
       {/* Equipment Selection Section */}
@@ -141,58 +165,97 @@ const EquipmentLoanForm: React.FC = () => {
               </FormItem>
             )}
           />
-
-          {/* Category selection */}
           <FormField
             control={control}
             name="categoryId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>Catégorie d'équipement</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    handleCategoryChange(value);
-                  }}
-                  value={field.value}
-                  disabled={isLoading.categories}
-                >
-                  <FormControl>
-                    <SelectTrigger className='w-full'>
-                      {isLoading.categories ? (
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <span>Chargement...</span>
-                        </div>
-                      ) : (
-                        <SelectValue placeholder="Sélectionner une catégorie" />
-                      )}
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {filteredCategories.map(category => (
-                      <SelectItem
-                        key={category.id}
-                        value={category.id}
-                        disabled={category.quantity <= 0}
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={isOpen}
+                        className="w-full justify-between font-normal"
+                        onClick={() => setIsOpen(true)}
                       >
-                        <div className="flex justify-between items-center">
-                          <span>{category.name}</span>
-                          <span className="text-muted-foreground ml-2">
-                            {category.quantity} disponible{category.quantity > 1 ? 's' : ''}
-                          </span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
+                        {field.value
+                          ? categories.find(category => category.id === field.value)?.name
+                          : "Sélectionner une catégorie..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[400px] p-0" align="start">
+                    <Command shouldFilter={false}>
+                      <div className="flex items-center border-b px-3">
+                        <CommandInput
+                          placeholder="Rechercher une catégorie..."
+                          value={searchValue}
+                          onValueChange={setSearchValue}
+                        />
+                        {isLoading.categories && (
+                          <Loader2 className="ml-2 h-4 w-4 animate-spin text-muted-foreground" />
+                        )}
+                      </div>
+                      <CommandList>
+                        <CommandEmpty>
+                          {isLoading.categories ? (
+                            <div className="flex items-center justify-center py-6">
+                              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                            </div>
+                          ) : (
+                            <div className="py-6 text-center text-sm">
+                              Aucune catégorie trouvée.
+                            </div>
+                          )}
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {filteredCategories.map((category) => (
+                            <CommandItem
+                              key={category.id}
+                              value={category.id}
+                              disabled={category.quantity <= 0}
+                              onSelect={(currentValue) => {
+                                const selectedCategory = filteredCategories.find(
+                                  cat => cat.id === currentValue
+                                );
+                                if (selectedCategory) {
+                                  setSearchValue("");
+                                  field.onChange(currentValue);
+                                  handleCategoryChange(currentValue);
+                                  setIsOpen(false);
+                                }
+                              }}
+                              className="flex items-center justify-between"
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">{category.name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {category.quantity} disponible
+                                  {category.quantity > 1 ? 's' : ''}
+                                </span>
+                              </div>
+                              <Check
+                                className={cn(
+                                  "h-4 w-4",
+                                  field.value === category.id ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
               </FormItem>
             )}
           />
         </div>
-
-
 
         {/* Equipment selection - only shown if category is selected */}
         {selectedCategoryId && (

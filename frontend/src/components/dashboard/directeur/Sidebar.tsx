@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Users, FileText, Settings, Box, User, LayoutDashboard } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion"
@@ -41,10 +40,16 @@ const SidebarDirector = () => {
         },
         { name: "Formulaire", path: "/templates", icon: ClipboardList },
         { name: "Gestion des Membres", path: "/membres", icon: Users },
-        { name: "Statistiques", path: "/statistiques", icon: ChartNoAxesCombined },
+        {
+            name: "Statistiques", path: "/statistiques", icon: ChartNoAxesCombined,
+            submenus: [
+                { name: "Membres", path: "/statistiques/membres" },
+                { name: "Matériels", path: "/statistiques/materiels" },
+                { name: "Demandes", path: "/statistiques/demandes" },
+            ]
+        },
         { name: "Profil", path: "/profil", icon: User },
         { name: "Paramètres", path: "/parametres", icon: Settings },
-
     ]
 
     const isActive = (path: string) => {
@@ -84,7 +89,7 @@ const SidebarDirector = () => {
                                             <AccordionTrigger
                                                 className={cn(
                                                     "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
-                                                    "hover:bg-muted/80 dark:hover:bg-muted/50 gap-3 [&[data-state=open]>div>svg]:rotate-180",
+                                                    "hover:bg-muted/80 hover:text-foreground dark:hover:bg-muted/50 gap-3 [&[data-state=open]>div>svg]:rotate-180",
                                                     active ? "bg-primary/10 text-primary" : "text-muted-foreground",
                                                 )}
                                             >
@@ -95,7 +100,7 @@ const SidebarDirector = () => {
                                                             e.stopPropagation()
                                                             navigate(item.path)
                                                         }}
-                                                        className="cursor-pointer hover:underline"
+                                                        className="cursor-pointer"
                                                     >
                                                         {item.name}
                                                     </span>
@@ -131,7 +136,7 @@ const SidebarDirector = () => {
                                     key={index}
                                     to={item.path}
                                     className={cn(
-                                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ",
                                         "hover:bg-muted/80 hover:text-foreground ",
                                         active ? "bg-primary/10 text-primary" : "text-muted-foreground",
                                     )}
@@ -144,8 +149,6 @@ const SidebarDirector = () => {
                         })}
                     </nav>
                 </ScrollArea>
-
-
             </div>
         </aside>
     )

@@ -62,7 +62,7 @@ const Templates = () => {
     });
 
     return (
-        <div className="space-y-6 bg-background text-foreground">
+        <div className="space-y-6 h-full bg-background text-foreground p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Gestion des templates de formulaire</h1>
                 <div className="flex gap-2">

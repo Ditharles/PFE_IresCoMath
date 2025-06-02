@@ -421,7 +421,7 @@ export const sendMailAfterRequestsValidation = async (
 };
 
 // Fonction pour l'email après complétion de la demande
-export const sendMailAfterRequestCompletion = async (
+export const sendMailAfterRequestClose = async (
   request: any,
   user: { firstName: string; lastName: string; email: string; role: Role }
 ) => {
@@ -431,11 +431,11 @@ export const sendMailAfterRequestCompletion = async (
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
-    subject: "Votre demande est complété avec succès",
+    subject: "Votre demande est clôturée avec succès",
     link: requestLink,
     buttonText: "Voir ma demande",
     mainContent: `
-      <p>Nous vous informons que votre demande (#${request.id}) a été complétée avec succès.</p>
+      <p>Nous vous informons que votre demande (#${request.id}) a été clôturée avec succès.</p>
       
       <p>Le processus de traitement est maintenant terminé. Vous pouvez consulter les détails de votre demande en cliquant sur le bouton ci-dessous :</p>
     `,

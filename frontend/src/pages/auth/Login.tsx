@@ -34,59 +34,57 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-purple-100 flex items-center justify-center">
-
-      <div className="bg-background shadow-2xl rounded-2xl p-8 w-full max-w-md relative">
+    <div className="min-h-screen bg-gradient-to-r from-background/50 to-background/80 flex items-center justify-center">
+      <div className="bg-card shadow-2xl rounded-2xl p-8 w-full max-w-md relative">
         {isSubmitting && (
           <LoadingOverlay
             loadingText="Connexion en cours..."
             spinnerSize={24}
-            spinnerColor="#3b82f6"
+            spinnerColor="currentColor"
             overlayOpacity={0.7}
             showSpinner={true}
             showProgressBar={false}
           />
         )}
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-indigo-700">Connexion</h1>
+          <h1 className="text-3xl font-bold text-primary">Connexion</h1>
         </div>
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-foreground">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="mt-1 w-full px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-primary outline-none bg-background text-foreground"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
+            <label className="block text-sm font-medium text-foreground">Mot de passe</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="mt-1 w-full px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-primary outline-none bg-background text-foreground"
               required
             />
           </div>
-          {/* Lien "Mot de passe oublié ?" */}
           <div className="text-right mt-2">
-            <Link to="/password-forget" className="text-blue-500 hover:underline text-sm">
+            <Link to="/password-forget" className="text-primary hover:text-primary/80 text-sm">
               Mot de passe oublié ?
             </Link>
           </div>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-indigo-600 text-foreground py-2 rounded-lg hover:bg-indigo-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Se connecter
           </button>
-          <p className="text-center text-sm text-gray-600 mt-4">
+          <p className="text-center text-sm text-muted-foreground mt-4">
             Pas encore de compte?{" "}
-            <Link to="/inscription" className="text-indigo-600 hover:text-indigo-800 font-medium">
+            <Link to="/inscription" className="text-primary hover:text-primary/80 font-medium">
               Créer un compte
             </Link>
           </p>

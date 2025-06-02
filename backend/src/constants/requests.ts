@@ -121,5 +121,5 @@ export const requestRelationFieldByType = {
   [RequestType.EQUIPMENT_PURCHASE]: "purchaseRequest",
   [RequestType.EQUIPMENT_LOAN]: "loanRequest",
   [RequestType.ARTICLE_REGISTRATION]: "articleRegistration",
-  [RequestType.REPAIR_MAINTENANCE]: "scientificEvent", // à corriger
+  [RequestType.REPAIR_MAINTENANCE]: "repairMaintenanceRequest",
 };

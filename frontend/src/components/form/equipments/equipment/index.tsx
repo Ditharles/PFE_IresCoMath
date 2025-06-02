@@ -12,6 +12,7 @@ import Specifications from '../../requests/Specifications';
 import EquipmentService from '../../../../services/equipment.service';
 
 import { DatePicker } from '../../DatePicker';
+import { EQUIPMENT_STATUS_LABELS } from '../../../../constants/equipments';
 
 interface PreviewModalState {
     open: boolean;
@@ -23,6 +24,9 @@ const EquipmentFields = () => {
     const { control, setValue, getValues, watch } = useFormContext();
     const currentPhotos: string[] = getValues('photo') || [];
     const categoryId = watch('categoryId');
+    console.log('EquipmentFields - categoryId:', categoryId);
+    console.log('EquipmentFields - form values:', getValues());
+    const status = watch('status');
     const [categories, setCategories] = useState<EquipmentCategory[]>([]);
     const [previewModal, setPreviewModal] = useState<PreviewModalState>({
         open: false,
@@ -52,7 +56,7 @@ const EquipmentFields = () => {
     const statusOptions = useMemo(() =>
         Object.entries(EquipmentStatus).map(([key, value]) => (
             <SelectItem key={key} value={key}>
-                {value}
+                {EQUIPMENT_STATUS_LABELS[key]}
             </SelectItem>
         )),
         []);
@@ -96,6 +100,7 @@ const EquipmentFields = () => {
     const fetchCategories = useCallback(async () => {
         try {
             const response = await equipmentService.getAllCategories();
+            console.log('Catégories chargées:', response.data);
             setCategories(response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -105,6 +110,11 @@ const EquipmentFields = () => {
     useEffect(() => {
         fetchCategories();
     }, [fetchCategories]);
+
+    useEffect(() => {
+        console.log('Valeur actuelle de categoryId:', categoryId);
+        console.log('Valeurs du formulaire:', getValues());
+    }, [categoryId, getValues]);
 
     return (
         <div className="space-y-6">
@@ -130,31 +140,38 @@ const EquipmentFields = () => {
                 <FormField
                     control={control}
                     name="categoryId"
-                    render={({ field }) => (
-                        <FormItem className="flex-1 w-full">
-                            <FormLabel>Catégorie</FormLabel>
-                            <Select
-                                onValueChange={field.onChange}
-                                value={field.value || ''}
-                                defaultValue=""
-                            >
-                                <FormControl>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Sélectionnez une catégorie" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="autre">Autre (créer une nouvelle catégorie)</SelectItem>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category.id} value={category.id}>
-                                            {category.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    render={({ field }) => {
+                        console.log('Rendu du champ categoryId:', field.value);
+                        return (
+                            <FormItem className="flex-1 w-full">
+                                <FormLabel>Catégorie</FormLabel>
+                                <Select
+                                    onValueChange={(value) => {
+                                        console.log('Nouvelle valeur de catégorie:', value);
+                                        field.onChange(value);
+                                    }}
+                                    value={field.value ?? ''}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Sélectionnez une catégorie">
+                                                {categories.find(cat => cat.id === field.value)?.name || 'Sélectionnez une catégorie'}
+                                            </SelectValue>
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="autre">Autre (créer une nouvelle catégorie)</SelectItem>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={category.id}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
                 />
             </div>
 
@@ -195,8 +212,8 @@ const EquipmentFields = () => {
                             <FormLabel>Statut</FormLabel>
                             <Select
                                 onValueChange={field.onChange}
-                                value={field.value || ''} // Valeur par défaut vide
-                                defaultValue=""
+                                value={field.value ?? ''}
+                                defaultValue={field.value ?? ''}
                             >
                                 <FormControl>
                                     <SelectTrigger className="w-full">

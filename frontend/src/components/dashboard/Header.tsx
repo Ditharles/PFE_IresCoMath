@@ -52,7 +52,7 @@ export const Header = ({
                 <img
                     src="./src/assets/logo-ires.png"
                     alt="logo"
-                    className="h-10 object-contain bg-card rounded-lg"
+                    className="h-10 object-contain  rounded-lg"
                 />
             </div>
 
@@ -118,7 +118,7 @@ export const Header = ({
                         >
                             {user.name ? (
                                 <span className="font-medium">
-                                    {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                    {user.name.split(' ').map((n: unknown[]) => n[0]).join('').toUpperCase()}
                                 </span>
                             ) : (
                                 <svg

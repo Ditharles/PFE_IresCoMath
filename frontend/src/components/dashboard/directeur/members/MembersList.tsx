@@ -44,8 +44,8 @@ const MembersList = ({
     }, [members]);
 
     return (
-        <Card className="border-border/40 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="border-b border-border/40 bg-gradient-to-r from-background to-background/95">
+        <Card className=" shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="border-b border-border/40 ">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-primary/10 rounded-lg">

@@ -21,11 +21,16 @@ import {
   getSupervisor,
   getUserByID,
 } from "../services/auth.service";
-import { extendRequestFields, requestFields, requestRelationFieldByType } from "../constants/requests";
+import {
+  extendRequestFields,
+  requestFields,
+  requestRelationFieldByType,
+} from "../constants/requests";
 import { getRequestById } from "../services/requests.service";
 
 import { sendRequestNotifications } from "../utils/notificationUtils";
 import {
+  sendMailAfterRequestClose,
   sendMailAfterRequestCompletion,
   sendMailAfterRequestsValidation,
 } from "../services/mail.service";
@@ -187,6 +192,32 @@ export const submitEquipmentPurchaseRequest = async (
           : undefined,
     });
   }
+};
+
+export const submitRepairMaintenanceRequest = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  const requiredFields = ["title", "description"];
+
+  const response = await submitRequest(req, {
+    type: RequestType.REPAIR_MAINTENANCE,
+    userId: req.user.userId,
+    data: req.body,
+    requiredFields,
+    successMessage: "Demande de maintenance soumise avec succès",
+    createSpecificRequest: async (requestId, data) => {
+      prisma.repairMaintenance.create({
+        data: {
+          requestId,
+          title: data.title,
+          description: data.description,
+        },
+      });
+    },
+  });
+
+  res.status(response.status).json({ message: response.message });
 };
 export const submitEquipmentLendRequest = async (
   req: AuthRequest,
@@ -520,25 +551,57 @@ export const completeRequest = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   try {
     const request = await getRequestById(id);
+    if (!request) {
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
+    if (request?.status !== RequestStatus.APPROVED) {
+      res.status(400).json({ message: "La demande doit être complétée" });
+    }
+    if (request?.user.id !== req.user.userId) {
+      res.status(403).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
+    }
+    const updatedRequest = await prisma.request.update({
+      where: { id: request!.id },
+      data: { status: RequestStatus.COMPLETED },
+    });
+
+    const director = await getDirector();
+    await NotificationsService.createNotification({
+      userId: director!.id,
+      ...NotificationTemplates.REQUEST_COMPLETED(request!.id),
+    });
+    res.status(200).json({
+      message: "Demande complétée avec succès",
+      data: updatedRequest,
+    });
+  } catch (error) {
+    console.error("Erreur dans closeRequest:", error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+export const closeRequest = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  try {
+    const request = await getRequestById(id);
 
     if (!request) {
       res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
 
     if (request?.status !== RequestStatus.APPROVED) {
-      res.status(400).json({ message: "La demande doit être approuvée" });
+      res.status(400).json({ message: "La demande doit être complétée" });
     }
 
     const updatedRequest = await prisma.request.update({
       where: { id: request!.id },
-      data: { status: RequestStatus.COMPLETED },
+      data: { status: RequestStatus.CLOSED },
     });
 
     // Récupérer les informations de l'utilisateur
     let user = await getUserByID(request!.user.id);
 
     // Envoyer l'email de confirmation
-    await sendMailAfterRequestCompletion(updatedRequest, {
+    await sendMailAfterRequestClose(updatedRequest, {
       firstName: user!.firstName || "",
       lastName: user!.lastName || "",
       email: user!.email,
@@ -546,14 +609,15 @@ export const completeRequest = async (req: AuthRequest, res: Response) => {
     });
 
     await NotificationsService.createNotification({
-      userId: request!.user.id,
-      ...NotificationTemplates.REQUEST_COMPLETED(request!.id),
+      userId: req.user.userId,
+      ...NotificationTemplates.REQUEST_CLOSED(request!.id),
     });
     res.status(200).json({
-      message: "Demande terminée avec succès",
+      message: "Demande clôturée avec succès",
+      data: updatedRequest,
     });
   } catch (error) {
-    console.error("Error completing request:", error);
+    console.error("Error closing request:", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -568,10 +632,9 @@ export const editRequest = async (req: AuthRequest, res: Response) => {
     [RequestType.EQUIPMENT_PURCHASE]: prisma.purchaseRequest,
     [RequestType.EQUIPMENT_LOAN]: prisma.equipmentLoanRequest,
     [RequestType.ARTICLE_REGISTRATION]: prisma.articleRegistration,
-    [RequestType.REPAIR_MAINTENANCE]: prisma.scientificEvent, // à corriger
+    [RequestType.REPAIR_MAINTENANCE]: prisma.repairMaintenance,
   };
 
-  
   try {
     const request = await getRequestById(id);
 
@@ -633,6 +696,34 @@ export const deleteRequest = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const reigniteRequest = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  try {
+    const request = await getRequestById(id);
+    if (!request) {
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+    }
+    if (req.user.role != Role.DIRECTEUR) {
+      const director = await getDirector();
+      await NotificationsService.createNotification({
+        userId: director!.id,
+        ...NotificationTemplates.REQUEST_REIGNITED_BY_USER(request!.id),
+      });
+    } else {
+      await NotificationsService.createNotification({
+        userId: req.user.userId,
+        ...NotificationTemplates.REQUEST_REIGNITED_BY_DIRECTOR(request!.id),
+      });
+    }
+
+    res.status(200).json({
+      message: "Demande réactivée avec succès",
+    });
+  } catch (error) {
+    console.error("Error reigniting request:", error);
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
 export const signFormUpload = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -653,7 +744,7 @@ export const signFormUpload = async (req: AuthRequest, res: Response) => {
     await prisma.request.update({
       where: { id: request!.id },
       data: {
-        signedForm: req.body.file,
+        signForm: req.body.file,
       },
     });
 

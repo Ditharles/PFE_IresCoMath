@@ -162,3 +162,8 @@ export const equipmentPurchaseRequestSchema = z.object({
       },
     ]),
 });
+
+export const repairMaintenanceRequestSchema = z.object({
+  description: z.string().min(1, { message: "La description est requise" }),
+  photo: z.array(z.string()).optional(),
+});

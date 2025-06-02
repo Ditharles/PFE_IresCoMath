@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { MoreHorizontal, Eye, FileText, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { MoreHorizontal, Eye, FileText, Trash2, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogHeader, DialogFooter } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../../ui/dropdown-menu";
@@ -23,7 +23,6 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
     const [rejectReason, setRejectReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    // Pour gérer l'état ouvert du menu déroulant
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     if (!user) return null;
@@ -44,9 +43,14 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
     }
 
     const canReject = canApprove;
-    const canComplete = isDirector && request.status === RequestStatus.APPROVED;
-
-    const handleDelete = async () => {
+    const canComplete = isOwner && request.status === RequestStatus.APPROVED;
+    const canClose = isOwner && request.status === RequestStatus.COMPLETED;
+    let canReignite = false;
+    if (isOwner) {
+        canReignite = [RequestStatus.PENDING, RequestStatus.COMPLETED].includes(request.status);
+    } else if (isDirector) {
+        canReignite = [RequestStatus.APPROVED_BY_DIRECTOR, RequestStatus.APPROVED].includes(request.status);
+    } const handleDelete = async () => {
         try {
             setIsSubmitting(true);
             const response = await requestService.deleteRequest(request.id);
@@ -131,13 +135,48 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
         }
     };
 
-    const handleMenuItemClick = (action) => {
+    const handleClose = async () => {
+        try {
+            setIsSubmitting(true);
+            const response = await requestService.closeRequest(request.id);
+            toast.success(response.data.message || "Demande clôturée avec succès");
 
+            const updatedRequest = {
+                ...request,
+                status: RequestStatus.CLOSED
+            };
+            onRequestUpdate(updatedRequest);
+        } catch (error) {
+            toast.error('Erreur lors de la clôture de la demande');
+            console.error('Error closing request:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleReignite = async () => {
+        try {
+            setIsSubmitting(true);
+            const response = await requestService.reigniteRequest(request.id);
+            toast.success(response.data.message || "Demande relancée avec succès");
+
+            const updatedRequest = {
+                ...request,
+                status: RequestStatus.PENDING
+            };
+            onRequestUpdate(updatedRequest);
+        } catch (error) {
+            toast.error('Erreur lors de la relance de la demande');
+            console.error('Error reigniting request:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleMenuItemClick = (action: string) => {
         setDropdownOpen(false);
 
-
         setTimeout(() => {
-
             if (action === 'edit') {
                 setIsEditModalOpen(true);
             } else if (action === 'delete') {
@@ -148,6 +187,10 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
                 setOpenRejectDialog(true);
             } else if (action === 'complete') {
                 handleComplete();
+            } else if (action === 'close') {
+                handleClose();
+            } else if (action === 'reignite') {
+                handleReignite();
             }
         }, 100);
     };
@@ -224,6 +267,28 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
                             Terminer
                         </DropdownMenuItem>
                     )}
+
+                    {canClose && (
+                        <DropdownMenuItem
+                            onClick={() => handleMenuItemClick('close')}
+                            disabled={isSubmitting}
+                            className="text-green-600"
+                        >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Clôturer
+                        </DropdownMenuItem>
+                    )}
+
+                    {canReignite && (
+                        <DropdownMenuItem
+                            onClick={() => handleMenuItemClick('reignite')}
+                            disabled={isSubmitting}
+                            className="text-green-600"
+                        >
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Relancer
+                        </DropdownMenuItem>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
 
@@ -252,6 +317,7 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
             </Dialog>
 
             {/* Reject Dialog */}
+
             {canReject && (
                 <Dialog open={openRejectDialog} onOpenChange={setOpenRejectDialog}>
                     <DialogContent className="bg-background p-6 rounded-lg max-w-md w-full m-auto">

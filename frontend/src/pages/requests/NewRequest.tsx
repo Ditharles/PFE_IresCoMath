@@ -20,9 +20,10 @@ import LoadingOverlay from '../../components/LoadingOverlay';
 import { Alert, AlertTitle, AlertDescription } from '../../components/ui/alert';
 import { Button } from '../../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
-import { internshipRequestSchema, missionRequestSchema, scientificEventRequestSchema, articleRegistrationRequestSchema, equipmentLoanRequestSchema, equipmentPurchaseRequestSchema } from '../../schemas/requestSchema';
+import { internshipRequestSchema, missionRequestSchema, scientificEventRequestSchema, articleRegistrationRequestSchema, equipmentLoanRequestSchema, equipmentPurchaseRequestSchema, repairMaintenanceRequestSchema } from '../../schemas/requestSchema';
 import RequestsService from '../../services/requests.service';
 import { RequestType } from '../../types/request';
+import RepairMaintenanceForm from '../../components/form/requests/RepairMaintenanceForm';
 
 const NewRequest: React.FC = () => {
 
@@ -56,6 +57,7 @@ const NewRequest: React.FC = () => {
       case 'inscription-article': return articleRegistrationRequestSchema;
       case 'pret-materiel': return equipmentLoanRequestSchema;
       case 'achat-materiel': return equipmentPurchaseRequestSchema;
+      case 'reparation-maintenance': return repairMaintenanceRequestSchema;
       default: return z.object({});
     }
   };
@@ -112,7 +114,6 @@ const NewRequest: React.FC = () => {
       case 'pret-materiel': return 'Prêt de Matériel';
       case 'achat-materiel': return 'Achat de Matériel';
       case 'reparation-maintenance': return 'Réparation/Maintenance';
-      case 'contractuel': return 'Demande Contractuelle';
       default: return 'Nouvelle Demande';
     }
   };
@@ -125,6 +126,7 @@ const NewRequest: React.FC = () => {
       case 'inscription-article': return <ArticleRegistrationForm />;
       case 'pret-materiel': return <EquipmentLoanForm />;
       case 'achat-materiel': return <EquipmentPurchaseForm />;
+      case 'reparation-maintenance': return <RepairMaintenanceForm />;
       default: return (
         <Alert variant="destructive" className="flex items-start space-x-2">
           <Info className="h-4 w-4" />
@@ -138,7 +140,7 @@ const NewRequest: React.FC = () => {
   };
 
   return (
-    <div className="animate-fadeIn h-full relative bg-background text-foreground">
+    <div className="animate-fadeIn h-full relative text-foreground">
       {isSubmitting && <LoadingOverlay />}
 
       <div className="mb-6">
@@ -165,7 +167,7 @@ const NewRequest: React.FC = () => {
               {renderCorrespondingForm()}
             </CardContent>
 
-            <CardFooter className="flex justify-end gap-3 mt-8 bg-muted">
+            <CardFooter className="flex justify-end gap-3 mt-8">
               <Button
                 type="reset"
                 variant="outline"

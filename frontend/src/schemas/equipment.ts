@@ -39,9 +39,9 @@ export const editEquipmentSchema = z
     specifications: z.record(z.string(), z.any()).optional().default({}),
     acquisitionDate: z.date().optional(),
     cost: z
-      .string()
-      .min(1, {
-        message: "L'estimation de coût est requise",
+      .union([z.number(), z.string()])
+      .refine((val) => Number(val) >= 1, {
+        message: "Le coût est requis",
       })
       .optional(),
     status: z.string().optional(),

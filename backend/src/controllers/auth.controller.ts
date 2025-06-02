@@ -185,6 +185,9 @@ export const login: AuthHandler = async (req, res) => {
         id: true,
         email: true,
         role: true,
+        firstName: true,
+        lastName: true,
+        photo:true,
         password: true,
         masterStudent: {
           select: masterStudentFields,
@@ -223,7 +226,10 @@ export const login: AuthHandler = async (req, res) => {
       accessToken,
       refreshToken,
       user: {
-        id: user.id,
+        userId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        photo: user.photo,
         email: user.email,
         role: user.role,
         ...user.masterStudent,

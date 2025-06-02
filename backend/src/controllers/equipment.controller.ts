@@ -36,7 +36,24 @@ export const getCategory = async (req: AuthRequest, res: Response) => {
 export const getAllEquipments = async (req: AuthRequest, res: Response) => {
   try {
     const equipments = await prisma.equipment.findMany({
-      include: { category: true },
+      select: {
+        id: true,
+        name: true,
+        photo: true,
+        cost: true,
+        specifications: true,
+        acquisitionDate: true,
+        status: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            photo: true,
+            quantity: true,
+          },
+        },
+      },
     });
     res.status(200).json(equipments);
   } catch (error) {
@@ -52,7 +69,24 @@ export const getEquipment = async (req: AuthRequest, res: Response) => {
 
     const equipment = await prisma.equipment.findUnique({
       where: { id },
-      include: { category: true },
+      select: {
+        id: true,
+        name: true,
+        photo: true,
+        cost: true,
+        specifications: true,
+        acquisitionDate: true,
+        status: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            photo: true,
+            quantity: true,
+          },
+        },
+      },
     });
 
     if (!equipment)
@@ -119,7 +153,7 @@ export const editEquipment = async (req: AuthRequest, res: Response) => {
       },
       include: { category: true },
     });
-
+    console.log(updatedEquipment);
     res.status(200).json({
       message: "Équipement mis à jour",
       equipment: updatedEquipment,

@@ -31,6 +31,7 @@ export const userFields = {
   firstName: true,
   photo: true,
   role: true,
+  createdAt: true,
   phone: true,
   cin: true,
   bankData: true,

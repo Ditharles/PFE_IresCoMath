@@ -35,6 +35,7 @@ const ActionsCell = ({
     onDelete,
     className = ""
 }: ActionsCellProps) => {
+    
     const equipmentService = new EquipmentService();
     const navigate = useNavigate();
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
