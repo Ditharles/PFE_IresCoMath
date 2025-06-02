@@ -15,6 +15,7 @@ import {
   registerDoctoralStudent,
   registerMasterStudent,
   registerTeacherResearcher,
+  getUser,
 } from "../controllers/auth.controller";
 import { verifyToken } from "../middleware/verifyToken";
 
@@ -70,7 +71,7 @@ router.post("/refresh-token", refreshToken as RequestHandler);
 router.get(
   "/me",
   verifyToken as RequestHandler,
-  confirmRequest as RequestHandler
+  getUser as RequestHandler
 );
 
 export default router;

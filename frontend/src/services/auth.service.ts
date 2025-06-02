@@ -12,7 +12,7 @@ class AuthService {
   async getUser() {
     try {
       const response = await api.get("/auth/me");
-      return response.data;
+      return response;
     } catch (error) {
       removesTokens();
       removeUser();

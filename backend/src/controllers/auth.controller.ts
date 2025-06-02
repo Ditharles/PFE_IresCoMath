@@ -30,6 +30,7 @@ import {
   createDoctoralStudent,
   createMasterStudent,
   createTeacherResearcher,
+  getUserByID,
 } from "../services/auth.service";
 
 import { AuthHandler } from "../types/auth";
@@ -44,6 +45,7 @@ import {
 } from "../utils/authUtils";
 import { RequestRole, requestRoleMap } from "../utils/validateUtils";
 import { sendInitialEmail } from "../services/mail.service";
+import { get } from "http";
 
 // Fonction pour la création des requêtes d'authentification
 const registerUser = async (
@@ -704,6 +706,7 @@ export const getUser: AuthHandler = async (req, res) => {
   const id = req.user.userId;
   console.log(id);
   try {
+
     const user = await prisma.user.findUnique({
       where: {
         id: id,
@@ -729,6 +732,7 @@ export const getUser: AuthHandler = async (req, res) => {
       ...user?.doctoralStudent,
     };
     res.status(200).json(userFront);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });

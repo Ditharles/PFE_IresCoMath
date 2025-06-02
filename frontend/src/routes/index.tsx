@@ -24,16 +24,18 @@ import NewRequest from "../pages/requests/NewRequest";
 import NewRequests from "../pages/requests/NewRequests";
 import RequestDetails from "../pages/requests/RequestsDetails";
 import Historique from "../pages/Historique";
+
 import AddCategory from "../pages/equipment/AddCategory";
 import AddEquipment from "../pages/equipment/AddEquipment";
 import EquipmentPage from "../pages/equipment/Equipment";
-import { Calendar } from "../components/ui/calendar";
+
 import { TemplateList } from "../pages/templates/List";
 import AddTemplate from "../pages/templates/Add";
 import EditTemplate from "../pages/templates/Edit";
 import MembersStats from "../pages/statistiques/MembersStats";
 import EquipmentStats from "../pages/statistiques/EquipmentStats";
 import RequestsStats from "../pages/statistiques/RequestsStats";
+
 const routes: RouteObject[] = [
     {
         index: true,
@@ -99,6 +101,8 @@ const routes: RouteObject[] = [
                 path: "demande/:id",
                 element: <RequestDetails />
             },
+  { path: "profil", element: <Profile /> },
+
 
         ]
     },

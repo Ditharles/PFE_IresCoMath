@@ -12,9 +12,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@pdf-lib/fontkit": "^1.1.1",
+
     "@prisma/client": "^6.5.0",
     "axios": "^1.9.0",
+
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
@@ -43,7 +44,7 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.14.0",
-    "prisma": "^6.5.0",
+    "prisma": "^6.8.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
