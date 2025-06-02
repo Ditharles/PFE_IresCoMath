@@ -7,15 +7,15 @@ import { useMemo } from "react";
  * Détermine le rôle d'un utilisateur en fonction de ses attributs
  */
 export const determineRole = (user: User) => {
-  if ("annee_these" in user) return RoleEnum.DOCTORANT;
-  if ("annee_master" in user) return RoleEnum.MASTER;
-  if ("fonction" in user) return RoleEnum.ENSEIGNANT;
+  if ("thesisYear" in user) return RoleEnum.DOCTORANT;
+  if ("masterYear" in user) return RoleEnum.MASTER;
+  if ("position" in user) return RoleEnum.ENSEIGNANT;
   return RoleEnum.ADMIN;
 };
 export const determineRequestRole = (request: RequestUser) => {
-  if ("annee_these" in request) return RoleEnum.DOCTORANT;
-  if ("annee_master" in request) return RoleEnum.MASTER;
-  if ("fonction" in request) return RoleEnum.ENSEIGNANT;
+  if ("thesisYear" in request) return RoleEnum.DOCTORANT;
+  if ("masterYear" in request) return RoleEnum.MASTER;
+  if ("position" in request) return RoleEnum.ENSEIGNANT;
   return RoleEnum.ADMIN;
 };
 
@@ -37,7 +37,7 @@ export const useFilteredUsers = (
         user.email.toLowerCase().includes(searchQuery.toLowerCase());
 
       const role = determineRole(user);
-      const matchesRole = filterRole ? role === filterRole : true;
+      const matchesRole = filterRole ? role == filterRole : true;
       const matchesStatus = filterStatus ? user.status === filterStatus : true;
       const matchesTab = activeTab === "all" ? true : role === activeTab;
 

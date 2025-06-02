@@ -1,9 +1,8 @@
-import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/input';
-import { Calendar, Mail } from 'lucide-react';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import FileUpload from '../../FileUpload';
+import { DatePicker } from '../DatePicker';
 
 const ScientificEventForm: React.FC = () => {
   const { control, watch, setValue, formState: { errors } } = useFormContext();
@@ -13,9 +12,9 @@ const ScientificEventForm: React.FC = () => {
     return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
   };
 
-  const handleFileUpload = (fileUrl: string[] | string) => {
+  const handleFileUpload = (fileUrl: string[] | string, fieldName: string) => {
     if (fileUrl) {
-      setValue('articleCover', Array.isArray(fileUrl) ? fileUrl[0] : fileUrl);
+      setValue(fieldName, Array.isArray(fileUrl) ? fileUrl[0] : fileUrl);
     }
   };
 
@@ -24,7 +23,7 @@ const ScientificEventForm: React.FC = () => {
       {/* Section Informations de base */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Informations de l'événement</h3>
-        
+
         <FormField
           control={control}
           name="location"
@@ -46,10 +45,10 @@ const ScientificEventForm: React.FC = () => {
             <FormItem>
               <FormLabel>URL de l'événement</FormLabel>
               <FormControl>
-                <Input 
-                  type="url" 
-                  {...field} 
-                  className={getFieldClass('urlEvent')} 
+                <Input
+                  type="url"
+                  {...field}
+                  className={getFieldClass('urlEvent')}
                   placeholder="https://"
                 />
               </FormControl>
@@ -75,18 +74,18 @@ const ScientificEventForm: React.FC = () => {
         <FormField
           control={control}
           name="mailAcceptation"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Email d'acceptation *</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Input 
-                    type="email" 
-                    {...field} 
-                    className={getFieldClass('mailAcceptation')} 
-                  />
-                  <Mail className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                </div>
+                <FileUpload
+                  endpoint="mailAcceptation"
+                  maxFiles={1}
+                  acceptedTypes={['application/pdf', 'image/*']}
+                  headerText="Téléverser l'email d'acceptation"
+                  subHeaderText="PDF ou image (max 5MB)"
+                  onFileUploaded={(fileUrl) => handleFileUpload(fileUrl, 'mailAcceptation')}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -97,12 +96,12 @@ const ScientificEventForm: React.FC = () => {
       {/* Section Article */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Article scientifique</h3>
-        
+
         <FormField
           control={control}
           name="articlesAccepted"
           render={({ field }) => (
-            <FormItem className="flex items-center gap-3 px-4 py-2 shadow-sm">
+            <FormItem className="flex items-center gap-3 px-4 py-2 ">
               <FormControl>
                 <Input
                   type="checkbox"
@@ -132,8 +131,7 @@ const ScientificEventForm: React.FC = () => {
                     acceptedTypes={['application/pdf', 'image/*']}
                     headerText="Téléverser la première page"
                     subHeaderText="PDF ou image (max 5MB)"
-                    onFileUploaded={handleFileUpload}
-                    
+                    onFileUploaded={(fileUrl) => handleFileUpload(fileUrl, 'articleCover')}
                   />
                 </FormControl>
                 <FormMessage />
@@ -143,52 +141,34 @@ const ScientificEventForm: React.FC = () => {
         )}
       </div>
 
-      {/* Section Dates */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Période de l'événement</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={control}
-            name="startDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date de début *</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      className={getFieldClass('startDate')} 
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="endDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date de fin *</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      className={getFieldClass('endDate')} 
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+      {/* Section Période de la mission */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de début</FormLabel>
+              <FormControl>
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="endDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de fin</FormLabel>
+              <FormControl>
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     </div>
   );

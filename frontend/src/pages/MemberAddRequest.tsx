@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ManageUserService } from "../services/manageUser.service";
 import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { Role, RoleEnum } from "../types/common";
-import { Toast, toast } from "../components/Toast";
+import { toast } from "sonner";
 import LoadingOverlay from "../components/LoadingOverlay";
 import { RequestUser } from "../types/MemberAddRequest";
 import { Badge } from "../components/ui/badge";
@@ -292,29 +292,27 @@ const MemberAddRequest = () => {
             DIRECTEUR: "Directeur",
             DOCTORANT: "Doctorant",
             MASTER: "Master",
-           
+
         };
 
         return roleMapping[role] || role;
     };
 
     return (
-        <div className={`min-h-screen flex flex-col ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-800"}`}>
+        <div className="min-h-screen flex flex-col bg-background text-foreground">
             {loading && <LoadingOverlay loadingText="Chargement des données..." />}
 
-            <Toast />
-
             <div className="container mx-auto py-8 px-4">
-                <Card className="shadow-lg">
-                    <CardHeader className="border-b bg-gray-50">
+                <Card className="shadow-lg bg-card text-card-foreground">
+                    <CardHeader className="border-b bg-muted">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                             <div className="flex-shrink-0 relative">
                                 <img
                                     src={requests?.photo || "/placeholder-user.png"}
-                                    className="w-20 h-20 rounded-full object-cover border-4 border-white shadow"
+                                    className="w-20 h-20 rounded-full object-cover border-4 border-background shadow"
                                     alt="Photo de profil"
                                 />
-                                <Badge className="absolute -top-2 -right-2 bg-blue-500">
+                                <Badge className="absolute -top-2 -right-2 bg-primary">
                                     {user_role && translateRole(user_role)}
                                 </Badge>
                             </div>
@@ -339,12 +337,12 @@ const MemberAddRequest = () => {
                     </CardContent>
 
                     {requests?.status === "PENDING" && (
-                        <CardFooter className="flex flex-col sm:flex-row justify-end gap-3 p-6 bg-gray-50">
+                        <CardFooter className="flex flex-col sm:flex-row justify-end gap-3 p-6 bg-muted">
                             <Button variant="outline" onClick={() => setIsOpen(true)} className="w-full sm:w-auto">
                                 <XCircle className="mr-2 h-4 w-4" />
                                 Rejeter la demande
                             </Button>
-                            <Button onClick={handleApprove} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
+                            <Button onClick={handleApprove} className="w-full sm:w-auto">
                                 <CheckCircle2 className="mr-2 h-4 w-4" />
                                 Approuver la demande
                             </Button>
@@ -354,7 +352,7 @@ const MemberAddRequest = () => {
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <div className={`${isOpen ? 'fixed inset-0 bg-black/20 backdrop-blur-sm z-40' : ''}`} />
-                <DialogContent className="sm:max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-lg p-6 shadow-lg">
+                <DialogContent className="sm:max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-card text-card-foreground rounded-lg p-6 shadow-lg">
                     <DialogHeader>
                         <DialogTitle>Motif du rejet</DialogTitle>
                     </DialogHeader>

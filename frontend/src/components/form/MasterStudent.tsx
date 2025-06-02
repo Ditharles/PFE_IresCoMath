@@ -85,7 +85,7 @@ const MasterStudent: React.FC<SpecificFieldsProps> = ({ data, onChange }) => {
             name="supervisorId"
             value={data.supervisorId ?? ""}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none bg-white"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none bg-background"
             required
           >
             <option value="">Sélectionner un encadrant</option>

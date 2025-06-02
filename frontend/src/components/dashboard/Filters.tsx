@@ -7,7 +7,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { RoleEnum } from "../../types/common";
 import { RequestStatus } from "../../types/MemberAddRequest";
-const Filters = ({
+import { set } from "date-fns";
+
+interface FiltersProps {
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  filterRole: string;
+  setFilterRole: (value: string) => void;
+  filterStatus?: RequestStatus;
+  setFilterStatus: (value: RequestStatus | undefined) => void;
+  activeTab: string;
+  setActiveTab: (value: string) => void;
+  clearFilters: () => void;
+  showStatusFilter?: boolean;
+}
+
+const Filters: React.FC<FiltersProps> = ({
   searchQuery,
   setSearchQuery,
   filterRole,
@@ -19,6 +34,11 @@ const Filters = ({
   clearFilters,
   showStatusFilter = true
 }) => {
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setFilterRole(value === "all" ? "" : value);
+  };
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -27,7 +47,10 @@ const Filters = ({
           <Button
             variant="ghost"
             size="sm"
-            onClick={clearFilters}
+            onClick={() => {
+              clearFilters();
+              setActiveTab("all");
+            }}
             className="text-muted-foreground"
             disabled={!searchQuery && !filterRole && !filterStatus}
           >
@@ -51,7 +74,7 @@ const Filters = ({
           {showStatusFilter && (
             <Select
               value={filterStatus}
-              onValueChange={(value) => setFilterStatus(value)}
+              onValueChange={(value) => setFilterStatus(value as RequestStatus)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Statut" />
@@ -66,12 +89,12 @@ const Filters = ({
         </div>
 
         <div className="mt-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
-              <TabsTrigger value="all">Tous</TabsTrigger>
-              <TabsTrigger value={RoleEnum.DOCTORANT}>Doctorants</TabsTrigger>
-              <TabsTrigger value={RoleEnum.MASTER}>Masters</TabsTrigger>
-              <TabsTrigger value={RoleEnum.ENSEIGNANT}>Enseignants</TabsTrigger>
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
+            <TabsList className="w-full">
+              <TabsTrigger value="all" className="flex-1">Tous</TabsTrigger>
+              <TabsTrigger value={RoleEnum.DOCTORANT} className="flex-1">Doctorants</TabsTrigger>
+              <TabsTrigger value={RoleEnum.MASTER} className="flex-1">Masters</TabsTrigger>
+              <TabsTrigger value={RoleEnum.ENSEIGNANT} className="flex-1">Enseignants</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>

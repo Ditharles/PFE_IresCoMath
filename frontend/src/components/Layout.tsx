@@ -1,97 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, Moon, Sun, FileText } from 'lucide-react';
+import { Menu, X, FileText } from 'lucide-react';
 
 const Layout: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-  }, [isDarkMode]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="h-screen flex flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10">
+      <header className="bg-card text-card-foreground shadow-sm sticky top-0 z-10 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <NavLink to="/accueil" className="flex items-center">
-                <FileText className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                <span className="ml-2 font-bold text-xl text-gray-900 dark:text-white">RequestFlow</span>
+              <NavLink to="/accueil" className="flex items-center hover:opacity-80 transition-opacity">
+                <FileText className="h-8 w-8 text-primary" />
+                <span className="ml-2 font-bold text-xl text-foreground">RequestFlow</span>
               </NavLink>
             </div>
-            
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 items-center">
-              <NavLink 
-                to="/accueil" 
-                className={({ isActive }) => 
-                  `px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                    isActive 
-                      ? 'text-blue-600 dark:text-blue-400 font-semibold'
-                      : 'text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400'
+              <NavLink
+                to="/accueil"
+                className={({ isActive }) =>
+                  `px-3 py-2 text-sm font-medium transition-colors duration-200 ${isActive
+                    ? 'text-primary font-semibold'
+                    : 'text-muted-foreground hover:text-primary'
                   }`
                 }
               >
                 Accueil
               </NavLink>
-              <NavLink 
-                to="/demande/stage" 
-                className={({ isActive }) => 
-                  `px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                    isActive 
-                      ? 'text-blue-600 dark:text-blue-400 font-semibold'
-                      : 'text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400'
+              <NavLink
+                to="/demande/stage"
+                className={({ isActive }) =>
+                  `px-3 py-2 text-sm font-medium transition-colors duration-200 ${isActive
+                    ? 'text-primary font-semibold'
+                    : 'text-muted-foreground hover:text-primary'
                   }`
                 }
               >
                 Nouvelle Demande
               </NavLink>
-              <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 rounded-full text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
-                aria-label="Toggle dark mode"
-              >
-                {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </button>
             </nav>
-            
+
             {/* Mobile menu button */}
             <div className="flex items-center md:hidden">
               <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 mr-2 rounded-full text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
-              >
-                {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </button>
-              
-              <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 rounded-md text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+                className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
               >
                 {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
           </div>
         </div>
-        
+
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-gray-800 shadow-lg">
+          <div className="md:hidden px-2 pt-2 pb-3 space-y-1 bg-card shadow-lg border-t border-border">
             <NavLink
               to="/accueil"
-              className={({ isActive }) => 
-                `block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive
-                    ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-100'
-                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+              className={({ isActive }) =>
+                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-foreground hover:bg-muted'
                 }`
               }
             >
@@ -99,11 +77,10 @@ const Layout: React.FC = () => {
             </NavLink>
             <NavLink
               to="/demande/stage"
-              className={({ isActive }) => 
-                `block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive
-                    ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-100'
-                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+              className={({ isActive }) =>
+                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-foreground hover:bg-muted'
                 }`
               }
             >
@@ -112,18 +89,18 @@ const Layout: React.FC = () => {
           </div>
         )}
       </header>
-      
+
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto bg-background">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <Outlet /> {/* Ici s'afficheront HomePage, NouvelleDemande, etc. */}
+          <Outlet />
         </div>
       </main>
-      
+
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 shadow-inner">
+      <footer className="bg-card text-card-foreground shadow-inner border-t border-border">
         <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-center text-xs text-muted-foreground">
             © 2025 RequestFlow. Tous droits réservés.
           </p>
         </div>

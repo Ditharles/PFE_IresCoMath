@@ -174,10 +174,24 @@ export const createUserRequest = async (role: string, data: unknown) => {
 export const createUser = async (
   email: string,
   role: Role,
-  password: string
+  password: string,
+  firstName: string,
+  lastName: string,
+  cin: string,
+  phone: string,
+  photo: string | null = null
 ): Promise<User> => {
   return prisma.user.create({
-    data: { email, role, password },
+    data: {
+      email,
+      role,
+      password,
+      firstName,
+      lastName,
+      cin,
+      phone,
+      photo: null,
+    },
   });
 };
 
@@ -185,7 +199,15 @@ export const createDoctoralStudent = async (
   data: DoctoralStudentRequest,
   userId: string
 ) => {
-  const { thesisSupervisorId, thesisYear, ...rest } = data;
+  const {
+    thesisSupervisorId,
+    thesisYear,
+    firstName,
+    lastName,
+    cin,
+
+    ...rest
+  } = data;
   return prisma.doctoralStudent.create({
     data: {
       ...rest,
@@ -200,7 +222,7 @@ export const createMasterStudent = async (
   data: MasterStudentRequest,
   userId: string
 ) => {
-  const { supervisorId, ...rest } = data;
+  const { supervisorId, firstName, lastName, cin, ...rest } = data;
   return prisma.masterStudent.create({
     data: {
       ...rest,
@@ -215,8 +237,9 @@ export const createTeacherResearcher = async (
   data: TeacherResearcherRequest,
   userId: string
 ) => {
+  const { firstName, lastName, cin, ...rest } = data;
   return prisma.teacherResearcher.create({
-    data: { ...data, userId },
+    data: { ...rest, userId },
   });
 };
 
@@ -242,7 +265,26 @@ export const getSupervisor = async (
   return null;
 };
 
-export const getUserByID = async (id: string) => {
+export const getUserByID = async (id: string, requesterRole?: Role) => {
+  const teacherFieldsMapRequesterRole = {
+    MASTER: {
+      id: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      admin: true,
+    },
+    DOCTORANT: {
+      id: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      admin: true,
+    },
+    ENSEIGNANT: teacherResearcherFields,
+    DIRECTEUR: teacherResearcherFields,
+    ADMIN: teacherResearcherFields,
+  };
   let user = await prisma.user.findFirst({
     where: {
       OR: [
@@ -256,10 +298,20 @@ export const getUserByID = async (id: string) => {
       id: true,
       email: true,
       role: true,
+      firstName: true,
+      lastName: true,
+      photo: true,
+      phone: true,
+      cin: true,
       createdAt: true,
-      admin: { select: { lastName: true, firstName: true } },
+      admin: true,
       masterStudent: { select: masterStudentFields },
-      teacherResearcher: { select: teacherResearcherFields },
+      teacherResearcher: {
+        select:
+          requesterRole && teacherFieldsMapRequesterRole[requesterRole]
+            ? teacherFieldsMapRequesterRole[requesterRole]
+            : teacherResearcherFields,
+      },
       doctoralStudent: { select: doctoralStudentFields },
     },
   });
@@ -270,6 +322,11 @@ export const getUserByID = async (id: string) => {
     userId: user.id,
     email: user.email,
     role: user.role,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    photo: user.photo,
+    phone: user.phone,
+    cin: user.cin,
     createdAt: user.createdAt,
     ...user.admin,
     ...user.masterStudent,

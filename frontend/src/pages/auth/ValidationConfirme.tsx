@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Toast, toast } from "../../components/Toast";
+import { toast } from "sonner";
 import AuthService from "../../services/auth.service";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -10,7 +10,7 @@ type TokenStatus = "validating" | "valid" | "invalid";
 
 const authService = new AuthService();
 const ValidationConfirme: React.FC = () => {
-const {loginSession} = useAuth();
+  const { loginSession } = useAuth();
 
   const { token } = useParams<{ token: string }>();
 
@@ -53,7 +53,7 @@ const {loginSession} = useAuth();
 
   return (
     <div className="p-6 text-center flex flex-col items-center justify-center min-h-screen">
-      <Toast />
+
       {tokenStatus === "validating" && (
         <div className="flex flex-col items-center gap-4 animate-fade-in">
           <Loader2 className="h-12 w-12 text-blue-500 animate-spin" />

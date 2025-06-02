@@ -1,9 +1,14 @@
+import { RequestType } from "../../generated/prisma";
+import { userFields } from "./userFields";
+
 export const requestFields = {
   id: true,
   type: true,
   status: true,
   createdAt: true,
   notes: true,
+  awaitForm: true,
+  signForm: true,
   user: {
     select: {
       id: true,
@@ -105,8 +110,16 @@ export const requestFields = {
 export const extendRequestFields = {
   ...requestFields,
   user: {
-    select: {
-      id: true,
-    },
+    select: userFields,
   },
+};
+
+export const requestRelationFieldByType = {
+  [RequestType.MISSION]: "mission",
+  [RequestType.INTERNSHIP]: "stage",
+  [RequestType.CONFERENCE_NATIONAL]: "scientificEvent",
+  [RequestType.EQUIPMENT_PURCHASE]: "purchaseRequest",
+  [RequestType.EQUIPMENT_LOAN]: "loanRequest",
+  [RequestType.ARTICLE_REGISTRATION]: "articleRegistration",
+  [RequestType.REPAIR_MAINTENANCE]: "repairMaintenanceRequest",
 };

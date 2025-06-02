@@ -14,27 +14,35 @@ import { Badge } from "../../../ui/badge";
 import { BaseDataTable } from "../../BaseDataTable";
 import { columns as requestMember } from "./columns";
 import { RoleEnum } from "../../../../types/common";
-import { RequestStatus } from "../../../../types/MemberAddRequest";
+import { RequestStatus, RequestUser } from "../../../../types/MemberAddRequest";
+
+interface MembersAddRequestsListProps {
+    requests: RequestUser[];
+    isLoading: boolean;
+    onRefresh: () => void;
+    exportToCSV: (type: string) => void;
+}
 
 const MembersAddRequestsList = ({
     requests,
     isLoading,
-    activeTab,
     onRefresh,
     exportToCSV
-}) => {
+}: MembersAddRequestsListProps) => {
     // Calcul des statistiques pour les demandes
     const requestStatusCounts = useMemo(() => {
         return {
-            pending: requests.filter(m => m.status === RequestStatus.PENDING).length,
-            approved: requests.filter(m => m.status === RequestStatus.APPROVED).length,
-            rejected: requests.filter(m => m.status === RequestStatus.REJECTED).length
+            pending: requests.filter((m: RequestUser) => m.status === RequestStatus.PENDING).length,
+            approved: requests.filter((m: RequestUser) => m.status === RequestStatus.APPROVED || m.status === RequestStatus.APPROVED_BY_DIRECTOR).length,
+            rejected: requests.filter((m: RequestUser) => m.status === RequestStatus.REJECTED || m.status === RequestStatus.REJECTED_BY_DIRECTOR).length,
+            completed: requests.filter((m: RequestUser) => m.status === RequestStatus.COMPLETED).length,
+            closed: requests.filter((m: RequestUser) => m.status === RequestStatus.CLOSED).length
         };
     }, [requests]);
 
     // Calcul des statistiques des rôles pour les demandes
     const requestRoleCounts = useMemo(() => {
-        const determineRole = (user) => {
+        const determineRole = (user: RequestUser) => {
             if ("thesisYear" in user) return RoleEnum.DOCTORANT;
             if ("masterYear" in user) return RoleEnum.MASTER;
             if ("position" in user) return RoleEnum.ENSEIGNANT;
@@ -42,9 +50,9 @@ const MembersAddRequestsList = ({
         };
 
         return {
-            [RoleEnum.DOCTORANT]: requests.filter(m => determineRole(m) === RoleEnum.DOCTORANT).length,
-            [RoleEnum.MASTER]: requests.filter(m => determineRole(m) === RoleEnum.MASTER).length,
-            [RoleEnum.ENSEIGNANT]: requests.filter(m => determineRole(m) === RoleEnum.ENSEIGNANT).length
+            [RoleEnum.DOCTORANT]: requests.filter((m: RequestUser) => determineRole(m) === RoleEnum.DOCTORANT).length,
+            [RoleEnum.MASTER]: requests.filter((m: RequestUser) => determineRole(m) === RoleEnum.MASTER).length,
+            [RoleEnum.ENSEIGNANT]: requests.filter((m: RequestUser) => determineRole(m) === RoleEnum.ENSEIGNANT).length
         };
     }, [requests]);
 
@@ -78,14 +86,20 @@ const MembersAddRequestsList = ({
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-2 flex-wrap">
-                                <Badge variant="outline" className="bg-yellow-50">
+                                <Badge variant="outline" className="bg-amber-50/50 dark:bg-amber-900/30 text-amber-900/70 dark:text-amber-400">
                                     En attente: {requestStatusCounts.pending}
                                 </Badge>
-                                <Badge variant="outline" className="bg-green-50">
+                                <Badge variant="outline" className="bg-emerald-50/50 dark:bg-emerald-900/30 text-emerald-900/70 dark:text-emerald-400">
                                     Approuvées: {requestStatusCounts.approved}
                                 </Badge>
-                                <Badge variant="outline" className="bg-red-50">
+                                <Badge variant="outline" className="bg-rose-50/50 dark:bg-rose-900/30 text-rose-900/70 dark:text-rose-400">
                                     Rejetées: {requestStatusCounts.rejected}
+                                </Badge>
+                                <Badge variant="outline" className="bg-blue-50/50 dark:bg-blue-900/30 text-blue-900/70 dark:text-blue-400">
+                                    Completées: {requestStatusCounts.completed}
+                                </Badge>
+                                <Badge variant="outline" className="bg-gray-50/50 dark:bg-gray-800 text-gray-900/70 dark:text-gray-400">
+                                    Cloturés: {requestStatusCounts.closed}
                                 </Badge>
                             </div>
                         </CardContent>
@@ -99,13 +113,13 @@ const MembersAddRequestsList = ({
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-2 flex-wrap">
-                                <Badge variant="outline" className="bg-blue-50">
+                                <Badge variant="outline" className="bg-indigo-50/50 dark:bg-indigo-900/30 text-indigo-900/70 dark:text-indigo-400">
                                     Doctorants: {requestRoleCounts[RoleEnum.DOCTORANT]}
                                 </Badge>
-                                <Badge variant="outline" className="bg-purple-50">
+                                <Badge variant="outline" className="bg-violet-50/50 dark:bg-violet-900/30 text-violet-900/70 dark:text-violet-400">
                                     Masters: {requestRoleCounts[RoleEnum.MASTER]}
                                 </Badge>
-                                <Badge variant="outline" className="bg-cyan-50">
+                                <Badge variant="outline" className="bg-cyan-50/50 dark:bg-cyan-900/30 text-cyan-900/70 dark:text-cyan-400">
                                     Enseignants: {requestRoleCounts[RoleEnum.ENSEIGNANT]}
                                 </Badge>
                             </div>

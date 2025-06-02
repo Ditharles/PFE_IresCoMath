@@ -7,17 +7,16 @@ import {
   InformationCircleIcon,
   TrashIcon,
   CheckCircleIcon,
+  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline"
 import { Notification, NotificationStatus, NotificationType } from "../types/notifications"
 import NotificationsService from "../services/notifcations.service"
 
 interface NotificationsPanelProps {
-  darkMode: boolean
   onClose: () => void
 }
 
 const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
-  darkMode,
   onClose,
 }) => {
   const notificationService = new NotificationsService()
@@ -140,42 +139,33 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
       />
 
       <div
-        className={`relative w-full max-w-md h-full ${darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
-          } shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"
+        className={`relative w-full max-w-md h-full bg-background text-foreground shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"
           }`}
         onClick={e => e.stopPropagation()}
       >
-        <div
-          className={`flex items-center justify-between p-4 border-b ${darkMode ? "border-gray-700" : "border-gray-200"
-            }`}
-        >
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center">
             <h2 className="text-xl font-semibold">Notifications</h2>
             {unreadCount > 0 && (
-              <span
-                className={`ml-2 px-2 py-0.5 text-xs rounded-full ${darkMode ? "bg-blue-900 text-blue-100" : "bg-blue-100 text-blue-800"
-                  }`}
-              >
+              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary">
                 {unreadCount} non lue{unreadCount > 1 ? 's' : ''}
               </span>
             )}
           </div>
           <button
             onClick={handleClose}
-            className={`p-1.5 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
+            className="p-1.5 rounded-full hover:bg-muted"
             aria-label="Fermer"
           >
             <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
 
-        <div className={`flex border-b ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
+        <div className="flex border-b border-border">
           <button
             className={`flex-1 py-3 px-4 text-center font-medium ${activeTab === "all"
-              ? darkMode
-                ? "border-b-2 border-blue-500 text-blue-400"
-                : "border-b-2 border-blue-500 text-blue-600"
-              : ""
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground"
               }`}
             onClick={() => setActiveTab("all")}
           >
@@ -183,10 +173,8 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
           </button>
           <button
             className={`flex-1 py-3 px-4 text-center font-medium ${activeTab === "unread"
-              ? darkMode
-                ? "border-b-2 border-blue-500 text-blue-400"
-                : "border-b-2 border-blue-500 text-blue-600"
-              : ""
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground"
               }`}
             onClick={() => setActiveTab("unread")}
           >
@@ -194,11 +182,10 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
           </button>
         </div>
 
-        <div className={`flex justify-end p-2 border-b ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
+        <div className="flex justify-end p-2 border-b border-border">
           <button
             onClick={markAllAsRead}
-            className={`text-sm px-3 py-1 rounded ${darkMode ? "text-blue-400 hover:bg-gray-700" : "text-blue-600 hover:bg-gray-100"
-              }`}
+            className="text-sm px-3 py-1 rounded text-primary hover:bg-muted"
             disabled={unreadCount === 0}
           >
             Tout marquer comme lu
@@ -208,8 +195,8 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
         <div className="h-full overflow-y-auto pb-16" style={{ maxHeight: "calc(100% - 120px)" }}>
           {filteredNotifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64">
-              <BellIcon className={`w-12 h-12 ${darkMode ? "text-gray-600" : "text-gray-300"} mb-4`} />
-              <p className={`text-center ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+              <BellIcon className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-center text-muted-foreground">
                 {activeTab === "all" ? "Aucune notification" : "Aucune notification non lue"}
               </p>
             </div>
@@ -218,12 +205,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               {filteredNotifications.map(notification => (
                 <div
                   key={notification.id}
-                  className={`p-4 border-b ${darkMode ? "border-gray-700" : "border-gray-200"} ${notification.status === NotificationStatus.UNREAD
-                    ? darkMode
-                      ? "bg-gray-750"
-                      : "bg-blue-50"
-                    : ""
-                    }`}
+                  className={`p-4 border-b border-border ${notification.status === NotificationStatus.UNREAD ? "bg-primary/5" : ""}`}
                 >
                   <div className="flex items-start">
                     <div className="flex-shrink-0 mr-3 mt-1">
@@ -231,23 +213,32 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                     </div>
                     <div className="flex-grow">
                       <div className="flex justify-between items-start">
-                        <h3 className={`font-medium ${notification.status === NotificationStatus.UNREAD ? "font-semibold" : ""
-                          }`}>
+                        <h3 className={`font-medium ${notification.status === NotificationStatus.UNREAD ? "font-semibold" : ""}`}>
                           {notification.title}
                         </h3>
-                        <span className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                        <span className="text-xs text-muted-foreground">
                           {formatTime(notification.createdAt)}
                         </span>
                       </div>
-                      <p className={`text-sm mt-1 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                      <p className="text-sm mt-1 text-muted-foreground">
                         {notification.message}
                       </p>
                       <div className="flex justify-end mt-2 space-x-2">
+                        {notification.url && (
+                          <a
+                            href={notification.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs px-2 py-1 rounded flex items-center text-blue-600 hover:bg-blue-100"
+                          >
+                            <ArrowTopRightOnSquareIcon className="w-4 h-4 mr-1" />
+                            Voir
+                          </a>
+                        )}
                         {notification.status === NotificationStatus.UNREAD && (
                           <button
                             onClick={() => markAsRead(notification.id)}
-                            className={`text-xs px-2 py-1 rounded flex items-center ${darkMode ? "text-blue-400 hover:bg-gray-700" : "text-blue-600 hover:bg-blue-100"
-                              }`}
+                            className="text-xs px-2 py-1 rounded flex items-center text-primary hover:bg-primary/10"
                           >
                             <CheckIcon className="w-3 h-3 mr-1" />
                             Marquer comme lu
@@ -255,8 +246,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                         )}
                         <button
                           onClick={() => deleteNotification(notification.id)}
-                          className={`text-xs px-2 py-1 rounded flex items-center ${darkMode ? "text-red-400 hover:bg-gray-700" : "text-red-600 hover:bg-red-100"
-                            }`}
+                          className="text-xs px-2 py-1 rounded flex items-center text-destructive hover:bg-destructive/10"
                         >
                           <TrashIcon className="w-3 h-3 mr-1" />
                           Supprimer

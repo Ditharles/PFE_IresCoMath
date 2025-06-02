@@ -7,14 +7,16 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '../../ui/form';
 
 import { X } from 'lucide-react';
 import FileUpload from '../../FileUpload';
 
 const ArticleRegistrationForm: React.FC = () => {
-  const { control, setValue, formState: { errors } } = useFormContext();
-  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
+  const { control, setValue, formState: { errors }, getValues } = useFormContext();
+  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(getValues('articleCover') || null);
+
 
   const getFieldClass = (fieldName: string) => {
     return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
@@ -48,6 +50,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 className={getFieldClass('title')}
               />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -64,6 +67,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 className={getFieldClass('conference')}
               />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -85,6 +89,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 <Link className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               </div>
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -126,6 +131,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 )}
               </div>
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -146,6 +152,7 @@ const ArticleRegistrationForm: React.FC = () => {
                 className={getFieldClass('amount')}
               />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />

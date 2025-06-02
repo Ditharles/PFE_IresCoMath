@@ -1,3 +1,4 @@
+import { EquipmentType } from "./equipment";
 import { User } from "./Member";
 
 export enum RequestType {
@@ -7,7 +8,7 @@ export enum RequestType {
   EQUIPMENT_PURCHASE = "EQUIPMENT_PURCHASE",
   EQUIPMENT_LOAN = "EQUIPMENT_LOAN",
   REPAIR_MAINTENANCE = "REPAIR_MAINTENANCE",
-  CONTRACTUAL = "CONTRACTUAL",
+
   ARTICLE_REGISTRATION = "ARTICLE_REGISTRATION",
 }
 
@@ -18,7 +19,6 @@ export const requestUrl: Record<RequestType, string> = {
   [RequestType.EQUIPMENT_PURCHASE]: "equipment/purchase",
   [RequestType.EQUIPMENT_LOAN]: "equipment/loan",
   [RequestType.REPAIR_MAINTENANCE]: "repair-maintenance",
-  [RequestType.CONTRACTUAL]: "contractual",
   [RequestType.ARTICLE_REGISTRATION]: "article-registration",
 };
 
@@ -30,22 +30,9 @@ export enum RequestStatus {
   REJECTED_BY_SUPERVISOR = "REJECTED_BY_SUPERVISOR",
   REJECTED_BY_DIRECTOR = "REJECTED_BY_DIRECTOR",
   REJECTED = "REJECTED",
+  CLOSED = "CLOSED",
   COMPLETED = "COMPLETED",
 }
-
-export enum EquipmentType {
-  SUPPLIES = "SUPPLIES",
-  CONSUMABLES = "CONSUMABLES",
-  EQUIPMENT = "EQUIPMENT",
-  TOOLS = "TOOLS",
-}
-
-export const EquipmentTypeList: Record<EquipmentType, string> = {
-  [EquipmentType.SUPPLIES]: "Fournitures",
-  [EquipmentType.CONSUMABLES]: "Consommables",
-  [EquipmentType.EQUIPMENT]: "Équipement",
-  [EquipmentType.TOOLS]: "Outillage",
-};
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -75,6 +62,8 @@ export type PurchaseRequest = {
   photo?: string;
   specifications: Record<string, unknown>;
   costEstimation: number;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type EquipmentLoanRequest = {
@@ -96,6 +85,8 @@ export type EquipmentLoanRequest = {
   quantity: number;
   startDate: Date;
   endDate: Date;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type RequestStage = {
@@ -110,6 +101,8 @@ export type RequestStage = {
   country: string;
   startDate: Date;
   endDate: Date;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type Mission = {
@@ -121,6 +114,8 @@ export type Mission = {
   endDate: Date;
   specificDocument: string[];
   document: string[];
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type ScientificEvent = {
@@ -133,6 +128,8 @@ export type ScientificEvent = {
   articleCover?: string;
   startDate: Date;
   endDate: Date;
+  awaitForm?: string;
+  signForm?: string;
 };
 
 export type ArticleRegistration = {
@@ -142,7 +139,18 @@ export type ArticleRegistration = {
   urlConference?: string;
   articleCover: string;
   amount: string;
+  awaitForm?: string;
+  signForm?: string;
 };
+
+export type RepairMaintenance = {
+  id: string;
+  description: string;
+  photos: string[];
+  awaitForm?: string;
+  signForm?: string;
+};
+export type extendLoanRequest = BaseRequest & EquipmentLoanRequest;
 
 // Main Request type that combines all possibilities
 export type Request = BaseRequest & {
@@ -152,6 +160,7 @@ export type Request = BaseRequest & {
   mission?: Mission;
   scientificEvent?: ScientificEvent;
   articleRegistration?: ArticleRegistration;
+  repairMaintenance?: RepairMaintenance;
 };
 
 // Type for the Prisma query result
@@ -167,6 +176,7 @@ export type PrismaRequestResult = {
   mission: Mission | null;
   scientificEvent: ScientificEvent | null;
   articleRegistration: ArticleRegistration | null;
+  repairMaintenance: RepairMaintenance | null;
   user: {
     id: string;
     firstName: string;

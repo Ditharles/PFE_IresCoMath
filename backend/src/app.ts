@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import validateRoutes from "./routes/validate.routes";
 import usersRoutes from "./routes/users.routes";
+import templateRoutes from "./routes/templates.routes";
 import helmet from "helmet";
 import cors from "cors";
 import { PrismaClient } from "../generated/prisma";
@@ -43,8 +44,14 @@ app.use("/notifications/", verifyToken as RequestHandler, notificationsRoutes);
 app.use(
   "/equipments/",
   verifyToken as RequestHandler,
-  checkRole(["ADMIN", "DIRECTEUR"]),
+  // checkRole(["ADMIN", "DIRECTEUR"]),
   equipmentsRoutes
+);
+app.use(
+  "/templates",
+  verifyToken as RequestHandler,
+  checkRole(["DIRECTEUR"]),
+  templateRoutes
 );
 app.use(
   "/api/uploadthing",
@@ -58,7 +65,10 @@ app.use(
 
 app.get("/teachers-researchers", async (req, res) => {
   try {
-    const data = await prisma.teacherResearcher.findMany({
+    const data = await prisma.user.findMany({
+      where: {
+        role: "ENSEIGNANT",
+      },
       select: { id: true, lastName: true, firstName: true },
     });
 
