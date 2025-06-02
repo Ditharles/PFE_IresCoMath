@@ -1,6 +1,13 @@
 import bcrypt from "bcrypt";
 import prisma from "../src/utils/db";
-import { Grade, Role, EquipmentType } from "../generated/prisma";
+import {
+  Grade,
+  Role,
+  EquipmentType,
+  EquipmentStatus,
+  RequestType,
+} from "../generated/prisma";
+import { create } from "domain";
 
 async function main() {
   console.log("Début de la procédure de seed...");
@@ -8,7 +15,7 @@ async function main() {
   try {
     await cleanDatabase();
 
-    // Création des utilisateurs (identique à votre version originale)
+    // Création des utilisateurs
     const adminPassword = await bcrypt.hash("admin123", 10);
     const adminUser = await prisma.user.create({
       data: {
@@ -16,16 +23,14 @@ async function main() {
         password: adminPassword,
         role: Role.ADMIN,
         cin: "ADMIN12345",
+        firstName: "Système",
+        lastName: "Admin",
+        photo: "https://randomuser.me/api/portraits/men/1.jpg",
+        bankData: null,
+        signature: null,
         admin: {
-          create: {
-            lastName: "Admin",
-            firstName: "Système",
-            cin: "ADMIN12345",
-          },
+          create: {},
         },
-      },
-      include: {
-        admin: true,
       },
     });
 
@@ -36,20 +41,16 @@ async function main() {
         password: directeurPassword,
         role: Role.DIRECTEUR,
         cin: "DIR123456",
+        firstName: "Laboratoire",
+        lastName: "Directeur",
+        photo: "https://randomuser.me/api/portraits/men/2.jpg",
         teacherResearcher: {
           create: {
-            lastName: "Directeur",
-            firstName: "Laboratoire",
-            cin: "DIR123456",
             position: "Directeur de laboratoire",
             grade: Grade.Professeur,
             institution: "Université IreSCoMath",
-            photo: "https://randomuser.me/api/portraits/men/1.jpg",
           },
         },
-      },
-      include: {
-        teacherResearcher: true,
       },
     });
 
@@ -60,20 +61,24 @@ async function main() {
         password: enseignantChercheurPassword,
         role: Role.ENSEIGNANT,
         cin: "ENS123456",
+        firstName: "Chercheur",
+        lastName: "Enseignant",
+        photo: "https://randomuser.me/api/portraits/men/3.jpg",
         teacherResearcher: {
           create: {
-            lastName: "Enseignant",
-            firstName: "Chercheur",
-            cin: "ENS123456",
             position: "Enseignant chercheur",
             grade: Grade.Professeur,
             institution: "Université IreSCoMath",
-            photo: "https://randomuser.me/api/portraits/men/2.jpg",
           },
         },
       },
-      include: {
-        teacherResearcher: true,
+      select: {
+        id: true,
+        teacherResearcher: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
@@ -84,19 +89,15 @@ async function main() {
         password: etudiantMasterPassword,
         role: Role.MASTER,
         cin: "ETU123456",
+        firstName: "Master",
+        lastName: "Etudiant",
+        photo: "https://randomuser.me/api/portraits/women/1.jpg",
         masterStudent: {
           create: {
-            lastName: "Etudiant",
-            firstName: "Master",
-            cin: "ETU123456",
             masterYear: 2023,
             supervisorId: enseignantChercheurUser.teacherResearcher!.id,
-            photo: "https://randomuser.me/api/portraits/men/3.jpg",
           },
         },
-      },
-      include: {
-        masterStudent: true,
       },
     });
 
@@ -107,237 +108,466 @@ async function main() {
         password: doctorantPassword,
         role: Role.DOCTORANT,
         cin: "DOC123456",
+        firstName: "Doctorat",
+        lastName: "Etudiant",
+        photo: "https://randomuser.me/api/portraits/women/2.jpg",
         doctoralStudent: {
           create: {
-            lastName: "Etudiant",
-            firstName: "Doctorat",
-            cin: "DOC123456",
             thesisYear: 2022,
             thesisSupervisorId: enseignantChercheurUser.teacherResearcher!.id,
-            photo: "https://randomuser.me/api/portraits/women/3.jpg",
           },
         },
-      },
-      include: {
-        doctoralStudent: true,
       },
     });
 
     console.log("Utilisateurs créés avec succès");
 
-    // Création des catégories d'équipements adaptées à votre laboratoire
+    // Création des catégories d'équipements
     console.log("Création des catégories d'équipements...");
 
-    // Catégorie Cartes de développement
-    const devBoardsCategory = await prisma.equipmentCategory.create({
+    const carteDeveloppementCategory = await prisma.equipmentCategory.create({
       data: {
         type: EquipmentType.EQUIPMENT,
         name: "Cartes de développement",
-        quantity: 20,
+        description:
+          "Microcontrôleurs et cartes de développement pour projets électroniques",
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        quantity: 3,
       },
     });
 
-    // Catégorie Périphériques de présentation
-    const presentationCategory = await prisma.equipmentCategory.create({
+    const reseauxCategory = await prisma.equipmentCategory.create({
       data: {
         type: EquipmentType.EQUIPMENT,
-        name: "Périphériques de présentation",
-        quantity: 10,
-      },
-    });
-
-    // Catégorie Réseau
-    const networkCategory = await prisma.equipmentCategory.create({
-      data: {
-        type: EquipmentType.EQUIPMENT,
-        name: "Équipements réseau",
+        name: "Objets réseaux",
+        description:
+          "Équipements réseau pour la connectivité et la communication",
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
         quantity: 5,
       },
     });
 
-    // Catégorie Stockage
-    const storageCategory = await prisma.equipmentCategory.create({
+    const stockageCategory = await prisma.equipmentCategory.create({
       data: {
         type: EquipmentType.EQUIPMENT,
-        name: "Stockage de données",
+        name: "Stockage",
+        description: "Disques durs et périphériques de stockage",
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        quantity: 4,
+      },
+    });
+
+    const outilsPresentationCategory = await prisma.equipmentCategory.create({
+      data: {
+        type: EquipmentType.TOOLS,
+        name: "Outils de présentation",
+        description: "Équipements pour les présentations et conférences",
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        quantity: 8,
+      },
+    });
+
+    const capteursCategory = await prisma.equipmentCategory.create({
+      data: {
+        type: EquipmentType.EQUIPMENT,
+        name: "Capteurs",
+        description: "Capteurs divers pour projets électroniques et IoT",
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
         quantity: 15,
       },
     });
 
-    // Catégorie Capteurs
-    const sensorsCategory = await prisma.equipmentCategory.create({
-      data: {
-        type: EquipmentType.EQUIPMENT,
-        name: "Capteurs et modules",
-        quantity: 25,
-      },
-    });
+    console.log("Catégories d'équipements créées");
 
-    // Création des équipements spécifiques à votre laboratoire
-    console.log("Création des équipements...");
+    // Création d'équipements
+    console.log("Création d'équipements...");
 
-    // Cartes ESP32
-    const esp32Boards = await prisma.equipment.create({
-      data: {
-        name: "Carte ESP32",
-        categoryId: devBoardsCategory.id,
-        specifications: {
-          marque: "Espressif",
-          modele: "ESP32-WROOM-32",
-          cpu: "Dual-core Xtensa LX6",
-          vitesse: "240 MHz",
-          memoire: "520KB SRAM, 16MB Flash",
-          wifi: "802.11 b/g/n",
-          bluetooth: "Bluetooth 4.2",
-          ports: "GPIO, ADC, DAC, UART, SPI, I2C",
-          stockDisponible: 8,
-          numeroSerie: "ESP32-2023-001",
-          etat: "Neuf"
+    // Création des cartes de développement
+    await prisma.equipment.createMany({
+      data: [
+        {
+          name: "Carte de développement Arduino Uno R3",
+          categoryId: carteDeveloppementCategory.id,
+          status: EquipmentStatus.AVAILABLE,
+          photo: [
+            "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+          ],
+          specifications: {
+            type: "Microcontrôleur",
+            tension: "5V",
+            processeur: "ATmega328P",
+            memoire: "32KB Flash, 2KB SRAM",
+          },
+          acquisitionDate: new Date("2024-01-15"),
         },
-        acquisitionDate: new Date("2023-01-15"),
-      },
-    });
-
-    // Cartes Raspberry Pi
-    const raspberryPis = await prisma.equipment.create({
-      data: {
-        name: "Carte Raspberry Pi",
-        categoryId: devBoardsCategory.id,
-        specifications: {
-          marque: "Raspberry Pi Foundation",
-          modele: "Raspberry Pi 4 Model B",
-          cpu: "Quad-core Cortex-A72",
-          vitesse: "1.5GHz",
-          ram: "4GB LPDDR4",
-          stockage: "MicroSD",
-          ports: "2x USB 3.0, 2x USB 2.0, 2x HDMI, Gigabit Ethernet",
-          connectivite: "Wi-Fi 802.11ac, Bluetooth 5.0",
-          stockDisponible: 6,
-          numeroSerie: "RPI4-2023-002",
-          etat: "Neuf"
+        {
+          name: "Carte de développement Raspberry Pi 4 Model B",
+          categoryId: carteDeveloppementCategory.id,
+          status: EquipmentStatus.AVAILABLE,
+          photo: [
+            "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+          ],
+          specifications: {
+            type: "Ordinateur monocarte",
+            processeur: "Quad-core ARM Cortex-A72",
+            memoire: "4GB RAM",
+            stockage: "MicroSD",
+          },
+          acquisitionDate: new Date("2024-02-01"),
         },
-        acquisitionDate: new Date("2023-02-10"),
-      },
-    });
-
-    // Capteur Data Show
-    const dataShowSensor = await prisma.equipment.create({
-      data: {
-        name: "Capteur Data Show",
-        categoryId: sensorsCategory.id,
-        specifications: {
-          marque: "Vernier",
-          modele: "GDX-DSH",
-          typeCapteur: "Multifonction",
-          interfaces: "USB, Bluetooth",
-          compatibilite: "Windows, macOS, Chrome OS, iOS, Android",
-          stockDisponible: 3,
-          numeroSerie: "VRN-DSH-2023-003",
-          etat: "Excellent"
+        {
+          name: "Carte de développement ESP32 DevKit",
+          categoryId: carteDeveloppementCategory.id,
+          status: EquipmentStatus.AVAILABLE,
+          photo: [
+            "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+          ],
+          specifications: {
+            type: "Microcontrôleur WiFi/Bluetooth",
+            processeur: "Dual-core Xtensa LX6",
+            memoire: "520KB SRAM",
+            connectivite: "WiFi 2.4GHz, Bluetooth 4.2",
+          },
+          acquisitionDate: new Date("2024-03-01"),
         },
-        acquisitionDate: new Date("2023-03-05"),
-      },
+      ],
     });
-
-    // Pointeur laser
-    const laserPointer = await prisma.equipment.create({
+    // Création des capteurs
+    await prisma.equipment.create({
       data: {
-        name: "Pointeur laser",
-        categoryId: presentationCategory.id,
+        name: "Capteur de lumière LDR",
+        categoryId: capteursCategory.id,
+        notes: "Capteur de luminosité analogique",
+        cost: 2.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         specifications: {
-          marque: "Logitech",
-          modele: "Spotlight",
-          couleur: "Rouge",
-          portee: "100m",
-          autonomie: "3 mois (usage normal)",
-          connectivite: "USB rechargeable",
-          stockDisponible: 5,
-          numeroSerie: "LOG-SPT-2023-004",
-          etat: "Très bon"
+          type: "Photorésistance",
+          resistance: "10-100kΩ",
+          tension: "3.3V-5V",
+          sensibilite: "0.5-10 lux",
         },
-        acquisitionDate: new Date("2023-03-15"),
+        acquisitionDate: new Date("2025-01-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
       },
     });
 
-    // Switch réseau
-    const networkSwitch = await prisma.equipment.create({
+    await prisma.equipment.create({
       data: {
-        name: "Switch réseau",
-        categoryId: networkCategory.id,
+        name: "Capteur de distance HC-SR04",
+        categoryId: capteursCategory.id,
+        notes: "Capteur ultrasonique de distance",
+        cost: 3.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         specifications: {
-          marque: "TP-Link",
-          modele: "TL-SG108",
-          ports: "8 ports Gigabit",
-          vitesse: "10/100/1000 Mbps",
-          type: "Non géré",
-          alimentation: "Interne",
-          stockDisponible: 2,
-          numeroSerie: "TPL-SG108-2023-005",
-          etat: "Neuf"
+          type: "Ultrasonique",
+          portee: "2-400cm",
+          precision: "3mm",
+          tension: "5V",
         },
-        acquisitionDate: new Date("2023-04-01"),
+        acquisitionDate: new Date("2025-02-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
       },
     });
 
-    // Disque dur externe
-    const externalHdd = await prisma.equipment.create({
+    await prisma.equipment.create({
       data: {
-        name: "Disque dur externe",
-        categoryId: storageCategory.id,
+        name: "Capteur de température DHT22",
+        categoryId: capteursCategory.id,
+        notes: "Capteur de température et d'humidité",
+        cost: 5.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         specifications: {
-          marque: "Western Digital",
-          modele: "My Passport",
+          type: "Température/Humidité",
+          plageTemp: "-40°C à 80°C",
+          plageHumidite: "0-100%",
+          precision: "±0.5°C",
+        },
+        acquisitionDate: new Date("2025-02-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Capteur de mouvement PIR",
+        categoryId: capteursCategory.id,
+        notes: "Détecteur de mouvement infrarouge",
+        cost: 4.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          type: "Infrarouge passif",
+          portee: "3-7m",
+          angle: "110°",
+          tension: "3.3V-5V",
+        },
+        acquisitionDate: new Date("2025-03-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Capteur de gaz MQ-2",
+        categoryId: capteursCategory.id,
+        notes: "Capteur de gaz combustible",
+        cost: 6.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          type: "Gaz",
+          plage: "0-10000ppm",
+          tension: "5V",
+          tempsReponse: "<10s",
+        },
+        acquisitionDate: new Date("2025-03-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Disque Dur Externe WD 2TB",
+        categoryId: stockageCategory.id,
+        notes: "Disque dur externe portable",
+        cost: 89.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
           capacite: "2TB",
           interface: "USB 3.0",
-          vitesse: "5Gbps",
-          dimensions: "110 x 82 x 15 mm",
-          poids: "230g",
-          stockDisponible: 4,
-          numeroSerie: "WD-MP2TB-2023-006",
-          etat: "Neuf"
+          vitesse: "5400 RPM",
+          dimensions: "111.5 x 82 x 21.5 mm",
         },
-        acquisitionDate: new Date("2023-04-10"),
+        acquisitionDate: new Date("2025-04-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
       },
     });
 
-    // Création d'historiques d'emprunt
-    await prisma.equipmentHistory.create({
+    await prisma.equipment.create({
       data: {
-        equipmentId: esp32Boards.id,
+        name: "SSD Samsung 1TB",
+        categoryId: stockageCategory.id,
+        notes: "SSD interne haute performance",
+        cost: 129.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          capacite: "1TB",
+          interface: "SATA III",
+          vitesseLecture: "560 MB/s",
+          vitesseEcriture: "530 MB/s",
+        },
+        acquisitionDate: new Date("2025-04-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    // Création des équipements de présentation
+    await prisma.equipment.create({
+      data: {
+        name: "DataShow Epson EB-X05",
+        categoryId: outilsPresentationCategory.id,
+        notes: "Vidéoprojecteur portable",
+        cost: 499.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          resolution: "1024 x 768",
+          luminosite: "3300 lumens",
+          contraste: "15000:1",
+          poids: "2.3 kg",
+        },
+        acquisitionDate: new Date("2025-05-01"),
+        photo: [
+          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    await prisma.equipment.create({
+      data: {
+        name: "Pointeur Laser Vert",
+        categoryId: outilsPresentationCategory.id,
+        notes: "Pointeur laser haute visibilité",
+        cost: 29.99,
+        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        specifications: {
+          couleur: "Vert",
+          puissance: "5mW",
+          portee: "100m",
+          alimentation: "2 piles AAA",
+        },
+        acquisitionDate: new Date("2025-05-15"),
+        photo: [
+          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+        ],
+        status: EquipmentStatus.AVAILABLE,
+      },
+    });
+
+    console.log("Équipements créés avec succès");
+
+    // Création de demandes selon les rôles
+    console.log("Création de demandes spécifiques par rôle...");
+
+    // Étudiant Master: Seulement demandes de stage
+    const masterStageRequest = await prisma.request.create({
+      data: {
+        type: RequestType.INTERNSHIP,
         userId: etudiantMasterUser.id,
-        borrowDate: new Date("2023-05-01"),
-        returnDate: new Date("2023-05-15"),
-       
+        status: "PENDING",
+        stage: {
+          create: {
+            organization: "Entreprise ABC",
+            organizationEmail: "contact@abc.com",
+            supervisor: "M. Dupont",
+            supervisorEmail: "dupont@abc.com",
+            supervisorPhone: "0123456789",
+            letter:
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            country: "France",
+            startDate: new Date("2023-07-01"),
+            endDate: new Date("2023-08-31"),
+          },
+        },
       },
     });
 
-    await prisma.equipmentHistory.create({
+    // Doctorant: Demandes de stage et d'emprunt
+    const doctoralStageRequest = await prisma.request.create({
       data: {
-        equipmentId: raspberryPis.id,
+        type: RequestType.INTERNSHIP,
         userId: doctorantUser.id,
-        borrowDate: new Date("2023-05-10"),
-        returnDate: null, // Emprunt en cours
-       
+        status: "PENDING",
+        stage: {
+          create: {
+            organization: "Laboratoire XYZ",
+            organizationEmail: "contact@xyz.org",
+            supervisor: "Dr. Martin",
+            supervisorEmail: "martin@xyz.org",
+            supervisorPhone: "0987654321",
+            letter:
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            country: "Canada",
+            startDate: new Date("2023-09-01"),
+            endDate: new Date("2023-12-31"),
+          },
+        },
       },
     });
 
-    await prisma.equipmentHistory.create({
+    const doctoralLoanRequest = await prisma.request.create({
       data: {
-        equipmentId: dataShowSensor.id,
-        userId: enseignantChercheurUser.id,
-        borrowDate: new Date("2023-04-20"),
-        returnDate: new Date("2023-05-20"),
-      
+        type: RequestType.EQUIPMENT_LOAN,
+        userId: doctorantUser.id,
+        status: "PENDING",
+        loanRequest: {
+          create: {
+            categoryId: outilsPresentationCategory.id,
+            quantity: 1,
+            startDate: new Date("2023-06-01"),
+            endDate: new Date("2023-06-15"),
+          },
+        },
       },
     });
 
-    console.log("Équipements et historiques créés avec succès!");
-    console.log("Seed terminé avec succès!");
+    // Enseignant Chercheur: Tous types de demandes SAUF stage
+    const teacherMissionRequest = await prisma.request.create({
+      data: {
+        type: RequestType.MISSION,
+        userId: enseignantChercheurUser.id,
+        status: "PENDING",
+        mission: {
+          create: {
+            hostOrganization: "Université de Paris",
+            objective: "Collaboration de recherche",
+            country: "France",
+            startDate: new Date("2023-10-01"),
+            endDate: new Date("2023-10-10"),
+            specificDocument: [
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            ],
+            document: [
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            ],
+          },
+        },
+      },
+    });
+
+    const teacherPurchaseRequest = await prisma.request.create({
+      data: {
+        type: RequestType.EQUIPMENT_PURCHASE,
+        userId: enseignantChercheurUser.id,
+        status: "PENDING",
+        purchaseRequest: {
+          create: {
+            equipmentType: EquipmentType.EQUIPMENT,
+            name: "Microscope électronique",
+            url: "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+            quantity: 1,
+            specifications: {
+              grossissement: "10000x",
+            },
+            costEstimation: 50000.0,
+          },
+        },
+      },
+    });
+
+    const teacherArticleRequest = await prisma.request.create({
+      data: {
+        type: RequestType.ARTICLE_REGISTRATION,
+        userId: enseignantChercheurUser.id,
+        status: "PENDING",
+        articleRegistration: {
+          create: {
+            title: "Nouvelle méthode d'analyse mathématique",
+            conference: "Conférence Internationale",
+            urlConference:
+              "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+            articleCover:
+              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            amount: "500",
+          },
+        },
+      },
+    });
+
+    console.log("Demandes créées avec succès selon les rôles");
+
+    console.log("Seed complet avec succès!");
   } catch (error) {
-    console.error("Erreur durant le processus de seed:", error);
-    process.exit(1);
-  } finally {
-    await prisma.$disconnect();
+    console.error("Erreur durant le seed:", error);
   }
 }
 
@@ -345,6 +575,7 @@ async function cleanDatabase() {
   console.log("Nettoyage de la base de données...");
 
   const tables = [
+    { name: "Template", model: prisma.template },
     { name: "Session", model: prisma.session },
     { name: "Notification", model: prisma.notification },
     { name: "EquipmentHistory", model: prisma.equipmentHistory },

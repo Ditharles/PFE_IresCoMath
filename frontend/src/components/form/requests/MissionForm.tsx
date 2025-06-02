@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Textarea } from '../../ui/textarea';
 import { Input } from '../../ui/input';
-import { Calendar } from 'lucide-react';
+import { X } from 'lucide-react';
+
 import {
   FormControl,
   FormField,
@@ -11,12 +12,29 @@ import {
   FormMessage,
 } from '../../ui/form';
 import FileUpload from '../../FileUpload';
+import FilePreviewModal from '../../FilePreviewModal';
+import { DatePicker } from '../DatePicker';
 
 const MissionForm: React.FC = () => {
-  const { control, formState: { errors } } = useFormContext();
+  const { control, setValue, formState: { errors }, getValues } = useFormContext();
+  const [uploadedDocuments, setUploadedDocuments] = useState<string[]>(getValues('specificDocument') || []);
+  const [previewFile, setPreviewFile] = useState<{ url: string; name?: string } | null>(null);
 
   const getFieldClass = (fieldName: string) => {
     return errors[fieldName] ? 'border-red-500 focus:border-red-500' : '';
+  };
+
+  const handleDocumentUpload = (fileUrls: string[] | string) => {
+    const newUrls = Array.isArray(fileUrls) ? fileUrls : [fileUrls];
+    setUploadedDocuments(prev => [...prev, ...newUrls]);
+    setValue('specificDocument', [...uploadedDocuments, ...newUrls], { shouldDirty: true });
+  };
+
+  const removeDocument = (index: number) => {
+    const newDocuments = uploadedDocuments.filter((_, i) => i !== index);
+    setUploadedDocuments(newDocuments);
+    setValue('specificDocument', newDocuments, { shouldDirty: true });
+    console.log(getValues('specificDocument'));
   };
 
   return (
@@ -31,8 +49,8 @@ const MissionForm: React.FC = () => {
             <FormItem>
               <FormLabel>Nom de l'organisation *</FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
+                <Input
+                  {...field}
                   className={getFieldClass('hostOrganization')}
                 />
               </FormControl>
@@ -52,9 +70,9 @@ const MissionForm: React.FC = () => {
             <FormItem>
               <FormLabel>Objectif *</FormLabel>
               <FormControl>
-                <Textarea 
-                  {...field} 
-                  rows={3} 
+                <Textarea
+                  {...field}
+                  rows={3}
                   className={getFieldClass('objective')}
                   placeholder="Décrivez les objectifs de la mission..."
                 />
@@ -71,8 +89,8 @@ const MissionForm: React.FC = () => {
             <FormItem>
               <FormLabel>Pays *</FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
+                <Input
+                  {...field}
                   className={getFieldClass('country')}
                 />
               </FormControl>
@@ -83,51 +101,33 @@ const MissionForm: React.FC = () => {
       </div>
 
       {/* Section Période */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Période de la mission</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={control}
-            name="startDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date de début *</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      className={getFieldClass('startDate')}
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={control}
-            name="endDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date de fin *</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      className={getFieldClass('endDate')}
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de début</FormLabel>
+              <FormControl>
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="endDate"
+          render={({ field }) => (
+            <FormItem className="flex-1 w-full">
+              <FormLabel>Date de fin</FormLabel>
+              <FormControl>
+                <DatePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
 
       {/* Section Documents */}
@@ -137,27 +137,58 @@ const MissionForm: React.FC = () => {
         <FormField
           control={control}
           name="specificDocument"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Documents spécifiques</FormLabel>
               <FormControl>
-                <FileUpload
-                  endpoint="specificDocuments"
-                  maxFiles={5}
-                  acceptedTypes={['application/pdf', 'image/*']}
-                  headerText="Televerser les documents pour appuyer votre demande (optionnel)"
-                  subHeaderText="Formats PDF ou images"
-                  onFileUploaded={field.onChange}
-                 
-                />
+                <div className="space-y-4">
+                  {uploadedDocuments.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {uploadedDocuments.map((doc, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50 shadow-sm">
+                          <div
+                            className="flex items-center space-x-3 cursor-pointer"
+                            onClick={() => setPreviewFile({ url: doc })}
+                          >
+                            <img
+                              src={doc}
+                              alt={`Document ${index + 1}`}
+                              className="h-12 w-12 object-cover rounded"
+                            />
+                            <span className="text-sm text-gray-700">Document {index + 1}</span>
+                          </div>
+                          <button
+                            onClick={() => removeDocument(index)}
+                            className="p-1 rounded-full hover:bg-gray-200"
+                          >
+                            <X className="h-4 w-4 text-red-500" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <FileUpload
+                    endpoint="specificDocuments"
+                    maxFiles={5}
+                    acceptedTypes={['application/pdf', 'image/*']}
+                    headerText="Téléverser les documents pour appuyer votre demande (optionnel)"
+                    subHeaderText="Formats PDF ou images"
+                    onFileUploaded={handleDocumentUpload}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-    
       </div>
+
+      <FilePreviewModal
+        isOpen={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+        fileUrl={previewFile?.url || ''}
+        fileName={previewFile?.name}
+      />
     </div>
   );
 };

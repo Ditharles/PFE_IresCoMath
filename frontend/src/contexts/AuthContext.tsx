@@ -7,7 +7,7 @@ interface AuthContextType {
     user: ReturnType<typeof getUser>;
     isLoggedIn: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    login(email: string, password: string): Promise<AxiosResponse<unknown, unknown> | undefined>;
+    login(): void;
     logout(): Promise<AxiosResponse<unknown, unknown> | undefined>;
     loginSession(): Promise<void>;
 
@@ -20,11 +20,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(!!user);
     const authService = new AuthService();
 
-    const login = async (email: string, password: string) => {
-        const response = await authService.login(email, password);
+    const login = async () => {
+
         setUser(getUser());
         setIsLoggedIn(true);
-        return response;
+
     };
 
     const logout = async () => {

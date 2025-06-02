@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, FormEvent, ChangeEvent } from "r
 import axios from "axios";
 import { Mail, Loader2, Send, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Toast, toast } from "../../components/Toast";
+import { toast } from "sonner";
 import AuthService from "../../services/auth.service";
 
 const ResendEmail = () => {
@@ -93,8 +93,8 @@ const ResendEmail = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-            <Toast />
-            <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+
+            <div className="max-w-md w-full bg-background rounded-xl shadow-lg p-8">
                 <div className="flex justify-center mb-6">
                     <div className="rounded-full bg-blue-100 p-3">
                         <Mail className="w-12 h-12 text-blue-600" />
@@ -140,7 +140,7 @@ const ResendEmail = () => {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                        className="w-full bg-blue-600 text-foreground py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                         {isSubmitting ? (
                             <>

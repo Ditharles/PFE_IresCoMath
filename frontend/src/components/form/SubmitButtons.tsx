@@ -7,7 +7,7 @@ const SubmitButtons = ({ loading, resetForm }: SubmitButtonsProps) => (
     <div className="flex gap-4 justify-center mt-6">
         <button
             type="submit"
-            className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-blue-600 text-foreground py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={loading}
         >
             {loading ? "Traitement en cours..." : "S'inscrire"}

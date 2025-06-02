@@ -27,11 +27,16 @@ class AuthService {
     if (isAuthenticated()) {
       return;
     }
+    console.log("Connexion en cours");
     const response = await api.post("/auth/login", { email, password });
-    const { accessToken, refreshToken, user } = response.data;
-    setToken("accessToken", accessToken);
-    setToken("refreshToken", refreshToken);
-    setUser(user);
+    if (response.status === 200) {
+      const { accessToken, refreshToken, user } = response.data;
+      setToken("accessToken", accessToken);
+      setToken("refreshToken", refreshToken);
+      setUser(user);
+      console.log(response);
+    }
+
     return response;
   }
 
@@ -39,7 +44,7 @@ class AuthService {
     try {
       console.log("Déconnexion en cours");
 
-      const response= await api.get("/auth/logout");
+      const response = await api.get("/auth/logout");
       return response;
     } catch (error) {
       console.error("Une erreur s'est produite lors de la déconnexion:", error);

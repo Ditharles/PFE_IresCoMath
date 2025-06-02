@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "../../../ui/input";
 import { ManageUserService } from "../../../../services/manageUser.service";
 import { toast } from "../../../Toast";
-import { useNavigate } from "react-router-dom";
 
 const manageUserService = new ManageUserService();
 const deleteUser = async (id: string, password: string) => {
@@ -64,25 +63,21 @@ export const columns: ColumnDef<User>[] = [
         enableColumnFilter: true
     },
     {
-  id: "role",
-  header: "Rôle",
-  enableColumnFilter: true,
-  cell: ({ row }) => {
-    const original = row.original;
-    const role = determineRole(original);
-    
-    switch (role) {
-      case RoleEnum.DOCTORANT:
-        return "Doctorant";
-      case RoleEnum.MASTER:
-        return "Étudiant Master";
-      case RoleEnum.ENSEIGNANT:
-        return "Enseignant Chercheur";
-      default:
-        return "Inconnu";
-    }
-  }
-},
+        id: "role",
+        header: "Rôle",
+        enableColumnFilter: true,
+        cell: ({ row }) => {
+            const original = row.original;
+            if ("thesisYear" in original) {
+                return "Doctorant";
+            } else if ("masterYear" in original) {
+                return "Étudiant Master";
+            } else if ("position" in original) {
+                return "Enseignant Chercheur";
+            }
+            return "Inconnu";
+        }
+    },
     {
   id: "actions",
   header: "Actions",
@@ -101,56 +96,50 @@ export const columns: ColumnDef<User>[] = [
       }
     };
 
-    return (
-      <>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigate(`/membre/${original.id}/${role}`)}>
-              Voir le profil
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className="text-red-600" 
-              onClick={() => setOpen(true)}
-            >
-              Supprimer
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Confirmer la suppression</DialogTitle>
-            </DialogHeader>
-            <Input
-              placeholder="Entrez le mot de passe"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <DialogFooter className="flex justify-end gap-2 mt-4">
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                Annuler
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={!password.trim()}
-              >
-                Confirmer la suppression
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </>
-    );
-  }
-}
+            return (
+                <>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                                <a href={`/gestion/membres/${original.id}`}>Voir le profil</a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600" onClick={() => setOpen(true)}>Supprimer</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                                <DialogTitle>Confirmer la suppression</DialogTitle>
+                            </DialogHeader>
+                            <Input
+                                placeholder="Entrez le mot de passe"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <DialogFooter className="flex justify-end gap-2 mt-4">
+                                <Button variant="ghost" onClick={() => setOpen(false)}>
+                                    Annuler
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    onClick={handleDelete}
+                                    disabled={!password.trim()}
+                                >
+                                    Confirmer la suppression
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </>
+            );
+        }
+    }
 ];

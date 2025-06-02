@@ -1,4 +1,4 @@
-import { createUploadthing, type FileRouter } from "uploadthing/server";
+import { createUploadthing, UTApi, type FileRouter } from "uploadthing/server";
 
 const f = createUploadthing();
 
@@ -16,12 +16,14 @@ export const uploadRouter = {
   }),
 
   stageLetter: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
 
   articleCover: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
@@ -33,21 +35,77 @@ export const uploadRouter = {
     return { url: file.ufsUrl };
   }),
 
+  categoryPhotos: f({
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+
   equipmentPhotosRequest: f({
     image: { maxFileSize: "4MB", maxFileCount: 5 },
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
-  missionDocuments: f({
+  repairMaintenance: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
-  specificDocuments: f({
+
+  missionDocuments: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
     image: { maxFileSize: "4MB", maxFileCount: 1 },
+    "application/msword": { maxFileSize: "4MB", maxFileCount: 1 },
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+
+  specificDocuments: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+    "application/msword": { maxFileSize: "4MB", maxFileCount: 1 },
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+
+  mailAcceptation: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+  template: f({
+    "application/msword": { maxFileSize: "4MB", maxFileCount: 1 },
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+  }).onUploadComplete(async ({ file }) => {
+    return { url: file.ufsUrl };
+  }),
+  templateSign: f({
+    "application/msword": { maxFileSize: "4MB", maxFileCount: 1 },
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+    "application/pdf": { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
     return { url: file.ufsUrl };
   }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof uploadRouter;
+
+export const utapi = new UTApi({
+  token: process.env.UPLOADTHING_TOKEN,
+});

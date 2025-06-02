@@ -13,7 +13,17 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": "/src", // Exemple d'alias pour simplifier les imports
+      "@": "/src",
+      "@assets": "/src/assets",
+      "@components": "/src/components",
+      "@contexts": "/src/contexts",
+      "@hooks": "/src/hooks",
+      "@pages": "/src/pages",
+      "@routes": "/src/routes",
+      "@services": "/src/services",
+      "@styles": "/src/styles",
+      "@utils": "/src/utils",
+      "@types": "/src/types",
     },
   },
   build: {

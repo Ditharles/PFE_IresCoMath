@@ -1,30 +1,31 @@
 import { useState, useCallback, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
 import { Button } from "../../ui/button";
-import { toast } from "../../Toast";
+import { toast } from "sonner";
 import { ManageUserService } from "../../../services/manageUser.service";
 
 import Filters from "../Filters";
 import MembersAddRequests from "./membersAddRequests/MembersAddRequests";
 import MembersList from "./members/MembersList";
 import { useFilteredUsers, exportDataToCSV } from "../../../utils/membersUtils";
-import { RequestUser } from "../../../types/MemberAddRequest";
+import { RequestStatus, RequestUser } from "../../../types/MemberAddRequest";
+import { User } from "../../../types/Member";
 
 const Members = () => {
     // États pour les filtres
     const [searchQuery, setSearchQuery] = useState("");
     const [filterRole, setFilterRole] = useState("");
-    const [filterStatus, setFilterStatus] = useState();
+    const [filterStatus, setFilterStatus] = useState<RequestStatus | undefined>(undefined);
     const [activeTab, setActiveTab] = useState("all");
 
     // États pour les données
     const [membersRequest, setMembersRequest] = useState<RequestUser[]>([]);
-    const [members, setMembers] = useState([]);
+    const [members, setMembers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const manageUserService = new ManageUserService();
 
-    // Filtrage des utilisateurs avec les hooks personnalisés
+    // Filtrage des utilisateurs
     const filteredRequests = useFilteredUsers(
         membersRequest,
         searchQuery,
@@ -37,7 +38,7 @@ const Members = () => {
         members,
         searchQuery,
         filterRole,
-        undefined,
+        filterStatus,
         activeTab
     );
 
@@ -61,6 +62,7 @@ const Members = () => {
             ];
             setMembersRequest(allMembersRequest);
 
+            // Récupérer les membres existants
             const membersList = await manageUserService.getUsers();
             setMembers(membersList.data);
         } catch (error) {
@@ -73,7 +75,7 @@ const Members = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     // Exporter les données en CSV
     const handleExportToCSV = (type: string = "members") => {
@@ -83,8 +85,8 @@ const Members = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <main className="flex-1 p-6 bg-background">
+        <div className="space-y-6 h-full bg-background text-foreground p-6 rounded-lg shadow-md">
+            <main className="flex-1  ">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">Gestion des membres</h1>
                     <div className="flex gap-2">
@@ -100,7 +102,6 @@ const Members = () => {
                     </div>
                 </div>
 
-                {/* Filtres communs */}
                 <Filters
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
@@ -114,21 +115,19 @@ const Members = () => {
                     showStatusFilter={true}
                 />
 
-                {/* Section des demandes d'adhésion */}
                 <MembersAddRequests
                     requests={filteredRequests}
                     isLoading={isLoading}
-                    activeTab={activeTab}
+
                     onRefresh={fetchData}
-                    exportToCSV={handleExportToCSV}
+                    exportToCSV={() => handleExportToCSV('requests')}
                 />
 
-                {/* Section des membres */}
                 <MembersList
                     members={filteredMembers}
                     isLoading={isLoading}
                     onRefresh={fetchData}
-                    exportToCSV={handleExportToCSV}
+                    exportToCSV={() => handleExportToCSV('members')}
                 />
             </main>
         </div>

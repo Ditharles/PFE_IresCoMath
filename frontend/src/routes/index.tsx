@@ -1,4 +1,4 @@
-import { RouteObject } from "react-router-dom";
+import { Navigate, RouteObject } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import PublicRoute from "../components/routes/PublicRoute";
 import Login from "../pages/auth/Login";
@@ -16,13 +16,28 @@ import RoleBasedRoute from "../components/routes/RoleBasedRoute";
 import PasswordForget from "../pages/auth/password-forget";
 import PasswordReset from "../pages/auth/password-reset";
 import MemberAddRequest from "../pages/MemberAddRequest";
-import NewRequest from "../pages/NewRequest";
-import NewRequests from "../pages/NewRequests";
+
+import CategoriesPage from "../pages/equipment/Categories";
+import EquipmentsPage from "../pages/equipment/Equipments";
+import CategoryPage from "../pages/equipment/Category";
+import NewRequest from "../pages/requests/NewRequest";
+import NewRequests from "../pages/requests/NewRequests";
+import RequestDetails from "../pages/requests/RequestsDetails";
 import Historique from "../pages/Historique";
-import RequestDetails from "../pages/RequestsDetails";
 import Profile from "../pages/Profile";
 import MemberDetails from "../pages/directeur/MemberDetails";
 
+import Calendar from "../pages/Calendar";
+import AddCategory from "../pages/equipment/AddCategory";
+import AddEquipment from "../pages/equipment/AddEquipment";
+import EquipmentPage from "../pages/equipment/Equipment";
+
+import { TemplateList } from "../pages/templates/List";
+import AddTemplate from "../pages/templates/Add";
+import EditTemplate from "../pages/templates/Edit";
+import MembersStats from "../pages/statistiques/MembersStats";
+import EquipmentStats from "../pages/statistiques/EquipmentStats";
+import RequestsStats from "../pages/statistiques/RequestsStats";
 
 const routes: RouteObject[] = [
     {
@@ -84,12 +99,13 @@ const routes: RouteObject[] = [
                 path: "nouvelle-demande/:type",
                 element: <NewRequest />
             },
-            
+
             {
                 path: "demande/:id",
                 element: <RequestDetails />
             },
-            { path: "profil", element: <Profile /> },
+  { path: "profil", element: <Profile /> },
+
 
         ]
     },
@@ -109,6 +125,66 @@ const routes: RouteObject[] = [
             {
                 path: "demandes",
                 element: <Historique />
+            },
+            {
+                path: "demandes/:status",
+                element: <Historique />
+            }
+            ,
+            {
+                path: "materiels",
+                element: <EquipmentsPage />
+            },
+            {
+                path: "materiels/:status",
+                element: <EquipmentsPage />
+            },
+            {
+                path: "materiel/:id",
+                element: <EquipmentPage />
+            },
+            {
+                path: "materiels/inventaire",
+                element: <CategoriesPage />
+            },
+            {
+                path: "materiels/categories/:id",
+                element: <CategoryPage />
+            },
+            {
+                path: "materiels/categories/ajouter",
+                element: <AddCategory />
+            },
+            {
+                path: "materiels/nouveau-materiel",
+                element: <AddEquipment />
+            },
+            {
+                path: "templates",
+                element: <TemplateList />
+            },
+            {
+                path: "templates/ajouter",
+                element: <AddTemplate />
+            },
+            {
+                path: "templates/modifier/:id",
+                element: <EditTemplate />
+            }, {
+                path: "statistiques/",
+                element: <Navigate to={"/statistiques/membres"} />
+            },
+            {
+                path: "statistiques/membres",
+                element: <MembersStats />
+            },
+            {
+                path: "statistiques/materiels",
+                element: <EquipmentStats />
+            },
+            {
+                path: "statistiques/demandes",
+                element: <RequestsStats />
             }
         ]
     },
@@ -140,7 +216,10 @@ const routes: RouteObject[] = [
     ]
   },
 
-
+    // {
+    //     path: "test",
+    //     element: <Calendar />
+    // },
     //404
     {
         path: "*",

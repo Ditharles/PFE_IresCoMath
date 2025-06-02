@@ -4,6 +4,7 @@ type CreateNotificationInput = {
   userId: string;
   title: string;
   message: string;
+  url: string;
   type: NotificationType;
 };
 
@@ -12,6 +13,7 @@ class NotificationsService {
     userId,
     title,
     message,
+    url,
     type,
   }: CreateNotificationInput) => {
     try {
@@ -20,6 +22,7 @@ class NotificationsService {
           userId,
           title,
           message,
+          url,
           type,
         },
       });

@@ -6,33 +6,30 @@ import { ChevronLeft, Send, Info } from 'lucide-react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import ArticleRegistrationForm from '../components/form/requests/ArticleRegistrationForm';
-import LoadingOverlay from '../components/LoadingOverlay';
-import { Button } from '../components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
-import { Toast, toast } from '../components/Toast';
 
-import {
-  internshipRequestSchema,
-  missionRequestSchema,
-  scientificEventRequestSchema,
-  articleRegistrationRequestSchema,
-  equipmentLoanRequestSchema,
-  equipmentPurchaseRequestSchema
-} from '../schemas/requestSchema';
-import { RequestType } from '../types/request';
-
-import RequestsService from '../services/requests.service';
-import InternshipForm from '../components/form/requests/InternshipForm';
-import MissionForm from '../components/form/requests/MissionForm';
-import ScientificEventForm from '../components/form/requests/ScientificEvent.Form';
-import EquipmentLoanForm from '../components/form/requests/EquipementLoanForm';
-import EquipmentPurchaseForm from '../components/form/requests/EquipementPurchaseForm';
 
 import { z } from 'zod';
+import { toast } from 'sonner';
+import ArticleRegistrationForm from '../../components/form/requests/ArticleRegistrationForm';
+import EquipmentLoanForm from '../../components/form/requests/EquipementLoanForm';
+import EquipmentPurchaseForm from '../../components/form/requests/EquipementPurchaseForm';
+import InternshipForm from '../../components/form/requests/InternshipForm';
+import MissionForm from '../../components/form/requests/MissionForm';
+import ScientificEventForm from '../../components/form/requests/ScientificEvent.Form';
+import LoadingOverlay from '../../components/LoadingOverlay';
+import { Alert, AlertTitle, AlertDescription } from '../../components/ui/alert';
+import { Button } from '../../components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
+import { internshipRequestSchema, missionRequestSchema, scientificEventRequestSchema, articleRegistrationRequestSchema, equipmentLoanRequestSchema, equipmentPurchaseRequestSchema, repairMaintenanceRequestSchema } from '../../schemas/requestSchema';
+import RequestsService from '../../services/requests.service';
+import { RequestType } from '../../types/request';
+import RepairMaintenanceForm from '../../components/form/requests/RepairMaintenanceForm';
 
 const NewRequest: React.FC = () => {
+
+
+
+
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,13 +40,12 @@ const NewRequest: React.FC = () => {
     switch (type) {
       case 'stage': return RequestType.INTERNSHIP;
       case 'mission': return RequestType.MISSION;
-      case 'conference-national': return RequestType.CONFERENCE_NATIONAL;
+      case 'conference-nationale': return RequestType.CONFERENCE_NATIONAL;
       case 'inscription-article': return RequestType.ARTICLE_REGISTRATION;
       case 'pret-materiel': return RequestType.EQUIPMENT_LOAN;
       case 'achat-materiel': return RequestType.EQUIPMENT_PURCHASE;
       case 'reparation-maintenance': return RequestType.REPAIR_MAINTENANCE;
-      case 'contractuel': return RequestType.CONTRACTUAL;
-      default: return RequestType.CONTRACTUAL;
+      default: return RequestType.MISSION;
     }
   };
 
@@ -57,16 +53,19 @@ const NewRequest: React.FC = () => {
     switch (type) {
       case 'stage': return internshipRequestSchema;
       case 'mission': return missionRequestSchema;
-      case 'conference-national': return scientificEventRequestSchema;
+      case 'conference-nationale': return scientificEventRequestSchema;
       case 'inscription-article': return articleRegistrationRequestSchema;
       case 'pret-materiel': return equipmentLoanRequestSchema;
       case 'achat-materiel': return equipmentPurchaseRequestSchema;
+      case 'reparation-maintenance': return repairMaintenanceRequestSchema;
       default: return z.object({});
     }
   };
 
+
   const methods = useForm({
     resolver: zodResolver(mapTypeToSchema()),
+
     mode: 'onBlur',
     defaultValues: {}
   });
@@ -82,14 +81,13 @@ const NewRequest: React.FC = () => {
     console.log(isValid)
     if (!isValid) {
       toast.error('Veuillez remplir correctement tous les champs requis');
-      console.log(errors);
+
       return;
     }
-    console.log("try");
 
     setIsSubmitting(true);
     setSubmitError(null);
-    console.log(errors);
+
     try {
       const response = await requestService.createRequest(formData, mapTypeToRequest());
       toast.success(response.data.message || "Demande créée avec succès");
@@ -111,12 +109,11 @@ const NewRequest: React.FC = () => {
     switch (type) {
       case 'stage': return 'Demande de Stage';
       case 'mission': return 'Demande de Mission';
-      case 'conference-national': return 'Conférence Nationale';
+      case 'conference-nationale': return 'Conférence Nationale';
       case 'inscription-article': return 'Inscription d\'Article';
       case 'pret-materiel': return 'Prêt de Matériel';
       case 'achat-materiel': return 'Achat de Matériel';
       case 'reparation-maintenance': return 'Réparation/Maintenance';
-      case 'contractuel': return 'Demande Contractuelle';
       default: return 'Nouvelle Demande';
     }
   };
@@ -125,10 +122,11 @@ const NewRequest: React.FC = () => {
     switch (type) {
       case 'stage': return <InternshipForm />;
       case 'mission': return <MissionForm />;
-      case 'conference-national': return <ScientificEventForm />;
+      case 'conference-nationale': return <ScientificEventForm />;
       case 'inscription-article': return <ArticleRegistrationForm />;
       case 'pret-materiel': return <EquipmentLoanForm />;
       case 'achat-materiel': return <EquipmentPurchaseForm />;
+      case 'reparation-maintenance': return <RepairMaintenanceForm />;
       default: return (
         <Alert variant="destructive" className="flex items-start space-x-2">
           <Info className="h-4 w-4" />
@@ -142,9 +140,9 @@ const NewRequest: React.FC = () => {
   };
 
   return (
-    <div className="animate-fadeIn h-full relative">
+    <div className="animate-fadeIn h-full relative text-foreground">
       {isSubmitting && <LoadingOverlay />}
-      <Toast />
+
       <div className="mb-6">
         <Button
           variant="ghost"
@@ -156,7 +154,7 @@ const NewRequest: React.FC = () => {
         </Button>
       </div>
 
-      <Card>
+      <Card className="bg-card text-card-foreground">
         <CardHeader>
           <CardTitle className="text-2xl">
             {getFormTitle()}

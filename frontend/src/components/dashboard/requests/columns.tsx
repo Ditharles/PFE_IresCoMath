@@ -56,6 +56,13 @@ export const columns = ({
         accessorKey: "type",
         header: "Type",
         cell: ({ row }) => REQUEST_TYPE_LABELS[row.getValue("type") as RequestType] || row.getValue("type"),
+        meta: {
+            filterVariant: "select",
+            filterOptions: Object.entries(REQUEST_TYPE_LABELS).map(([value, label]) => ({
+                value,
+                label
+            }))
+        }
     },
     {
         id: "details",

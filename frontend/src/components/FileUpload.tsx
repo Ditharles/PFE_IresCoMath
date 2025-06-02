@@ -50,9 +50,8 @@ const FileUpload = ({
 
         if (uploadedFiles.length > 0 && onFileUploaded) {
             console.log("Fichiers téléchargés:", uploadedFiles);
-            onFileUploaded(uploadedFiles.map((f: FileItem) => f.url)); // Pass an array of URLs
+            onFileUploaded(uploadedFiles.map((f: FileItem) => f.url));
         }
-
     };
 
     const getFileTypeFromUrl = (url: string): string => {
@@ -66,13 +65,13 @@ const FileUpload = ({
     const getFileIcon = (type: string | undefined) => {
         switch (type) {
             case 'image':
-                return <ImageIcon className="text-blue-500" />;
+                return <ImageIcon className="text-primary" />;
             case 'video':
-                return <FileVideo className="text-purple-500" />;
+                return <FileVideo className="text-primary" />;
             case 'audio':
-                return <FileAudio className="text-green-500" />;
+                return <FileAudio className="text-primary" />;
             default:
-                return <FileText className="text-gray-500" />;
+                return <FileText className="text-muted-foreground" />;
         }
     };
 
@@ -88,18 +87,16 @@ const FileUpload = ({
 
     const removeFile = (index: number) => {
         setFiles(prev => prev.filter((_, i) => i !== index));
-
-        // Notifier le parent que le fichier a été supprimé
         if (onFileUploaded) {
-            onFileUploaded([]); // Pass an empty array to indicate no files
+            onFileUploaded([]);
         }
     };
 
     return (
-        <div className="max-w-md mx-auto space-y-4">
+        <div className="max-w-md mx-auto space-y-4 bg-card text-card-foreground rounded-lg p-6 shadow-sm">
             <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-800">{headerText}</h2>
-                <p className="text-sm text-gray-500">{subHeaderText}</p>
+                <h2 className="text-xl font-semibold text-foreground">{headerText}</h2>
+                <p className="text-sm text-muted-foreground">{subHeaderText}</p>
             </div>
 
             {files.length < maxFiles && (
@@ -118,27 +115,27 @@ const FileUpload = ({
                         acceptedTypes
                     }}
                     appearance={{
-                        container: `border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-all ${isLoading ? 'h-32' : 'h-48'}`,
-                        uploadIcon: isLoading ? "hidden" : "text-blue-500",
-                        label: isLoading ? "hidden" : "text-gray-700",
-                        allowedContent: isLoading ? "hidden" : "text-gray-500 text-sm",
-                        button: isLoading ? "hidden" : "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                        container: `border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:border-primary transition-all bg-background ${isLoading ? 'h-32' : 'h-48'}`,
+                        uploadIcon: isLoading ? "hidden" : "text-primary",
+                        label: isLoading ? "hidden" : "text-foreground",
+                        allowedContent: isLoading ? "hidden" : "text-muted-foreground text-sm",
+                        button: isLoading ? "hidden" : "bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
                     }}
                 />
             )}
 
             {isLoading && (
                 <div className="space-y-3">
-                    <div className="flex justify-between text-sm text-gray-600">
+                    <div className="flex justify-between text-sm text-muted-foreground">
                         <span className="flex items-center">
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
                             Téléchargement en cours...
                         </span>
                         <span className="font-semibold">{uploadProgress}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                         <div
-                            className="bg-blue-600 h-3 rounded-full transition-all duration-300 ease-in-out"
+                            className="bg-primary h-3 rounded-full transition-all duration-300 ease-in-out"
                             style={{ width: `${uploadProgress}%` }}
                         ></div>
                     </div>
@@ -146,7 +143,7 @@ const FileUpload = ({
             )}
 
             {error && (
-                <div className="flex items-center p-3 text-red-600 bg-red-50 rounded-lg">
+                <div className="flex items-center p-3 text-destructive bg-destructive/10 rounded-lg">
                     <X className="mr-2" />
                     {error}
                 </div>
@@ -154,17 +151,17 @@ const FileUpload = ({
 
             {files.length > 0 && (
                 <div className="space-y-3">
-                    <div className="flex items-center text-green-600">
-                        <CheckCircle2 className="mr-2" />
+                    <div className="flex items-center text-success">
+                        <CheckCircle2 className="mr-2 text-primary" />
                         <span>Fichier téléchargé avec succès</span>
                     </div>
 
                     <div className="grid grid-cols-1 gap-3">
                         {files.map((file, index) => (
-                            <div key={file.url} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                            <div key={file.url} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg border border-border hover:bg-muted transition-colors">
                                 <div className="flex items-center space-x-3 truncate">
                                     {file.type === 'image' ? (
-                                        <div className="h-12 w-12 rounded overflow-hidden flex-shrink-0">
+                                        <div className="h-12 w-12 rounded overflow-hidden flex-shrink-0 border border-border">
                                             <img
                                                 src={file.url}
                                                 alt={file.name}
@@ -172,7 +169,7 @@ const FileUpload = ({
                                             />
                                         </div>
                                     ) : (
-                                        <div className="h-12 w-12 rounded bg-gray-200 flex items-center justify-center flex-shrink-0">
+                                        <div className="h-12 w-12 rounded bg-muted flex items-center justify-center flex-shrink-0 border border-border">
                                             {getFileIcon(file.type)}
                                         </div>
                                     )}
@@ -182,19 +179,19 @@ const FileUpload = ({
                                             href={file.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-sm font-medium text-blue-600 hover:underline truncate block"
+                                            className="text-sm font-medium text-primary hover:text-primary/80 hover:underline truncate block transition-colors"
                                             title={file.name}
                                         >
                                             {file.name}
                                         </a>
-                                        <p className="text-xs text-gray-500 capitalize">
+                                        <p className="text-xs text-muted-foreground capitalize">
                                             {file.type ?? 'Fichier'}
                                         </p>
                                     </div>
                                 </div>
                                 <button
                                     onClick={() => removeFile(index)}
-                                    className="text-gray-500 hover:text-red-500 flex-shrink-0 p-1 rounded-full hover:bg-gray-200"
+                                    className="text-muted-foreground hover:text-destructive flex-shrink-0 p-1 rounded-full hover:bg-muted transition-colors"
                                     aria-label="Supprimer le fichier"
                                 >
                                     <X size={18} />

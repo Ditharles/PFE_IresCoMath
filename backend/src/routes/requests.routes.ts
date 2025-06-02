@@ -2,11 +2,16 @@ import { RequestHandler, Router } from "express";
 import {
   addDocuments,
   approveRequest,
+  closeRequest,
   completeRequest,
+  deleteRequest,
+  editRequest,
   getAllRequests,
   getPossibleRequests,
   getRequest,
   getRequests,
+  reigniteRequest,
+  signFormUpload,
   submitArticleRegistrationRequest,
   submitEquipmentLendRequest,
   submitEquipmentPurchaseRequest,
@@ -25,7 +30,11 @@ router.get("/get-requests", getRequests as RequestHandler);
 
 router.get("/get-request/:id", getRequest as RequestHandler);
 
-router.get("/get-all-requests", getAllRequests as RequestHandler);
+router.get(
+  "/get-all-requests",
+  checkRole(["DIRECTEUR"]),
+  getAllRequests as RequestHandler
+);
 //Routes pour obtenir toutes les requetes
 router.get(
   "/get-all-requests",
@@ -41,9 +50,16 @@ router.post("/equipment/rent", submitEquipmentLendRequest as RequestHandler);
 
 router.post("/mission", submitMissionRequest as RequestHandler);
 
-router.post("/internship", submitRequestStage as RequestHandler);
+router.post(
+  "/internship",
+  checkRole(["MASTER", "DOCTORANT"]),
+  submitRequestStage as RequestHandler
+);
 
-router.post("/conference", submitScientificEventRequest as RequestHandler);
+router.post(
+  "/conference-national",
+  submitScientificEventRequest as RequestHandler
+);
 
 router.post(
   "/article-registration",
@@ -57,6 +73,19 @@ router.post(
   approveRequest as RequestHandler
 );
 
+router.post(
+  "/reignite-request/:id",
+
+  reigniteRequest as RequestHandler
+);
+router.post("/close-request/:id", closeRequest as RequestHandler);
+
 router.post("/add-document/:id", addDocuments as RequestHandler);
 
 router.post("/complete-request/:id", completeRequest as RequestHandler);
+
+router.post("/edit-request/:id", editRequest as RequestHandler);
+
+router.delete("/delete-request/:id", deleteRequest as RequestHandler);
+
+router.post("/submit-sign-form/:id", signFormUpload as RequestHandler);

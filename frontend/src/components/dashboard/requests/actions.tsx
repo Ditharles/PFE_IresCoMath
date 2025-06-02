@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { MoreHorizontal, Eye, FileText, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { MoreHorizontal, Eye, FileText, Trash2, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogHeader, DialogFooter } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../../ui/dropdown-menu";
@@ -8,6 +8,7 @@ import { Textarea } from "../../ui/textarea";
 import { useAuth } from "../../../contexts/AuthContext";
 import RequestsService from "../../../services/requests.service";
 import { Request, RequestStatus, Role } from "../../../types/request";
+import EditRequest from "./request/EditRequest";
 
 interface ActionsCellProps {
     request: Request;
@@ -21,6 +22,8 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
     const [openRejectDialog, setOpenRejectDialog] = useState(false);
     const [rejectReason, setRejectReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     if (!user) return null;
 
@@ -40,9 +43,14 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
     }
 
     const canReject = canApprove;
-    const canComplete = isDirector && request.status === RequestStatus.APPROVED;
-
-    const handleDelete = async () => {
+    const canComplete = isOwner && request.status === RequestStatus.APPROVED;
+    const canClose = isOwner && request.status === RequestStatus.COMPLETED;
+    let canReignite = false;
+    if (isOwner) {
+        canReignite = [RequestStatus.PENDING, RequestStatus.COMPLETED].includes(request.status);
+    } else if (isDirector) {
+        canReignite = [RequestStatus.APPROVED_BY_DIRECTOR, RequestStatus.APPROVED].includes(request.status);
+    } const handleDelete = async () => {
         try {
             setIsSubmitting(true);
             const response = await requestService.deleteRequest(request.id);
@@ -62,11 +70,11 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
             setIsSubmitting(true);
             const response = await requestService.approveRequest(request.id);
             toast.success(response.data.message || "Demande approuvée avec succès");
-            
+
             const updatedRequest = {
                 ...request,
-                status: isDirector 
-                    ? RequestStatus.APPROVED 
+                status: isDirector
+                    ? RequestStatus.APPROVED
                     : RequestStatus.APPROVED_BY_SUPERVISOR
             };
             onRequestUpdate(updatedRequest);
@@ -88,16 +96,16 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
             setIsSubmitting(true);
             await requestService.rejectRequest(request.id, rejectReason);
             toast.success('Demande rejetée avec succès');
-            
+
             const updatedRequest = {
                 ...request,
-                status: isDirector 
-                    ? RequestStatus.REJECTED_BY_DIRECTOR 
+                status: isDirector
+                    ? RequestStatus.REJECTED_BY_DIRECTOR
                     : RequestStatus.REJECTED_BY_SUPERVISOR,
                 rejectReason
             };
             onRequestUpdate(updatedRequest);
-            
+
             setOpenRejectDialog(false);
             setRejectReason('');
         } catch (error) {
@@ -113,7 +121,7 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
             setIsSubmitting(true);
             const response = await requestService.completeRequest(request.id);
             toast.success(response.data.message || "Demande terminée avec succès");
-            
+
             const updatedRequest = {
                 ...request,
                 status: RequestStatus.COMPLETED
@@ -127,11 +135,74 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
         }
     };
 
+    const handleClose = async () => {
+        try {
+            setIsSubmitting(true);
+            const response = await requestService.closeRequest(request.id);
+            toast.success(response.data.message || "Demande clôturée avec succès");
+
+            const updatedRequest = {
+                ...request,
+                status: RequestStatus.CLOSED
+            };
+            onRequestUpdate(updatedRequest);
+        } catch (error) {
+            toast.error('Erreur lors de la clôture de la demande');
+            console.error('Error closing request:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleReignite = async () => {
+        try {
+            setIsSubmitting(true);
+            const response = await requestService.reigniteRequest(request.id);
+            toast.success(response.data.message || "Demande relancée avec succès");
+
+            const updatedRequest = {
+                ...request,
+                status: RequestStatus.PENDING
+            };
+            onRequestUpdate(updatedRequest);
+        } catch (error) {
+            toast.error('Erreur lors de la relance de la demande');
+            console.error('Error reigniting request:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleMenuItemClick = (action: string) => {
+        setDropdownOpen(false);
+
+        setTimeout(() => {
+            if (action === 'edit') {
+                setIsEditModalOpen(true);
+            } else if (action === 'delete') {
+                setIsDeleteDialogOpen(true);
+            } else if (action === 'approve') {
+                handleApprove();
+            } else if (action === 'reject') {
+                setOpenRejectDialog(true);
+            } else if (action === 'complete') {
+                handleComplete();
+            } else if (action === 'close') {
+                handleClose();
+            } else if (action === 'reignite') {
+                handleReignite();
+            }
+        }, 100);
+    };
+
     return (
         <div className="flex items-center gap-2">
-            <DropdownMenu>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button
+                        variant="ghost"
+                        className="h-8 w-8 p-0"
+                    >
                         <span className="sr-only">Ouvrir le menu</span>
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
@@ -140,25 +211,23 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
                     <DropdownMenuItem asChild>
-                        <a href={`/demande/${request.id}`} className="flex items-center w-full">
+                        <a href={`/demande/${request.id}`} className="flex items-center w-full" onClick={() => setDropdownOpen(false)}>
                             <Eye className="h-4 w-4 mr-2" />
                             Voir détails
                         </a>
                     </DropdownMenuItem>
 
                     {canEdit && (
-                        <DropdownMenuItem asChild>
-                            <a href={`/demande/${request.id}/edit`} className="flex items-center w-full">
-                                <FileText className="h-4 w-4 mr-2" />
-                                Modifier
-                            </a>
+                        <DropdownMenuItem onClick={() => handleMenuItemClick('edit')}>
+                            <FileText className="h-4 w-4 mr-2" />
+                            Modifier
                         </DropdownMenuItem>
                     )}
 
                     {canDelete && (
                         <DropdownMenuItem
                             className="text-red-600"
-                            onClick={() => setIsDeleteDialogOpen(true)}
+                            onClick={() => handleMenuItemClick('delete')}
                             disabled={isSubmitting}
                         >
                             <Trash2 className="h-4 w-4 mr-2" />
@@ -168,7 +237,7 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
 
                     {canApprove && (
                         <DropdownMenuItem
-                            onClick={handleApprove}
+                            onClick={() => handleMenuItemClick('approve')}
                             disabled={isSubmitting}
                             className="text-green-600"
                         >
@@ -179,7 +248,7 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
 
                     {canReject && (
                         <DropdownMenuItem
-                            onClick={() => setOpenRejectDialog(true)}
+                            onClick={() => handleMenuItemClick('reject')}
                             disabled={isSubmitting}
                             className="text-red-600"
                         >
@@ -190,12 +259,34 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
 
                     {canComplete && (
                         <DropdownMenuItem
-                            onClick={handleComplete}
+                            onClick={() => handleMenuItemClick('complete')}
                             disabled={isSubmitting}
                             className="text-green-600"
                         >
                             <CheckCircle className="h-4 w-4 mr-2" />
                             Terminer
+                        </DropdownMenuItem>
+                    )}
+
+                    {canClose && (
+                        <DropdownMenuItem
+                            onClick={() => handleMenuItemClick('close')}
+                            disabled={isSubmitting}
+                            className="text-green-600"
+                        >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Clôturer
+                        </DropdownMenuItem>
+                    )}
+
+                    {canReignite && (
+                        <DropdownMenuItem
+                            onClick={() => handleMenuItemClick('reignite')}
+                            disabled={isSubmitting}
+                            className="text-green-600"
+                        >
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Relancer
                         </DropdownMenuItem>
                     )}
                 </DropdownMenuContent>
@@ -226,9 +317,10 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
             </Dialog>
 
             {/* Reject Dialog */}
+
             {canReject && (
                 <Dialog open={openRejectDialog} onOpenChange={setOpenRejectDialog}>
-                    <DialogContent className="bg-white p-6 rounded-lg max-w-md w-full m-auto">
+                    <DialogContent className="bg-background p-6 rounded-lg max-w-md w-full m-auto">
                         <DialogHeader>
                             <DialogTitle>Motif de rejet</DialogTitle>
                             <DialogDescription>
@@ -246,7 +338,7 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
                             />
                         </div>
 
-                        <DialogFooter>
+                        <DialogFooter className="sticky">
                             <Button variant="outline" onClick={() => setOpenRejectDialog(false)}>
                                 Annuler
                             </Button>
@@ -260,6 +352,16 @@ const ActionsCell = ({ request, onRequestUpdate, onRequestDelete }: ActionsCellP
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+            )}
+
+            {/* Edit Modal */}
+            {isEditModalOpen && request && (
+                <EditRequest
+                    request={request}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSuccess={onRequestUpdate}
+                    isOpen={isEditModalOpen}
+                />
             )}
         </div>
     );

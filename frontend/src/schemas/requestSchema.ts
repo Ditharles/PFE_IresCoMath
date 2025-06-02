@@ -1,13 +1,15 @@
 import { z } from "zod";
 
 const dateValidation = {
-  startDate: z.string().min(1, { message: "La date de début est requise" }),
+  startDate: z.date().min(new Date(), {
+    message: "La date de début ne peut pas etre avant aujourd'hui",
+  }),
   endDate: z
-    .string()
-    .min(1, { message: "La date de fin est requise" })
+    .date()
+    .min(new Date(), { message: "La date de fin est requise" })
     .refine(
       (endDate) => {
-        const startDate = z.string().parse(endDate);
+        const startDate = z.date().parse(endDate);
         return new Date(endDate) >= new Date(startDate);
       },
       { message: "La date de fin doit être après la date de début" }
@@ -47,6 +49,7 @@ export const missionRequestSchema = z.object({
     .min(1, { message: "L'organisation d'accueil est requise" }),
   objective: z.string().min(1, { message: "L'objectif est requis" }),
   country: z.string().min(1, { message: "Le pays est requis" }),
+
   specificDocument: z.array(z.string()).optional(),
 
   ...dateValidation,
@@ -158,4 +161,9 @@ export const equipmentPurchaseRequestSchema = z.object({
         costEstimation: "0",
       },
     ]),
+});
+
+export const repairMaintenanceRequestSchema = z.object({
+  description: z.string().min(1, { message: "La description est requise" }),
+  photo: z.array(z.string()).optional(),
 });
