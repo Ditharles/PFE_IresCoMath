@@ -1,12 +1,14 @@
 import api from "../api/axios";
-
+import { getBrowserInfo } from "../utils/browser.utils";
 import {
   isAuthenticated,
   removesTokens,
   removeUser,
   setToken,
   setUser,
+  getToken,
 } from "../utils/tokens.utils";
+import { ChangePasswordRequest } from "../types/auth";
 
 class AuthService {
   async getUser() {
@@ -23,27 +25,64 @@ class AuthService {
       throw error;
     }
   }
+
   async login(email: string, password: string) {
     if (isAuthenticated()) {
       return;
     }
     console.log("Connexion en cours");
-    const response = await api.post("/auth/login", { email, password });
-    if (response.status === 200) {
-      const { accessToken, refreshToken, user } = response.data;
-      setToken("accessToken", accessToken);
-      setToken("refreshToken", refreshToken);
-      setUser(user);
-      console.log(response);
-    }
+    try {
+      const browserInfo = getBrowserInfo();
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+        browserInfo,
+      });
 
-    return response;
+      if (response.status === 200) {
+        const { accessToken, refreshToken, user } = response.data;
+
+        // Vérification de la présence des tokens
+        if (!accessToken || !refreshToken) {
+          throw new Error("Tokens manquants dans la réponse");
+        }
+
+        // Stockage des tokens
+        await setToken("accessToken", accessToken);
+        await setToken("refreshToken", refreshToken);
+        await setUser(user);
+
+        // Vérification que les tokens ont été correctement stockés
+        const storedAccessToken = getToken("accessToken");
+        const storedRefreshToken = getToken("refreshToken");
+
+        if (!storedAccessToken || !storedRefreshToken) {
+          throw new Error("Échec du stockage des tokens");
+        }
+
+        console.log("Connexion réussie");
+      }
+      return response;
+    } catch (error: any) {
+      console.error("Erreur lors de la connexion:", error);
+      removesTokens();
+      removeUser();
+
+      // Si l'erreur contient un type spécifique, on la propage
+      if (error.response?.data?.type) {
+        throw {
+          message: error.response.data.message,
+          type: error.response.data.type,
+        };
+      }
+
+      throw error;
+    }
   }
 
   async logout() {
     try {
       console.log("Déconnexion en cours");
-
       const response = await api.get("/auth/logout");
       return response;
     } catch (error) {
@@ -55,8 +94,12 @@ class AuthService {
     }
   }
 
-  async register(credentials: unknown, role: string) {
-    const response = await api.post(`/auth/register/${role}`, credentials);
+  async register(credentials: Record<string, unknown>, role: string) {
+    const browserInfo = getBrowserInfo();
+    const response = await api.post(`/auth/register/${role}`, {
+      ...credentials,
+      browserInfo,
+    });
     return response;
   }
 
@@ -88,23 +131,56 @@ class AuthService {
     const response = await api.get(`/auth/confirm-reset-password/${token}`);
     return response;
   }
+
   async resetPassword(token: string, password: string) {
     const response = await api.post(`/auth/reset-password/${token}`, {
       password,
     });
     return response;
   }
+
   async verifyValidationUser(token: string) {
     const response = await api.get(`/auth/validate-account/${token}`);
-    setUser(response.data.user);
-    setToken("accessToken", response.data.accessToken);
-    setToken("refreshToken", response.data.refreshToken);
 
     return response;
   }
-  async submitAdditionalInfo(data: unknown) {
-    const response = await api.post("/auth/submit-additional-info", data);
+
+  async updatePassword(data: ChangePasswordRequest) {
+    const response = await api.post("/auth/change-password", data);
     return response;
+  }
+
+  async submitAdditionalInfo(data: unknown, tempToken: string) {
+    const response = await api.post("/auth/submit-additional-info", data, {
+      headers: {
+        Authorization: `Bearer ${tempToken}`,
+      },
+    });
+    if (response.data.accessToken && response.data.refreshToken) {
+      setToken("accessToken", response.data.accessToken);
+      setToken("refreshToken", response.data.refreshToken);
+    }
+    return response;
+  }
+
+  async getUserSessions() {
+    try {
+      const response = await api.get("/auth/sessions");
+      return response.data.sessions;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des sessions:", error);
+      throw error;
+    }
+  }
+
+  async logoutSession(sessionId: string) {
+    try {
+      const response = await api.delete(`/auth/sessions/${sessionId}`);
+      return response;
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion de la session:", error);
+      throw error;
+    }
   }
 }
 

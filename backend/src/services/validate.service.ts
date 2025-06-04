@@ -21,17 +21,22 @@ export const fetchDataByRole = async (
   const data: any = {};
   const model = roleMap[role];
 
+  const confirmedFilters = {
+    ...filters,
+    isConfirmed: true,
+  };
+
   if (role === "ENSEIGNANT") {
     const requests = await model.findUnique({
       where: { id },
       select: {
         masterStudentRequests: {
           select: fields.MASTER,
-          where: filters,
+          where: confirmedFilters,
         },
         doctoralStudentRequests: {
           select: fields.DOCTORANT,
-          where: filters,
+          where: confirmedFilters,
         },
       },
     });
@@ -47,7 +52,7 @@ export const fetchDataByRole = async (
     for (const [key, value] of Object.entries(requestRoleMap)) {
       const typedKey = key as RequestRole;
       data[typedKey] = await (value as any).findMany({
-        where: filters,
+        where: confirmedFilters,
         select: fields[typedKey],
       });
     }
@@ -55,4 +60,3 @@ export const fetchDataByRole = async (
 
   return data;
 };
-

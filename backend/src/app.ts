@@ -20,6 +20,7 @@ import requestsRoutes from "./routes/requests.routes";
 import notificationsRoutes from "./routes/notifications.routes";
 import equipmentsRoutes from "./routes/equipments.routes";
 import { checkRole } from "./middleware/checkRole";
+import { teacherResearcherFields } from "./constants/userFields";
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -67,12 +68,23 @@ app.get("/teachers-researchers", async (req, res) => {
   try {
     const data = await prisma.user.findMany({
       where: {
-        role: "ENSEIGNANT",
+        OR: [{ role: "ENSEIGNANT" }, { role: "DIRECTEUR" }],
       },
-      select: { id: true, lastName: true, firstName: true },
+      select: {
+        id: true,
+        lastName: true,
+        firstName: true,
+        teacherResearcher: true,
+      },
     });
 
-    res.json(data);
+    const formattedData = data.map((user) => ({
+      id: user.id,
+      lastName: user.lastName,
+      firstName: user.firstName,
+      ...user.teacherResearcher,
+    }));
+    res.json(formattedData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

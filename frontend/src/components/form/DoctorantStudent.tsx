@@ -83,7 +83,7 @@ const DoctorantStudent: React.FC<SpecificFieldsProps> = ({ data, onChange }) => 
               <option value="">Sélectionner votre directeur de thèse</option>
               {enseignants.map((enseignant) => (
                 <option key={enseignant.id} value={enseignant.id}>
-                  {enseignant.lastName} {enseignant.firstName} ({enseignant.position}, {enseignant.grade})
+                  {enseignant.lastName} {enseignant.firstName} ({enseignant.position})
                 </option>
               ))}
             </select>

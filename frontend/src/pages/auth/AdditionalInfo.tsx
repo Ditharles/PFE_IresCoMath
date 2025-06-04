@@ -1,68 +1,62 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import FileUpload from "../../components/FileUpload";
-import { useAuth } from "../../contexts/AuthContext";
-import AuthService from "../../services/auth.service";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "../../components/ui/button";
-
+import FileUpload from "../../components/FileUpload";
 import InputField from "../../components/form/InputField";
+import AuthService from "../../services/auth.service";
 
 const AdditionalInfo = () => {
-  const { loginSession } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    password: "",
-    confirmPassword: "",
-    bankData: "",
-    signature: null as string | null,
-  });
+  const location = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const authService = new AuthService();
-
-  useEffect(() => {
-    loginSession();
-  }, [loginSession]);
+  const [form, setForm] = useState({
+    bankData: "",
+    signature: "",
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { id, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [id]: value,
     }));
   };
 
-  const handleSignatureUpload = useCallback((fileUrl: string) => {
-    setForm((prev) => ({
-      ...prev,
-      signature: fileUrl,
-    }));
-  }, []);
+  const handleSignatureUpload = (url: string[] | string) => {
+    if (Array.isArray(url))
+      setForm((prev) => ({
+        ...prev,
+        signature: url[0],
+      }));
+    else
+      setForm((prev) => ({
+        ...prev,
+        signature: url,
+      }));
+
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (form.password !== form.confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
-      const response = await authService.submitAdditionalInfo({
-        password: form.password,
-        bankData: form.bankData,
-        signature: form.signature,
-      });
-      toast.success(response?.data?.message || "Compte validé avec succès");
+      const tempToken = location.state?.tempToken;
+      if (!tempToken) {
+        throw new Error("Token temporaire manquant");
+      }
+
+      const response = await new AuthService().submitAdditionalInfo(form, tempToken);
+
+      toast.success(response.data.message || "Informations supplémentaires validées avec succès !");
+
       setTimeout(() => {
-        navigate("/accueil");
-      }, 2000);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
-      console.error("Erreur lors de la validation du compte :", err);
+        navigate("/login", { replace: true });
+      }, 1000);
+
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Une erreur est survenue";
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -77,40 +71,10 @@ const AdditionalInfo = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div>
-
-            <InputField
-              label="Mot de passe"
-              type="password"
-              id="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-
-            />
-          </div>
-
-          <div>
-
-            <InputField
-              label="Confirmer le mot de passe"
-              type="password"
-              id="confirmPassword"
-
-              value={form.confirmPassword}
-              onChange={handleChange}
-              required
-
-            />
-          </div>
-
-          <div>
-
             <InputField
               label="IBAN"
               type="text"
               id="bankData"
-
-
               value={form.bankData}
               onChange={handleChange}
               required
@@ -127,7 +91,6 @@ const AdditionalInfo = () => {
               subHeaderText="Formats acceptés: PNG, JPG (max 2MB)"
               maxFiles={1}
               acceptedTypes={["image/png", "image/jpeg"]}
-
               onFileUploaded={handleSignatureUpload}
             />
           </div>

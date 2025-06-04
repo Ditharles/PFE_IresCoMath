@@ -14,12 +14,14 @@ import {
   DoctoralStudentRequest,
   MasterStudentRequest,
   TeacherResearcherRequest,
+  AuthRequest,
 } from "../types/auth";
 import prisma from "../utils/db";
 import {
   masterStudentFields,
   teacherResearcherFields,
   doctoralStudentFields,
+  userFields,
 } from "../constants/userFields";
 import {
   checkUserExists,
@@ -47,6 +49,18 @@ import { RequestRole, requestRoleMap } from "../utils/validateUtils";
 import { sendInitialEmail } from "../services/mail.service";
 import { get } from "http";
 
+const formatIpAddress = (ip: string): string => {
+  // Si c'est une adresse IPv6 de loopback, retourner localhost
+  if (ip === "::1" || ip === "::ffff:127.0.0.1") {
+    return "localhost";
+  }
+  // Si c'est une adresse IPv6, la formater
+  if (ip.includes("::ffff:")) {
+    return ip.replace("::ffff:", "");
+  }
+  return ip;
+};
+
 // Fonction pour la création des requêtes d'authentification
 const registerUser = async (
   req: Request,
@@ -54,14 +68,20 @@ const registerUser = async (
   role: string,
   data: any
 ) => {
-  const { email } = data;
+  const { email, password } = data;
   console.log(data);
-  if (!email || typeof email !== "string") {
+  if (
+    !email ||
+    typeof email !== "string" ||
+    !password ||
+    typeof password !== "string"
+  ) {
     res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     return;
   }
 
   const emailString = email as string;
+  const passwordString = password as string;
 
   try {
     const exist = await checkUserExists(emailString);
@@ -71,7 +91,10 @@ const registerUser = async (
       return;
     }
 
-    const user = await createUserRequest(role, data);
+    // Hasher le mot de passe avant de créer la demande
+    const hashedPassword = await bcrypt.hash(passwordString, 10);
+    const userData = { ...data, password: hashedPassword };
+    const user = await createUserRequest(role, userData);
 
     const emailLink = generateTokenLink(emailString, role, "confirm");
     if (!emailLink) {
@@ -98,6 +121,15 @@ const registerUser = async (
       `Erreur lors de la création de l'utilisateur ${role}:`,
       error
     );
+
+    // Vérifier si l'erreur est liée à un numéro de téléphone unique
+    if (error.code === "P2002" && error.meta?.target?.includes("phone")) {
+      res.status(400).json({
+        message: "Un utilisateur avec ce numéro de téléphone existe déjà",
+      });
+      return;
+    }
+
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -177,51 +209,97 @@ export const registerDoctoralStudent: AuthHandler = async (req, res) => {
   }
 };
 
+const checkRequestStatus = async (email: string) => {
+  const roles = ["ENSEIGNANT", "MASTER", "DOCTORANT"] as const;
+
+  for (const role of roles) {
+    const model = requestRoleMap[role];
+    const request = await (model as any).findUnique({
+      where: { email },
+    });
+
+    if (request) {
+      return {
+        exists: true,
+        status: request.status,
+        role,
+        rejectedReason: request.rejectedReason,
+      };
+    }
+  }
+
+  return { exists: false };
+};
+
 export const login: AuthHandler = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, browserInfo } = req.body;
+  const ipAddress = formatIpAddress(req.ip || req.socket.remoteAddress || "");
 
   try {
     const user = await prisma.user.findUnique({
       where: { email },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        firstName: true,
-        lastName: true,
-        photo:true,
-        password: true,
-        masterStudent: {
-          select: masterStudentFields,
-        },
-        teacherResearcher: {
-          select: teacherResearcherFields,
-        },
-        doctoralStudent: {
-          select: doctoralStudentFields,
-        },
+      include: {
+        masterStudent: true,
+        teacherResearcher: true,
+        doctoralStudent: true,
       },
     });
 
     if (!user) {
-      console.log("Utilisateur non trouvé");
+      // Vérifier si l'utilisateur a une demande en cours
+      const requestStatus = await checkRequestStatus(email);
+
+      if (requestStatus.exists) {
+        if (requestStatus.status === "PENDING") {
+          return res.status(403).json({
+            message:
+              "Votre demande d'adhésion est en cours d'examen. Veuillez patienter.",
+            type: "PENDING_REQUEST",
+          });
+        }
+
+        if (requestStatus.status === "REJECTED") {
+          return res.status(403).json({
+            message: `Votre demande d'adhésion a été rejetée. Motif : ${requestStatus.rejectedReason}`,
+            type: "REJECTED_REQUEST",
+          });
+        }
+
+        if (requestStatus.status === "APPROVED") {
+          return res.status(403).json({
+            message:
+              "Votre demande d'adhésion a été approuvée. Veuillez consulter votre boîte mail pour finaliser votre inscription.",
+            type: "APPROVED_REQUEST",
+          });
+        }
+      }
+
       return res.status(400).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      console.log("Mot de passe incorrect");
       return res
         .status(403)
         .json({ message: ERROR_MESSAGES.INCORRECT_PASSWORD });
     }
 
     const { accessTokenValue, refreshTokenValue } = await createSession(
-      user.id
+      user.id,
+      browserInfo,
+      ipAddress
     );
-    const { accessToken, refreshToken } = generateTokens(
-      accessTokenValue,
-      refreshTokenValue
+
+    const accessToken = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET_KEY!,
+      { expiresIn: "1h" }
+    );
+
+    const refreshToken = jwt.sign(
+      { token: refreshTokenValue },
+      process.env.JWT_REFRESH_SECRET_KEY!,
+      { expiresIn: "1w" }
     );
 
     return res.status(200).json({
@@ -310,10 +388,21 @@ export const validateAccount: AuthHandler = async (req, res) => {
   let request: any;
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET_KEY) as {
-      email: string;
-      role: Role;
-    };
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET_KEY) as {
+        email: string;
+        role: Role;
+      };
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        res.status(401).json({ message: "Token expiré" });
+      }
+      if (error instanceof jwt.JsonWebTokenError) {
+        res.status(401).json({ message: "Token invalide" });
+      }
+      throw error;
+    }
 
     const { email } = decoded;
     role = decoded.role;
@@ -328,28 +417,22 @@ export const validateAccount: AuthHandler = async (req, res) => {
     });
 
     if (!request) {
-      return res
-        .status(404)
-        .json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
+      res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
 
     if (request.status !== RequestStatus.APPROVED) {
-      return res
-        .status(400)
-        .json({ message: ERROR_MESSAGES.REQUEST_NOT_APPROVED });
+      res.status(400).json({ message: ERROR_MESSAGES.REQUEST_NOT_APPROVED });
     }
 
     await model.delete({
       where: { email },
     });
 
-    const password = "123"; // à remplacer par un mot de passe généré ou envoyé
-    const cryptPassword = await bcrypt.hash(password, 10);
-
+    // Utiliser le mot de passe de la demande
     const user = await createUser(
       email,
       role,
-      cryptPassword,
+      request.password,
       request.firstName,
       request.lastName,
       request.cin,
@@ -357,20 +440,20 @@ export const validateAccount: AuthHandler = async (req, res) => {
       request.photo || null
     );
 
-    if (role === "DOCTORANT") {
-      await createDoctoralStudent(request as DoctoralStudentRequest, user.id);
-    } else if (role === "MASTER") {
-      await createMasterStudent(request as MasterStudentRequest, user.id);
-    } else if (role === "ENSEIGNANT") {
-      await createTeacherResearcher(
-        request as TeacherResearcherRequest,
-        user.id
-      );
-    }
+    // Créer une nouvelle session
+    const ipAddress = formatIpAddress(req.ip || req.socket.remoteAddress || "");
+    const browserInfo = {
+      browserName: req.headers["user-agent"]?.split(" ")[0] || "Unknown",
+      browserVersion:
+        req.headers["user-agent"]?.split("/")[1]?.split(" ")[0] || "Unknown",
+    };
 
     const { accessTokenValue, refreshTokenValue } = await createSession(
-      user.id
+      user.id,
+      browserInfo,
+      ipAddress
     );
+
     const { accessToken, refreshToken } = generateTokens(
       accessTokenValue,
       refreshTokenValue
@@ -378,17 +461,11 @@ export const validateAccount: AuthHandler = async (req, res) => {
 
     res.status(200).json({
       message: "Compte validé avec succès",
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      },
       accessToken,
       refreshToken,
     });
   } catch (error) {
     console.error("Erreur lors de la validation du compte:", error);
-
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -397,27 +474,41 @@ export const submitAdditionalInfo: AuthHandler = async (req, res) => {
   try {
     const { password, bankData, signature } = req.body;
 
-    const requiredFields = ["password", "bankData", "signature"];
+    const requiredFields = ["bankData", "signature"];
     if (!validateRequestBody(req.body, requiredFields)) {
       return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await prisma.user.update({
-      where: {
-        id: req.user?.id,
-      },
-      data: {
-        signature,
-        bankData,
-        password: hashedPassword,
-      },
-    });
+    // Vérifier si le token temporaire est valide
+    const decoded = req.tempUser as { userId: string; role: string };
 
-    res.status(200).json({ message: "Mot de passe défini avec succès" });
+    try {
+      // Mettre à jour l'utilisateur avec les nouvelles informations
+      const user = await prisma.user.update({
+        where: {
+          id: decoded.userId,
+        },
+        data: {
+          signature,
+          bankData,
+        },
+      });
+
+      return res.status(200).json({
+        message: "Compte finalisé avec succès",
+      });
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        return res.status(401).json({ message: "Token temporaire expiré" });
+      }
+      throw error;
+    }
   } catch (error) {
-    console.error("Erreur lors de la soumission du mot de passe :", error);
-    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+    console.error(
+      "Erreur lors de la soumission des informations supplémentaires :",
+      error
+    );
+    return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
@@ -496,12 +587,25 @@ export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
 };
 
 export const changePassword: AuthHandler = async (req, res) => {
-  if (!req.user?.id) {
+  if (!req.user?.userId) {
     return res.status(401).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
   }
 
   try {
     const { oldPassword, newPassword } = req.body;
+
+    // Validation des champs requis
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
+    }
+
+    // Validation de la longueur minimale du mot de passe
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        message: "Le mot de passe doit contenir au moins 8 caractères",
+      });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
     });
@@ -516,14 +620,22 @@ export const changePassword: AuthHandler = async (req, res) => {
         .status(400)
         .json({ message: ERROR_MESSAGES.INCORRECT_PASSWORD });
     }
+
+    // Vérifier si le nouveau mot de passe est différent de l'ancien
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({ message: ERROR_MESSAGES.SAME_PASSWORD });
+    }
+
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
       where: { id: req.user.userId },
       data: { password: hashedPassword },
     });
+
     res.status(200).json({ message: "Mot de passe changé avec succès" });
   } catch (error) {
-    console.error(error);
+    console.error("Erreur lors du changement de mot de passe:", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -640,7 +752,7 @@ export const resetPassword: AuthHandler = async (req, res) => {
 export const refreshToken: AuthHandler = async (req, res) => {
   try {
     const refreshTokenValue =
-      (req.headers.refreshToken as string)?.trim() || "";
+      (req.headers.refreshtoken as string)?.trim() || "";
     const authHeader = req.headers.authorization;
 
     if (!refreshTokenValue) {
@@ -658,21 +770,14 @@ export const refreshToken: AuthHandler = async (req, res) => {
         JWT_REFRESH_SECRET_KEY
       ) as { token: string };
 
-      const session = await prisma.session.findUnique({
-        where: { refreshToken: decodedRefresh.token },
+      const session = await prisma.session.findFirst({
+        where: {
+          refreshToken: decodedRefresh.token,
+          accessToken: accessTokenValue,
+        },
       });
+
       if (!session) {
-        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
-      }
-
-      const decodedAccess = jwt.decode(accessTokenValue) as {
-        token?: string;
-      } | null;
-      if (!decodedAccess?.token) {
-        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
-      }
-
-      if (decodedAccess.token !== session.accessToken) {
         return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
       }
 
@@ -684,7 +789,7 @@ export const refreshToken: AuthHandler = async (req, res) => {
 
       await prisma.session.update({
         where: { id: session.id },
-        data: { accessToken: newAccessToken },
+        data: { accessToken: newAccessTokenValue },
       });
 
       return res.status(200).json({ accessToken: newAccessToken });
@@ -702,39 +807,103 @@ export const refreshToken: AuthHandler = async (req, res) => {
     return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
+
 export const getUser: AuthHandler = async (req, res) => {
   const id = req.user.userId;
   console.log(id);
   try {
-
     const user = await prisma.user.findUnique({
       where: {
         id: id,
       },
-      select: {
-        email: true,
-        role: true,
-        teacherResearcher: { select: teacherResearcherFields },
-        masterStudent: {
-          select: masterStudentFields,
-        },
-        doctoralStudent: {
-          select: doctoralStudentFields,
-        },
-      },
+      select: userFields,
     });
 
     const userFront = {
+      userId: user?.id,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      photo: user?.photo,
       email: user?.email,
+      phone: user?.phone,
+      cin: user?.cin,
+      bankData: user?.bankData,
+      createdAt: user?.createdAt,
+
       role: user?.role,
       ...user?.teacherResearcher,
       ...user?.masterStudent,
       ...user?.doctoralStudent,
     };
     res.status(200).json(userFront);
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const getUserSessions: AuthHandler = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const sessions = await prisma.session.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return res.status(200).json({
+      sessions: sessions.map(
+        (session: {
+          id: string;
+          browserName: string;
+          browserVersion: string;
+          ipAddress: string;
+          createdAt: Date;
+          accessToken: string;
+        }) => ({
+          id: session.id,
+          browserName: session.browserName,
+          browserVersion: session.browserVersion,
+          ipAddress: session.ipAddress,
+          createdAt: session.createdAt,
+          isCurrentSession:
+            session.accessToken === req.headers.authorization?.split(" ")[1],
+        })
+      ),
+    });
+  } catch (error) {
+    console.error("Erreur lors de la récupération des sessions:", error);
+    return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
+  }
+};
+
+export const logoutSession: AuthHandler = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const userId = req.user.userId;
+
+    // Vérifier que la session appartient à l'utilisateur
+    const session = await prisma.session.findFirst({
+      where: {
+        id: sessionId,
+        userId: userId,
+      },
+    });
+
+    if (!session) {
+      return res.status(404).json({ message: "Session non trouvée" });
+    }
+
+    // Supprimer la session
+    await prisma.session.delete({
+      where: {
+        id: sessionId,
+      },
+    });
+
+    return res.status(200).json({ message: "Session déconnectée avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion de la session:", error);
+    return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };

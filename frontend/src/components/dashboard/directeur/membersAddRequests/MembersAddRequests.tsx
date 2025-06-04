@@ -80,25 +80,25 @@ const MembersAddRequestsList = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <Card>
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium">
+                            <CardTitle className="text-sm font-medium text-primary">
                                 Demandes par statut
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-2 flex-wrap">
-                                <Badge variant="outline" className="bg-amber-50/50 dark:bg-amber-900/30 text-amber-900/70 dark:text-amber-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     En attente: {requestStatusCounts.pending}
                                 </Badge>
-                                <Badge variant="outline" className="bg-emerald-50/50 dark:bg-emerald-900/30 text-emerald-900/70 dark:text-emerald-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     Approuvées: {requestStatusCounts.approved}
                                 </Badge>
-                                <Badge variant="outline" className="bg-rose-50/50 dark:bg-rose-900/30 text-rose-900/70 dark:text-rose-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     Rejetées: {requestStatusCounts.rejected}
                                 </Badge>
-                                <Badge variant="outline" className="bg-blue-50/50 dark:bg-blue-900/30 text-blue-900/70 dark:text-blue-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     Completées: {requestStatusCounts.completed}
                                 </Badge>
-                                <Badge variant="outline" className="bg-gray-50/50 dark:bg-gray-800 text-gray-900/70 dark:text-gray-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     Cloturés: {requestStatusCounts.closed}
                                 </Badge>
                             </div>
@@ -107,19 +107,19 @@ const MembersAddRequestsList = ({
 
                     <Card>
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium">
+                            <CardTitle className="text-sm font-medium text-primary">
                                 Demandes par rôle
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-2 flex-wrap">
-                                <Badge variant="outline" className="bg-indigo-50/50 dark:bg-indigo-900/30 text-indigo-900/70 dark:text-indigo-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     Doctorants: {requestRoleCounts[RoleEnum.DOCTORANT]}
                                 </Badge>
-                                <Badge variant="outline" className="bg-violet-50/50 dark:bg-violet-900/30 text-violet-900/70 dark:text-violet-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     Masters: {requestRoleCounts[RoleEnum.MASTER]}
                                 </Badge>
-                                <Badge variant="outline" className="bg-cyan-50/50 dark:bg-cyan-900/30 text-cyan-900/70 dark:text-cyan-400">
+                                <Badge variant="outline" className="bg-primary/10 text-primary">
                                     Enseignants: {requestRoleCounts[RoleEnum.ENSEIGNANT]}
                                 </Badge>
                             </div>

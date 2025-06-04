@@ -10,6 +10,7 @@ import {
   MasterStudentRequest,
   TeacherResearcherRequest,
   UserRequest,
+  ExtendedUser,
 } from "../types/auth";
 import transporter from "../utils/mailer";
 
@@ -18,6 +19,7 @@ import {
   masterStudentFields,
   teacherResearcherFields,
   doctoralStudentFields,
+  userFields,
 } from "../constants/userFields";
 import prisma from "../utils/db";
 
@@ -34,7 +36,11 @@ export const requestRoleMap = {
   MASTER: prisma.masterStudentRequest,
 };
 
-export const createSession = async (userId: string) => {
+export const createSession = async (
+  userId: string,
+  browserInfo: { browserName: string; browserVersion: string },
+  ipAddress: string
+) => {
   let accessTokenValue = "",
     refreshTokenValue = "";
   let sessionCreated = false;
@@ -48,7 +54,9 @@ export const createSession = async (userId: string) => {
           accessToken: accessTokenValue,
           refreshToken: refreshTokenValue,
           userId,
-          deviceInfo: "web",
+          browserName: browserInfo.browserName,
+          browserVersion: browserInfo.browserVersion,
+          ipAddress,
         },
       });
       sessionCreated = true;
@@ -115,7 +123,7 @@ export const createUserRequest = async (role: string, data: unknown) => {
         email: string;
         thesisYear: number | string;
         thesisSupervisorId: string;
-        photo?: string;
+        photo: string;
       };
 
       return prisma.doctoralStudentRequest.create({
@@ -199,18 +207,9 @@ export const createDoctoralStudent = async (
   data: DoctoralStudentRequest,
   userId: string
 ) => {
-  const {
-    thesisSupervisorId,
-    thesisYear,
-    firstName,
-    lastName,
-    cin,
-
-    ...rest
-  } = data;
+  
   return prisma.doctoralStudent.create({
     data: {
-      ...rest,
       thesisYear: Number(data.thesisYear),
       user: { connect: { id: userId } },
       thesisSupervisor: { connect: { id: data.thesisSupervisorId } },
@@ -222,10 +221,8 @@ export const createMasterStudent = async (
   data: MasterStudentRequest,
   userId: string
 ) => {
-  const { supervisorId, firstName, lastName, cin, ...rest } = data;
   return prisma.masterStudent.create({
     data: {
-      ...rest,
       masterYear: Number(data.masterYear),
       user: { connect: { id: userId } },
       supervisor: { connect: { id: data.supervisorId } },
@@ -237,9 +234,13 @@ export const createTeacherResearcher = async (
   data: TeacherResearcherRequest,
   userId: string
 ) => {
-  const { firstName, lastName, cin, ...rest } = data;
   return prisma.teacherResearcher.create({
-    data: { ...rest, userId },
+    data: {
+      institution: data.institution,
+      position: data.position,
+      grade: data.grade,
+      user: { connect: { id: userId } },
+    },
   });
 };
 
@@ -248,7 +249,9 @@ export const getSupervisor = async (
   id?: string
 ): Promise<User | null> => {
   if (email) {
-    const found = await prisma.user.findFirst({ where: { email } });
+    const found = await prisma.user.findFirst({
+      where: { email },
+    });
     if (found) return found;
   }
 
@@ -265,7 +268,10 @@ export const getSupervisor = async (
   return null;
 };
 
-export const getUserByID = async (id: string, requesterRole?: Role) => {
+export const getUserByID = async (
+  id: string,
+  requesterRole?: Role
+): Promise<ExtendedUser | null> => {
   const teacherFieldsMapRequesterRole = {
     MASTER: {
       id: true,
@@ -306,17 +312,73 @@ export const getUserByID = async (id: string, requesterRole?: Role) => {
       createdAt: true,
       admin: true,
       masterStudent: { select: masterStudentFields },
-      teacherResearcher: {
-        select:
-          requesterRole && teacherFieldsMapRequesterRole[requesterRole]
-            ? teacherFieldsMapRequesterRole[requesterRole]
-            : teacherResearcherFields,
-      },
+      teacherResearcher:
+        requesterRole && teacherFieldsMapRequesterRole[requesterRole]
+          ? { select: teacherFieldsMapRequesterRole[requesterRole] }
+          : { select: teacherResearcherFields },
       doctoralStudent: { select: doctoralStudentFields },
     },
   });
 
   if (!user) return null;
+
+  if (user.role === Role.MASTER && user.masterStudent) {
+    const supervisor = await prisma.user.findFirst({
+      where: {
+        teacherResearcher: {
+          id: user.masterStudent.supervisorId,
+        },
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
+    return {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      photo: user.photo,
+      phone: user.phone,
+      cin: user.cin,
+      createdAt: user.createdAt,
+      masterYear: user.masterStudent.masterYear,
+      supervisorId: user.masterStudent.supervisorId,
+      supervisor: supervisor,
+    };
+  }
+
+  if (user.role === Role.DOCTORANT && user.doctoralStudent) {
+    const thesisSupervisor = await prisma.user.findFirst({
+      where: {
+        teacherResearcher: {
+          id: user.doctoralStudent.thesisSupervisorId,
+        },
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
+    return {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      photo: user.photo,
+      phone: user.phone,
+      cin: user.cin,
+      createdAt: user.createdAt,
+      thesisYear: user.doctoralStudent.thesisYear,
+      thesisSupervisorId: user.doctoralStudent.thesisSupervisorId,
+      thesisSupervisor: thesisSupervisor,
+    };
+  }
 
   return {
     userId: user.id,
@@ -328,10 +390,6 @@ export const getUserByID = async (id: string, requesterRole?: Role) => {
     phone: user.phone,
     cin: user.cin,
     createdAt: user.createdAt,
-    ...user.admin,
-    ...user.masterStudent,
-    ...user.teacherResearcher,
-    ...user.doctoralStudent,
   };
 };
 
@@ -340,11 +398,33 @@ export const getDirector = async (): Promise<User | null> => {
 };
 
 export const checkSupervisorExists = async (id: string) => {
-  const supervisor = await prisma.teacherResearcher.findUnique({
-    where: { id },
+  const supervisor = await prisma.user.findFirst({
+    where: {
+      OR: [{ id }, { teacherResearcher: { id } }],
+    },
   });
   if (!supervisor) {
     throw new Error("Encadrant ou directeur de thèse non existant");
   }
   return supervisor;
+};
+
+export const getUserSessions = async (userId: string) => {
+  return await prisma.session.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      browserName: true,
+      browserVersion: true,
+      ipAddress: true,
+      createdAt: true,
+      accessToken: true,
+      refreshToken: true,
+    },
+  });
 };

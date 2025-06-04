@@ -8,7 +8,7 @@ interface FileUploadProps {
     acceptedTypes?: string[];
     headerText?: string;
     subHeaderText?: string;
-    onFileUploaded?: (fileUrls: string) => void;
+    onFileUploaded?: (fileUrls: string[] | string) => void;
 }
 
 interface FileItem {

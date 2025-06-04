@@ -5,6 +5,7 @@ export const doctoralStudentFields = {
 
   thesisYear: true,
   thesisSupervisorId: true,
+  thesisSupervisor: true,
 };
 
 export const masterStudentFields = {
@@ -12,6 +13,7 @@ export const masterStudentFields = {
 
   masterYear: true,
   supervisorId: true,
+  supervisor: true,
 };
 
 export const teacherResearcherFields = {
@@ -19,7 +21,7 @@ export const teacherResearcherFields = {
 
   position: true,
   grade: true,
-
+  institution: true,
   masterStudents: { select: masterStudentFields },
   doctoralStudents: { select: doctoralStudentFields },
 };

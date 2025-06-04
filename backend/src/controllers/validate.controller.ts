@@ -8,10 +8,7 @@ import {
   requestRoleMap,
   fields,
 } from "../utils/validateUtils";
-import {
-  fetchDataByRole,
-
-} from "../services/validate.service";
+import { fetchDataByRole } from "../services/validate.service";
 
 import { sendMailAfterValidation } from "../services/mail.service";
 const prisma = new PrismaClient();
@@ -108,6 +105,12 @@ export const validateRequest = async (req: Request, res: Response) => {
 
     if (!request) {
       res.status(404).json({ message: "Requête non trouvée" });
+      return;
+    }
+
+    // Vérifier si la demande est confirmée
+    if (!request.isConfirmed) {
+      res.status(400).json({ message: "Utilisateur non confirmé" });
       return;
     }
 

@@ -42,7 +42,7 @@ export const generateTokens = (
     { token: accessTokenValue },
     JWT_SECRET_KEY,
     {
-      expiresIn: "1h",
+      expiresIn: "4h",
     }
   );
 
@@ -50,7 +50,7 @@ export const generateTokens = (
     { token: refreshTokenValue },
     JWT_REFRESH_SECRET_KEY,
     {
-      expiresIn: "1w",
+      expiresIn: "30d",
     }
   );
 
@@ -61,3 +61,27 @@ export const validateRequestBody = (body: any, requiredFields: string[]) => {
   return requiredFields.every((field) => body.hasOwnProperty(field));
 };
 
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const decoded = jwt.decode(token) as { exp?: number };
+    if (!decoded.exp) return true;
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  } catch {
+    return true;
+  }
+};
+
+export const verifyToken = (
+  token: string,
+  isRefreshToken: boolean = false
+): boolean => {
+  try {
+    const secret = isRefreshToken ? JWT_REFRESH_SECRET_KEY : JWT_SECRET_KEY;
+    jwt.verify(token, secret);
+    return true;
+  } catch {
+    return false;
+  }
+};

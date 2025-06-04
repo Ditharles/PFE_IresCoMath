@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../utils/db";
 
-import { Grade, Role } from "../../generated/prisma";
+import { Grade, Prisma, Role, UserStatus } from "../../generated/prisma";
 import {
   masterStudentFields,
   teacherResearcherFields,
@@ -97,13 +97,69 @@ export const deleteUser = async (req: Request, res: Response) => {
   });
 
   if (!user) {
-    return res.status(404).json({ message: "Utilisateur non rencontré" });
+    res.status(404).json({ message: "Utilisateur non rencontré" });
   }
 
   res.status(200).json({ message: "Utilisateur supprimé avec succès" });
 };
 
-export const updateUser = async (req: UpdateUserRequest, res: Response) => {
+export const getStudents = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    console.log("ID reçu:", id);
+
+    if (!id) {
+      res
+        .status(400)
+        .json({ message: "L'identifiant de l'encadrant est requis" });
+      return;
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { doctoralStudent: { thesisSupervisorId: id } },
+          { doctoralStudent: { thesisSupervisor: { user: { id: id } } } },
+          { masterStudent: { supervisor: { user: { id: id } } } },
+          { masterStudent: { supervisorId: id } },
+        ],
+      },
+      select: userFields,
+    });
+    console.log("Users trouvés:", users);
+
+    if (users.length === 0) {
+      res.status(200).json([]);
+      return;
+    }
+
+    const data = users.map((user) => ({
+      userId: user.id,
+      role: user.role,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      createdAt: user.createdAt,
+      cin: user.cin,
+      ...user.masterStudent,
+      ...user.teacherResearcher,
+      ...user.doctoralStudent,
+    }));
+    console.log("Data formatée:", data);
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des étudiants:", error);
+    res.status(500).json({
+      message: "Erreur serveur lors de la récupération des étudiants",
+      error: error instanceof Error ? error.message : "Erreur inconnue",
+    });
+  }
+};
+
+
+export const updateUser = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const {
     role,
@@ -118,7 +174,22 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
     institution,
   } = req.body;
 
+  if (!id) {
+    return res
+      .status(400)
+      .json({ message: "L'identifiant de l'utilisateur est requis" });
+  }
+
   try {
+    // Vérifier si l'utilisateur existe
+    const existingUser = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
     // Mettre à jour les informations de base de l'utilisateur
     const updatedUser = await prisma.user.update({
       where: { id },
@@ -129,42 +200,66 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
       },
     });
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-
     // Mettre à jour les informations spécifiques en fonction du rôle
-    switch (role) {
-      case "DOCTORANT":
-        await prisma.doctoralStudent.updateMany({
-          where: { userId: id },
-          data: {
-            thesisYear,
-            thesisSupervisorId,
-          },
-        });
-        break;
-      case "MASTER":
-        await prisma.masterStudent.updateMany({
-          where: { userId: id },
-          data: {
-            masterYear,
-            supervisorId,
-          },
-        });
-        break;
-      case "ENSEIGNANT":
-        await prisma.teacherResearcher.updateMany({
-          where: { userId: id },
-          data: {
-            position,
-            grade,
-            institution,
-          },
-        });
-        break;
-      default:
-        break;
+    try {
+      switch (role) {
+        case "DOCTORANT":
+          if (!thesisYear || !thesisSupervisorId) {
+            return res.status(400).json({
+              message:
+                "L'année de thèse et l'encadrant sont requis pour un doctorant",
+            });
+          }
+          await prisma.doctoralStudent.updateMany({
+            where: { userId: id },
+            data: {
+              thesisYear,
+              thesisSupervisorId,
+            },
+          });
+          break;
+
+        case "MASTER":
+          if (!masterYear || !supervisorId) {
+            return res.status(400).json({
+              message:
+                "L'année de master et l'encadrant sont requis pour un étudiant en master",
+            });
+          }
+          await prisma.masterStudent.updateMany({
+            where: { userId: id },
+            data: {
+              masterYear,
+              supervisorId,
+            },
+          });
+          break;
+
+        case "ENSEIGNANT":
+          if (!position || !grade || !institution) {
+            return res.status(400).json({
+              message:
+                "La position, le grade et l'institution sont requis pour un enseignant",
+            });
+          }
+          await prisma.teacherResearcher.updateMany({
+            where: { userId: id },
+            data: {
+              position,
+              grade,
+              institution,
+            },
+          });
+          break;
+
+        default:
+          return res.status(400).json({ message: "Rôle non valide" });
+      }
+    } catch (error) {
+      return res.status(500).json({
+        message:
+          "Erreur interne du serveur lors de la mise à jour de l'utilisateur",
+      });
     }
 
     res.status(200).json({
@@ -172,9 +267,69 @@ export const updateUser = async (req: UpdateUserRequest, res: Response) => {
       user: updatedUser,
     });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la mise à jour de l'utilisateur" });
+    console.error("Erreur lors de la mise à jour de l'utilisateur:", error);
+
+    res.status(500).json({
+      message:
+        "Erreur interne du serveur lors de la mise à jour de l'utilisateur",
+    });
+  }
+};
+
+export const desactivateUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res
+      .status(400)
+      .json({ message: "L'identifiant de l'utilisateur est requis" });
+  }
+
+  try {
+    // Vérifier si l'utilisateur existe
+    const existingUser = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Vérifier si l'utilisateur n'est pas déjà désactivé
+    if (existingUser.status === UserStatus.DESACTIVE) {
+      return res
+        .status(400)
+        .json({ message: "L'utilisateur est déjà désactivé" });
+    }
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: {
+        status: UserStatus.DESACTIVE,
+      },
+    });
+
+    res.status(200).json({
+      message: "Utilisateur désactivé avec succès",
+      user: {
+        id: user.id,
+        email: user.email,
+        status: user.status,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur lors de la désactivation de l'utilisateur:", error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({
+        message: "Erreur lors de la mise à jour de l'utilisateur",
+        error: error.message,
+      });
+    }
+
+    res.status(500).json({
+      message:
+        "Erreur interne du serveur lors de la désactivation de l'utilisateur",
+    });
   }
 };

@@ -42,7 +42,7 @@ export const verifyToken = async (
       },
     });
 
-    if (!session  || !session.user) {
+    if (!session || !session.user) {
       return res.status(401).json({ message: "Session non trouvée" });
     }
 

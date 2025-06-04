@@ -38,7 +38,7 @@ export const columns = ({
                         (placeholder, index) => (
                             <span
                                 key={index}
-                                className="px-2 py-1 bg-gray-100 rounded-md text-sm">
+                                className="px-2 py-1 bg-accent text-accent-foreground rounded-md text-sm">
                                 {placeholder}
                             </span>
                         )

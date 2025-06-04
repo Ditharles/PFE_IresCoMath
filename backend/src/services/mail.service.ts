@@ -323,8 +323,7 @@ export const sendMailAfterValidation = async (
   if (finalStatus === RequestStatus.APPROVED) {
     const token = jwt.sign(
       { email: request.email, role: request_role },
-      jwtSecret!,
-      { expiresIn: "24h" }
+      jwtSecret!
     );
 
     emailData = {
