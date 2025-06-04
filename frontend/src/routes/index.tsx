@@ -27,7 +27,7 @@ import Historique from "../pages/Historique";
 import Profile from "../pages/Profile";
 import MemberDetails from "../pages/directeur/MemberDetails";
 
-import Calendar from "../pages/Calendar";
+// import Calendar from "../pages/Calendar";
 import AddCategory from "../pages/equipment/AddCategory";
 import AddEquipment from "../pages/equipment/AddEquipment";
 import EquipmentPage from "../pages/equipment/Equipment";
