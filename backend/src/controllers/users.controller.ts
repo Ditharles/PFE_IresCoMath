@@ -3,9 +3,6 @@ import prisma from "../utils/db";
 
 import { Grade, Prisma, Role, UserStatus } from "../../generated/prisma";
 import {
-  masterStudentFields,
-  teacherResearcherFields,
-  doctoralStudentFields,
   userFields,
 } from "../constants/userFields";
 import { getUserByID } from "../services/auth.service";
@@ -31,6 +28,8 @@ interface UpdateUserRequest extends Request {
   };
 }
 
+//Cette fonction permet de récupérer tous les utilisateurs
+// et de les renvoyer au format attendu par le frontend
 export const getUsers = async (req: Request, res: Response) => {
   const users = await prisma.user.findMany({
     select: userFields,
@@ -57,6 +56,9 @@ export const getUsers = async (req: Request, res: Response) => {
   res.status(200).json(usersFront);
 };
 
+
+// Cette fonction permet de récupérer un utilisateur par son ID
+// et de vérifier les permissions de l'utilisateur qui fait la requête
 export const getUser = async (req: AuthRequest, res: Response) => {
   const requester = req.user;
   const user = await getUserByID(req.params.id, requester?.role);
@@ -91,6 +93,7 @@ export const getUser = async (req: AuthRequest, res: Response) => {
   res.status(200).json(user);
 };
 
+// Cette fonction permet de supprimer un utilisateur par son ID
 export const deleteUser = async (req: Request, res: Response) => {
   const user = await prisma.user.delete({
     where: { id: req.params.id },
@@ -103,6 +106,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   res.status(200).json({ message: "Utilisateur supprimé avec succès" });
 };
 
+// Cette fonction permet de récupérer les étudiants encadrés par un encadrant
 export const getStudents = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -159,6 +163,7 @@ export const getStudents = async (req: Request, res: Response) => {
 };
 
 
+// Cette fonction permet de mettre à jour un utilisateur par son ID
 export const updateUser = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const {
@@ -276,6 +281,8 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
   }
 };
 
+
+// Cette fonction permet de désactiver un utilisateur par son ID
 export const desactivateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 

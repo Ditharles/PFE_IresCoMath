@@ -1,7 +1,7 @@
 import jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "../../generated/prisma";
-import { getUser } from "../controllers/auth.controller";
+
 import { getUserByID } from "../services/auth.service";
 
 const prisma = new PrismaClient();

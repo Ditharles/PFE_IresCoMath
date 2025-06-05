@@ -3,6 +3,10 @@
     "email": "directeur@irescomath.com",
     "password": "directeur123"
   },
+  "loginEnseignant": {
+    "email": "enseignant@irescomath.com",
+    "password": "enseignant123"
+  },
 
   "invalidPassword": {
     "email": "admin@irescomath.com",

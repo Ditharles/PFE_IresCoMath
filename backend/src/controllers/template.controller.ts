@@ -10,6 +10,7 @@ import { Response } from "express";
 import { ERROR_MESSAGES, validateRequestBody } from "../utils/authUtils";
 import prisma from "../utils/db";
 
+// Cette fonction permet de récupérer tous les templates
 export const getTemplates = async (req: AuthRequest, res: Response) => {
   try {
     const templates = await prisma.template.findMany();
@@ -22,6 +23,7 @@ export const getTemplates = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// Cette fonction permet de récupérer un template par son ID
 export const getTemplate = async (req: AuthRequest, res: Response) => {
   try {
     const template = await prisma.template.findUnique({
@@ -35,6 +37,9 @@ export const getTemplate = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+// Cette fonction permet de vérifier un template.Actuellement, elle télécharge le fichier et vérifie les placeholders.
+//TODO: Ajouter la vérification des champs autorisés selon le type de requête
 export const verifyTemplate = async (req: AuthRequest, res: Response) => {
   try {
     const { url } = req.body;
@@ -72,6 +77,9 @@ export const verifyTemplate = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// Cette fonction permet de mettre à jour un template par son ID
+//Actuellement, elle permet de modifier uniquement le nom
+//TODO: Ajouter la possibilité de modifier l'url et ansi les placeholders(le travail est essentiellement coté client)
 export const updateTemplate = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.params.id) {
@@ -117,6 +125,7 @@ export const updateTemplate = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// Cette fonction permet de soumettre un template  et d'écraser un template existant(logique utilisable actuellement pour la modification d'un template)
 export const submitTemplate = async (req: AuthRequest, res: any) => {
   try {
     const requiredFields = ["url", "placeholders", "for", "name"];
@@ -125,6 +134,7 @@ export const submitTemplate = async (req: AuthRequest, res: any) => {
       return;
     }
     const { upsert, name, for: requestType, url, placeholders } = req.body;
+    //On verifie qu'un template de ce nom n'existe pas déjà
     const existingName = await prisma.template.findFirst({
       where: { name: name },
     });
@@ -135,7 +145,7 @@ export const submitTemplate = async (req: AuthRequest, res: any) => {
       });
       return;
     }
-
+    // On verifie qu'un template de ce type de requete n'existe pas déjà
     const existingTemplate = await prisma.template.findUnique({
       where: { for: requestType },
     });
@@ -146,7 +156,7 @@ export const submitTemplate = async (req: AuthRequest, res: any) => {
       });
       return;
     }
-
+    //Si upsert() est vrai, on met à jour le template existant, sinon on en crée un nouveau
     const templateData = {
       name,
       for: requestType,
@@ -185,6 +195,7 @@ export const submitTemplate = async (req: AuthRequest, res: any) => {
   }
 };
 
+// Cette fonction permet de supprimer un template par son ID
 export const deleteTemplate = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.params.id) {

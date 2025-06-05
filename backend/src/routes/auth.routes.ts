@@ -1,28 +1,34 @@
 import express, { RequestHandler } from "express";
+
+import { verifyToken } from "../middleware/verifyToken";
 import {
-  login,
   confirmRequest,
-  submitAdditionalInfo,
-  logout,
-  resendConfirmLinkWithMail,
+  validateAccount,
   resendConfirmLink,
+  resendConfirmLinkWithMail,
+  submitAdditionalInfo,
+} from "../controllers/auth/confirm.controller";
+import { login } from "../controllers/auth/login.controller";
+import {
+  logout,
+  refreshToken,
+  logoutSession,
+} from "../controllers/auth/other.controller";
+import {
   changePassword,
   forgetPassword,
   confirmResetPassword,
   resetPassword,
-  validateAccount,
-  refreshToken,
+} from "../controllers/auth/password.controller";
+import {
+  registerTeacherResearcher,
   registerDoctoralStudent,
   registerMasterStudent,
-  registerTeacherResearcher,
-  getUser,
-  getUserSessions,
-  logoutSession,
-} from "../controllers/auth.controller";
-import { verifyToken } from "../middleware/verifyToken";
+} from "../controllers/auth/register.controller";
+import { getUser } from "../controllers/auth/other.controller";
+import { getUserSessions } from "../services/auth.service";
 
 const router = express.Router();
-
 // Routes d'inscription
 router.post(
   "/register/enseignant",
@@ -34,7 +40,7 @@ router.post("/register/master", registerMasterStudent as RequestHandler);
 // Routes de confirmation
 router.get("/confirm-request/:token", confirmRequest as RequestHandler);
 
-// Route de validation de compte
+// Routes de validation de compte
 router.get("/validate-account/:token", validateAccount as RequestHandler);
 
 // Routes de connexion et déconnexion
@@ -61,13 +67,8 @@ router.get(
 );
 router.post("/reset-password/:token", resetPassword as RequestHandler);
 
-// Route de rafraîchissement du token
+// Routes de rafraîchissement et de fermeture de session
 router.post("/refresh-token", refreshToken as RequestHandler);
-
-// Route pour les informations de l'utilisateur
-router.get("/me", verifyToken as RequestHandler, getUser as RequestHandler);
-
-// Routes supplémentaires
 router.get(
   "/sessions",
   verifyToken as RequestHandler,
@@ -79,10 +80,13 @@ router.delete(
   logoutSession as RequestHandler
 );
 
+// Routes supplémentaires
 router.post(
-  "/submit-additional-info",
-  verifyToken as RequestHandler,
+  "/submit-additional-info/:token",
   submitAdditionalInfo as RequestHandler
 );
+
+// Routes de l'utilisateur
+router.get("/me", verifyToken as RequestHandler, getUser as RequestHandler);
 
 export default router;

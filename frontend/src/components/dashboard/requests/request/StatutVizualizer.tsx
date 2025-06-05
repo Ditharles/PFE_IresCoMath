@@ -130,38 +130,44 @@ const StatusVisualizer: React.FC<StatusVisualizerProps> = ({ status, className }
             case "completed":
             case "approved":
                 return {
-                    circle: "bg-green-500 text-white border-green-500",
-                    text: "text-green-700",
-                    line: "bg-green-500",
+                    circle: "bg-green-500 dark:bg-green-600 text-white border-green-500 dark:border-green-600",
+                    text: "text-green-600 dark:text-green-400",
+                    line: "bg-green-500 dark:bg-green-600",
                 }
             case "rejected":
                 return {
-                    circle: "bg-red-500 text-white border-red-500",
-                    text: "text-red-700",
-                    line: "bg-red-500",
+                    circle: "bg-destructive text-destructive-foreground border-destructive",
+                    text: "text-destructive",
+                    line: "bg-destructive",
                 }
             case "current":
                 return {
-                    circle: "bg-blue-500 text-white border-blue-500 ring-4 ring-blue-100",
-                    text: "text-blue-700 font-semibold",
-                    line: "bg-gray-200",
+                    circle: "bg-primary text-primary-foreground border-primary ring-4 ring-primary/20",
+                    text: "text-primary font-semibold",
+                    line: "bg-muted",
                 }
             default:
                 return {
-                    circle: "bg-gray-200 text-gray-500 border-gray-200",
-                    text: "text-gray-500",
-                    line: "bg-gray-200",
+                    circle: "bg-muted text-muted-foreground border-muted",
+                    text: "text-muted-foreground",
+                    line: "bg-muted",
                 }
         }
     }
 
+    const getStatusVariant = () => {
+        if (rejected) return "destructive"
+        if (approved) return "default"
+        return "secondary"
+    }
+
     return (
         <TooltipProvider>
-            <Card className={cn("w-full", className)}>
+            <Card className={cn("w-full border-0 shadow-none", className)}>
                 <CardContent className="p-6">
-                    <div className="mb-4 flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-gray-900">Statut de la demande</h3>
-                        <Badge variant={rejected ? "destructive" : approved ? "default" : "secondary"} className="text-sm">
+                    <div className="mb-6 flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-foreground">Statut de la demande</h3>
+                        <Badge variant={getStatusVariant()} className="text-sm font-medium">
                             {statusLabels[status]}
                         </Badge>
                     </div>
@@ -180,7 +186,7 @@ const StatusVisualizer: React.FC<StatusVisualizerProps> = ({ status, className }
                                                 <TooltipTrigger asChild>
                                                     <div
                                                         className={cn(
-                                                            "flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 cursor-help",
+                                                            "flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all duration-300 cursor-help hover:scale-105",
                                                             colors.circle,
                                                             stepStatus === "current" && "animate-pulse",
                                                         )}
@@ -190,15 +196,36 @@ const StatusVisualizer: React.FC<StatusVisualizerProps> = ({ status, className }
                                                         {getStepIcon(step, stepStatus)}
                                                     </div>
                                                 </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <div className="text-center">
-                                                        <p className="font-medium">{step.name}</p>
-                                                        <p className="text-sm text-muted-foreground">{step.description}</p>
+                                                <TooltipContent
+                                                    side="top"
+                                                    className="max-w-xs p-3 bg-popover border border-border shadow-lg"
+                                                >
+                                                    <div className="text-center space-y-1">
+                                                        <p className="font-semibold text-popover-foreground">{step.name}</p>
+                                                        <p className="text-sm text-muted-foreground leading-relaxed">
+                                                            {step.description}
+                                                        </p>
+                                                        <div className="pt-1">
+                                                            <span className={cn(
+                                                                "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium",
+                                                                stepStatus === "completed" || stepStatus === "approved"
+                                                                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                                                                    : stepStatus === "rejected"
+                                                                        ? "bg-destructive/10 text-destructive"
+                                                                        : stepStatus === "current"
+                                                                            ? "bg-primary/10 text-primary"
+                                                                            : "bg-muted text-muted-foreground"
+                                                            )}>
+                                                                {stepStatus === "completed" || stepStatus === "approved" ? "Terminé" :
+                                                                    stepStatus === "rejected" ? "Rejeté" :
+                                                                        stepStatus === "current" ? "En cours" : "En attente"}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </TooltipContent>
                                             </Tooltip>
 
-                                            <div className="mt-2 text-center">
+                                            <div className="mt-3 text-center">
                                                 <p className={cn("text-xs font-medium", colors.text)}>{step.name}</p>
                                             </div>
                                         </div>
@@ -207,8 +234,8 @@ const StatusVisualizer: React.FC<StatusVisualizerProps> = ({ status, className }
                                             <div className="flex-1 mx-4">
                                                 <div
                                                     className={cn(
-                                                        "h-0.5 transition-all duration-500",
-                                                        stepStatus === "completed" || stepStatus === "approved" ? colors.line : "bg-gray-200",
+                                                        "h-0.5 transition-all duration-500 rounded-full",
+                                                        stepStatus === "completed" || stepStatus === "approved" ? colors.line : "bg-muted",
                                                     )}
                                                     role="presentation"
                                                 />
@@ -221,18 +248,18 @@ const StatusVisualizer: React.FC<StatusVisualizerProps> = ({ status, className }
                     </div>
 
                     {/* Status details */}
-                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="mt-8 p-4 bg-muted/50 rounded-lg border border-border/50">
                         <div className="flex items-start space-x-3">
                             {rejected ? (
-                                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                                <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
                             ) : approved ? (
-                                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                             ) : (
-                                <Clock className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                                <Clock className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                             )}
-                            <div>
-                                <p className="text-sm font-medium text-gray-900">{statusLabels[status]}</p>
-                                <p className="text-xs text-gray-600 mt-1">
+                            <div className="flex-1">
+                                <p className="text-sm font-semibold text-foreground mb-1">{statusLabels[status]}</p>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
                                     {rejected && "La demande a été rejetée. Veuillez consulter les commentaires pour plus de détails."}
                                     {approved && status === RequestStatus.CLOSED && "La demande a été complétée et archivée avec succès."}
                                     {approved && status === RequestStatus.COMPLETED && "La demande a été traitée et complétée."}

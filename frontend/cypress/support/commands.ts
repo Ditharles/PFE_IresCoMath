@@ -7,7 +7,7 @@ declare namespace Cypress {
     assertValidationMessage(message: string): Chainable<void>;
     register(data: any): Chainable<void>;
     registerWithFixture(fixtureName: string): Chainable<void>;
-    selectDate(datePickerSelector: string, dateString: string): Chainable<void>;
+
     addEquipment(data: any): Chainable<void>;
     addEquipmentWithFixture(fixtureName: string): Chainable<void>;
   }
@@ -88,9 +88,10 @@ Cypress.Commands.add("assertValidationMessage", (message: string) => {
 Cypress.Commands.add("addEquipment", (data: any) => {
   cy.get('input[name="name"]').should("be.visible").type(data.name);
   cy.get('input[name="cost"]').should("be.visible").type(data.cost);
-  //Choisir la catéguorie et le status
-  cy.wait(5000);
-  cy.selectDate("Sélectionnez une date", data.date);
+
+  cy.wait(7000);
+
+  cy.get('button[type="submit"]').should("be.visible").click();
 });
 
 Cypress.Commands.add("addEquipmentWithFixture", (fixtureName: string) => {
@@ -104,65 +105,7 @@ Cypress.Commands.add("addEquipmentWithFixture", (fixtureName: string) => {
     cy.addEquipment(equipment);
   });
 });
-//Pour choisir la date
-Cypress.Commands.add("selectDate", (contains, dateString) => {
-  const [day, month, year] = dateString.split("/");
 
-  // Ouvrir le calendrier
-  cy.get("[data-slot='date-picker']")
-    .find("button")
-    .contains(contains)
-    .first()
-    .click();
-  cy.get(".absolute.z-50").should("be.visible");
-
-  // Naviguer vers la bonne date
-  cy.get(".absolute.z-50").within(() => {
-    // Répéter jusqu'à trouver le bon mois/année
-    cy.get("body").then(() => {
-      const navigateToDate = () => {
-        cy.get('[role="heading"]').then(($heading) => {
-          const currentText = $heading.text().toLowerCase();
-          const targetMonthName = getMonthName(parseInt(month));
-          const targetYear = year;
-
-          if (
-            currentText.includes(targetMonthName) &&
-            currentText.includes(targetYear)
-          ) {
-            // On est au bon mois, sélectionner le jour
-            cy.contains("button", day).click();
-          } else {
-            // Naviguer (logique simplifiée - toujours aller vers le futur)
-            cy.get('button[aria-label*="next"]').click();
-            cy.wait(200);
-            navigateToDate();
-          }
-        });
-      };
-
-      navigateToDate();
-    });
-  });
-});
-
-function getMonthName(monthNumber) {
-  const months = [
-    "janvier",
-    "février",
-    "mars",
-    "avril",
-    "mai",
-    "juin",
-    "juillet",
-    "août",
-    "septembre",
-    "octobre",
-    "novembre",
-    "décembre",
-  ];
-  return months[monthNumber - 1];
-}
 // Pour que ce fichier soit un module, vous pouvez ajouter :
 // export {}; // Décommentez si vous avez des problèmes avec "Cannot augment Ggobal Pcope" ou si votre tsconfig l'exige.
 // ***********************************************

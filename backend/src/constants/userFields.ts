@@ -1,5 +1,5 @@
 import { RequestRole } from "../utils/validateUtils";
-
+//Définition des champs utilisés dans les requêtes pour les différents rôles d'utilisateur
 export const doctoralStudentFields = {
   id: true,
 

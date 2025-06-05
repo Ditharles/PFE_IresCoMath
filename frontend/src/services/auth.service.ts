@@ -151,11 +151,11 @@ class AuthService {
   }
 
   async submitAdditionalInfo(data: unknown, tempToken: string) {
-    const response = await api.post("/auth/submit-additional-info", data, {
-      headers: {
-        Authorization: `Bearer ${tempToken}`,
-      },
-    });
+    const response = await api.post(
+      `/auth/submit-additional-info/:${tempToken}`,
+      data,
+      {}
+    );
     if (response.data.accessToken && response.data.refreshToken) {
       setToken("accessToken", response.data.accessToken);
       setToken("refreshToken", response.data.refreshToken);

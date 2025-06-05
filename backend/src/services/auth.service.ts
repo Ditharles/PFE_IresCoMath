@@ -88,6 +88,7 @@ export const createUserRequest = async (role: string, data: unknown) => {
         phone: string;
         lastName: string;
         firstName: string;
+        password: string;
         email: string;
         position: string;
         grade: string;
@@ -105,6 +106,7 @@ export const createUserRequest = async (role: string, data: unknown) => {
           position: req.position,
           grade: req.grade as Grade,
           institution: req.institution,
+          password: req.password,
           photo: req.photo || null,
           status: RequestStatus.PENDING,
           isConfirmed: false,
@@ -119,6 +121,8 @@ export const createUserRequest = async (role: string, data: unknown) => {
         cin: string;
         phone: string;
         lastName: string;
+        password: string;
+
         firstName: string;
         email: string;
         thesisYear: number | string;
@@ -133,6 +137,7 @@ export const createUserRequest = async (role: string, data: unknown) => {
           lastName: req.lastName,
           firstName: req.firstName,
           email: req.email,
+          password: req.password,
           thesisYear: Number(req.thesisYear),
           thesisSupervisor: { connect: { id: req.thesisSupervisorId } },
           photo: req.photo || null,
@@ -150,6 +155,8 @@ export const createUserRequest = async (role: string, data: unknown) => {
         phone: string;
         lastName: string;
         firstName: string;
+        password: string;
+
         email: string;
         masterYear: number | string;
         supervisorId: string;
@@ -162,6 +169,7 @@ export const createUserRequest = async (role: string, data: unknown) => {
           phone: req.phone,
           lastName: req.lastName,
           firstName: req.firstName,
+          password: req.password,
           email: req.email,
           masterYear: Number(req.masterYear),
           supervisor: { connect: { id: req.supervisorId } },
@@ -189,7 +197,7 @@ export const createUser = async (
   phone: string,
   photo: string | null = null
 ): Promise<User> => {
-  return prisma.user.create({
+  return await prisma.user.create({
     data: {
       email,
       role,
@@ -207,7 +215,6 @@ export const createDoctoralStudent = async (
   data: DoctoralStudentRequest,
   userId: string
 ) => {
-  
   return prisma.doctoralStudent.create({
     data: {
       thesisYear: Number(data.thesisYear),
@@ -337,6 +344,7 @@ export const getUserByID = async (
     });
     return {
       userId: user.id,
+      id: user.masterStudent.id,
       email: user.email,
       role: user.role,
       firstName: user.firstName,
@@ -366,6 +374,7 @@ export const getUserByID = async (
     });
     return {
       userId: user.id,
+      id: user.doctoralStudent.id,
       email: user.email,
       role: user.role,
       firstName: user.firstName,
@@ -382,6 +391,11 @@ export const getUserByID = async (
 
   return {
     userId: user.id,
+    id:
+      user.doctoralStudent?.id ??
+      user.masterStudent?.id ??
+      user.teacherResearcher?.id ??
+      "",
     email: user.email,
     role: user.role,
     firstName: user.firstName,

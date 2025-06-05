@@ -42,12 +42,7 @@ app.use("/validate/", validateRoutes);
 app.use("/users/", verifyToken as RequestHandler, usersRoutes);
 app.use("/requests/", verifyToken as RequestHandler, requestsRoutes);
 app.use("/notifications/", verifyToken as RequestHandler, notificationsRoutes);
-app.use(
-  "/equipments/",
-  verifyToken as RequestHandler,
-  // checkRole(["ADMIN", "DIRECTEUR"]),
-  equipmentsRoutes
-);
+app.use("/equipments/", verifyToken as RequestHandler, equipmentsRoutes);
 app.use(
   "/templates",
   verifyToken as RequestHandler,

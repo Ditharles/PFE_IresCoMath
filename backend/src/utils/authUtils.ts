@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { requestRoleMap } from "../services/auth.service";
 
 export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY!;
 export const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY!;
@@ -84,4 +85,39 @@ export const verifyToken = (
   } catch {
     return false;
   }
+};
+
+export const checkRequestStatus = async (email: string) => {
+  const roles = ["ENSEIGNANT", "MASTER", "DOCTORANT"] as const;
+
+  for (const role of roles) {
+    const model = requestRoleMap[role];
+    const request = await (model as any).findUnique({
+      where: { email },
+    });
+
+    if (request) {
+      return {
+        exists: true,
+        status: request.status,
+        role,
+        rejectedReason: request.rejectedReason,
+      };
+    }
+  }
+
+  return { exists: false };
+};
+
+
+export const  formatIpAddress = (ip: string): string => {
+  // Si c'est une adresse IPv6 de loopback, retourner localhost
+  if (ip === "::1" || ip === "::ffff:127.0.0.1") {
+    return "localhost";
+  }
+  // Si c'est une adresse IPv6, la formater
+  if (ip.includes("::ffff:")) {
+    return ip.replace("::ffff:", "");
+  }
+  return ip;
 };

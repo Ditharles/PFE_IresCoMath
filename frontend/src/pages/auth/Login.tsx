@@ -20,7 +20,7 @@ const LoginPage: React.FC = () => {
     try {
       const response = await authService.login(email, password);
       console.log(response);
-      toast.success(response!.data.message || "Connexion réussie !");
+      toast.success(response!.data.message);
       login();
       setTimeout(() => {
         navigate("/accueil");

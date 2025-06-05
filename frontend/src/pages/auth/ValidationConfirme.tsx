@@ -30,9 +30,9 @@ const ValidationConfirme: React.FC = () => {
 
       try {
         const response = await authService.verifyValidationUser(token);
-        if (response.data && response.data.tempToken) {
+        if (response.data) {
           setTokenStatus("valid");
-          toast.success("Votre compte a été confirmé avec succès !");
+          toast.success(response.data.message);
           navigate("/informations-supplementaires", {
             state: { tempToken: response.data.tempToken },
             replace: true

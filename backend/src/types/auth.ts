@@ -81,6 +81,7 @@ export interface RefreshTokenRequest {
 }
 
 export interface ExtendedUser {
+  id: string;
   userId: string;
   email: string;
   role: Role;

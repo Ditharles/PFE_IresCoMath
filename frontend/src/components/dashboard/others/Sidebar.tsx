@@ -17,7 +17,7 @@ const SidebarOthers = () => {
     { name: "Historique", path: "/historique", icon: History },
     { name: "Nouvelle demande", path: "/nouvelle-demande", icon: FilePlus2 },
     { name: "Profil", path: "/profil", icon: User },
-    { name: "Paramètres", path: "/paramètres", icon: Settings },
+    { name: "Paramètres", path: "/parametres", icon: Settings },
   ];
 
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(`${path}/`);

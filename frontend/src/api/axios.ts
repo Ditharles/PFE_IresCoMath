@@ -20,7 +20,6 @@ const refreshClient = axios.create({
 const publicRoutes = [
   "/auth/login",
   "/auth/register",
-  "/auth/refresh-token",
   "/auth/confirm-request",
   "/auth/resend-confirmation-email",
   "/auth/forgot-password",
@@ -98,7 +97,7 @@ api.interceptors.response.use(
         const response = await refreshClient.post("/auth/refresh-token", null, {
           headers: {
             Authorization: `Bearer ${getToken("accessToken")}`,
-            refreshtoken: refreshToken,
+            refreshToken: refreshToken,
           },
         });
 
