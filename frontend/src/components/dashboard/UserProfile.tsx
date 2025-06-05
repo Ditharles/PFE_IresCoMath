@@ -118,91 +118,93 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
       />
 
       <div
-        className={`relative w-full max-w-md h-full bg-background text-foreground shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"
+        className={`relative w-full max-w-md h-screen bg-background text-foreground shadow-xl transition-transform duration-300 ease-in-out ${isVisible ? "translate-x-0" : "translate-x-full"
           }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 className="text-xl font-semibold">Profil utilisateur</h2>
-          <button
-            onClick={handleClose}
-            className="p-1.5 rounded-full hover:bg-muted"
-            aria-label="Fermer"
-          >
-            <XMarkIcon className="w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="h-full overflow-y-auto">
-          <div className="flex flex-col items-center p-6 border-b border-border">
-            <div className="relative mb-4">
-              {user.photo ? (
-                <div className="relative">
-                  <img
-                    src={user.photo || "/placeholder.svg"}
-                    alt={user.name}
-                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
-                  />
-                  <button
-                    className="absolute bottom-0 right-0 p-1.5 rounded-full bg-muted hover:bg-muted/70"
-                  >
-                    <PencilIcon className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <div className="w-24 h-24 rounded-full flex items-center justify-center bg-muted">
-                  <UserIcon className="w-12 h-12 text-muted-foreground" />
-                </div>
-              )}
-            </div>
-            <h2 className="text-xl font-bold">{user.name}</h2>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
-            <span className="mt-2 px-3 py-1 text-xs rounded-full bg-primary/10 text-primary">
-              {user.role}
-            </span>
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h2 className="text-xl font-semibold">Profil utilisateur</h2>
+            <button
+              onClick={handleClose}
+              className="p-1.5 rounded-full hover:bg-muted"
+              aria-label="Fermer"
+            >
+              <XMarkIcon className="w-6 h-6" />
+            </button>
           </div>
 
-          <div className="p-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider mb-3 text-muted-foreground">
-              COMPTE
-            </h3>
-            <div className="space-y-1">
-              <ProfileOption
-                icon={<UserIcon className="w-5 h-5" />}
-                label="Modifier mon profil"
-                description="Modifier vos informations personnelles"
-                onClick={handleEditProfile}
-              />
-              <ProfileOption
-                icon={<ShieldCheckIcon className="w-5 h-5" />}
-                label="Sécurité"
-                description="Gérer votre mot de passe et la sécurité du compte"
-                onClick={handleSecurity}
-              />
-              <ProfileOption
-                icon={<BellIcon className="w-5 h-5" />}
-                label="Notifications"
-                description="Gérer vos préférences de notifications"
-                onClick={handleNotifications}
-              />
+          <div className="flex-1 overflow-y-auto">
+            <div className="flex flex-col items-center p-6 border-b border-border">
+              <div className="relative mb-4">
+                {user.photo ? (
+                  <div className="relative">
+                    <img
+                      src={user.photo || "/placeholder.svg"}
+                      alt={user.name}
+                      className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                    />
+                    <button
+                      className="absolute bottom-0 right-0 p-1.5 rounded-full bg-muted hover:bg-muted/70"
+                    >
+                      <PencilIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center bg-muted">
+                    <UserIcon className="w-12 h-12 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+              <h2 className="text-xl font-bold">{user.name}</h2>
+              <p className="text-sm text-muted-foreground">{user.email}</p>
+              <span className="mt-2 px-3 py-1 text-xs rounded-full bg-primary/10 text-primary">
+                {user.role}
+              </span>
+            </div>
+
+            <div className="p-4">
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3 text-muted-foreground">
+                COMPTE
+              </h3>
+              <div className="space-y-1">
+                <ProfileOption
+                  icon={<UserIcon className="w-5 h-5" />}
+                  label="Modifier mon profil"
+                  description="Modifier vos informations personnelles"
+                  onClick={handleEditProfile}
+                />
+                <ProfileOption
+                  icon={<ShieldCheckIcon className="w-5 h-5" />}
+                  label="Sécurité"
+                  description="Gérer votre mot de passe et la sécurité du compte"
+                  onClick={handleSecurity}
+                />
+                <ProfileOption
+                  icon={<BellIcon className="w-5 h-5" />}
+                  label="Notifications"
+                  description="Gérer vos préférences de notifications"
+                  onClick={handleNotifications}
+                />
+              </div>
+            </div>
+
+            <div className="p-4">
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3 text-muted-foreground">
+                PRÉFÉRENCES
+              </h3>
+              <div className="space-y-1">
+                <ProfileOption
+                  icon={<Cog6ToothIcon className="w-5 h-5" />}
+                  label="Paramètres"
+                  description="Personnaliser votre expérience"
+                  onClick={handleSettings}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="p-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider mb-3 text-muted-foreground">
-              PRÉFÉRENCES
-            </h3>
-            <div className="space-y-1">
-              <ProfileOption
-                icon={<Cog6ToothIcon className="w-5 h-5" />}
-                label="Paramètres"
-                description="Personnaliser votre expérience"
-                onClick={handleSettings}
-              />
-            </div>
-          </div>
-
-          <div className="p-4 mt-auto">
+          <div className="p-4 border-t border-border">
             <button
               className="w-full flex items-center p-3 rounded-lg text-destructive hover:bg-destructive/10"
               onClick={handleLogout}

@@ -1,0 +1,16 @@
+{
+  "validEquipment": {
+    "name": "test",
+    "cost": 10,
+    "specifications": {
+      "test": "test"
+    }
+  },
+  "duplicateEquipment": {
+    "name": "test",
+    "cost": "10",
+    "specifications": {
+      "test": "test"
+    }
+  }
+}

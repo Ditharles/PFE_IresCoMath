@@ -86,6 +86,7 @@ export const Header = ({
                 <Button
                     variant="ghost"
                     size="icon"
+                    aria-label="Toggle user profile"
                     onClick={toggleUserProfile}
                     className="relative"
                 >

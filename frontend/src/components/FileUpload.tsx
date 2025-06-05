@@ -101,6 +101,7 @@ const FileUpload = ({
 
             {files.length < maxFiles && (
                 <UploadDropzone
+                    data-cy="file-dropzone"
                     endpoint={endpoint as unknown}
                     onClientUploadComplete={handleUploadComplete}
                     onUploadProgress={handleUploadProgress}

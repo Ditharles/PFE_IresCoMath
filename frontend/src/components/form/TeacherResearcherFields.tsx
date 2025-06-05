@@ -29,6 +29,7 @@ export const TeacherResearcherFields: React.FC<TeacherResearcherFieldsProps> = (
                             <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
+                                name={field.name}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Sélectionner un grade" />

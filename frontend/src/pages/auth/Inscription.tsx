@@ -61,11 +61,9 @@ const Inscription: React.FC = () => {
         role: role
       }
 
-      console.log("FormData préparé:", formData)
-
+      
       const authService = new AuthService()
-      console.log("Appel de register avec:", formData, role)
-
+     
       const response = await authService.register(formData, role)
       console.log("Réponse reçue:", response)
 
