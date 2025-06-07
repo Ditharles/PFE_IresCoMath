@@ -39,29 +39,27 @@ class AuthService {
         browserInfo,
       });
 
-      if (response.status === 200) {
-        const { accessToken, refreshToken, user } = response.data;
+      const { accessToken, refreshToken, user } = response.data;
 
-        // Vérification de la présence des tokens
-        if (!accessToken || !refreshToken) {
-          throw new Error("Tokens manquants dans la réponse");
-        }
-
-        // Stockage des tokens
-        await setToken("accessToken", accessToken);
-        await setToken("refreshToken", refreshToken);
-        await setUser(user);
-
-        // Vérification que les tokens ont été correctement stockés
-        const storedAccessToken = getToken("accessToken");
-        const storedRefreshToken = getToken("refreshToken");
-
-        if (!storedAccessToken || !storedRefreshToken) {
-          throw new Error("Échec du stockage des tokens");
-        }
-
-        console.log("Connexion réussie");
+      // Vérification de la présence des tokens
+      if (!accessToken || !refreshToken) {
+        throw new Error("Tokens manquants dans la réponse");
       }
+
+      // Stockage des tokens
+      setToken("accessToken", accessToken);
+      setToken("refreshToken", refreshToken);
+      setUser(user);
+      // Vérification que les tokens ont été correctement stockés
+      const storedAccessToken = getToken("accessToken");
+      const storedRefreshToken = getToken("refreshToken");
+
+      if (!storedAccessToken || !storedRefreshToken || !user) {
+        throw new Error("Échec du stockage des tokens");
+      }
+
+      console.log("Connexion réussie");
+
       return response;
     } catch (error: any) {
       console.error("Erreur lors de la connexion:", error);
@@ -112,6 +110,7 @@ class AuthService {
     const response = await api.get("/auth/resend-confirmation-link", {
       headers: { Authorization: `Bearer ${token}` },
     });
+
     return response;
   }
 
@@ -144,7 +143,10 @@ class AuthService {
 
     return response;
   }
-
+  async updateUser(data: unknown) {
+    const response = await api.post("/users/update-user", data);
+    return response;
+  }
   async updatePassword(data: ChangePasswordRequest) {
     const response = await api.post("/auth/change-password", data);
     return response;

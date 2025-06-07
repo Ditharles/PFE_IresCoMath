@@ -39,8 +39,11 @@ export const logout: AuthHandler = async (req, res) => {
 // Rafraîchit le token d'accès en utilisant le token de rafraîchissement
 export const refreshToken: AuthHandler = async (req, res) => {
   try {
+    // Accepter refresh-token (minuscules) pour la cohérence avec les standards HTTP
     const refreshTokenValue =
-      (req.headers.refreshToken as string)?.trim() || "";
+      (req.headers["refresh-token"] as string)?.trim() ||
+      (req.headers.refreshToken as string)?.trim() ||
+      "";
     const authHeader = req.headers.authorization;
 
     if (!refreshTokenValue) {
@@ -66,6 +69,10 @@ export const refreshToken: AuthHandler = async (req, res) => {
       });
 
       if (!session) {
+        console.error("Session non trouvée pour refresh", {
+          refreshTokenValue,
+          accessTokenValue,
+        });
         return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
       }
 
@@ -118,7 +125,6 @@ export const getUser: AuthHandler = async (req, res) => {
       cin: user?.cin,
       bankData: user?.bankData,
       createdAt: user?.createdAt,
-
       role: user?.role,
       ...user?.teacherResearcher,
       ...user?.masterStudent,

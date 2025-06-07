@@ -13,7 +13,7 @@ const router: Router = Router();
 router.get("/get-students/:id", getStudents as RequestHandler);
 router.get("/get-users", getUsers as RequestHandler);
 router.get("/get-user/:id", getUser as RequestHandler);
-router.post("/update-user/:id", updateUser as RequestHandler);
+router.post("/update-user", updateUser as RequestHandler);
 router.post(
   "/delete-user/:id",
   checkRole(["ADMIN"]),

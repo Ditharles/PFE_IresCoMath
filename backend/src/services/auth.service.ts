@@ -437,8 +437,7 @@ export const getUserSessions = async (userId: string) => {
       browserVersion: true,
       ipAddress: true,
       createdAt: true,
-      accessToken: true,
-      refreshToken: true,
+      user: false,
     },
   });
 };

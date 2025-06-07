@@ -299,7 +299,7 @@ export const sendInitialEmail = async (
     link,
     buttonText,
     mainContent: `
-      <p>Nous vous remercions pour la demande d'adhésion <span class="highlight">${role}</span> au sein du laboratoire IreSCoMath.</p>
+      <p>Nous vous remercions pour la demande d'adhésion <span class="highlight">${role}</span> au sein de la plateforme de gestion du laboratoire IreSCoMath.</p>
       
       <p>Pour poursuivre votre démarche, veuillez ${buttonText.toLowerCase()} en cliquant sur le bouton ci-dessous :</p>
     `,

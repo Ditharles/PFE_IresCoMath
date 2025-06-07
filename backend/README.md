@@ -1,75 +1,169 @@
 # Backend IresCoMath
 
-## Initialisation de la base de données
+Ce backend gère l'API, la base de données et la logique métier du projet IresCoMath. Il est construit avec Node.js, TypeScript, Express et Prisma.
 
-Le projet contient un script de seed pour initialiser votre base de données avec des données initiales essentielles:
+---
 
-- Un administrateur système
-- Un enseignant-chercheur avec le rôle de directeur
+## Sommaire
 
-### Prérequis
+- [Prérequis](#prérequis)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Base de données & Seed](#base-de-données--seed)
+- [Lancement du serveur](#lancement-du-serveur)
+- [Structure du projet](#structure-du-projet)
+- [Principaux processus](#principaux-processus)
+- [Tests](#tests)
+- [FAQ](#faq)
 
-Assurez-vous d'avoir configuré votre fichier `.env` avec la variable d'environnement `DATABASE_URL` pointant vers votre base de données PostgreSQL et autre variables .
+---
 
-Exemple:
+## Prérequis
 
-```
-DATABASE_URL="postgresql://username:password@localhost:port/name?schema=public"
-```
+- Node.js (v18+ recommandé)
+- npm (v9+)
+- PostgreSQL (ou autre base compatible Prisma)
+- Un éditeur de texte (VSCode recommandé)
 
-`JWT_SECRET_KEY`
+---
 
-`JWT_REFRESH_SECRET_KEY`
+## Installation
 
-`EMAIL_USER`
-`EMAIL_PASS`
+1. **Cloner le dépôt**
 
-### Étapes d'initialisation
+   ```bash
+   git clone https://github.com/votre-utilisateur/PFE_IresCoMath.git
+   cd PFE_IresCoMath/backend
+   ```
 
-1. **Installation des dépendances**
+2. **Installer les dépendances**
 
    ```bash
    npm install
    ```
 
-2. **Appliquer les migrations Prisma** (si ce n'est pas déjà fait)
+---
+
+## Configuration
+
+1. **Variables d'environnement**
+
+   Créez un fichier `.env` à la racine du dossier `backend` en vous basant sur le fichier `.env.example` si disponible.
+
+   Variables essentielles :
+
+   ```
+   DATABASE_URL="postgresql://username:password@localhost:5432/nom_bdd?schema=public"
+   JWT_SECRET_KEY="votre_clé_secrète"
+   JWT_REFRESH_SECRET_KEY="votre_clé_refresh"
+   EMAIL_USER="adresse@email.com"
+   EMAIL_PASS="motdepasse"
+   ```
+
+---
+
+## Base de données & Seed
+
+1. **Appliquer les migrations Prisma**
 
    ```bash
    npx prisma migrate dev
    ```
 
-3. **Exécuter le script de seed**
+2. **Initialiser la base avec des données de test**
+
    ```bash
    npm run db:seed
-   ```
-   ou
-   ```bash
+   # ou
    npx prisma db seed
    ```
 
-### Comptes créés
+   Cela crée :
 
-Après avoir exécuté le seed, les comptes suivants seront disponibles:
+   - Un administrateur (`admin@irescomath.com` / `admin123`)
+   - Un directeur de laboratoire (`directeur@irescomath.com` / `directeur123`)
 
-#### Administrateur
+---
 
-- **Email**: admin@irescomath.com
-- **Mot de passe**: admin123
-- **Rôle**: ADMIN
+## Lancement du serveur
 
-#### Directeur de laboratoire
+- **Mode développement (avec hot reload)**
 
-- **Email**: directeur@irescomath.com
-- **Mot de passe**: directeur123
-- **Rôle**: DIRECTEUR
-- **Grade**: Professeur
+  ```bash
+  npm run dev
+  ```
 
-## Développement
+- **Mode production**
 
-Pour lancer le serveur en mode développement:
+  ```bash
+  npm run build
+  npm start
+  ```
 
-```bash
-npm run dev
-```
+Le serveur écoute par défaut sur [http://localhost:8000](http://localhost:8000).
 
-Le serveur sera accessible à l'adresse http://localhost:3000 (ou selon la configuration de votre fichier .env).
+---
+
+## Structure du projet
+
+- `src/controllers` : Logique métier des routes
+- `src/routes` : Définition des endpoints Express
+- `src/services` : Services métiers (ex : génération de documents)
+- `src/utils` : Fonctions utilitaires (auth, gestion équipements, etc.)
+- `src/middleware` : Middlewares Express (auth, rôles)
+- `src/constants` : Constantes globales
+- `prisma/schema.prisma` : Modèle de la base de données
+
+---
+
+## Principaux processus
+
+### 1. **Authentification & Autorisation**
+
+- JWT pour la gestion des sessions
+- Middleware `verifyToken` pour sécuriser les routes
+- Middleware `checkRole` pour restreindre l'accès selon le rôle (ADMIN, DIRECTEUR, ENSEIGNANT...)
+
+### 2. **Gestion des utilisateurs**
+
+- Création, modification, suppression d'utilisateurs
+- Attribution de rôles et gestion des droits
+
+### 3. **Gestion des équipements**
+
+- Ajout, modification, suppression de catégories et d'équipements
+- Attribution d'équipements à des catégories
+- Suivi du statut et de la quantité
+
+### 4. **Gestion des requêtes et validations**
+
+- Système de demandes (requests) avec workflow de validation
+- Notifications par email pour validation ou refus
+
+### 5. **Génération de documents**
+
+- Génération de documents Word à partir de templates et de données dynamiques
+- Extraction et validation des placeholders dans les modèles
+
+---
+
+## Tests
+
+> Les tests ont étés réalisés de bout en bout, prière vous référer au dossier frontend
+
+
+
+---
+
+## FAQ
+
+- **Problème de connexion à la base ?**
+  - Vérifiez la variable `DATABASE_URL` dans `.env`.
+- **Erreur d'authentification ?**
+  - Vérifiez les clés JWT dans `.env`.
+- **Besoin de comptes de test ?**
+  - Utilisez les comptes créés par le seed (voir plus haut).
+
+---
+
+Pour toute question, ouvrez une issue ou contactez l'équipe technique.

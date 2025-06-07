@@ -12,9 +12,9 @@ const Home = () => {
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                         <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-primary-foreground font-bold text-xl">AD</span>
+                            <span className="text-primary-foreground font-bold text-xl">IS</span>
                         </div>
-                        <span className="text-xl font-bold">IresCoMath</span>
+                        <span className="text-xl font-bold">IreSCoMath</span>
                     </div>
                     <nav className="hidden md:flex space-x-8">
                         <a href="/" className="font-medium text-foreground hover:text-primary transition-colors">
@@ -47,10 +47,11 @@ const Home = () => {
                     <div className="flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 mb-10 md:mb-0">
                             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                                Bienvenue sur Admin IresCoMath
+                                IreSCoMath – Projet de Fin d'Études
                             </h1>
                             <p className="text-xl text-muted-foreground mb-8">
-                                Votre plateforme de gestion des demandes administratives et de matériels. Simplifiez vos processus et optimisez votre gestion.
+                                Plateforme web de gestion centralisée des demandes administratives et du matériel pour le laboratoire IreSCoMath.<br />
+                                Ce projet a été réalisé dans le cadre d'un projet de fin d'études (PFE), visant à digitaliser et optimiser les processus internes du laboratoire.
                             </p>
                             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                                 <a href="/inscription" className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded flex items-center">
@@ -62,6 +63,16 @@ const Home = () => {
                                 </a>
                             </div>
                         </div>
+                        <div className="md:w-1/2 flex justify-center">
+                            <img
+                                src="/logo-irescomath.png"
+                                alt="Logo IreSCoMath"
+                                className="rounded-lg shadow-lg max-w-xs md:max-w-md"
+                                width={320}
+                                height={220}
+                                loading="lazy"
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -70,12 +81,11 @@ const Home = () => {
             <section id="features" className="py-16 bg-card text-card-foreground">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-foreground mb-4">Nos fonctionnalités</h2>
+                        <h2 className="text-3xl font-bold text-foreground mb-4">Fonctionnalités principales</h2>
                         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                            Découvrez les outils et services que nous proposons pour simplifier la gestion de vos demandes administratives et de matériels.
+                            IreSCoMath propose des outils modernes pour la gestion des demandes administratives, le suivi du matériel, et la génération de rapports pour le laboratoire.
                         </p>
                     </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {features.map((feature, index) => (
                             <div
@@ -98,12 +108,12 @@ const Home = () => {
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 mb-10 md:mb-0 md:pr-10">
-                            <h2 className="text-3xl font-bold text-foreground mb-4">À propos d'Admin IresCoMath</h2>
+                            <h2 className="text-3xl font-bold text-foreground mb-4">À propos du projet</h2>
                             <p className="text-muted-foreground mb-6">
-                                Admin IresCoMath est une plateforme conçue pour simplifier la gestion des demandes administratives et de matériels. Notre mission est de vous aider à optimiser vos processus et à améliorer votre efficacité.
+                                Ce projet de fin d'études a été développé pour répondre aux besoins spécifiques du laboratoire IreSCoMath en matière de gestion administrative et logistique.
                             </p>
                             <p className="text-muted-foreground mb-6">
-                                Que vous soyez une entreprise, une institution ou une organisation, Admin IresCoMath vous offre des solutions adaptées à vos besoins.
+                                Il permet de centraliser les demandes, d'automatiser les validations, de suivre l'inventaire du matériel et de générer des rapports statistiques pour une meilleure prise de décision.
                             </p>
                             <div className="grid grid-cols-2 gap-4">
                                 {features.map((feature, index) => (
@@ -127,7 +137,7 @@ const Home = () => {
                         <div className="md:w-1/2">
                             <img
                                 src="/placeholder.svg?height=400&width=500"
-                                alt="À propos d'Admin IresCoMath"
+                                alt="Présentation IreSCoMath"
                                 className="rounded-lg shadow-lg max-w-full h-auto"
                                 width={500}
                                 height={400}
@@ -140,9 +150,9 @@ const Home = () => {
             {/* CTA Section */}
             <section className="py-16 bg-primary text-primary-foreground">
                 <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-6">Prêt à simplifier votre gestion ?</h2>
+                    <h2 className="text-3xl font-bold mb-6">Prêt à découvrir IreSCoMath ?</h2>
                     <p className="text-xl mb-8 max-w-2xl mx-auto">
-                        Inscrivez-vous dès aujourd'hui et commencez à optimiser vos processus administratifs et de gestion des matériels.
+                        Inscrivez-vous et profitez d'une gestion moderne et efficace pour votre laboratoire.
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                         <a href="/inscription" className="bg-background text-primary hover:bg-background/90 font-medium py-2 px-4 rounded">
@@ -162,11 +172,11 @@ const Home = () => {
                         <div>
                             <div className="flex items-center space-x-2 mb-4">
                                 <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                                    <span className="text-primary-foreground font-bold text-xl">AD</span>
+                                    <span className="text-primary-foreground font-bold text-xl">IS</span>
                                 </div>
-                                <span className="text-xl font-bold">Admin IresCoMath</span>
+                                <span className="text-xl font-bold">IreSCoMath</span>
                             </div>
-                            <p className="text-muted-foreground mb-4">Votre plateforme de gestion des demandes administratives et de matériels.</p>
+                            <p className="text-muted-foreground mb-4">Plateforme PFE – Gestion administrative et matérielle du laboratoire IreSCoMath.</p>
                             <div className="flex space-x-4">
                                 {socialLinks.map((link, index) => (
                                     <a key={index} href={link.href} className="text-muted-foreground hover:text-foreground transition-colors">
@@ -199,7 +209,7 @@ const features = [
     {
         title: "Gestion des demandes",
         description:
-            "Centralisez et suivez toutes vos demandes administratives en un seul endroit. Gagnez du temps et réduisez les erreurs.",
+            "Centralisez et suivez toutes les demandes administratives du laboratoire. Gagnez du temps et réduisez les erreurs.",
         icon: (
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -218,9 +228,9 @@ const features = [
         ),
     },
     {
-        title: "Suivi des matériels",
+        title: "Suivi du matériel",
         description:
-            "Gérez votre inventaire de matériels et suivez leur état en temps réel. Optimisez l'utilisation de vos ressources.",
+            "Gérez l'inventaire, l'état et la disponibilité du matériel scientifique et administratif.",
         icon: (
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -239,9 +249,9 @@ const features = [
         ),
     },
     {
-        title: "Rapports et analyses",
+        title: "Rapports et statistiques",
         description:
-            "Générez des rapports détaillés et analysez vos données pour prendre des décisions éclairées.",
+            "Générez des rapports et visualisez des statistiques pour piloter l'activité du laboratoire.",
         icon: (
             <svg
                 xmlns="http://www.w3.org/2000/svg"

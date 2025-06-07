@@ -13,6 +13,7 @@ import {
   logout,
   refreshToken,
   logoutSession,
+  getUserSessions,
 } from "../controllers/auth/other.controller";
 import {
   changePassword,
@@ -26,7 +27,7 @@ import {
   registerMasterStudent,
 } from "../controllers/auth/register.controller";
 import { getUser } from "../controllers/auth/other.controller";
-import { getUserSessions } from "../services/auth.service";
+
 
 const router = express.Router();
 // Routes d'inscription

@@ -1,5 +1,10 @@
 import { RequestStatus } from "../../../generated/prisma";
-import { createUser, createTeacherResearcher, createDoctoralStudent, createMasterStudent } from "../../services/auth.service";
+import {
+  createUser,
+  createTeacherResearcher,
+  createDoctoralStudent,
+  createMasterStudent,
+} from "../../services/auth.service";
 import { sendInitialEmail } from "../../services/mail.service";
 import { AuthHandler } from "../../types/auth";
 import {
@@ -45,7 +50,6 @@ export const confirmRequest: AuthHandler = async (req, res) => {
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
-
 
 // Renvoie un lien de confirmation à l'utilisateur pour confirmer sa demande d'inscription
 export const resendConfirmLink: AuthHandler = async (req, res) => {
@@ -175,7 +179,6 @@ export const validateAccount: AuthHandler = async (req, res) => {
       where: { email },
     });
 
-   
     const user = await createUser(
       email,
       role,
@@ -198,7 +201,6 @@ export const validateAccount: AuthHandler = async (req, res) => {
         await createMasterStudent(request, user.id);
     }
 
-   
     const tempToken = jwt.sign({ id: user.id, role }, JWT_SECRET_KEY);
 
     res.status(200).json({
@@ -214,7 +216,7 @@ export const validateAccount: AuthHandler = async (req, res) => {
 // Soumet les informations supplémentaires de l'utilisateur après la validation de son compte
 export const submitAdditionalInfo: AuthHandler = async (req, res) => {
   try {
-    const {  bankData, signature } = req.body;
+    const { bankData, signature } = req.body;
 
     const requiredFields = ["bankData", "signature"];
     if (!validateRequestBody(req.body, requiredFields)) {

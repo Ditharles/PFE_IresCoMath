@@ -156,7 +156,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
                   </div>
                 )}
               </div>
-              <h2 className="text-xl font-bold">{user.name}</h2>
+              <h2 className="text-xl font-bold">{user.firstName} {user.lastName}</h2>
               <p className="text-sm text-muted-foreground">{user.email}</p>
               <span className="mt-2 px-3 py-1 text-xs rounded-full bg-primary/10 text-primary">
                 {user.role}

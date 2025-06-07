@@ -8,6 +8,7 @@ import prisma from "../../utils/db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
+import { UserStatus } from "../../../generated/prisma";
 
 /**
  * Crée une session pour un utilisateur
@@ -29,7 +30,7 @@ export const login = async (req: Request, res: Response) => {
         doctoralStudent: true,
       },
     });
-
+    console.log("Utilisateur connecté :", user);
     if (!user) {
       // Vérifier si l'utilisateur a une demande en cours
       const requestStatus = await checkRequestStatus(email);
@@ -69,6 +70,12 @@ export const login = async (req: Request, res: Response) => {
         .json({ message: ERROR_MESSAGES.INCORRECT_PASSWORD });
     }
 
+    if (user.status === UserStatus.DESACTIVE) {
+      res.status(403).json({
+        message: "Votre compte est désactivé, contactez l'administrateur",
+      });
+    }
+
     const { accessTokenValue, refreshTokenValue } = await createSession(
       user.id,
       browserInfo,
@@ -86,7 +93,7 @@ export const login = async (req: Request, res: Response) => {
       process.env.JWT_REFRESH_SECRET_KEY!,
       { expiresIn: "1w" }
     );
-    console.log(user);
+
     return res.status(200).json({
       message: "Connexion réussie",
       accessToken,

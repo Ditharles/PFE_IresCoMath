@@ -68,11 +68,9 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Si l'erreur est 401 et que nous n'avons pas déjà tenté de rafraîchir le token
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      // Si le rafraîchissement du token est déjà en cours, mettons les requêtes échouées dans la file d'attente
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
@@ -89,36 +87,36 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = getToken("refreshToken");
-        if (!refreshToken) {
-          throw new Error("Pas de refresh token");
+        const accessToken = getToken("accessToken");
+        if (!refreshToken || !accessToken) {
+          throw new Error("Pas de refresh token ou access token");
         }
 
-        // Appel à l'API pour rafraîchir le token
+        // Utiliser refresh-token (minuscules) pour le header
         const response = await refreshClient.post("/auth/refresh-token", null, {
           headers: {
-            Authorization: `Bearer ${getToken("accessToken")}`,
-            refreshToken: refreshToken,
+            Authorization: `Bearer ${accessToken}`,
+            "refresh-token": refreshToken,
           },
         });
 
         if (response.status === 200) {
-          const { accessToken } = response.data;
-          setToken("accessToken", accessToken);
+          const { accessToken: newAccessToken } = response.data;
+          setToken("accessToken", newAccessToken);
 
-          // Mise à jour du header de la requête originale
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-
-          // Traiter la file d'attente et envoyer les requêtes échouées
-          processQueue(null, accessToken);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          processQueue(null, newAccessToken);
 
           return api(originalRequest);
         }
       } catch (refreshError) {
-        // En cas d'échec du rafraîchissement, déconnexion
         removesTokens();
         removeUser();
-        window.location.href = "/login";
-        processQueue(refreshError, null); // Traiter les erreurs dans la file
+        processQueue(refreshError, null);
+        // Rediriger seulement si on est côté navigateur
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

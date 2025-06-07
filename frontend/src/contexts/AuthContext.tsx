@@ -102,7 +102,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             try {
                 const response = await authService.getUser();
                 if (response.status === 200) {
-                    setUser(response.data);
+                    // Conserver à la fois userId (général) et id (sous-table)
+                    const userData = response.data;
+                    setUser({
+                        ...userData,
+                        userId: userData.userId ?? userData.id, // userId = id général
+                        id: userData.id, // id = id sous-table (si présent)
+                    });
                     setIsLoggedIn(true);
                 } else {
                     removesTokens();
@@ -148,7 +154,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             try {
                 const response = await authService.getUser();
                 if (response.status === 200) {
-                    setUser(response.data);
+                    // Conserver à la fois userId (général) et id (sous-table)
+                    const userData = response.data;
+                    setUser({
+                        ...userData,
+                        userId: userData.userId ?? userData.id,
+                        id: userData.id,
+                    });
                     setIsLoggedIn(true);
                 } else {
                     removesTokens();

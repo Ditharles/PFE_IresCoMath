@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../utils/db";
 
 import { Grade, Prisma, Role, UserStatus } from "../../generated/prisma";
-import {
-  userFields,
-} from "../constants/userFields";
+import { userFields } from "../constants/userFields";
 import { getUserByID } from "../services/auth.service";
 import { AuthRequest } from "../types/auth";
 
@@ -55,7 +53,6 @@ export const getUsers = async (req: Request, res: Response) => {
   });
   res.status(200).json(usersFront);
 };
-
 
 // Cette fonction permet de récupérer un utilisateur par son ID
 // et de vérifier les permissions de l'utilisateur qui fait la requête
@@ -162,110 +159,22 @@ export const getStudents = async (req: Request, res: Response) => {
   }
 };
 
-
 // Cette fonction permet de mettre à jour un utilisateur par son ID
 export const updateUser = async (req: AuthRequest, res: Response) => {
-  const { id } = req.params;
-  const {
-    role,
-    lastName,
-    firstName,
-    thesisYear,
-    thesisSupervisorId,
-    masterYear,
-    supervisorId,
-    position,
-    grade,
-    institution,
-  } = req.body;
-
-  if (!id) {
-    return res
-      .status(400)
-      .json({ message: "L'identifiant de l'utilisateur est requis" });
-  }
+  const { userId } = req.user;
+  const { lastName, firstName, cin, phone } = req.body;
 
   try {
-    // Vérifier si l'utilisateur existe
-    const existingUser = await prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!existingUser) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-
     // Mettre à jour les informations de base de l'utilisateur
     const updatedUser = await prisma.user.update({
-      where: { id },
+      where: { id: userId },
       data: {
         lastName,
         firstName,
-        role: role as Role,
+        cin,
+        phone,
       },
     });
-
-    // Mettre à jour les informations spécifiques en fonction du rôle
-    try {
-      switch (role) {
-        case "DOCTORANT":
-          if (!thesisYear || !thesisSupervisorId) {
-            return res.status(400).json({
-              message:
-                "L'année de thèse et l'encadrant sont requis pour un doctorant",
-            });
-          }
-          await prisma.doctoralStudent.updateMany({
-            where: { userId: id },
-            data: {
-              thesisYear,
-              thesisSupervisorId,
-            },
-          });
-          break;
-
-        case "MASTER":
-          if (!masterYear || !supervisorId) {
-            return res.status(400).json({
-              message:
-                "L'année de master et l'encadrant sont requis pour un étudiant en master",
-            });
-          }
-          await prisma.masterStudent.updateMany({
-            where: { userId: id },
-            data: {
-              masterYear,
-              supervisorId,
-            },
-          });
-          break;
-
-        case "ENSEIGNANT":
-          if (!position || !grade || !institution) {
-            return res.status(400).json({
-              message:
-                "La position, le grade et l'institution sont requis pour un enseignant",
-            });
-          }
-          await prisma.teacherResearcher.updateMany({
-            where: { userId: id },
-            data: {
-              position,
-              grade,
-              institution,
-            },
-          });
-          break;
-
-        default:
-          return res.status(400).json({ message: "Rôle non valide" });
-      }
-    } catch (error) {
-      return res.status(500).json({
-        message:
-          "Erreur interne du serveur lors de la mise à jour de l'utilisateur",
-      });
-    }
 
     res.status(200).json({
       message: "Utilisateur mis à jour avec succès",
@@ -280,7 +189,6 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
     });
   }
 };
-
 
 // Cette fonction permet de désactiver un utilisateur par son ID
 export const desactivateUser = async (req: Request, res: Response) => {
