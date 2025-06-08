@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '../../ui/input';
 import { FormLabel } from '../../ui/form';
 import { Button } from '../../ui/button';
@@ -21,7 +21,7 @@ const Specifications: React.FC<SpecificationsProps> = ({
   const [specifications, setSpecifications] = useState<KeyValuePair[]>(initialSpecifications);
 
   useEffect(() => {
- 
+
     if (initialSpecifications && initialSpecifications.length > 0) {
       setSpecifications(initialSpecifications);
     }
@@ -52,7 +52,7 @@ const Specifications: React.FC<SpecificationsProps> = ({
       if (key) acc[key] = value;
       return acc;
     }, {} as Record<string, string>);
-    
+
     // Notifie le parent du changement
     onChange(specObject);
   };

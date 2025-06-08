@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
+
 import { MapPin, FileText } from "lucide-react";
 import { Mission, RequestStatus } from "../../../../../types/request";
 import { formatDate } from "../../../../../utils/utils";
@@ -11,6 +10,7 @@ import { Button } from "../../../../ui/button";
 import RequestsService from "../../../../../services/requests.service";
 import TemplateService from "../../../../../services/templates.service";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export const MissionDetails = ({
     fetchData,
@@ -26,7 +26,7 @@ export const MissionDetails = ({
     isDirector?: boolean;
 }) => {
     const [documentStates, setDocumentStates] = useState<string[]>([]);
-    const [isUploadingSignForm, setIsUploadingSignForm] = useState(false);
+    
     const requestsService = new RequestsService();
     const templateService = new TemplateService();
 
@@ -50,17 +50,15 @@ export const MissionDetails = ({
     };
 
     const handleSignFormUpload = async (urls: string[] | string) => {
-        setIsUploadingSignForm(true);
+  
         const url = Array.isArray(urls) ? urls[0] : urls;
         try {
             await templateService.sendSignForm(mission.id, url);
             toast.success("Formulaire signé envoyé avec succès !");
         } catch (error) {
+            console.error("Erreur lors de l'envoi du formulaire signé:", error);
             toast.error("Erreur lors de l'envoi du formulaire signé");
-        } finally {
-            setIsUploadingSignForm(false);
-            fetchData();
-        }
+        } 
     };
 
     return (

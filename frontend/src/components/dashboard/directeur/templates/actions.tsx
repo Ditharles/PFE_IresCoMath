@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Template } from '../../../../types/templates'
 import { Button } from "../../../ui/button"
 import { MoreHorizontal } from "lucide-react"

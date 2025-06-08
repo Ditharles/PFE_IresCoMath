@@ -37,10 +37,10 @@ const RequestDetails = () => {
     const isDirector = user?.role == Role.DIRECTEUR;
     const { id } = useParams();
     const navigate = useNavigate();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const [requestData, setRequestData] = useState<{ request: any; user: any }>({ request: {}, user: {} });
     const [loading, setLoading] = useState(true);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const [previewFile, setPreviewFile] = useState<string | null>(null);
     const requestService = useMemo(() => new RequestsService(), []);
 
@@ -92,7 +92,7 @@ const RequestDetails = () => {
     const handleActionComplete = () => {
         fetchRequest();
     };
-
+    console.log(previewFile)
     useEffect(() => {
         fetchRequest();
     }, [id]);

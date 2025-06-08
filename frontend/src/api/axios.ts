@@ -1,10 +1,16 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import {
   getToken,
   removesTokens,
   setToken,
   removeUser,
 } from "../utils/tokens.utils";
+
+// Interface pour gérer la file d'attente
+interface QueueItem {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}
 
 // Client principal avec intercepteurs
 const api = axios.create({
@@ -27,29 +33,9 @@ const publicRoutes = [
   "/auth/submit-additional-info",
 ];
 
-// Ajout automatique du token dans les requêtes privées
-api.interceptors.request.use(
-  (config) => {
-    if (!publicRoutes.some((route) => config.url?.includes(route))) {
-      const token = getToken("accessToken");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 // Variable pour suivre l'état du rafraîchissement
 let isRefreshing = false;
 let failedQueue: QueueItem[] = [];
-
-// Interface pour gérer la file d'attente
-interface QueueItem {
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-}
 
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
@@ -62,11 +48,28 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
+// Ajout automatique du token dans les requêtes privées
+api.interceptors.request.use(
+  (config) => {
+    if (!publicRoutes.some((route) => config.url?.includes(route))) {
+      const token = getToken("accessToken");
+      if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // Intercepteur de réponse pour gérer le rafraîchissement automatique des tokens
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -75,10 +78,13 @@ api.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({
             resolve: (token: string) => {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
+              originalRequest.headers = {
+                ...originalRequest.headers,
+                Authorization: `Bearer ${token}`,
+              };
               resolve(api(originalRequest));
             },
-            reject: reject,
+            reject: (err) => reject(err),
           });
         });
       }
@@ -92,7 +98,6 @@ api.interceptors.response.use(
           throw new Error("Pas de refresh token ou access token");
         }
 
-        // Utiliser refresh-token (minuscules) pour le header
         const response = await refreshClient.post("/auth/refresh-token", null, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -104,7 +109,10 @@ api.interceptors.response.use(
           const { accessToken: newAccessToken } = response.data;
           setToken("accessToken", newAccessToken);
 
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          originalRequest.headers = {
+            ...originalRequest.headers,
+            Authorization: `Bearer ${newAccessToken}`,
+          };
           processQueue(null, newAccessToken);
 
           return api(originalRequest);
@@ -113,7 +121,6 @@ api.interceptors.response.use(
         removesTokens();
         removeUser();
         processQueue(refreshError, null);
-        // Rediriger seulement si on est côté navigateur
         if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
@@ -126,37 +133,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// Fonction de rafraîchissement de token
-async function refreshToken(): Promise<string> {
-  try {
-    console.log("Essai lors de la tentative de rafraîchissement");
-
-    const refreshToken = getToken("refreshToken");
-    if (!refreshToken) throw new Error("Refresh token not found");
-
-    const response = await refreshClient.post(
-      "/auth/refresh-token",
-      {},
-      {
-        headers: {
-          refreshToken: refreshToken,
-        },
-      }
-    );
-
-    const { accessToken } = response.data;
-    setToken("accessToken", accessToken);
-    return accessToken;
-  } catch (error) {
-    removesTokens();
-    removeUser();
-    console.error(
-      "Une erreur s'est produite lors du rafraîchissement du token:",
-      error
-    );
-    throw error;
-  }
-}
 
 export default api;

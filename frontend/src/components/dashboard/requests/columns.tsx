@@ -72,11 +72,18 @@ export const columns = ({
     {
         accessorKey: "status",
         header: "Statut",
-        cell: ({ row }) => (
-            <Badge className={STATUS_BADGE_VARIANTS[row.getValue("status") as RequestStatus] || "bg-gray-100 text-gray-800"}>
-                {String(row.getValue("status")).replace(/_/g, " ")}
-            </Badge>
-        ),
+        cell: ({ row }) => {
+            const status = row.getValue("status") as RequestStatus;
+            const badgeClass = status in STATUS_BADGE_VARIANTS 
+                ? STATUS_BADGE_VARIANTS[status] 
+                : "bg-gray-100 text-gray-800";
+            
+            return (
+                <Badge className={badgeClass}>
+                    {String(status).replace(/_/g, " ")}
+                </Badge>
+            );
+        },
     },
     {
         id: "actions",

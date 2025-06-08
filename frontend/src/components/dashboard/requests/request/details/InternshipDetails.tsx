@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { FileText, ClipboardList } from "lucide-react";
-import { useState } from "react";
+
 import { toast } from "sonner";
 
 import { DetailSection } from "../DetailSection";
@@ -19,11 +19,10 @@ export const InternshipDetails = ({ stage, onPreview, isDirector = false }: {
     onPreview: (url: string) => void;
     isDirector?: boolean;
 }) => {
-    const [isUploadingSignForm, setIsUploadingSignForm] = useState(false);
+
     const templateService = new TemplateService();
 
     const handleSignFormUpload = async (urls: string[] | string) => {
-        setIsUploadingSignForm(true);
         const url = Array.isArray(urls) ? urls[0] : urls;
         try {
             await templateService.sendSignForm(stage.id, url);
@@ -31,9 +30,7 @@ export const InternshipDetails = ({ stage, onPreview, isDirector = false }: {
         } catch (error) {
             console.error("Erreur lors de l'envoi du formulaire signé:", error);
             toast.error("Erreur lors de l'envoi du formulaire signé");
-        } finally {
-            setIsUploadingSignForm(false);
-        }
+        } 
     };
 
     return (

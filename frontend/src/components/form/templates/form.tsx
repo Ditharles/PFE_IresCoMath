@@ -208,7 +208,7 @@ const TemplateFields = ({ isVerified, defaultValues, mode = "create" }: Template
                 <div className="space-y-2">
                     <FormLabel>Champs détectés dans le template</FormLabel>
                     <div className="flex flex-wrap gap-2">
-                        {placeholders.map((placeholder, index) => (
+                        {placeholders.map((placeholder: string, index: number) => (
                             <Badge
                                 key={`${placeholder}-${index}`}
                                 variant="outline"

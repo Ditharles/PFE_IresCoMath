@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { useState } from "react";
 import { toast } from "sonner";
 import { MoreHorizontal, Eye, Plus, Edit, Trash2 } from "lucide-react";
@@ -29,7 +29,7 @@ const ActionsCell = ({
     category,
     onCategoryUpdate,
     onCategoryDelete,
-    className = ""
+    className = "",
 }: ActionsCellProps) => {
     const navigate = useNavigate();
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -59,37 +59,32 @@ const ActionsCell = ({
             label: "Voir détails",
             icon: <Eye className="h-4 w-4 mr-2" />,
             action: () => navigate(`/materiels/categories/${category.id}`),
-            disabled: false
+            disabled: false,
         },
         {
             label: "Ajouter équipement",
             icon: <Plus className="h-4 w-4 mr-2" />,
             action: () => navigate(`/materiels/ajouter-materiel/${category.id}`),
-            disabled: false
+            disabled: false,
         },
         {
             label: "Modifier",
             icon: <Edit className="h-4 w-4 mr-2" />,
             action: () => setIsEditDialogOpen(true),
-            disabled: false
+            disabled: false,
         },
         {
             label: "Supprimer",
             icon: <Trash2 className="h-4 w-4 mr-2" />,
             action: () => setIsDeleteDialogOpen(true),
             disabled: isSubmitting,
-            isDestructive: true
-        }
+            isDestructive: true,
+        },
     ];
-
-
-    const handleMenuItemClick = (actionFn) => {
-
+    const handleMenuItemClick = (actionFn: () => void) => {
         setDropdownOpen(false);
 
-
         setTimeout(() => {
-
             actionFn();
         }, 100);
     };
@@ -101,15 +96,13 @@ const ActionsCell = ({
                     <Button
                         variant="ghost"
                         className="h-8 w-8 p-0"
-                        aria-label="Menu actions"
-                    >
+                        aria-label="Menu actions">
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                     align="end"
-                    className="min-w-[200px] bg-background rounded-md shadow-lg p-1 border border-muted-200"
-                >
+                    className="min-w-[200px] bg-background rounded-md shadow-lg p-1 border border-muted-200">
                     <DropdownMenuLabel className="px-2 py-1 text-sm font-semibold text-gray-700">
                         Actions
                     </DropdownMenuLabel>
@@ -120,10 +113,15 @@ const ActionsCell = ({
                             onClick={() => handleMenuItemClick(item.action)}
                             disabled={item.disabled}
                             className={`flex items-center px-2 py-1.5 text-sm rounded cursor-pointer
-                                ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-                                ${item.isDestructive ? 'text-red-600 hover:bg-red-50' : 'hover:bg-gray-50'}
-                            `}
-                        >
+                                ${item.disabled
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : ""
+                                }
+                                ${item.isDestructive
+                                    ? "text-red-600 hover:bg-red-50"
+                                    : "hover:bg-gray-50"
+                                }
+                            `}>
                             {item.icon}
                             {item.label}
                         </DropdownMenuItem>
@@ -137,24 +135,23 @@ const ActionsCell = ({
                     <DialogHeader>
                         <DialogTitle>Confirmer la suppression</DialogTitle>
                         <DialogDescription>
-                            Êtes-vous sûr de vouloir supprimer la catégorie "{category.name}" ?
-                            Cette action est irréversible et supprimera tous les équipements associés.
+                            Êtes-vous sûr de vouloir supprimer la catégorie "{category.name}"
+                            ? Cette action est irréversible et supprimera tous les équipements
+                            associés.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="flex justify-end gap-2 mt-4">
                         <Button
                             variant="outline"
                             onClick={() => setIsDeleteDialogOpen(false)}
-                            disabled={isSubmitting}
-                        >
+                            disabled={isSubmitting}>
                             Annuler
                         </Button>
                         <Button
                             variant="destructive"
                             onClick={handleDelete}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Suppression...' : 'Confirmer'}
+                            disabled={isSubmitting}>
+                            {isSubmitting ? "Suppression..." : "Confirmer"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -164,6 +161,7 @@ const ActionsCell = ({
                 category={category}
                 isOpen={isEditDialogOpen}
                 onClose={() => setIsEditDialogOpen(false)}
+                onUpdate={onCategoryUpdate}
             />
         </div>
     );

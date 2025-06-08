@@ -9,7 +9,7 @@ const getStatusBadge = (status: RequestStatus, count: number) => {
         <Badge
             key={`${status}-${count}`}
             className={`${STATUS_BADGE_VARIANTS[status] || "bg-gray-100 text-gray-800"} mb-2 mr-2`}
-        >{STATUS_TRANSLATIONS[status as RequestType] || status}: {count}
+        >{STATUS_TRANSLATIONS[status] || status}: {count}
         </Badge>
     );
 };

@@ -31,9 +31,11 @@ interface EditCategoryProps {
   category: EquipmentCategory;
   onClose: () => void;
   isOpen: boolean;
+  onUpdate?: (updatedCategory: EquipmentCategory) => void;
+  onRefresh?: () => void;
 }
 
-const EditCategory = ({ category, onClose, isOpen }: EditCategoryProps) => {
+const EditCategory = ({ category, onClose, isOpen, onUpdate, onRefresh }: EditCategoryProps) => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const equipmentService = new EquipmentService();
@@ -65,6 +67,11 @@ const EditCategory = ({ category, onClose, isOpen }: EditCategoryProps) => {
       const response = await equipmentService.editCategory(category.id, data);
       toast.success(response.data.message || 'La catégorie a été modifiée avec succès');
       form.reset();
+      if (onUpdate) {
+        onUpdate(response.data.updateCategory);
+      } else if (onRefresh) {
+        onRefresh();
+      }
       setTimeout(() => {
         onClose();
       }, 2000);

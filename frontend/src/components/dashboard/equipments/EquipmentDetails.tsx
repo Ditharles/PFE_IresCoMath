@@ -12,7 +12,7 @@ import { DetailSection } from "../requests/request/DetailSection";
 import EditEquipment from "./EditEquipment";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
-import FilePreviewModal from "../../FilePreviewModal";
+import { FileListViewer } from "../requests/request/FileListViewer";
 
 interface EquipmentDetailsProps {
     equipment: Equipment;
@@ -250,26 +250,26 @@ const EquipmentDetails = ({ equipment, onUpdate }: EquipmentDetailsProps) => {
                     </DetailSection>
                 </CardContent>
             </Card>
-
             {isEditModalOpen && (
                 <EditEquipment
                     equipment={equipment}
                     onClose={() => setIsEditModalOpen(false)}
-                    onUpdate={onUpdate}
+                    onSuccess={onUpdate}
+                    isOpen={isEditModalOpen}
                 />
             )}
 
             {selectedPhoto && (
-                <FilePreviewModal
-                    fileUrl={selectedPhoto}
-                    onClose={() => setSelectedPhoto(null)}
+                <FileListViewer
+                    files={[selectedPhoto]}
+                    onPreview={() => setSelectedPhoto(null)}
                 />
             )}
 
             {selectedBill && (
-                <FilePreviewModal
-                    fileUrl={selectedBill}
-                    onClose={() => setSelectedBill(null)}
+                <FileListViewer
+                    files={[selectedBill]}
+                    onPreview={() => setSelectedBill(null)}
                 />
             )}
         </div>

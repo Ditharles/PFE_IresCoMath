@@ -14,7 +14,8 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "../../
 import { Input } from "../../components/ui/input"
 import { InscriptionFormData, inscriptionSchema } from "../../schemas/inscriptionSchema"
 import AuthService from "../../services/auth.service"
-import { Role } from "../../types/common"
+import { isAxiosError } from "axios"
+
 
 type InscriptionRole = "DOCTORANT" | "MASTER" | "ENSEIGNANT"
 
@@ -76,7 +77,14 @@ const Inscription: React.FC = () => {
       }
     } catch (error: unknown) {
       console.error("Erreur détaillée lors de l'inscription:", error)
-      const errorMessage = error instanceof Error ? error.response.data.message : "Une erreur inattendue s'est produite."
+      let errorMessage = "Une erreur inattendue s'est produite."
+      
+      if (isAxiosError(error)) {
+        errorMessage = error.response?.data?.message || error.message
+      } else if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
       toast.error(errorMessage)
     } finally {
       setLoading(false)

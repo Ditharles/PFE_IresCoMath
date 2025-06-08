@@ -28,7 +28,8 @@ class AuthService {
 
   async login(email: string, password: string) {
     if (isAuthenticated()) {
-      return;
+      removesTokens();
+      removeUser();
     }
     console.log("Connexion en cours");
     try {
@@ -84,6 +85,8 @@ class AuthService {
       const response = await api.get("/auth/logout");
       return response;
     } catch (error) {
+      removesTokens();
+      removeUser();
       console.error("Une erreur s'est produite lors de la déconnexion:", error);
       throw error;
     } finally {

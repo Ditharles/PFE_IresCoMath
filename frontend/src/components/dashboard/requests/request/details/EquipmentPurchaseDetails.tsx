@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { ShoppingCart, FileText } from "lucide-react";
 import { PurchaseRequest } from "../../../../../types/request"
 import { DetailItem } from "../DetailItem";
@@ -7,14 +7,14 @@ import { FileListViewer } from "../FileListViewer";
 import FileUpload from "../../../../FileUpload";
 import TemplateService from "../../../../../services/templates.service";
 import { toast } from "sonner";
-import { useState } from "react";
+
 
 const EquipmentPurchaseDetails = ({ purchaseRequest, onPreview, isDirector = false }: { purchaseRequest: PurchaseRequest; onPreview: (url: string) => void, isDirector?: boolean }) => {
-    const [isUploadingSignForm, setIsUploadingSignForm] = useState(false);
+    
     const templateService = new TemplateService();
 
     const handleSignFormUpload = async (urls: string[] | string) => {
-        setIsUploadingSignForm(true);
+       
         const url = Array.isArray(urls) ? urls[0] : urls;
         try {
             await templateService.sendSignForm(purchaseRequest.id, url);
@@ -22,9 +22,7 @@ const EquipmentPurchaseDetails = ({ purchaseRequest, onPreview, isDirector = fal
         } catch (error) {
             console.error("Erreur lors de l'envoi du formulaire signé:", error);
             toast.error("Erreur lors de l'envoi du formulaire signé");
-        } finally {
-            setIsUploadingSignForm(false);
-        }
+        } 
     };
 
     return (

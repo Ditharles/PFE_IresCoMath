@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { History, FilePlus2, User, Settings, LayoutDashboard } from "lucide-react";
 import { ScrollArea } from "../../../components/ui/scroll-area";
-import React from "react";
 import { cn } from "../../../lib/utils";
 
 interface SidebarItem {

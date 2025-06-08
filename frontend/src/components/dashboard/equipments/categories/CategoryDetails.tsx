@@ -13,9 +13,10 @@ import FilePreviewModal from "../../../FilePreviewModal";
 
 interface CategoryDetailsProps {
     category: EquipmentCategory;
+    onUpdate: () => void;
 }
 
-const CategoryDetails = ({ category }: CategoryDetailsProps) => {
+const CategoryDetails = ({ category, onUpdate }: CategoryDetailsProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -140,6 +141,7 @@ const CategoryDetails = ({ category }: CategoryDetailsProps) => {
             <EditCategory
                 category={category}
                 isOpen={isEditModalOpen}
+                onRefresh={onUpdate}
                 onClose={() => setIsEditModalOpen(false)}
             />
 

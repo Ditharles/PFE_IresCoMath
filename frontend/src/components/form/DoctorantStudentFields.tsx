@@ -15,7 +15,7 @@ export const DoctorantStudentFields: React.FC<DoctorantStudentFieldsProps> = ({ 
         id: string
         lastName: string
         firstName: string
-        teach
+        position: string
     }>>([])
     const [isLoading, setIsLoading] = React.useState(false)
     const [error, setError] = React.useState("")

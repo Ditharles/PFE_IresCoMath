@@ -1,6 +1,4 @@
 import { Badge } from "../../../ui/badge";
-
-import { RequestType } from "../../../../types/request";
 import { Card, CardHeader, CardTitle, CardContent } from "../../../ui/card";
 import { EquipmentCategory, EquipmentType } from "../../../../types/equipment";
 import { EQUIPMENT_TYPE_LABELS } from "../../../../constants/equipments";

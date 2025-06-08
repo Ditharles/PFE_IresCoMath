@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import { useCallback, useState, useMemo, useEffect } from 'react';
-import { EquipmentCategory, EquipmentStatus } from '../../../../types/equipment';
+import { EquipmentCategory} from '../../../../types/equipment';
 import FileUpload from '../../../FileUpload';
 import FilePreviewModal from '../../../FilePreviewModal';
 import { X } from 'lucide-react';
@@ -26,7 +26,6 @@ const EquipmentFields = () => {
     const categoryId = watch('categoryId');
     console.log('EquipmentFields - categoryId:', categoryId);
     console.log('EquipmentFields - form values:', getValues());
-    const status = watch('status');
     const [categories, setCategories] = useState<EquipmentCategory[]>([]);
     const [previewModal, setPreviewModal] = useState<PreviewModalState>({
         open: false,
@@ -54,9 +53,9 @@ const EquipmentFields = () => {
     }, [currentPhotos]);
 
     const statusOptions = useMemo(() =>
-        Object.entries(EquipmentStatus).map(([key, value]) => (
+        Object.entries(EQUIPMENT_STATUS_LABELS).map(([key, value]) => (
             <SelectItem key={key} value={key}>
-                {EQUIPMENT_STATUS_LABELS[key]}
+                {value}
             </SelectItem>
         )),
         []);

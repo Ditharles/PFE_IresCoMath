@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { toast } from "sonner";
@@ -48,7 +48,6 @@ const LoginPage: React.FC = () => {
           <LoadingOverlay
             loadingText="Connexion en cours..."
             spinnerSize={24}
-            spinnerColor="currentColor"
             overlayOpacity={0.7}
             showSpinner={true}
             showProgressBar={false}
