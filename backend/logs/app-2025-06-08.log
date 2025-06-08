@@ -1,0 +1,70 @@
+{"levelLabel":"info","time":"2025-06-08T00:03:45.469Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-08T00:04:03.295Z","context":"app","method":"OPTIONS","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:03.303Z","context":"app","method":"POST","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:03.667Z","context":"app","context":"LOGIN","user":{"id":"1873b248-92a2-4744-a5e6-21d574cd1072","role":"DIRECTEUR","firstName":"Fatma","lastName":"Zouari","email":"directeur@irescomath.com"},"msg":"Utilisateur connecté"}
+{"levelLabel":"info","time":"2025-06-08T00:04:03.668Z","context":"app","status":200,"responseTime":"365ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:03.687Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:03.689Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:03.891Z","context":"app","status":200,"responseTime":"202ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.171Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.178Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.180Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.210Z","context":"app","status":200,"responseTime":"30ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.213Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.217Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.221Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.225Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.231Z","context":"app","status":200,"responseTime":"18ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.513Z","context":"app","context":"GET_ALL_REQUESTS","count":6,"firstRequestId":"30b0f4d3-1c90-46e1-a703-f542b5b531c1","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.515Z","context":"app","status":200,"responseTime":"294ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.521Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.579Z","context":"app","context":"GET_ALL_REQUESTS","count":6,"firstRequestId":"30b0f4d3-1c90-46e1-a703-f542b5b531c1","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-08T00:04:04.580Z","context":"app","status":200,"responseTime":"59ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:06.850Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:06.927Z","context":"app","context":"GET_ALL_REQUESTS","count":6,"firstRequestId":"30b0f4d3-1c90-46e1-a703-f542b5b531c1","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-08T00:04:06.928Z","context":"app","status":200,"responseTime":"78ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:06.934Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:07.003Z","context":"app","context":"GET_ALL_REQUESTS","count":6,"firstRequestId":"30b0f4d3-1c90-46e1-a703-f542b5b531c1","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-08T00:04:07.003Z","context":"app","status":200,"responseTime":"69ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:08.616Z","context":"app","method":"OPTIONS","url":"/users/get-users","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:08.620Z","context":"app","method":"GET","url":"/users/get-users","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:08.644Z","context":"app","context":"GET_USERS","count":5,"msg":"Liste des utilisateurs récupérée"}
+{"levelLabel":"info","time":"2025-06-08T00:04:08.644Z","context":"app","status":200,"responseTime":"24ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:08.649Z","context":"app","method":"GET","url":"/users/get-users","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:08.672Z","context":"app","context":"GET_USERS","count":5,"msg":"Liste des utilisateurs récupérée"}
+{"levelLabel":"info","time":"2025-06-08T00:04:08.674Z","context":"app","status":200,"responseTime":"25ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.445Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.446Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.447Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.465Z","context":"app","status":200,"responseTime":"18ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.469Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.488Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.507Z","context":"app","method":"OPTIONS","url":"/users/get-students/2f25c125-6f8d-4dc6-bef1-45ebccf76236","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.509Z","context":"app","method":"OPTIONS","url":"/users/get-students/2f25c125-6f8d-4dc6-bef1-45ebccf76236","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.512Z","context":"app","method":"GET","url":"/users/get-students/2f25c125-6f8d-4dc6-bef1-45ebccf76236","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.537Z","context":"app","status":200,"responseTime":"25ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.542Z","context":"app","method":"GET","url":"/users/get-students/2f25c125-6f8d-4dc6-bef1-45ebccf76236","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:09.559Z","context":"app","status":200,"responseTime":"16ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.151Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.152Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.154Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.234Z","context":"app","context":"GET_ALL_REQUESTS","count":6,"firstRequestId":"30b0f4d3-1c90-46e1-a703-f542b5b531c1","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.235Z","context":"app","status":200,"responseTime":"81ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.240Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.314Z","context":"app","context":"GET_ALL_REQUESTS","count":6,"firstRequestId":"30b0f4d3-1c90-46e1-a703-f542b5b531c1","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.315Z","context":"app","status":200,"responseTime":"75ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.596Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.673Z","context":"app","context":"GET_ALL_REQUESTS","count":6,"firstRequestId":"30b0f4d3-1c90-46e1-a703-f542b5b531c1","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-08T00:04:12.674Z","context":"app","status":200,"responseTime":"78ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.596Z","context":"app","method":"OPTIONS","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.598Z","context":"app","method":"OPTIONS","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.599Z","context":"app","method":"OPTIONS","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.600Z","context":"app","method":"OPTIONS","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.602Z","context":"app","method":"GET","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.604Z","context":"app","method":"GET","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.622Z","context":"app","status":200,"responseTime":"18ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.624Z","context":"app","method":"GET","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.631Z","context":"app","status":200,"responseTime":"29ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.636Z","context":"app","method":"GET","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.646Z","context":"app","status":200,"responseTime":"22ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-08T00:04:13.664Z","context":"app","status":200,"responseTime":"28ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}

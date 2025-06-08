@@ -9,6 +9,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { UserStatus } from "../../../generated/prisma";
+import logger from "../../logger";
 
 /**
  * Crée une session pour un utilisateur
@@ -30,7 +31,7 @@ export const login = async (req: Request, res: Response) => {
         doctoralStudent: true,
       },
     });
-    console.log("Utilisateur connecté :", user);
+
     if (!user) {
       // Vérifier si l'utilisateur a une demande en cours
       const requestStatus = await checkRequestStatus(email);
@@ -94,6 +95,19 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: "1w" }
     );
 
+    logger.info(
+      {
+        context: "LOGIN",
+        user: {
+          id: user.id,
+          role: user.role,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
+      },
+      "Utilisateur connecté"
+    );
     return res.status(200).json({
       message: "Connexion réussie",
       accessToken,
@@ -111,7 +125,7 @@ export const login = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Erreur lors de la connexion :", error);
+    logger.error({ error }, "Echec lors de la tentative de connexion");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };

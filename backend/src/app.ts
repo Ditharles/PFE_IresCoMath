@@ -21,11 +21,16 @@ import notificationsRoutes from "./routes/notifications.routes";
 import equipmentsRoutes from "./routes/equipments.routes";
 import { checkRole } from "./middleware/checkRole";
 import { teacherResearcherFields } from "./constants/userFields";
+import pinoHttp from "pino-http";
+import logger from "./logger";
+import loggingMiddleware from "./middleware/logging.middleware";
 dotenv.config();
 
 const prisma = new PrismaClient();
 const app = express();
 
+//Middleware pour pino
+app.use(loggingMiddleware() );
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -81,23 +86,28 @@ app.get("/teachers-researchers", async (req, res) => {
     }));
     res.json(formattedData);
   } catch (error) {
-    console.error(error);
+    logger.error(
+      error,
+      "Erreur lors de la récupération des enseignants chercheurs"
+    );
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });
 
 // Fermer la connexion Prisma proprement
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
+  logger.info("Prisma disconnected (SIGINT)");
   process.exit(0);
 });
 
 process.on("SIGTERM", async () => {
   await prisma.$disconnect();
+  logger.info("Prisma disconnected (SIGTERM)");
   process.exit(0);
 });

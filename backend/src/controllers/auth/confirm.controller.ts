@@ -1,4 +1,5 @@
 import { RequestStatus } from "../../../generated/prisma";
+import logger from "../../logger";
 import {
   createUser,
   createTeacherResearcher,
@@ -19,7 +20,6 @@ import { RequestRole, requestRoleMap, Role } from "../../utils/validateUtils";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 
 // Confirme une demande d'inscription en utilisant le jeton d'authentification
-
 export const confirmRequest: AuthHandler = async (req, res) => {
   try {
     const { token } = req.params;
@@ -44,9 +44,17 @@ export const confirmRequest: AuthHandler = async (req, res) => {
     const accessToken = jwt.sign({ id: user?.id, role: role }, JWT_SECRET_KEY, {
       expiresIn: "48h",
     });
+
+    logger.info(
+      { context: "confirmRequest", email },
+      "Demande confirmée avec succès"
+    );
     res.status(200).send({ accessToken });
   } catch (error) {
-    console.error(error);
+    logger.error(
+      { context: "confirmRequest", error },
+      "Erreur lors de la confirmation de la demande"
+    );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -80,9 +88,17 @@ export const resendConfirmLink: AuthHandler = async (req, res) => {
       generateTokenLink(userDb.email, user.role, "confirm"),
       "Confirmer"
     );
+
+    logger.info(
+      { context: "resendConfirmLink", email: userDb.email },
+      "Lien de confirmation renvoyé avec succès"
+    );
     return res.status(200).json({ message: "Email envoyé avec succès" });
   } catch (error) {
-    console.error(error);
+    logger.error(
+      { context: "resendConfirmLink", error },
+      "Erreur lors de la réexpédition du lien de confirmation"
+    );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -120,9 +136,17 @@ export const resendConfirmLinkWithMail: AuthHandler = async (req, res) => {
       generateTokenLink(userDb.email, finalRole, "confirm"),
       "Confirmer"
     );
+
+    logger.info(
+      { context: "resendConfirmLinkWithMail", email },
+      "Lien de confirmation renvoyé par email avec succès"
+    );
     return res.status(200).json({ message: "Email envoyé avec succès" });
   } catch (error) {
-    console.error(error);
+    logger.error(
+      { context: "resendConfirmLinkWithMail", error },
+      "Erreur lors de la réexpédition du lien de confirmation par email"
+    );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -203,12 +227,19 @@ export const validateAccount: AuthHandler = async (req, res) => {
 
     const tempToken = jwt.sign({ id: user.id, role }, JWT_SECRET_KEY);
 
+    logger.info(
+      { context: "validateAccount", email, userId: user.id },
+      "Compte validé avec succès"
+    );
     res.status(200).json({
       message: "Compte validé avec succès",
       tempToken,
     });
   } catch (error) {
-    console.error("Erreur lors de la validation du compte:", error);
+    logger.error(
+      { context: "validateAccount", error },
+      "Erreur lors de la validation du compte utilisateur"
+    );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -256,6 +287,11 @@ export const submitAdditionalInfo: AuthHandler = async (req, res) => {
         },
       });
 
+      logger.info(
+        { context: "submitAdditionalInfo", userId: decoded.userId },
+        "Compte finalisé avec succès"
+      );
+
       return res.status(200).json({
         message: "Compte finalisé avec succès",
       });
@@ -266,9 +302,9 @@ export const submitAdditionalInfo: AuthHandler = async (req, res) => {
       throw error;
     }
   } catch (error) {
-    console.error(
-      "Erreur lors de la soumission des informations supplémentaires :",
-      error
+    logger.error(
+      { context: "submitAdditionalInfo", error },
+      "Erreur lors de la soumission des informations supplémentaires"
     );
     return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }

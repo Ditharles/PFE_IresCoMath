@@ -9,7 +9,7 @@ import {
   fields,
 } from "../utils/validateUtils";
 import { fetchDataByRole } from "../services/validate.service";
-
+import logger from "../logger";
 import { sendMailAfterValidation } from "../services/mail.service";
 const prisma = new PrismaClient();
 
@@ -34,14 +34,25 @@ export const getWaitingList = async (req: Request, res: Response) => {
     );
 
     if (!data || Object.keys(data).length === 0) {
+      logger.warn(
+        { context: "GET_WAITING_LIST", userId: req.user.userId },
+        "Aucune donnée trouvée pour les filtres appliqués"
+      );
       res.status(400).json({ message: "Erreur : Aucune donnée trouvée" });
       return;
     }
 
+    logger.info(
+      { context: "GET_WAITING_LIST", count: Object.keys(data).length },
+      "Liste des requêtes en attente récupérée"
+    );
     res.status(200).json(data);
     return;
   } catch (error) {
-    console.error("Erreur rencontrée :", error);
+    logger.error(
+      { context: "GET_WAITING_LIST", error, userId: req.user?.userId },
+      "Erreur lors de la récupération des requêtes en attente"
+    );
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }
@@ -70,13 +81,20 @@ export const getRequestInfo = async (req: Request, res: Response) => {
     });
 
     if (!data) {
+      logger.warn(
+        { context: "GET_REQUEST_INFO", userId: user_id, role: user_role },
+        "Requête non trouvée"
+      );
       res.status(404).json({ message: "Requête non trouvée" });
       return;
     }
 
     res.status(200).json(data);
   } catch (error) {
-    console.error(error);
+    logger.error(
+      { context: "GET_REQUEST_INFO", error, queryParams: req.query },
+      "Erreur lors de la récupération des informations de requête"
+    );
     res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };
@@ -104,18 +122,33 @@ export const validateRequest = async (req: Request, res: Response) => {
     });
 
     if (!request) {
+      logger.warn(
+        { context: "VALIDATE_REQUEST", requestId: request_id },
+        "Requête non trouvée"
+      );
       res.status(404).json({ message: "Requête non trouvée" });
       return;
     }
 
-    // Vérifier si la demande est confirmée
     if (!request.isConfirmed) {
+      logger.warn(
+        { context: "VALIDATE_REQUEST", requestId: request_id },
+        "Tentative de validation d'un utilisateur non confirmé"
+      );
       res.status(400).json({ message: "Utilisateur non confirmé" });
       return;
     }
 
     if (user.role === "ENSEIGNANT") {
       if (typedRequestRole === "MASTER" && request.supervisorId !== user.id) {
+        logger.warn(
+          {
+            context: "VALIDATE_REQUEST",
+            requestId: request_id,
+            userId: user.id,
+          },
+          "Tentative non autorisée de validation d'un master"
+        );
         res.status(403).json({
           message: "Vous n'êtes pas autorisé à valider cette requête de master",
         });
@@ -125,6 +158,14 @@ export const validateRequest = async (req: Request, res: Response) => {
         typedRequestRole === "DOCTORANT" &&
         request.thesisSupervisorId !== user.id
       ) {
+        logger.warn(
+          {
+            context: "VALIDATE_REQUEST",
+            requestId: request_id,
+            userId: user.id,
+          },
+          "Tentative non autorisée de validation d'un doctorant"
+        );
         res.status(403).json({
           message:
             "Vous n'êtes pas autorisé à valider cette requête de doctorant",
@@ -151,14 +192,34 @@ export const validateRequest = async (req: Request, res: Response) => {
     if (newStatus) {
       await updateStatus(newStatus);
       await sendMailAfterValidation(request, typedRequestRole, newStatus, user);
+      logger.info(
+        {
+          context: "VALIDATE_REQUEST",
+          requestId: request_id,
+          newStatus,
+          validatedBy: user.id,
+        },
+        "Requête validée avec succès"
+      );
       res.status(200).json({ message: "Requête mise à jour avec succès" });
     } else {
+      logger.warn(
+        {
+          context: "VALIDATE_REQUEST",
+          requestId: request_id,
+          currentStatus,
+        },
+        "Statut de requête invalide ou déjà approuvé"
+      );
       res
         .status(400)
         .json({ message: "Statut de requête invalide ou déjà approuvé" });
     }
   } catch (error) {
-    console.error("Erreur lors de la validation de la requête :", error);
+    logger.error(
+      { context: "VALIDATE_REQUEST", error, body: req.body },
+      "Erreur lors de la validation de la requête"
+    );
     res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };
@@ -175,6 +236,10 @@ export const resendValidationMail = async (req: Request, res: Response) => {
     });
 
     if (!request) {
+      logger.warn(
+        { context: "RESEND_VALIDATION_MAIL", email },
+        "Requête non trouvée pour le renvoi d'email"
+      );
       res.status(404).json({ message: "Requête non trouvée" });
       return;
     }
@@ -185,11 +250,18 @@ export const resendValidationMail = async (req: Request, res: Response) => {
       request.status,
       req.user as { id: string; role: Role }
     );
+    logger.info(
+      { context: "RESEND_VALIDATION_MAIL", email, sentBy: req.user?.id },
+      "Email de validation renvoyé"
+    );
     res
       .status(200)
       .json({ message: "Email de validation renvoyé avec succès" });
   } catch (error) {
-    console.error("Erreur lors du renvoi de l'email de validation :", error);
+    logger.error(
+      { context: "RESEND_VALIDATION_MAIL", error, email },
+      "Erreur lors du renvoi de l'email de validation"
+    );
     res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };

@@ -11,6 +11,7 @@ import {
 import prisma from "../../utils/db";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
+import logger from "../../logger";
 
 //Gère la déconnexion de l'utilisateur en supprimant la session associée au token d'accès
 export const logout: AuthHandler = async (req, res) => {
@@ -32,6 +33,7 @@ export const logout: AuthHandler = async (req, res) => {
     });
     res.status(200).json({ message: "Déconnexion effectuée avec succès" });
   } catch (error) {
+    logger.error({context:"LOGOUT"} ,"Erreur lors de la déconnexion",error);
     res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
   }
 };
@@ -69,10 +71,10 @@ export const refreshToken: AuthHandler = async (req, res) => {
       });
 
       if (!session) {
-        console.error("Session non trouvée pour refresh", {
-          refreshTokenValue,
-          accessTokenValue,
-        });
+        logger.error(
+          { refreshTokenValue, accessTokenValue },
+          "Session non trouvée pour refresh"
+        );
         return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
       }
 
@@ -95,10 +97,11 @@ export const refreshToken: AuthHandler = async (req, res) => {
       if (error instanceof JsonWebTokenError) {
         return res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
       }
+      logger.error(error, "Erreur lors du refresh token");
       throw error;
     }
   } catch (error) {
-    console.error("Refresh token error:", error);
+    logger.error({context: "REFRESH"}, "Refresh token error",error);
     return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -132,7 +135,7 @@ export const getUser: AuthHandler = async (req, res) => {
     };
     res.status(200).json(userFront);
   } catch (error) {
-    console.error(error);
+    logger.error(error, "Erreur lors de la récupération de l'utilisateur");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -171,7 +174,7 @@ export const getUserSessions: AuthHandler = async (
       ),
     });
   } catch (error) {
-    console.error("Erreur lors de la récupération des sessions:", error);
+    logger.error(error, "Erreur lors de la récupération des sessions");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -203,7 +206,7 @@ export const logoutSession: AuthHandler = async (req, res) => {
 
     return res.status(200).json({ message: "Session déconnectée avec succès" });
   } catch (error) {
-    console.error("Erreur lors de la déconnexion de la session:", error);
+    logger.error(error, "Erreur lors de la déconnexion de la session");
     return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };

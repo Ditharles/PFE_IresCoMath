@@ -14,7 +14,7 @@ import {
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-
+import logger from "../../logger";
 
 /**
  * Crée un utilisateur avec son rôle et envoie un email de confirmation
@@ -32,13 +32,14 @@ const registerUser = async (
   data: any
 ) => {
   const { email, password } = data;
-  console.log(data);
+  logger.info({context: "REGISTER_USER"}, "Données reçues:", data);
   if (
     !email ||
     typeof email !== "string" ||
     !password ||
     typeof password !== "string"
   ) {
+    logger.warn({context: "REGISTER_USER"}, "Champs manquants ou invalides");
     res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     return;
   }
@@ -50,6 +51,7 @@ const registerUser = async (
     const exist = await checkUserExists(emailString);
 
     if (exist) {
+      logger.warn({context: "REGISTER_USER", email: emailString}, "Utilisateur existe déjà");
       res.status(400).json({ message: ERROR_MESSAGES.USER_EXISTS });
       return;
     }
@@ -61,6 +63,7 @@ const registerUser = async (
 
     const emailLink = generateTokenLink(emailString, role, "confirm");
     if (!emailLink) {
+      logger.error({context: "REGISTER_USER"}, "Erreur génération lien email");
       res.status(400).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
       return;
     }
@@ -78,15 +81,20 @@ const registerUser = async (
     const token = jwt.sign({ id: user.id, role: role }, JWT_SECRET_KEY, {
       expiresIn: "1h",
     });
+    logger.info(
+      { context: "REGISTER_USER", user: emailString },
+      "Utilisateur créé avec succès"
+    );
     res.status(201).json({ tempToken: token });
   } catch (error: any) {
-    console.error(
-      `Erreur lors de la création de l'utilisateur ${role}:`,
-      error
+    logger.error(
+      {context: "REGISTER_USER", error},
+      `Erreur création utilisateur ${role}`
     );
 
     // Vérifier si l'erreur est liée à un numéro de téléphone unique
     if (error.code === "P2002" && error.meta?.target?.includes("phone")) {
+      logger.warn({context: "REGISTER_USER"}, "Numéro de téléphone déjà utilisé");
       res.status(400).json({
         message: "Un utilisateur avec ce numéro de téléphone existe déjà",
       });
@@ -109,6 +117,7 @@ export const registerTeacherResearcher: AuthHandler = async (req, res) => {
     "institution",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
+    logger.warn({context: "REGISTER_TEACHER"}, "Champs manquants");
     res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     return;
   }
@@ -116,9 +125,9 @@ export const registerTeacherResearcher: AuthHandler = async (req, res) => {
   try {
     await registerUser(req, res, "ENSEIGNANT", req.body);
   } catch (error) {
-    console.error(
-      `Erreur lors de la création de l'utilisateur ENSEIGNANT:`,
-      error
+    logger.error(
+      { context: "REGISTER_TEACHER", user: req.body.email, error },
+      "Erreur création enseignant"
     );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
@@ -135,6 +144,7 @@ export const registerMasterStudent: AuthHandler = async (req, res) => {
   ];
 
   if (!validateRequestBody(req.body, requiredFields)) {
+    logger.warn({context: "REGISTER_MASTER"}, "Champs manquants");
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
 
@@ -142,7 +152,10 @@ export const registerMasterStudent: AuthHandler = async (req, res) => {
     await checkSupervisorExists(req.body.supervisorId);
     await registerUser(req, res, "MASTER", req.body);
   } catch (error) {
-    console.error(`Erreur lors de la création de l'utilisateur MASTER:`, error);
+    logger.error(
+      { context: "REGISTER_MASTER", user: req.body.email, error },
+      "Erreur création master"
+    );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
@@ -157,6 +170,7 @@ export const registerDoctoralStudent: AuthHandler = async (req, res) => {
     "thesisSupervisorId",
   ];
   if (!validateRequestBody(req.body, requiredFields)) {
+    logger.warn({context: "REGISTER_DOCTORAL"}, "Champs manquants");
     return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
   }
 
@@ -164,9 +178,9 @@ export const registerDoctoralStudent: AuthHandler = async (req, res) => {
     await checkSupervisorExists(req.body.thesisSupervisorId);
     await registerUser(req, res, "DOCTORANT", req.body);
   } catch (error) {
-    console.error(
-      `Erreur lors de la création de l'utilisateur DOCTORANT:`,
-      error
+    logger.error(
+      { context: "REGISTER_DOCTORAL", user: req.body.email, error },
+      "Erreur création doctorant"
     );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }

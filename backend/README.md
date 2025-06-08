@@ -15,6 +15,7 @@ Ce backend gère l'API, la base de données et la logique métier du projet Ires
 - [Principaux processus](#principaux-processus)
 - [Tests](#tests)
 - [FAQ](#faq)
+- [Logs](#logs)
 
 ---
 
@@ -151,8 +152,6 @@ Le serveur écoute par défaut sur [http://localhost:8000](http://localhost:8000
 
 > Les tests ont étés réalisés de bout en bout, prière vous référer au dossier frontend
 
-
-
 ---
 
 ## FAQ
@@ -163,6 +162,19 @@ Le serveur écoute par défaut sur [http://localhost:8000](http://localhost:8000
   - Vérifiez les clés JWT dans `.env`.
 - **Besoin de comptes de test ?**
   - Utilisez les comptes créés par le seed (voir plus haut).
+
+---
+
+## Logs
+
+Le backend utilise [Pino](https://getpino.io/) et [pino-pretty](https://github.com/pinojs/pino-pretty) pour le logging.  
+Les logs sont affichés en couleur et formatés pour faciliter le développement.
+
+- Les requêtes HTTP sont automatiquement loggées.
+- Les erreurs et informations importantes sont loggées via le logger Pino (`logger.info`, `logger.error`, etc.).
+
+Pour voir les logs, lancez simplement le serveur normalement.  
+Pour une sortie JSON brute (production), retirez ou modifiez la configuration `pino-pretty` dans `src/app.ts`.
 
 ---
 

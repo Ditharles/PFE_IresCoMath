@@ -5,8 +5,9 @@ import NotificationsService from "../../services/Notifications.service";
 import { AuthRequest } from "../../types/auth";
 import { validateRequestBody, ERROR_MESSAGES } from "../../utils/authUtils";
 import prisma from "../../utils/db";
-
 import { Response } from "express";
+import logger from "../../logger";
+
 // Fonction pour approuver ou rejeter une demande
 export const approveRequest = async (req: AuthRequest, res: Response) => {
   try {
@@ -19,7 +20,7 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
     }
 
     // Récupération de la demande
-    const request = await prisma.request.findUnique({
+    const request = await prisma.request!.findUnique({
       where: { id },
       include: {
         user: {
@@ -33,12 +34,21 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
     });
 
     if (!request) {
+      logger.warn(
+        { context: "APPROVE_REQUEST", requestId: id },
+        "Tentative de validation d'une demande non trouvée"
+      );
       res.status(404).json({ message: ERROR_MESSAGES.REQUEST_NOT_FOUND });
     }
 
     if (request!.status === RequestStatus.APPROVED) {
-      res.status(400).json({ message: "La requete a déja été approuvé " });
+      logger.warn(
+        { context: "APPROVE_REQUEST", requestId: id, status: request!.status },
+        "Tentative de réapprobation d'une demande déjà approuvée"
+      );
+      res.status(400).json({ message: "La requête a déjà été approuvée" });
     }
+
     // Vérification des autorisations
     const userRole = req.user.role as Role;
     const requestUser = request!.user;
@@ -52,6 +62,16 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
         requestUser.masterStudent?.supervisorId === req.user.id);
 
     if (isMasterOrDoctorant && !isAuthorized) {
+      logger.warn(
+        {
+          context: "APPROVE_REQUEST",
+          userId: req.user.id,
+          userRole,
+          requestUserId: requestUser.id,
+          requestUserRole: requestUser.role,
+        },
+        "Tentative non autorisée d'approbation"
+      );
       res.status(403).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
     }
 
@@ -78,12 +98,20 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
     const nextStatus = (nextStatusMap as Record<Role, any>)[userRole]?.[
       request!.status
     ];
- 
+
     if (!nextStatus) {
+      logger.warn(
+        {
+          context: "APPROVE_REQUEST",
+          userRole,
+          requestStatus: request!.status,
+        },
+        "Rôle invalide pour cette action"
+      );
       res.status(400).json({ message: ERROR_MESSAGES.INVALID_ROLE });
     }
 
-    const updatedRequest = await prisma.request.update({
+    const updatedRequest = await prisma.request!.update({
       where: { id },
       data: { status: nextStatus },
     });
@@ -100,12 +128,25 @@ export const approveRequest = async (req: AuthRequest, res: Response) => {
       !isApproved ? rejectReason : undefined
     );
 
+    logger.info(
+      {
+        context: "APPROVE_REQUEST",
+        requestId: id,
+        status: nextStatus,
+        approvedBy: req.user.id,
+      },
+      `Demande ${isApproved ? "approuvée" : "rejetée"} avec succès`
+    );
+
     res.status(200).json({
       message: isApproved ? "Demande approuvée" : "Demande rejetée",
       data: updatedRequest,
     });
   } catch (error) {
-    console.error("Error in approveRequest:", error);
+    logger.error(
+      { context: "APPROVE_REQUEST", error },
+      "Erreur lors de l'approbation de la demande"
+    );
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };

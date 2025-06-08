@@ -27,10 +27,13 @@ import {
   registerMasterStudent,
 } from "../controllers/auth/register.controller";
 import { getUser } from "../controllers/auth/other.controller";
+import logger from "../logger";
+
 
 
 const router = express.Router();
 // Routes d'inscription
+
 router.post(
   "/register/enseignant",
   registerTeacherResearcher as RequestHandler
