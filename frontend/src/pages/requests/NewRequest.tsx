@@ -79,11 +79,6 @@ const NewRequest: React.FC = () => {
 
   const handleFormSubmit = async (formData: any) => {
     console.log(isValid)
-    if (!isValid) {
-      toast.error('Veuillez remplir correctement tous les champs requis');
-
-      return;
-    }
 
     setIsSubmitting(true);
     setSubmitError(null);

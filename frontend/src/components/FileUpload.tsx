@@ -8,7 +8,7 @@ interface FileUploadProps {
     acceptedTypes?: string[];
     headerText?: string;
     subHeaderText?: string;
-    onFileUploaded?: (fileUrls: string) => void;
+    onFileUploaded?: (fileUrls: string[] | string) => void;
 }
 
 interface FileItem {
@@ -101,6 +101,7 @@ const FileUpload = ({
 
             {files.length < maxFiles && (
                 <UploadDropzone
+                    data-cy="file-dropzone"
                     endpoint={endpoint as unknown}
                     onClientUploadComplete={handleUploadComplete}
                     onUploadProgress={handleUploadProgress}

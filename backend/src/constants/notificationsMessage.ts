@@ -1,6 +1,10 @@
 import { NotificationType } from "../../generated/prisma";
 
 const frontend_url = process.env.FRONTEND_URL || "http://localhost:5173";
+
+
+//Définition des modèles de notification utilisés dans l'application
+// Ces modèles sont utilisés pour générer des notifications cohérentes et structurées
 export const NotificationTemplates = {
   REQUEST_RECEIVED: (requestType: string, requestId: string) => ({
     type: NotificationType.REQUEST_RECEIVED,
@@ -98,3 +102,4 @@ export const NotificationTemplates = {
     url: `${frontend_url}/demande/${requestId}`,
   }),
 };
+

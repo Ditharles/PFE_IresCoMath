@@ -4,7 +4,7 @@ import routes from "./routes";
 import Layout from './components/dashboard/Layout';
 import { Toaster } from './components/ui/sonner';
 
-function AppContent() {
+const AppContent = () => {
   const { isLoggedIn } = useAuth();
   const AppRoutes = () => useRoutes(routes);
 
@@ -15,9 +15,9 @@ function AppContent() {
   ) : (
     <AppRoutes />
   );
-}
+};
 
-export default function App() {
+const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -26,4 +26,6 @@ export default function App() {
       </AuthProvider>
     </BrowserRouter>
   );
-}
+};
+
+export default App;

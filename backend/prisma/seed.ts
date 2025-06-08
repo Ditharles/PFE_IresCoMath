@@ -23,8 +23,8 @@ async function main() {
         password: adminPassword,
         role: Role.ADMIN,
         cin: "ADMIN12345",
-        firstName: "Système",
-        lastName: "Admin",
+        firstName: "Mohamed",
+        lastName: "Ben Ali",
         photo: "https://randomuser.me/api/portraits/men/1.jpg",
         bankData: null,
         signature: null,
@@ -41,14 +41,14 @@ async function main() {
         password: directeurPassword,
         role: Role.DIRECTEUR,
         cin: "DIR123456",
-        firstName: "Laboratoire",
-        lastName: "Directeur",
-        photo: "https://randomuser.me/api/portraits/men/2.jpg",
+        firstName: "Fatma",
+        lastName: "Zouari",
+        photo: "https://randomuser.me/api/portraits/women/2.jpg",
         teacherResearcher: {
           create: {
             position: "Directeur de laboratoire",
             grade: Grade.Professeur,
-            institution: "Université IreSCoMath",
+            institution: "Faculté des Sciences de Gabès",
           },
         },
       },
@@ -61,14 +61,14 @@ async function main() {
         password: enseignantChercheurPassword,
         role: Role.ENSEIGNANT,
         cin: "ENS123456",
-        firstName: "Chercheur",
-        lastName: "Enseignant",
+        firstName: "Ahmed",
+        lastName: "Trabelsi",
         photo: "https://randomuser.me/api/portraits/men/3.jpg",
         teacherResearcher: {
           create: {
             position: "Enseignant chercheur",
             grade: Grade.Professeur,
-            institution: "Université IreSCoMath",
+            institution: "Facultés des Sciences de Gabès",
           },
         },
       },
@@ -89,8 +89,8 @@ async function main() {
         password: etudiantMasterPassword,
         role: Role.MASTER,
         cin: "ETU123456",
-        firstName: "Master",
-        lastName: "Etudiant",
+        firstName: "Amira",
+        lastName: "Ben Salah",
         photo: "https://randomuser.me/api/portraits/women/1.jpg",
         masterStudent: {
           create: {
@@ -108,9 +108,9 @@ async function main() {
         password: doctorantPassword,
         role: Role.DOCTORANT,
         cin: "DOC123456",
-        firstName: "Doctorat",
-        lastName: "Etudiant",
-        photo: "https://randomuser.me/api/portraits/women/2.jpg",
+        firstName: "Leila",
+        lastName: "Hammami",
+        photo: "https://randomuser.me/api/portraits/women/4.jpg",
         doctoralStudent: {
           create: {
             thesisYear: 2022,
@@ -132,7 +132,9 @@ async function main() {
         description:
           "Microcontrôleurs et cartes de développement pour projets électroniques",
         photo: [
-          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+          "https://unsplash.com/fr/photos/circuit-imprime-bleu-__LXdDYiL-w",
+          "https://th.bing.com/th/id/R.5cd002bcc54777219ee24720fd0407f0?rik=vLsAehX0UKRsqg&pid=ImgRaw&r=0",
+          "https://www.pcwdld.com/wp-content/uploads/Raspberry_Pi_4_Model_B_-_Side-scaled.jpg",
         ],
         quantity: 3,
       },
@@ -145,7 +147,9 @@ async function main() {
         description:
           "Équipements réseau pour la connectivité et la communication",
         photo: [
-          "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+          "https://www.shutterstock.com/fr/image-photo/industrial-internet-equipment-network-switch-provision-2435843379",
+          "https://www.shutterstock.com/fr/image-photo/fiber-optic-network-connection-signal-transmission-2626967163",
+          "https://th.bing.com/th/id/OIP.WNUSa1OrRgP6T7RgC0lN1QHaFm?r=0&w=1000&h=757&rs=1&pid=ImgDetMain",
         ],
         quantity: 5,
       },
@@ -157,7 +161,9 @@ async function main() {
         name: "Stockage",
         description: "Disques durs et périphériques de stockage",
         photo: [
-          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+          " https://www.shutterstock.com/fr/image-photo/stack-old-possibly-nonfunctional-hard-drives-2592403233",
+          "https://www.shutterstock.com/fr/image-photo/external-hard-disk-isolated-on-white-2547910355",
+          "https://www.shutterstock.com/fr/image-photo/external-usb-hard-drive-isolated-on-2296844811",
         ],
         quantity: 4,
       },
@@ -169,7 +175,9 @@ async function main() {
         name: "Outils de présentation",
         description: "Équipements pour les présentations et conférences",
         photo: [
-          "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+          "https://www.shutterstock.com/fr/image-vector/screen-projector-cinema-movie-games-meetings-1667781523",
+          "https://unsplash.com/fr/photos/allume-projecteur-led-sur-table-MAYsdoYpGuk",
+          "https://unsplash.com/fr/photos/projecteur-noir-et-blanc-sur-table-blanche-WU4ek4KCyjw",
         ],
         quantity: 8,
       },
@@ -181,7 +189,7 @@ async function main() {
         name: "Capteurs",
         description: "Capteurs divers pour projets électroniques et IoT",
         photo: [
-          "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+          "https://th.bing.com/th/id/OIP.n1lhxBtHiBkubfwhIpRPPwHaHa?r=0&rs=1&pid=ImgDetMain",
         ],
         quantity: 15,
       },
@@ -200,7 +208,7 @@ async function main() {
           categoryId: carteDeveloppementCategory.id,
           status: EquipmentStatus.AVAILABLE,
           photo: [
-            "https://m.media-amazon.com/images/I/61W1h6+WQVL._AC_UF1000,1000_QL80_.jpg",
+            "https://th.bing.com/th/id/OIP.SeXbjo3YNDhlSA_-6kroAwHaHa?r=0&rs=1&pid=ImgDetMain",
           ],
           specifications: {
             type: "Microcontrôleur",
@@ -215,7 +223,7 @@ async function main() {
           categoryId: carteDeveloppementCategory.id,
           status: EquipmentStatus.AVAILABLE,
           photo: [
-            "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+            "https://www.pcwdld.com/wp-content/uploads/Raspberry_Pi_4_Model_B_-_Side-scaled.jpg",
           ],
           specifications: {
             type: "Ordinateur monocarte",
@@ -230,7 +238,7 @@ async function main() {
           categoryId: carteDeveloppementCategory.id,
           status: EquipmentStatus.AVAILABLE,
           photo: [
-            "https://m.media-amazon.com/images/I/71iQn-+VqRL._AC_UF1000,1000_QL80_.jpg",
+            "https://www.picclickimg.com/7J8AAOSw4ABlwco6/Espressif-ESP32-C3-DevKit-RUST-1-Carte-de-d%C3%A9veloppement-ESP32-C3-DevKit-RUST-1.webp",
           ],
           specifications: {
             type: "Microcontrôleur WiFi/Bluetooth",

@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { Role, Grade, RequestStatus, User } from "../../generated/prisma";
+import {
+  Role,
+  Grade,
+  RequestStatus,
+  User,
+  UserStatus,
+} from "../../generated/prisma";
 
 export interface AuthRequest extends Request {
   user: any;
@@ -23,6 +29,7 @@ export interface TeacherResearcherRequest {
   position: string;
   grade: Grade;
   institution: string;
+  phone: string;
   status: RequestStatus;
   cin: string;
 }
@@ -34,6 +41,7 @@ export interface DoctoralStudentRequest {
   thesisYear: string;
   thesisSupervisorId: string;
   status: RequestStatus;
+  phone: string;
   cin: string;
 }
 
@@ -43,6 +51,7 @@ export interface MasterStudentRequest {
   email: string;
   masterYear: string;
   supervisorId: string;
+  phone: string;
   status: RequestStatus;
   cin: string;
 }
@@ -69,4 +78,23 @@ export interface ResetPasswordRequest {
 export interface RefreshTokenRequest {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface ExtendedUser {
+  id: string;
+  userId: string;
+  email: string;
+  role: Role;
+  firstName: string;
+  lastName: string;
+  photo: string | null;
+  phone: string | null;
+  cin: string | null;
+  createdAt: Date;
+  supervisor?: { id: string; firstName: string; lastName: string } | null;
+  thesisSupervisor?: { id: string; firstName: string; lastName: string } | null;
+  masterYear?: number;
+  thesisYear?: number;
+  supervisorId?: string;
+  thesisSupervisorId?: string;
 }

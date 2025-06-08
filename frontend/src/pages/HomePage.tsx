@@ -11,7 +11,7 @@ const HomePage = () => {
     case 'ADMIN':
       return <Navigate to="/admin" />;
     case 'DIRECTEUR':
-      return <Navigate to="/membres" />;
+      return <Navigate to="/demandes" />;
     default:
       return <Navigate to="/historique" />;
   }

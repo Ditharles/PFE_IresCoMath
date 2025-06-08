@@ -91,8 +91,8 @@ export default function ConfirmationEmail() {
       case "validating":
         return (
           <div className="text-center">
-            <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-4 text-gray-900">Validation en cours...</h1>
+            <Loader2 className="w-12 h-12  animate-spin mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-4">Validation en cours...</h1>
             <p className="text-gray-600">Nous vérifions votre lien de confirmation. Veuillez patienter.</p>
           </div>
         );

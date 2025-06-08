@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useCallback, FormEvent, ChangeEvent } from "react";
+import React, {
+    useState,
+    useMemo,
+    useCallback,
+    FormEvent,
+    ChangeEvent,
+} from "react";
 import axios from "axios";
 import { Mail, Loader2, Send, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -7,16 +13,13 @@ import AuthService from "../../services/auth.service";
 
 const ResendEmail = () => {
     const authService = useMemo(() => new AuthService(), []);
-
     const token: string = localStorage.getItem("temptoken") || "";
-
-
 
     const [email, setEmail] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string>("");
-    const [tokenExpired, setTokenExpired] = useState<boolean>(false);
-    const [showEmailInput, setShowEmailInput] = useState<boolean>(false);
+    const [tokenExpired, setTokenExpired] = useState<boolean>(!token); // initial state
+    const showEmailInput = useMemo(() => !token || tokenExpired, [token, tokenExpired]);
 
     const validateEmail = useCallback((email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,68 +35,76 @@ const ResendEmail = () => {
         return true;
     }, []);
 
-    const handleEmailChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-        if (email) validateEmail(e.target.value);
-    }, [email, validateEmail]);
+    const handleEmailChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            setEmail(e.target.value);
+            if (email) validateEmail(e.target.value);
+        },
+        [email, validateEmail]
+    );
 
-    const handleResendConfirmation = useCallback(async (e: FormEvent) => {
-        e.preventDefault();
+    const handleResendConfirmation = useCallback(
+        async (e: FormEvent) => {
+            e.preventDefault();
+            if (showEmailInput && !validateEmail(email)) return;
 
-        if (showEmailInput && !validateEmail(email)) {
-            return;
-        }
-
-        setIsSubmitting(true);
-
-        try {
-            const response = showEmailInput
-                ? await authService.resendConfirmationEmailWithEmail(email)
-                : await authService.resendConfirmationEmail(token);
-            toast.success(response.data.message);
-
-
-        } catch (error) {
-            toast.error(response.data.message);
-            handleError(error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    }, [showEmailInput, email, token, authService, validateEmail]);
+            setIsSubmitting(true);
+            try {
+                const response = showEmailInput
+                    ? await authService.resendConfirmationEmailWithEmail(email)
+                    : await authService.resendConfirmationEmail(token);
+                toast.success(response.data.message);
+            } catch (error) {
+                handleError(error);
+            } finally {
+                setIsSubmitting(false);
+            }
+        },
+        [showEmailInput, email, token, authService, validateEmail]
+    );
 
     const handleTokenExpired = useCallback(() => {
         toast.warning(
             "Votre lien de confirmation a expiré. Veuillez saisir votre email pour recevoir un nouveau lien."
         );
         setTokenExpired(true);
-        setShowEmailInput(true);
+        localStorage.removeItem("temptoken");
     }, []);
 
-    const handleError = useCallback((error: unknown) => {
-        console.error("Erreur lors de la demande d'un nouveau lien de confirmation:", error);
+    const handleError = useCallback(
+        (error: unknown) => {
+            console.error("Erreur lors de la demande d'un nouveau lien de confirmation:", error);
 
-        if (axios.isAxiosError(error)) {
-            switch (error.response?.status) {
-                case 404:
-                    toast.error("Aucun compte n'est associé à cette adresse email.");
-                    break;
-                case 429:
-                    toast.warning("Trop de tentatives. Veuillez réessayer plus tard.");
-                    break;
-                case 410:
-                    handleTokenExpired();
-                    break;
-                default:
-                    toast.error("Une erreur est survenue lors de l'envoi du nouveau lien de confirmation.");
+            if (axios.isAxiosError(error)) {
+                const status = error.response?.status;
+                switch (status) {
+                    case 404:
+                        toast.error("Aucun compte n'est associé à cette adresse email.");
+                        break;
+                    case 429:
+                        toast.warning("Trop de tentatives. Veuillez réessayer plus tard.");
+                        break;
+                    case 410:
+                        handleTokenExpired();
+                        break;
+                    case 400:
+                    case 401:
+                    case 403:
+                        toast.warning("Le lien de confirmation est invalide ou a expiré. Veuillez saisir votre email.");
+                        handleTokenExpired(); // même traitement que 410
+                        break;
+                    default:
+                        toast.error("Une erreur est survenue lors de l'envoi du nouveau lien de confirmation.");
+                }
+            } else {
+                toast.error("Une erreur inattendue est survenue. Veuillez réessayer.");
             }
-        } else {
-            toast.error("Une erreur inattendue est survenue. Veuillez réessayer.");
-        }
-    }, [handleTokenExpired]);
+        },
+        [handleTokenExpired]
+    );
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-
+        <div className="min-h-screen flex items-center justify-center py-12">
             <div className="max-w-md w-full bg-background rounded-xl shadow-lg p-8">
                 <div className="flex justify-center mb-6">
                     <div className="rounded-full bg-blue-100 p-3">
@@ -101,7 +112,9 @@ const ResendEmail = () => {
                     </div>
                 </div>
 
-                <h1 className="text-2xl font-bold mb-4 text-center text-gray-900">Vous avez perdu votre lien de confirmation ?</h1>
+                <h1 className="text-2xl font-bold mb-4 text-center">
+                    Vous avez perdu votre lien de confirmation ?
+                </h1>
 
                 <p className="text-gray-600 mb-6 text-center">
                     {tokenExpired
@@ -114,7 +127,10 @@ const ResendEmail = () => {
                 <form onSubmit={handleResendConfirmation} className="mb-6">
                     {showEmailInput && (
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 text-left mb-1">
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-700 text-left mb-1"
+                            >
                                 Adresse email
                             </label>
                             <div className="relative">
@@ -132,15 +148,16 @@ const ResendEmail = () => {
                                     required
                                 />
                             </div>
-                            {emailError && <p className="mt-1 text-sm text-red-600 text-left">{emailError}</p>}
+                            {emailError && (
+                                <p className="mt-1 text-sm text-red-600 text-left">{emailError}</p>
+                            )}
                         </div>
                     )}
-
 
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-blue-600 text-foreground py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                        className="w-full bg-blue-600 text-accent py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                         {isSubmitting ? (
                             <>
@@ -159,7 +176,9 @@ const ResendEmail = () => {
                 <div className="flex flex-col space-y-4">
                     <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
                         <AlertCircle className="h-4 w-4" />
-                        <span>Vérifiez votre dossier de spam si vous ne recevez pas l'email.</span>
+                        <span>
+                            Vérifiez votre dossier de spam si vous ne recevez pas l'email.
+                        </span>
                     </div>
 
                     <div className="pt-4 border-t border-gray-200">
@@ -170,7 +189,10 @@ const ResendEmail = () => {
                             >
                                 Se connecter
                             </Link>
-                            <Link to="/" className="text-gray-600 hover:text-gray-800 transition-colors text-center">
+                            <Link
+                                to="/"
+                                className="text-gray-600 hover:text-gray-800 transition-colors text-center"
+                            >
                                 Retour à l'accueil
                             </Link>
                         </div>

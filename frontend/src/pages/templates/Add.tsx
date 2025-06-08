@@ -112,17 +112,22 @@ const AddTemplate = () => {
                 url: getValues("url"),
             });
 
-            setIsVerified(true);
             const fieldName = response.data.placeholders.map(
                 (placeholder: { fieldName: string }) => placeholder.fieldName
             );
-            setValue("placeholders", fieldName, {
-                shouldValidate: true,
-                shouldDirty: true,
-                shouldTouch: true,
-            });
+            if (fieldName.length > 0) {
+                setIsVerified(true);
 
-            toast.success(response.data.message);
+                setValue("placeholders", fieldName, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                });
+                toast.success(response.data.message);
+            } else {
+                toast.warning("Aucun champ trouvé");
+            }
+
         } catch (error: any) {
             setIsVerified(false);
             if (

@@ -17,8 +17,9 @@ import { write } from "fs";
 import { writeFile } from "fs/promises";
 import { FileEsque } from "uploadthing/types";
 import { text } from "body-parser";
+import logger from "../logger"; // Correction de l'import du logger
 const PLACE_HOLDER_REGEX = /{([^}]+)}/g;
-
+import { Request } from "../../generated/prisma";
 interface Placeholder {
   fieldName: string;
   fullMatch: string;
@@ -185,6 +186,11 @@ export const updateAllForm = async (template: Template) => {
       select: extendRequestFields,
     });
 
+    logger.info(
+      { count: requests.length },
+      "Nombre de requêtes à mettre à jour avec le template"
+    );
+
     const docxBuffer = await downloadFile(template.url);
     if (!docxBuffer.data) {
       return {
@@ -236,6 +242,7 @@ export const updateAllForm = async (template: Template) => {
         !uploadResults ||
         !uploadResults.every((result) => result.data?.ufsUrl)
       ) {
+        logger.error("L'upload des fichiers a échoué", { uploadResults });
         return {
           status: 400,
           message: "L'upload des fichiers a échoué",
@@ -270,9 +277,110 @@ export const updateAllForm = async (template: Template) => {
       await Promise.all(tmpFiles.map((file) => file.cleanup()));
     }
   } catch (error) {
+    logger.error(error, "Échec de la mise à jour des formulaires");
     return {
       status: 500,
       message: `Échec de la mise à jour des formulaires: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    };
+  }
+};
+
+export const createForm = async (requestId: string) => {
+  try {
+    // Récupérer la requête
+    const request = await prisma.request.findUnique({
+      where: { id: requestId },
+      select: extendRequestFields,
+    });
+
+    if (!request) {
+      logger.warn({ context: "CREATE_FORM" }, "Requête introuvable");
+      return {
+        status: 404,
+        message: "Requête introuvable",
+      };
+    }
+
+    // Récupérer le template correspondant au type de requête
+    const template = await prisma.template.findFirst({
+      where: { for: request.type },
+    });
+
+    if (!template) {
+      return;
+    }
+
+    // Télécharger le template DOCX
+    const docxBuffer = await downloadFile(template.url);
+    if (!docxBuffer.data) {
+      logger.warn(
+        { context: "CREATE_FORM" },
+        "Tentative de création de formulaire échoué"
+      );
+      return {
+        status: 400,
+        message: "Aucune donnée téléchargée depuis l'URL du template",
+      };
+    }
+
+    // Générer le mapping des valeurs
+    const valueMap = defineValueMap(request, request.type);
+
+    // Modifier le document
+    const modifiedDocx = await modifyText(
+      docxBuffer.data as Buffer,
+      template.placeholders,
+      valueMap
+    );
+
+    // Créer un fichier temporaire
+    const tmpFileResult = await tmpFile({ postfix: ".docx" });
+    await writeFile(tmpFileResult.path, modifiedDocx);
+
+    try {
+      // Préparer le fichier pour l'upload
+      const uint8Array = new Uint8Array(fs.readFileSync(tmpFileResult.path));
+      const file = new File([uint8Array], path.basename(tmpFileResult.path), {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      });
+
+      // Upload sur UploadThing
+      const uploadResults = await utapi.uploadFiles([file]);
+
+      if (!uploadResults || !uploadResults[0]?.data?.ufsUrl) {
+        logger.error("Échec de l'upload du formulaire", { uploadResults });
+        return {
+          status: 400,
+          message: "Échec de l'upload du formulaire",
+        };
+      }
+
+      // Mettre à jour le champ awaitForm de la requête
+      await prisma.request.update({
+        where: { id: request.id },
+        data: {
+          awaitForm: uploadResults[0].data.ufsUrl,
+        },
+      });
+
+      return {
+        status: 200,
+        message: "Formulaire créé avec succès",
+        data: {
+          formUrl: uploadResults[0].data.ufsUrl,
+        },
+      };
+    } finally {
+      // Nettoyer le fichier temporaire
+      await tmpFileResult.cleanup();
+    }
+  } catch (error) {
+    logger.error(error, "Échec de la création du formulaire");
+    return {
+      status: 500,
+      message: `Échec de la création du formulaire: ${
         error instanceof Error ? error.message : String(error)
       }`,
     };

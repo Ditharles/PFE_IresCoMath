@@ -18,7 +18,7 @@ const MemberAddRequest = () => {
     const navigate = useNavigate();
     const [requests, setRequests] = useState<RequestUser | null>(null);
     const [loading, setLoading] = useState(true);
-    const darkMode = false;
+
     const [reason, setReason] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const manageUserService = new ManageUserService();

@@ -5,6 +5,7 @@ import {
 } from "../../generated/prisma";
 import prisma from "./db";
 import { validateRequestBody } from "./authUtils";
+import logger from "../logger"; // Correction de l'import du logger
 
 export const createCategory = async (
   name: string,
@@ -322,7 +323,7 @@ export const switchCategory = async (
 
       const equipment = await prisma.equipment.create({
         data: {
-          name: equipmentName,
+          name: equipmentName ?? "",
           category: { connect: { id: categoryId } },
           photo: equipmentPhoto ?? [],
           specifications: equipmentSpecifications ?? {},
@@ -351,7 +352,7 @@ export const switchCategory = async (
       message: "Opération non supportée ou paramètres manquants",
     };
   } catch (error) {
-    console.error("Erreur dans switchCategory:", error);
+    logger.error(error, "Erreur dans switchCategory");
     return {
       status: 500,
       message: "Une erreur interne est survenue",

@@ -3,15 +3,15 @@ import { Role } from "../types/common";
 
 export class ManageUserService {
   async getWaitingUsers() {
-    return api.get("/validate/get-waiting-list");
+    return await api.get("/validate/get-waiting-list");
   }
 
   async getUsers() {
-    return api.get("/users/get-users");
+    return await api.get("/users/get-users");
   }
 
   async getUser(id: string) {
-    return api.get(`/users/get-user/${id}`);
+    return await api.get(`/users/get-user/${id}`);
   }
 
   async acceptUser(
@@ -20,7 +20,7 @@ export class ManageUserService {
     validate: boolean,
     rejected_reason?: string
   ) {
-    return api.post("/validate/validate-request", {
+    return await api.post("/validate/validate-request", {
       request_id,
       request_role,
       validate,
@@ -29,12 +29,26 @@ export class ManageUserService {
   }
 
   async getRequestInfo(id: string, role: Role) {
-    return api.get(
+    return await api.get(
       `/validate/get-request-info?user_id=${id}&user_role=${role}`
     );
   }
-
-  async deleteUser(id: string, password: string) {
-    return api.post("/users/delete-user", { id, password });
+  async getStudents(supervisorId: string) {
+    try {
+      const response = await api.get(`/users/get-students/${supervisorId}`);
+      return response;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des étudiants:", error);
+      throw error;
+    }
+  }
+  async desactivate(id: string) {
+    return await api.post(`/users/desactivate-user/${id}`);
+  }
+  async delete(id: string) {
+    return await api.post(`/users/delete-user/${id}`);
+  }
+  async updateUser(id: string, credentials: unknown) {
+    return await api.post(`/users/update-user/${id}`, credentials);
   }
 }

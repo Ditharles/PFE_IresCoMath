@@ -55,6 +55,7 @@ const Members = () => {
         try {
             // Récupérer les demandes d'adhésion
             const membersRequestList = await manageUserService.getWaitingUsers();
+            console.log("membersRequestList.data", membersRequestList.data);
             const allMembersRequest: RequestUser[] = [
                 ...membersRequestList.data.MASTER,
                 ...membersRequestList.data.DOCTORANT,

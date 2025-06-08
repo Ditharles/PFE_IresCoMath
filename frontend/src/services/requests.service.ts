@@ -49,7 +49,7 @@ class RequestsService {
     return await api.post(`/requests/close-request/${id}`);
   }
   async editRequest(id: string, credentials: unknown) {
-    return await api.post(`/requests/edit-request/${id}`, credentials);
+    return await api.put(`/requests/edit-request/${id}`, credentials);
   }
 
   async reigniteRequest(id: string) {

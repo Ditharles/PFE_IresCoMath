@@ -20,13 +20,21 @@ const LoginPage: React.FC = () => {
     try {
       const response = await authService.login(email, password);
       console.log(response);
-      toast.success(response!.data.message || "Connexion réussie !");
+      toast.success(response!.data.message);
       login();
       setTimeout(() => {
         navigate("/accueil");
       }, 3000);
-    } catch (error) {
-      toast.error(error!.response?.data.message || "Une erreur s'est produite lors de la connexion.");
+    } catch (error: any) {
+      if (error.response.data.type === "REQUEST_PENDING") {
+        toast.warning("Votre demande d'adhésion est en cours de traitement. Veuillez patienter.");
+      } else if (error.response.data.type === "REQUEST_REJECTED") {
+        toast.error(`Votre demande d'adhésion a été rejetée. Raison: ${error.response.data.message}`);
+      } else if (error.response.data.type === "REQUEST_APPROVED") {
+        toast.info("Votre demande d'adhésion a été approuvée. Veuillez vérifier votre email pour activer votre compte.");
+      } else {
+        toast.error(error.response.data.message || "Une erreur s'est produite lors de la connexion.");
+      }
       console.error(error);
     } finally {
       setIsSubmitting(false);

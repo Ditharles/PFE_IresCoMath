@@ -1,4 +1,3 @@
-
 export const setToken = (name: string, token: string): void => {
   localStorage.setItem(name, token);
 };
@@ -20,7 +19,6 @@ export const removeUser = () => {
   localStorage.removeItem("user");
 };
 export const setUser = (user: any): void => {
-  
   localStorage.setItem("user", JSON.stringify(user));
 };
 
