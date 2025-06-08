@@ -638,3 +638,5 @@
 {"levelLabel":"info","time":"2025-06-08T17:03:43.346Z","context":"app","method":"GET","url":"/auth/logout","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
 {"levelLabel":"info","time":"2025-06-08T17:03:43.360Z","context":"app","status":200,"responseTime":"14ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
 {"levelLabel":"info","time":"2025-06-08T17:14:24.981Z","context":"app","msg":"Prisma disconnected (SIGINT)"}
+{"levelLabel":"info","time":"2025-06-08T21:26:29.488Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-08T21:26:38.211Z","context":"app","msg":"Prisma disconnected (SIGINT)"}
