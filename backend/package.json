@@ -6,7 +6,7 @@
     "dev": "nodemon --exec tsx src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:seed": "tsx prisma/seed.ts",
-    "build": "tsc && prisma generate && prisma migrate deploy",
+    "build": " prisma generate && prisma migrate deploy",
     "start": "node dist/app.js"
   },
   "keywords": [],
