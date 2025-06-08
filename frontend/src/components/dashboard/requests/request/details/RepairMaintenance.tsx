@@ -26,7 +26,7 @@ const RepairMaintenance = ({
     isDirector = false
 }: RepairMaintenanceProps) => {
     const [documentStates, setDocumentStates] = useState<string[]>([]);
-    const [isUploadingSignForm, setIsUploadingSignForm] = useState(false);
+
     const requestsService = new RequestsService();
     const templateService = new TemplateService();
 
@@ -50,15 +50,16 @@ const RepairMaintenance = ({
     };
 
     const handleSignFormUpload = async (urls: string[] | string) => {
-        setIsUploadingSignForm(true);
+
         const url = Array.isArray(urls) ? urls[0] : urls;
         try {
             await templateService.sendSignForm(repairMaintenance.id, url);
             toast.success("Formulaire signé envoyé avec succès !");
         } catch (error) {
+            console.error("Erreur lors de l'envoi du formulaire signé:", error);
             toast.error("Erreur lors de l'envoi du formulaire signé");
         } finally {
-            setIsUploadingSignForm(false);
+
             fetchData();
         }
     };
@@ -93,7 +94,7 @@ const RepairMaintenance = ({
                                 <div className="flex flex-col gap-4">
                                     {documentStates.length < 10 && repairMaintenance.photos?.length < 10 && (
                                         <FileUpload
-                                            endpoint="repairMaintenancePhotos"
+                                            endpoint="repairMaintenance"
                                             maxFiles={10 - documentStates.length}
                                             acceptedTypes={["image/*"]}
                                             headerText="Téléversement de photos"

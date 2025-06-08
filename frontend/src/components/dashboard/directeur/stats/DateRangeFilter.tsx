@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Filter, X } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'

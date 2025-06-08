@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { Check, Loader2 } from 'lucide-react';
@@ -49,8 +49,7 @@ const EquipmentLoanForm: React.FC = () => {
 
   const selectedType = useWatch({ control, name: 'type' });
   const selectedCategoryId = useWatch({ control, name: 'categoryId' });
-  const selectedEquipmentId = useWatch({ control, name: 'equipmentId' });
-
+ 
   const filteredCategories = useMemo(() => {
     if (!selectedType) return categories;
     return categories
@@ -80,6 +79,8 @@ const EquipmentLoanForm: React.FC = () => {
   }, [equipmentService]);
 
   const handleTypeChange = useCallback((type: EquipmentType) => {
+    console.log('Type changed to:', type);
+
     setValue('categoryId', '');
     setValue('equipmentId', '');
     setValue('quantity', '');
@@ -284,7 +285,7 @@ const EquipmentLoanForm: React.FC = () => {
                             {equipment.specifications && (
                               <div className="text-xs text-muted-foreground">
                                 {Object.entries(equipment.specifications)
-                                  .filter(([_, value]) => value != null)
+                                  .filter(([, value]) => value != null)
                                   .map(([key, value]) => `${key}: ${value}`)
                                   .join(', ')}
                               </div>

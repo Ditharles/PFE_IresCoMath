@@ -51,6 +51,7 @@ export const doctoralStudentRequestFields = {
   thesisYear: true,
   createdAt: true,
   thesisSupervisorId: true,
+  thesisSupervisor: true,
   photo: true,
   status: true,
 };

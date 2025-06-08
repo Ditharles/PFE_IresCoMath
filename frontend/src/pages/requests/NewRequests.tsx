@@ -17,6 +17,7 @@ import {
     ScrollText,
 
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const requestTypeDetails = {
     [RequestType.MISSION]: {
@@ -62,7 +63,7 @@ const NewRequests = () => {
     const requestService = new RequestsService();
     const [availableRequests, setAvailableRequests] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchPossibleRequests = async () => {
@@ -73,9 +74,11 @@ const NewRequests = () => {
                     throw new Error('Réponse invalide du serveur');
                 }
                 setAvailableRequests(response.data);
+                setError(null);
             } catch (err) {
                 console.error('Failed to fetch possible requests:', err);
-                setError('Impossible de charger les types de demandes disponibles');
+                setError('Une erreur est survenue lors de la chargement des demandes');
+                toast.error('Une erreur est survenue lors de la chargement des demandes');
             } finally {
                 setLoading(false);
             }
@@ -145,7 +148,7 @@ const NewRequests = () => {
                 <CardContent className="px-2 sm:px-4">
                     <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                         {availableRequests.map((requestType) => {
-                            const details = requestTypeDetails[requestType];
+                            const details = requestTypeDetails[requestType as RequestType];
                             if (!details) {
                                 console.warn(`Type de demande inconnu: ${requestType}`);
                                 return null;

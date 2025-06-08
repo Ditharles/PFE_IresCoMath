@@ -18,6 +18,29 @@ const CategoryPage = () => {
     const [error, setError] = useState<string | null>(null);
     const equipmentService = new EquipmentService();
 
+    const fetchCategoryData = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            if (!id) {
+                throw new Error('ID de catégorie manquant');
+            }
+            const response = await equipmentService.getCategory(id);
+            if (!response.data) {
+                throw new Error('Catégorie non trouvée');
+            }
+            setCategory(response.data);
+        } catch (error) {
+            console.error('Fetch category error:', error);
+            const errorMessage = error instanceof Error
+                ? error.message
+                : "Impossible de charger les données de la catégorie";
+            setError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    };
     useEffect(() => {
         if (!id) {
             setError('ID de catégorie manquant');
@@ -25,26 +48,7 @@ const CategoryPage = () => {
             return;
         }
 
-        const fetchCategoryData = async () => {
-            try {
-                setIsLoading(true);
-                setError(null);
-                const response = await equipmentService.getCategory(id);
-                if (!response.data) {
-                    throw new Error('Catégorie non trouvée');
-                }
-                setCategory(response.data);
-            } catch (error) {
-                console.error('Fetch category error:', error);
-                const errorMessage = error instanceof Error
-                    ? error.message
-                    : "Impossible de charger les données de la catégorie";
-                setError(errorMessage);
-                toast.error(errorMessage);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+
 
         fetchCategoryData();
     }, [id]);
@@ -117,15 +121,16 @@ const CategoryPage = () => {
         }
 
         return (
-            <> <div className="w-full">
-
-                <CategoryDetails category={category} />
-            </div>
-                <div className="mt-8">
-                    <Equipments
-                        isCategoryPage={true}
-                        equipmentsCategory={category}
+            <>
+                {" "}
+                <div className="w-full">
+                    <CategoryDetails
+                        category={category}
+                        onUpdate={fetchCategoryData}
                     />
+                </div>
+                <div className="mt-8">
+                    <Equipments isCategoryPage={true} equipmentsCategory={category} />
                 </div>
             </>
         );

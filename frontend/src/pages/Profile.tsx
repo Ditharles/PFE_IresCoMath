@@ -103,11 +103,6 @@ export default function Profile() {
 
   // Permissions
   const isCurrentUser = user.userId === userData?.userId || user.id === userData?.id;
-  const canSeeDetails = isCurrentUser ||
-    user.role === "ADMIN" ||
-    user.role === "DIRECTEUR" ||
-    user.role === "ENSEIGNANT" ||
-    (user.role === "ENSEIGNANT" && userData?.role === "MASTER" && userData.supervisorId === user.id);
 
   // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -579,7 +574,7 @@ export default function Profile() {
           ) : null}
 
           {/* Section Informations d'encadrement */}
-          {(userData.role === 'MASTER' && userData.encadrant) ||
+          {(userData.role === 'MASTER' && userData.supervisor) ||
             (userData.role === 'DOCTORANT' && userData.thesisSupervisorId) ? (
             <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
@@ -588,16 +583,16 @@ export default function Profile() {
               </div>
               <Separator className="mb-4" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {userData.role === 'MASTER' && userData.encadrant && (
+                {userData.role === 'MASTER' && userData.supervisor && (
                   <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground mb-1">Encadrant</span>
                     <div className="text-foreground font-medium">
                       <Button
                         variant="link"
                         className="p-0 h-auto font-medium text-primary hover:text-primary/80 hover:underline flex items-center gap-1"
-                        onClick={() => userData.encadrant && navigate(`/profile/${userData.encadrant.id}`)}
+                        onClick={() => userData.supervisor && navigate(`/profile/${userData.supervisorId}`)}
                       >
-                        {userData.encadrant?.firstName} {userData.encadrant?.lastName}
+                        {userData.supervisor?.firstName} {userData.supervisor?.lastName}
                         <ExternalLink className="h-3 w-3" />
                       </Button>
                     </div>

@@ -256,7 +256,12 @@ export const editCategory = async (req: AuthRequest, res: Response) => {
       categoryId: id,
       userId: req.user?.userId 
     }, "Catégorie modifiée avec succès");
-    res.status(200).json({ message: "Catégorie modifiée avec succès" });
+    res
+      .status(200)
+      .json({
+        message: "Catégorie modifiée avec succès",
+        updateCategory: category,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });

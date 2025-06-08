@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { FileDown, RefreshCw } from "lucide-react";
 import { Button } from "../../ui/button";
 import { toast } from "sonner";
@@ -34,7 +34,8 @@ const DEFAULT_STATS: RequestStatsData = {
         [RequestStatus.REJECTED]: 0,
         [RequestStatus.REJECTED_BY_SUPERVISOR]: 0,
         [RequestStatus.REJECTED_BY_DIRECTOR]: 0,
-        [RequestStatus.COMPLETED]: 0
+        [RequestStatus.COMPLETED]: 0,
+        [RequestStatus.CLOSED]: 0
     },
     total: 0
 };
@@ -137,7 +138,10 @@ const Requests: React.FC<RequestsProps> = ({ filterStatuses }) => {
     }, [fetchData]);
 
     const handleRequestUpdate = (updatedRequest: Request) => {
-        fetchData();
+        const updatedRequests = requests.map(request => request.id === updatedRequest.id ? updatedRequest : request);
+        setRequests(updatedRequests);
+        setFilteredRequests(updatedRequests);
+        setStats(calculateStats(updatedRequests));
     };
 
     const handleRequestDelete = useCallback((deletedRequestId: string) => {
@@ -260,4 +264,4 @@ const Requests: React.FC<RequestsProps> = ({ filterStatuses }) => {
     );
 };
 
-export default React.memo(Requests);
+export default Requests;

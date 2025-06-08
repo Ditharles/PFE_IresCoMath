@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { ManageUserService } from "../services/manageUser.service";
-import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
+import {  useSearchParams, useNavigate } from "react-router-dom";
 import { Role, RoleEnum } from "../types/common";
 import { toast } from "sonner";
 import LoadingOverlay from "../components/LoadingOverlay";
@@ -13,51 +13,41 @@ import { CheckCircle2, UserPlus, XCircle, Briefcase, GraduationCap, ExternalLink
 import { formatDate } from "../utils/utils";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
+
 const MemberAddRequest = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [requests, setRequests] = useState<RequestUser | null>(null);
     const [loading, setLoading] = useState(true);
-
     const [reason, setReason] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const manageUserService = new ManageUserService();
-
+    const manageUserService = useMemo(() => new ManageUserService(), []);
 
     const user_id = searchParams.get("id");
     const user_role = searchParams.get("role") as Role | null;
 
 
-    if (!user_id || !user_role) {
-        return <Navigate to="/NotFound" />;
-    }
-
-
-
-    // Fonction pour formater les clés
-    const formatKey = (key: string) => {
+    const formatKey = useCallback((key: string) => {
         const keyMapping: Record<string, string> = {
             email: "Adresse e-mail",
-            telephone: "Téléphone",
+            phone: "Téléphone",
             cin: "CIN",
-            specialite: "Spécialité",
             createdAt: "Date de la demande",
             status: "Statut",
-            etablissement: "Établissement",
+            institution: "Établissement",
             laboratoire: "Laboratoire",
             grade: "Grade",
-            annee_these: "Année de thèse",
-            annee_master: "Année de master",
-            encadrant: "Encadrant",
-            directeur: "Directeur de thèse",
-            fonction: "Fonction"
+            thesisYear: "Année de thèse",
+            masterYear: "Année de master",
+            supervisor: "Encadrant",
+            thesisSupervisor: "Directeur de thèse",
+            position: "Fonction",
         };
 
         return keyMapping[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    };
+    }, []);
 
-    // Fonction pour formater les valeurs
-    const formatValue = (key: string, value: any) => {
+    const formatValue = useCallback((key: string, value: any) => {
         if (value === null || value === undefined) return "Non spécifié";
 
         if (key.includes("date") || key === "createdAt") {
@@ -80,14 +70,12 @@ const MemberAddRequest = () => {
             );
         }
 
-        if (key === "encadrant" || key === "directeur") {
+        if ((key === "supervisor" || key === "thesisSupervisor") && value && typeof value === 'object') {
             return (
-                //button de redirection vers le profil du superviseur
                 <Button
                     variant="link"
                     className="p-0 h-auto font-medium text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
-                    onClick={() => navigate(`/profile/${value.id}`)}
-                >
+                    onClick={() => navigate(`/profile/${value.id}`)}>
                     {value.nom} {value.prenom}
                     <ExternalLink className="h-3 w-3" />
                 </Button>
@@ -95,64 +83,32 @@ const MemberAddRequest = () => {
         }
 
         return value.toString();
-    };
+    }, [navigate]);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             setLoading(true);
+            if(!user_id || !user_role) return;
             const response = await manageUserService.getRequestInfo(user_id, user_role);
-            let userData = response.data;
-            console.log("userData", userData);
-            // Récupération des informations supplémentaires selon le role
-
-            if (user_role === RoleEnum.DOCTORANT && userData.directeur_these_id) {
-
-                const directeurResponse = await manageUserService.getUser(userData.directeur_these_id);
-                userData = {
-                    ...userData,
-                    directeur: {
-                        nom: directeurResponse.data.nom,
-                        prenom: directeurResponse.data.prenom,
-                        id: directeurResponse.data.id
-                    }
-                };
-            } else if ((user_role === RoleEnum.MASTER) && userData.encadrant_id) {
-                console.log("encadrant_id", userData.encadrant_id);
-                const encadrantResponse = await manageUserService.getUser(userData.encadrant_id);
-                userData = {
-                    ...userData,
-                    encadrant: {
-                        nom: encadrantResponse.data.nom,
-                        prenom: encadrantResponse.data.prenom,
-                        id: encadrantResponse.data.id
-                    }
-                };
-            }
-            setRequests(userData);
+            setRequests(response.data);
         } catch (error) {
-            console.error("Une erreur s'est produite lors de la récupération des informations:", error);
-            toast.error("Une erreur s'est produite lors de la récupération des informations.");
+            console.error("Erreur lors de la récupération des informations:", error);
+            toast.error("Erreur lors de la récupération des informations.");
         } finally {
             setLoading(false);
         }
-    };
+    }, [user_id, user_role, manageUserService]);
 
-    // useEffect pour charger les données
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-        if (user_id && user_role) {
-            fetchData();
-        }
-    }, [user_id, user_role]);
+        fetchData();
+    }, [fetchData]);
 
-    // Préparer les groupes de champs selon le rôle
-    const getFieldGroups = () => {
-        // Champs communs à tous les rôles
+    const getFieldGroups = useCallback(() => {
         const common = [
             {
                 title: "Informations personnelles",
                 icon: <UserPlus className="h-5 w-5 text-blue-500" />,
-                fields: ["email", "cin", "telephone"]
+                fields: ["email", "cin", "phone"]
             },
             {
                 title: "Informations de la demande",
@@ -161,14 +117,13 @@ const MemberAddRequest = () => {
             }
         ];
 
-        // Champs spécifiques selon le rôle
         if (user_role === RoleEnum.DOCTORANT) {
             return [
                 ...common,
                 {
                     title: "Informations académiques",
                     icon: <GraduationCap className="h-5 w-5 text-purple-500" />,
-                    fields: ["specialite", "laboratoire", "annee_these", "directeur"]
+                    fields: ["thesisYear", "thesisSupervisor"]
                 }
             ];
         } else if (user_role === RoleEnum.MASTER) {
@@ -177,7 +132,7 @@ const MemberAddRequest = () => {
                 {
                     title: "Informations académiques",
                     icon: <GraduationCap className="h-5 w-5 text-purple-500" />,
-                    fields: ["specialite", "annee_master", "encadrant"]
+                    fields: ["masterYear", "supervisor"]
                 }
             ];
         } else if (user_role === RoleEnum.ENSEIGNANT || user_role === RoleEnum.DIRECTEUR) {
@@ -186,48 +141,52 @@ const MemberAddRequest = () => {
                 {
                     title: "Informations professionnelles",
                     icon: <Briefcase className="h-5 w-5 text-purple-500" />,
-                    fields: ["grade", "fonction", "specialite", "etablissement"]
-                }
+                    fields: ["grade", "position", "institution"],
+                },
             ];
         }
 
         return common;
-    };
+    }, [user_role]);
 
     const handleApprove = async () => {
-        try {
+        if(!user_id || !user_role) return;
+       
+          try {
             setLoading(true);
-
             await manageUserService.acceptUser(user_id, user_role, true);
             toast.success("Demande approuvée avec succès!");
-
-            fetchData();
-        } catch (error) {
-            console.error("Une erreur s'est produite lors de l'approbation:", error);
-            toast.error("Une erreur s'est produite lors de l'approbation.");
-        } finally {
+            await fetchData();
+          } catch (error) {
+            console.error("Erreur lors de l'approbation:", error);
+            toast.error("Erreur lors de l'approbation.");
+          } finally {
             setLoading(false);
-        }
+          }
     };
 
     const handleReject = async () => {
+        if (!reason.trim()) {
+            toast.error("Veuillez saisir un motif de rejet");
+            return;
+        }
+        if(!user_id || !user_role) return;
+
         try {
             setLoading(true);
-            // Supposons qu'il y a une méthode pour rejeter la demande
             await manageUserService.acceptUser(user_id, user_role, false, reason);
             toast.error("Demande rejetée!");
-
-
-            fetchData();
+            setIsOpen(false);
+            await fetchData();
         } catch (error) {
-            console.error("Une erreur s'est produite lors du rejet:", error);
-            toast.error("Une erreur s'est produite lors du rejet.");
+            console.error("Erreur lors du rejet:", error);
+            toast.error("Erreur lors du rejet.");
         } finally {
             setLoading(false);
         }
     };
 
-    const renderRequestFields = () => {
+    const renderRequestFields = useCallback(() => {
         if (!requests || Object.keys(requests).length === 0) {
             return (
                 <div className="flex items-center justify-center p-8">
@@ -235,7 +194,7 @@ const MemberAddRequest = () => {
                         <XCircle className="mx-auto h-12 w-12 text-gray-400" />
                         <h3 className="mt-2 text-lg font-medium">Aucune information disponible</h3>
                         <p className="mt-1 text-sm text-gray-500">
-                            Les détails de cette demande ne sont pas disponibles pour le moment.
+                            Les détails de cette demande ne sont pas disponibles.
                         </p>
                     </div>
                 </div>
@@ -247,11 +206,8 @@ const MemberAddRequest = () => {
         return (
             <div className="space-y-6">
                 {fieldGroups.map((group) => {
-                    // Filtrer les champs qui existent dans les données
                     const relevantFields = group.fields.filter(
-                        field => requests[field] !== undefined ||
-                            (field === "directeur" && requests.directeur) ||
-                            (field === "encadrant" && requests.encadrant)
+                        (field) => requests[field as keyof RequestUser] !== undefined
                     );
 
                     if (relevantFields.length === 0) return null;
@@ -265,14 +221,10 @@ const MemberAddRequest = () => {
                             <Separator className="mb-4" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {relevantFields.map((key) => (
-                                    <div key={key} className="flex flex-col">
+                                    <div key={`${group.title}-${key}`} className="flex flex-col">
                                         <span className="text-sm text-gray-500 mb-1">{formatKey(key)}</span>
                                         <div className="font-medium">
-                                            {formatValue(key,
-                                                key === "directeur" ? requests.directeur :
-                                                    key === "encadrant" ? requests.encadrant :
-                                                        requests[key]
-                                            )}
+                                            {formatValue(key, requests[key as keyof RequestUser])}
                                         </div>
                                     </div>
                                 ))}
@@ -282,21 +234,18 @@ const MemberAddRequest = () => {
                 })}
             </div>
         );
-    };
+    }, [requests, getFieldGroups, formatKey, formatValue]);
 
-    //traduction du role 
-    const translateRole = (role: string) => {
+    const translateRole = useCallback((role: string) => {
         const roleMapping: Record<string, string> = {
             ADMIN: "Administrateur",
             ENSEIGNANT: "Enseignant",
             DIRECTEUR: "Directeur",
             DOCTORANT: "Doctorant",
             MASTER: "Master",
-
         };
-
         return roleMapping[role] || role;
-    };
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -311,6 +260,9 @@ const MemberAddRequest = () => {
                                     src={requests?.photo || "/placeholder-user.png"}
                                     className="w-20 h-20 rounded-full object-cover border-4 border-background shadow"
                                     alt="Photo de profil"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = "/placeholder-user.png";
+                                    }}
                                 />
                                 <Badge className="absolute -top-2 -right-2 bg-primary">
                                     {user_role && translateRole(user_role)}
@@ -318,7 +270,7 @@ const MemberAddRequest = () => {
                             </div>
                             <div>
                                 <CardTitle className="text-2xl font-bold">
-                                    {requests?.nom || '...'} {requests?.prenom || '...'}
+                                    {requests?.firstName || '...'} {requests?.lastName || '...'}
                                 </CardTitle>
                                 <CardDescription className="text-base">
                                     Demande d'adhésion - {user_role && translateRole(user_role)}
@@ -350,9 +302,9 @@ const MemberAddRequest = () => {
                     )}
                 </Card>
             </div>
+
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <div className={`${isOpen ? 'fixed inset-0 bg-black/20 backdrop-blur-sm z-40' : ''}`} />
-                <DialogContent className="sm:max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-card text-card-foreground rounded-lg p-6 shadow-lg">
+                <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Motif du rejet</DialogTitle>
                     </DialogHeader>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./ui/dialog";
-import { FileIcon, DownloadIcon, X, ImageIcon } from "lucide-react";
+import { FileIcon, DownloadIcon, X } from "lucide-react";
 
 interface FilePreviewModalProps {
     isOpen: boolean;

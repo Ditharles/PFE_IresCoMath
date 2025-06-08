@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
     Dialog,
     DialogContent,
@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../../../ui/dialog";
-import React, { useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../../../../contexts/AuthContext";
 import RequestsService from "../../../../services/requests.service";
@@ -88,9 +88,9 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
     return (
         <div className="flex flex-wrap gap-2">
             {canEdit && (
-                <Button 
-                    variant="outline" 
-                    onClick={() => setIsEditModalOpen(true)} 
+                <Button
+                    variant="outline"
+                    onClick={() => setIsEditModalOpen(true)}
                     disabled={isSubmitting}
                     className={`${buttonBaseClasses} hover:bg-accent`}
                 >
@@ -119,8 +119,8 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogFooter className="mt-4 flex justify-end gap-2">
-                                <Button 
-                                    variant="ghost" 
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setIsDeleteDialogOpen(false)}
                                     className={`${buttonBaseClasses} hover:bg-accent`}
                                 >
@@ -154,8 +154,8 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
             {canReject && (
                 <Dialog open={openRejectDialog} onOpenChange={setOpenRejectDialog}>
                     <DialogTrigger asChild>
-                        <Button 
-                            variant="destructive" 
+                        <Button
+                            variant="destructive"
                             disabled={isSubmitting}
                             className={`${buttonBaseClasses} hover:bg-destructive/90`}
                         >
@@ -179,8 +179,8 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
                             />
                         </div>
                         <DialogFooter>
-                            <Button 
-                                variant="outline" 
+                            <Button
+                                variant="outline"
                                 onClick={() => setOpenRejectDialog(false)}
                                 className={`${buttonBaseClasses} hover:bg-accent`}
                             >

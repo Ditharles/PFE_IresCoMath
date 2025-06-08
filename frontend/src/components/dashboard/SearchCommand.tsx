@@ -34,7 +34,7 @@ const useCommandState = () => {
     const [selectedPath, setSelectedPath] = useState<string | null>(null)
     const navigateRef = useRef<(() => void) | null>(null)
     const location = useLocation()
-    const animationTimeoutRef = useRef<NodeJS.Timeout>()
+    const animationTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
     const open = useCallback(() => {
         setIsOpen(true)

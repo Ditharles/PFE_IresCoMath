@@ -17,13 +17,14 @@ export type User = {
   masterYear?: number;
   grade?: string;
   position?: string;
-  supervisorId?: string;
-  thesisSupervisorId?: {
+  thesisSupervisorId?: string;
+  thesisSupervisor?: {
     id: string;
     firstName: string;
     lastName: string;
   };
-  encadrant?: {
+  supervisorId?: string;
+  supervisor?: {
     id: string;
     firstName: string;
     lastName: string;

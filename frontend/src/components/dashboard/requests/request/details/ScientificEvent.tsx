@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { FileText, Calendar } from "lucide-react";
 import { ScientificEvent as ScientificEventType } from "../../../../../types/request";
 import { DetailItem } from "../DetailItem";
@@ -7,7 +7,7 @@ import { FileListViewer } from "../FileListViewer";
 import FileUpload from "../../../../FileUpload";
 import TemplateService from "../../../../../services/templates.service";
 import { toast } from "sonner";
-import { useState } from "react";
+
 import { formatDate } from "../../../../../utils/utils";
 
 interface ScientificEventProps {
@@ -17,11 +17,11 @@ interface ScientificEventProps {
 }
 
 const ScientificEvent = ({ scientificEvent, isDirector = false, onPreview }: ScientificEventProps) => {
-    const [isUploadingSignForm, setIsUploadingSignForm] = useState(false);
+   
     const templateService = new TemplateService();
 
     const handleSignFormUpload = async (urls: string[] | string) => {
-        setIsUploadingSignForm(true);
+       
         const url = Array.isArray(urls) ? urls[0] : urls;
         try {
             await templateService.sendSignForm(scientificEvent.id, url);
@@ -29,9 +29,7 @@ const ScientificEvent = ({ scientificEvent, isDirector = false, onPreview }: Sci
         } catch (error) {
             console.error("Erreur lors de l'envoi du formulaire signé:", error);
             toast.error("Erreur lors de l'envoi du formulaire signé");
-        } finally {
-            setIsUploadingSignForm(false);
-        }
+        } 
     };
 
     return (
