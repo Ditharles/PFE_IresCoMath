@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.6.8)  9 JUN 2025 04:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.6.8)  9 JUN 2025 13:36
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -445,7 +445,7 @@ Overfull \hbox (13.61159pt too wide) in paragraph at lines 48--49
  []
 
 [8] [9] [10] [11]
-Overfull \hbox (12.64052pt too wide) in paragraph at lines 227--227
+Overfull \hbox (9.79506pt too wide) in paragraph at lines 227--227
 []|\T1/lmr/bx/n/12 Configurable| 
  []
 
@@ -465,11 +465,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 229--230
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 231--231
-[]|\T1/lmr/m/n/12 Tr�s confi-
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 231--232
 []|\T1/lmr/m/n/12 Comp�tences
  []
@@ -482,11 +477,6 @@ Underfull \hbox (badness 5008) in paragraph at lines 231--232
 
 Underfull \hbox (badness 1253) in paragraph at lines 233--233
 []|\T1/lmr/m/n/12 GLPI avec plu-gin
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 233--233
-[]|\T1/lmr/m/n/12 Tr�s confi-
  []
 
 
@@ -520,67 +510,61 @@ Underfull \hbox (badness 10000) in paragraph at lines 235--236
  []
 
 
-Overfull \hbox (52.0376pt too wide) in paragraph at lines 225--238
+Overfull \hbox (54.88306pt too wide) in paragraph at lines 225--238
  [][] 
  []
 
-[12] [13]
-<images/Trello/Trello-Irescomath.png, id=409, 1430.34375pt x 648.17157pt>
-File: images/Trello/Trello-Irescomath.png Graphic file (type png)
-<use images/Trello/Trello-Irescomath.png>
-Package pdftex.def Info: images/Trello/Trello-Irescomath.png  used on input line 308.
-(pdftex.def)             Requested size: 364.19667pt x 165.03925pt.
-) [14 <./images/Trello/Trello-Irescomath.png>] [15]
+[12] [13]) [14]
 \openout2 = `03_chapitre2.aux'.
 
  (03_chapitre2.tex
 Chapitre 2.
-[16
+[15
 
 
 
 
-] [17] [18]
-<images/Use_case/Use-Case-Final.drawio.png, id=437, 1051.93pt x 944.52875pt>
+] [16] [17]
+<images/Use_case/Use-Case-Final.drawio.png, id=435, 1051.93pt x 944.52875pt>
 File: images/Use_case/Use-Case-Final.drawio.png Graphic file (type png)
 <use images/Use_case/Use-Case-Final.drawio.png>
 Package pdftex.def Info: images/Use_case/Use-Case-Final.drawio.png  used on input line 100.
 (pdftex.def)             Requested size: 409.71692pt x 367.88911pt.
- [19]
-<images/Use_case/Cas_spécifique_Etudiant_Master.drawio.png, id=443, 753.81625pt x 332.24126pt>
+ [18]
+<images/Use_case/Cas_spécifique_Etudiant_Master.drawio.png, id=441, 753.81625pt x 332.24126pt>
 File: images/Use_case/Cas_spécifique_Etudiant_Master.drawio.png Graphic file (type png)
 <use images/Use_case/Cas_spécifique_Etudiant_Master.drawio.png>
 Package pdftex.def Info: images/Use_case/Cas_spécifique_Etudiant_Master.drawio.png  used on input line 111.
 (pdftex.def)             Requested size: 341.43307pt x 150.48053pt.
-<images/Use_case/Cas_spécifique_Doctorant.drawio.png, id=444, 844.15375pt x 432.61626pt>
+<images/Use_case/Cas_spécifique_Doctorant.drawio.png, id=442, 844.15375pt x 432.61626pt>
 File: images/Use_case/Cas_spécifique_Doctorant.drawio.png Graphic file (type png)
 <use images/Use_case/Cas_spécifique_Doctorant.drawio.png>
 Package pdftex.def Info: images/Use_case/Cas_spécifique_Doctorant.drawio.png  used on input line 121.
 (pdftex.def)             Requested size: 341.43307pt x 174.98418pt.
- [20 <./images/Use_case/Use-Case-Final.drawio.png> <./images/Use_case/Cas_spécifique_Etudiant_Master.drawio.png>]
-<images/Use_case/Cas_spécifique_Enseignant_chercheur.drawio.png, id=452, 733.74126pt x 462.72874pt>
+ [19 <./images/Use_case/Use-Case-Final.drawio.png> <./images/Use_case/Cas_spécifique_Etudiant_Master.drawio.png>]
+<images/Use_case/Cas_spécifique_Enseignant_chercheur.drawio.png, id=451, 733.74126pt x 462.72874pt>
 File: images/Use_case/Cas_spécifique_Enseignant_chercheur.drawio.png Graphic file (type png)
 <use images/Use_case/Cas_spécifique_Enseignant_chercheur.drawio.png>
 Package pdftex.def Info: images/Use_case/Cas_spécifique_Enseignant_chercheur.drawio.png  used on input line 130.
 (pdftex.def)             Requested size: 341.43307pt x 215.32198pt.
- [21 <./images/Use_case/Cas_spécifique_Doctorant.drawio.png> <./images/Use_case/Cas_spécifique_Enseignant_chercheur.drawio.png>]
-<images/Use_case/Cas_spécifique_Directeur_Demande.drawio.png, id=461, 711.65875pt x 462.72874pt>
+ [20 <./images/Use_case/Cas_spécifique_Doctorant.drawio.png> <./images/Use_case/Cas_spécifique_Enseignant_chercheur.drawio.png>]
+<images/Use_case/Cas_spécifique_Directeur_Demande.drawio.png, id=460, 711.65875pt x 462.72874pt>
 File: images/Use_case/Cas_spécifique_Directeur_Demande.drawio.png Graphic file (type png)
 <use images/Use_case/Cas_spécifique_Directeur_Demande.drawio.png>
 Package pdftex.def Info: images/Use_case/Cas_spécifique_Directeur_Demande.drawio.png  used on input line 144.
 (pdftex.def)             Requested size: 341.43307pt x 222.00136pt.
-<images/Use_case/Cas_spécifique_Directeur_materiels.drawio.png, id=462, 711.65875pt x 462.72874pt>
+<images/Use_case/Cas_spécifique_Directeur_materiels.drawio.png, id=461, 711.65875pt x 462.72874pt>
 File: images/Use_case/Cas_spécifique_Directeur_materiels.drawio.png Graphic file (type png)
 <use images/Use_case/Cas_spécifique_Directeur_materiels.drawio.png>
 Package pdftex.def Info: images/Use_case/Cas_spécifique_Directeur_materiels.drawio.png  used on input line 156.
 (pdftex.def)             Requested size: 386.96027pt x 251.59966pt.
- [22 <./images/Use_case/Cas_spécifique_Directeur_Demande.drawio.png>]
-<images/Use_case/Cas_spécifique_Administrateur.drawio.png, id=471, 606.265pt x 322.20375pt>
+ [21 <./images/Use_case/Cas_spécifique_Directeur_Demande.drawio.png>]
+<images/Use_case/Cas_spécifique_Administrateur.drawio.png, id=470, 606.265pt x 322.20375pt>
 File: images/Use_case/Cas_spécifique_Administrateur.drawio.png Graphic file (type png)
 <use images/Use_case/Cas_spécifique_Administrateur.drawio.png>
 Package pdftex.def Info: images/Use_case/Cas_spécifique_Administrateur.drawio.png  used on input line 172.
 (pdftex.def)             Requested size: 341.43307pt x 181.46039pt.
- [23 <./images/Use_case/Cas_spécifique_Directeur_materiels.drawio.png>]
+ [22 <./images/Use_case/Cas_spécifique_Directeur_materiels.drawio.png>]
 Overfull \hbox (15.68915pt too wide) in paragraph at lines 180--180
 |[]\T1/lmr/bx/n/14.4 Diagramme de s�-quence ^^S Va-li-da-tion d'une de-mande d'adh�-
  []
@@ -589,23 +573,23 @@ LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 18
 (C:\Program Files\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-<images/diagramme_de_sequence/gestion_adhesion.png, id=478, 1285.80376pt x 1085.05376pt>
+<images/diagramme_de_sequence/gestion_adhesion.png, id=477, 1285.80376pt x 1085.05376pt>
 File: images/diagramme_de_sequence/gestion_adhesion.png Graphic file (type png)
 <use images/diagramme_de_sequence/gestion_adhesion.png>
 Package pdftex.def Info: images/diagramme_de_sequence/gestion_adhesion.png  used on input line 201.
 (pdftex.def)             Requested size: 432.48051pt x 364.95638pt.
- [24 <./images/Use_case/Cas_spécifique_Administrateur.drawio.png>]
-<images/diagramme_de_sequence/gestion_des_erreurs.png, id=490, 1346.02875pt x 433.62pt>
+ [23 <./images/Use_case/Cas_spécifique_Administrateur.drawio.png>]
+<images/diagramme_de_sequence/gestion_des_erreurs.png, id=489, 1346.02875pt x 433.62pt>
 File: images/diagramme_de_sequence/gestion_des_erreurs.png Graphic file (type png)
 <use images/diagramme_de_sequence/gestion_des_erreurs.png>
 Package pdftex.def Info: images/diagramme_de_sequence/gestion_des_erreurs.png  used on input line 207.
 (pdftex.def)             Requested size: 432.48051pt x 139.32364pt.
- [25 <./images/diagramme_de_sequence/gestion_adhesion.png> <./images/diagramme_de_sequence/gestion_des_erreurs.png>]
+ [24 <./images/diagramme_de_sequence/gestion_adhesion.png> <./images/diagramme_de_sequence/gestion_des_erreurs.png>]
 Overfull \hbox (29.12611pt too wide) in paragraph at lines 220--221
 []\T1/lmr/m/n/12 Le fron-tend en-voie une re-qu�te \T1/lmtt/m/n/12 POST /requests/{type_requests}\T1/lmr/m/n/12 , o� \T1/lmtt/m/n/12 {type_requests}
  []
 
-<images/diagramme_de_sequence/soumettre_demande.drawio.png, id=498, 1335.99126pt x 554.07pt>
+<images/diagramme_de_sequence/soumettre_demande.drawio.png, id=496, 1335.99126pt x 554.07pt>
 File: images/diagramme_de_sequence/soumettre_demande.drawio.png Graphic file (type png)
 <use images/diagramme_de_sequence/soumettre_demande.drawio.png>
 Package pdftex.def Info: images/diagramme_de_sequence/soumettre_demande.drawio.png  used on input line 231.
@@ -615,30 +599,30 @@ Overfull \hbox (4.18384pt too wide) in paragraph at lines 247--248
 []\T1/lmtt/m/n/12 GET /requests/get-request/:request_id \T1/lmr/m/n/12 : ob-te-nir les d�-tails d'une de-mande
  []
 
-[26 <./images/diagramme_de_sequence/soumettre_demande.drawio.png>]
-<images/diagramme_de_sequence/gestion_des_demandes_par_le_directeur.drawio.png, id=511, 1285.80376pt x 1085.05376pt>
+[25 <./images/diagramme_de_sequence/soumettre_demande.drawio.png>]
+<images/diagramme_de_sequence/gestion_des_demandes_par_le_directeur.drawio.png, id=510, 1285.80376pt x 1085.05376pt>
 File: images/diagramme_de_sequence/gestion_des_demandes_par_le_directeur.drawio.png Graphic file (type png)
 <use images/diagramme_de_sequence/gestion_des_demandes_par_le_directeur.drawio.png>
 Package pdftex.def Info: images/diagramme_de_sequence/gestion_des_demandes_par_le_directeur.drawio.png  used on input line 272.
 (pdftex.def)             Requested size: 409.71692pt x 345.75076pt.
- [27]
-<images/diagramme_de_sequence/gestion_erreurs_demandes.png, id=517, 1366.10374pt x 502.87875pt>
+ [26]
+<images/diagramme_de_sequence/gestion_erreurs_demandes.png, id=516, 1366.10374pt x 502.87875pt>
 File: images/diagramme_de_sequence/gestion_erreurs_demandes.png Graphic file (type png)
 <use images/diagramme_de_sequence/gestion_erreurs_demandes.png>
 Package pdftex.def Info: images/diagramme_de_sequence/gestion_erreurs_demandes.png  used on input line 279.
 (pdftex.def)             Requested size: 409.71692pt x 150.81874pt.
- [28 <./images/diagramme_de_sequence/gestion_des_demandes_par_le_directeur.drawio.png> <./images/diagramme_de_sequence/gestion_erreurs_demandes.png>]
+ [27 <./images/diagramme_de_sequence/gestion_des_demandes_par_le_directeur.drawio.png> <./images/diagramme_de_sequence/gestion_erreurs_demandes.png>]
 Overfull \hbox (4.18384pt too wide) in paragraph at lines 295--296
 []\T1/lmtt/m/n/12 GET /requests/get-request/:request_id \T1/lmr/m/n/12 : ob-te-nir les d�-tails d'une de-mande
  []
 
-[29]
-<images/diagramme_de_sequence/gestion_des_demandes_membre.drawio.png, id=531, 1295.84125pt x 1136.245pt>
+[28]
+<images/diagramme_de_sequence/gestion_des_demandes_membre.drawio.png, id=530, 1295.84125pt x 1136.245pt>
 File: images/diagramme_de_sequence/gestion_des_demandes_membre.drawio.png Graphic file (type png)
 <use images/diagramme_de_sequence/gestion_des_demandes_membre.drawio.png>
 Package pdftex.def Info: images/diagramme_de_sequence/gestion_des_demandes_membre.drawio.png  used on input line 328.
 (pdftex.def)             Requested size: 409.71692pt x 359.25406pt.
-<images/diagramme_de_sequence/gestion_erreurs_demandes_membres.png, id=532, 1366.10374pt x 603.25375pt>
+<images/diagramme_de_sequence/gestion_erreurs_demandes_membres.png, id=531, 1366.10374pt x 603.25375pt>
 File: images/diagramme_de_sequence/gestion_erreurs_demandes_membres.png Graphic file (type png)
 <use images/diagramme_de_sequence/gestion_erreurs_demandes_membres.png>
 Package pdftex.def Info: images/diagramme_de_sequence/gestion_erreurs_demandes_membres.png  used on input line 334.
@@ -648,25 +632,25 @@ Overfull \hbox (2.6392pt too wide) in paragraph at lines 340--340
 |[]\T1/lmr/bx/n/14.4 Diagramme de s�-quence ^^S Ajout d'un �qui-pe-ment ou d'une
  []
 
-[30 <./images/diagramme_de_sequence/gestion_des_demandes_membre.drawio.png>]
-<images/diagramme_de_sequence/ajout-equipement-catégorie.drawio.png, id=538, 1356.06625pt x 564.1075pt>
+[29 <./images/diagramme_de_sequence/gestion_des_demandes_membre.drawio.png>]
+<images/diagramme_de_sequence/ajout-equipement-catégorie.drawio.png, id=537, 1356.06625pt x 564.1075pt>
 File: images/diagramme_de_sequence/ajout-equipement-catégorie.drawio.png Graphic file (type png)
 <use images/diagramme_de_sequence/ajout-equipement-catégorie.drawio.png>
 Package pdftex.def Info: images/diagramme_de_sequence/ajout-equipement-catégorie.drawio.png  used on input line 368.
 (pdftex.def)             Requested size: 409.71692pt x 170.43pt.
- [31 <./images/diagramme_de_sequence/gestion_erreurs_demandes_membres.png>]
-<images/diagramme_de_classe/class.jpg, id=550, 903.375pt x 983.17313pt>
+ [30 <./images/diagramme_de_sequence/gestion_erreurs_demandes_membres.png>]
+<images/diagramme_de_classe/class.jpg, id=548, 903.375pt x 983.17313pt>
 File: images/diagramme_de_classe/class.jpg Graphic file (type jpg)
 <use images/diagramme_de_classe/class.jpg>
 Package pdftex.def Info: images/diagramme_de_classe/class.jpg  used on input line 391.
 (pdftex.def)             Requested size: 455.24411pt x 495.47087pt.
- [32 <./images/diagramme_de_sequence/ajout-equipement-catégorie.drawio.png>]
-<images/diagramme_de_classe/enums.png, id=556, 500.62032pt x 241.65282pt>
+ [31 <./images/diagramme_de_sequence/ajout-equipement-catégorie.drawio.png>]
+<images/diagramme_de_classe/enums.png, id=555, 500.62032pt x 241.65282pt>
 File: images/diagramme_de_classe/enums.png Graphic file (type png)
 <use images/diagramme_de_classe/enums.png>
 Package pdftex.def Info: images/diagramme_de_classe/enums.png  used on input line 398.
 (pdftex.def)             Requested size: 318.66948pt x 153.83131pt.
- [33 <./images/diagramme_de_classe/class.jpg>]
+ [32 <./images/diagramme_de_classe/class.jpg>]
 Overfull \hbox (16.16399pt too wide) in paragraph at lines 406--407
 []\T1/lmr/bx/n/12 Utilisateur \T1/lmr/m/n/12 : classe m�re des types \T1/lmr/m/it/12 �tudiant-Master\T1/lmr/m/n/12 , \T1/lmr/m/it/12 Doc-to-rant\T1/lmr/m/n/12 , \T1/lmr/m/it/12 Enseignant-Chercheur\T1/lmr/m/n/12 ,
  []
@@ -676,28 +660,28 @@ Overfull \hbox (13.8274pt too wide) in paragraph at lines 420--421
 []\T1/lmr/m/n/12 Un \T1/lmr/bx/n/12 �tudiant-Master \T1/lmr/m/n/12 ou un \T1/lmr/bx/n/12 Doc-to-rant \T1/lmr/m/n/12 est en-ca-dr� par un \T1/lmr/bx/n/12 Enseignant-Chercheur\T1/lmr/m/n/12 . 
  []
 
-) [34 <./images/diagramme_de_classe/enums.png>]
+) [33 <./images/diagramme_de_classe/enums.png>]
 \openout2 = `04_chapitre3.aux'.
 
  (04_chapitre3.tex
 Chapitre 3.
-[35
+[34
 
 
 
 
 ]
-<images/logos/VsCode.png, id=570, 9802.6225pt x 9625.9625pt>
+<images/logos/VsCode.png, id=569, 9802.6225pt x 9625.9625pt>
 File: images/logos/VsCode.png Graphic file (type png)
 <use images/logos/VsCode.png>
 Package pdftex.def Info: images/logos/VsCode.png  used on input line 44.
 (pdftex.def)             Requested size: 71.13188pt x 69.76808pt.
-<images/logos/Github.png, id=571, 1284.8pt x 1160.335pt>
+<images/logos/Github.png, id=570, 1284.8pt x 1160.335pt>
 File: images/logos/Github.png Graphic file (type png)
 <use images/logos/Github.png>
 Package pdftex.def Info: images/logos/Github.png  used on input line 51.
 (pdftex.def)             Requested size: 71.13188pt x 64.2347pt.
-<images/logos/overleaf.png, id=572, 451.6875pt x 175.65625pt>
+<images/logos/overleaf.png, id=571, 451.6875pt x 175.65625pt>
 File: images/logos/overleaf.png Graphic file (type png)
 <use images/logos/overleaf.png>
 Package pdftex.def Info: images/logos/overleaf.png  used on input line 58.
@@ -707,53 +691,53 @@ Overfull \hbox (0.8169pt too wide) in paragraph at lines 58--59
  [][] 
  []
 
-<images/logos/Draw.io.png, id=573, 1706.375pt x 2226.3175pt>
+<images/logos/Draw.io.png, id=572, 1706.375pt x 2226.3175pt>
 File: images/logos/Draw.io.png Graphic file (type png)
 <use images/logos/Draw.io.png>
 Package pdftex.def Info: images/logos/Draw.io.png  used on input line 65.
 (pdftex.def)             Requested size: 62.59596pt x 81.66586pt.
-<images/logos/React.png, id=574, 3011.25pt x 3375.61125pt>
+<images/logos/React.png, id=573, 3011.25pt x 3375.61125pt>
 File: images/logos/React.png Graphic file (type png)
 <use images/logos/React.png>
 Package pdftex.def Info: images/logos/React.png  used on input line 72.
 (pdftex.def)             Requested size: 62.59596pt x 70.15337pt.
-<images/logos/Vite.js.png, id=575, 513.92pt x 513.92pt>
+<images/logos/Vite.js.png, id=574, 513.92pt x 513.92pt>
 File: images/logos/Vite.js.png Graphic file (type png)
 <use images/logos/Vite.js.png>
 Package pdftex.def Info: images/logos/Vite.js.png  used on input line 79.
 (pdftex.def)             Requested size: 62.59596pt x 62.59306pt.
-<images/logos/TailwindCSS.png, id=576, 1706.375pt x 386.44376pt>
+<images/logos/TailwindCSS.png, id=575, 1706.375pt x 386.44376pt>
 File: images/logos/TailwindCSS.png Graphic file (type png)
 <use images/logos/TailwindCSS.png>
 Package pdftex.def Info: images/logos/TailwindCSS.png  used on input line 86.
 (pdftex.def)             Requested size: 62.59596pt x 14.17554pt.
-<images/logos/Prisma.png, id=577, 3011.25pt x 1927.2pt>
+<images/logos/Prisma.png, id=576, 3011.25pt x 1927.2pt>
 File: images/logos/Prisma.png Graphic file (type png)
 <use images/logos/Prisma.png>
 Package pdftex.def Info: images/logos/Prisma.png  used on input line 93.
 (pdftex.def)             Requested size: 62.59596pt x 40.05188pt.
-[36]
-<images/logos/PostgreSql.png, id=582, 225.84375pt x 225.84375pt>
+[35]
+<images/logos/PostgreSql.png, id=581, 225.84375pt x 225.84375pt>
 File: images/logos/PostgreSql.png Graphic file (type png)
 <use images/logos/PostgreSql.png>
 Package pdftex.def Info: images/logos/PostgreSql.png  used on input line 107.
 (pdftex.def)             Requested size: 62.59596pt x 62.59483pt.
-<images/logos/NodeJS.png, id=583, 4494.7925pt x 3370.5925pt>
+<images/logos/NodeJS.png, id=582, 4494.7925pt x 3370.5925pt>
 File: images/logos/NodeJS.png Graphic file (type png)
 <use images/logos/NodeJS.png>
 Package pdftex.def Info: images/logos/NodeJS.png  used on input line 114.
 (pdftex.def)             Requested size: 62.59596pt x 46.90509pt.
-<images/logos/Uploadthing.png, id=584, 431.6125pt x 117.43875pt>
+<images/logos/Uploadthing.png, id=583, 431.6125pt x 117.43875pt>
 File: images/logos/Uploadthing.png Graphic file (type png)
 <use images/logos/Uploadthing.png>
 Package pdftex.def Info: images/logos/Uploadthing.png  used on input line 121.
 (pdftex.def)             Requested size: 62.59596pt x 17.03085pt.
-<images/logos/JWT.png, id=585, 1706.375pt x 1711.39375pt>
+<images/logos/JWT.png, id=584, 1706.375pt x 1711.39375pt>
 File: images/logos/JWT.png Graphic file (type png)
 <use images/logos/JWT.png>
 Package pdftex.def Info: images/logos/JWT.png  used on input line 128.
 (pdftex.def)             Requested size: 62.59596pt x 62.7774pt.
-<images/logos/axios.png, id=586, 319.1925pt x 159.59625pt>
+<images/logos/axios.png, id=585, 319.1925pt x 159.59625pt>
 File: images/logos/axios.png Graphic file (type png)
 <use images/logos/axios.png>
 Package pdftex.def Info: images/logos/axios.png  used on input line 135.
@@ -763,120 +747,160 @@ Underfull \hbox (badness 1953) in paragraph at lines 137--138
 []|\T1/lmr/bx/n/12 Axios \T1/lmr/m/n/12 : Bi-blio-th�que Ja-vaS-cript uti-li-s�e
  []
 
-[37 <./images/logos/VsCode.png> <./images/logos/Github.png> <./images/logos/overleaf.png> <./images/logos/Draw.io.png> <./images/logos/React.png> <./images/logos/Vite.js.png> <./images/logos/TailwindCSS.png> <./images/logos/Prisma.png>] [38 <./images/logos/PostgreSql.png> <./images/logos/NodeJS.png> <./images/logos/Uploadthing.png> <./images/logos/JWT.png> <./images/logos/axios.png>]
-<images/interface/organigramme_interface_auth.png, id=610, 502.12593pt x 261.22594pt>
+[36 <./images/logos/VsCode.png> <./images/logos/Github.png> <./images/logos/overleaf.png> <./images/logos/Draw.io.png> <./images/logos/React.png> <./images/logos/Vite.js.png> <./images/logos/TailwindCSS.png> <./images/logos/Prisma.png>]
+<images/architecture.png, id=598, 423.38174pt x 328.22626pt>
+File: images/architecture.png Graphic file (type png)
+<use images/architecture.png>
+Package pdftex.def Info: images/architecture.png  used on input line 155.
+(pdftex.def)             Requested size: 318.66948pt x 247.05054pt.
+ [37 <./images/logos/PostgreSql.png> <./images/logos/NodeJS.png> <./images/logos/Uploadthing.png> <./images/logos/JWT.png> <./images/logos/axios.png>] [38 <./images/architecture.png>]
+<images/interface/organigramme_interface_auth.png, id=615, 502.12593pt x 261.22594pt>
 File: images/interface/organigramme_interface_auth.png Graphic file (type png)
 <use images/interface/organigramme_interface_auth.png>
-Package pdftex.def Info: images/interface/organigramme_interface_auth.png  used on input line 159.
+Package pdftex.def Info: images/interface/organigramme_interface_auth.png  used on input line 174.
 (pdftex.def)             Requested size: 273.14923pt x 142.1082pt.
-<images/interface/organisation_interface.png, id=611, 889.82437pt x 643.6547pt>
+<images/interface/organisation_interface.png, id=616, 889.82437pt x 643.6547pt>
 File: images/interface/organisation_interface.png Graphic file (type png)
 <use images/interface/organisation_interface.png>
-Package pdftex.def Info: images/interface/organisation_interface.png  used on input line 166.
+Package pdftex.def Info: images/interface/organisation_interface.png  used on input line 181.
 (pdftex.def)             Requested size: 409.71692pt x 296.36957pt.
  [39 <./images/interface/organigramme_interface_auth.png> <./images/interface/organisation_interface.png>]
-<images/interface/inscription.png, id=617, 1378.14874pt x 1955.305pt>
+<images/interface/inscription.png, id=622, 1378.14874pt x 1955.305pt>
 File: images/interface/inscription.png Graphic file (type png)
 <use images/interface/inscription.png>
-Package pdftex.def Info: images/interface/inscription.png  used on input line 177.
+Package pdftex.def Info: images/interface/inscription.png  used on input line 192.
 (pdftex.def)             Requested size: 227.62206pt x 322.93959pt.
-<images/interface/renvoie_mail.png, id=618, 1378.14874pt x 947.54pt>
+<images/interface/renvoie_mail.png, id=623, 1378.14874pt x 947.54pt>
 File: images/interface/renvoie_mail.png Graphic file (type png)
 <use images/interface/renvoie_mail.png>
-Package pdftex.def Info: images/interface/renvoie_mail.png  used on input line 188.
+Package pdftex.def Info: images/interface/renvoie_mail.png  used on input line 203.
 (pdftex.def)             Requested size: 273.14923pt x 187.79855pt.
  [40 <./images/interface/inscription.png>]
-<images/interface/renvoie_mail_avec_mail.png, id=626, 1378.14874pt x 947.54pt>
+<images/interface/renvoie_mail_avec_mail.png, id=631, 1378.14874pt x 947.54pt>
 File: images/interface/renvoie_mail_avec_mail.png Graphic file (type png)
 <use images/interface/renvoie_mail_avec_mail.png>
-Package pdftex.def Info: images/interface/renvoie_mail_avec_mail.png  used on input line 195.
+Package pdftex.def Info: images/interface/renvoie_mail_avec_mail.png  used on input line 210.
 (pdftex.def)             Requested size: 273.14923pt x 187.79855pt.
-<images/interface/connexion.png, id=627, 1866.975pt x 946.53625pt>
+<images/interface/connexion.png, id=632, 1866.975pt x 946.53625pt>
 File: images/interface/connexion.png Graphic file (type png)
 <use images/interface/connexion.png>
-Package pdftex.def Info: images/interface/connexion.png  used on input line 206.
+Package pdftex.def Info: images/interface/connexion.png  used on input line 221.
 (pdftex.def)             Requested size: 318.66948pt x 161.55896pt.
  [41 <./images/interface/renvoie_mail.png> <./images/interface/renvoie_mail_avec_mail.png>]
-<images/interface/profil.png, id=635, 1866.975pt x 1832.8475pt>
+<images/interface/profil.png, id=640, 1866.975pt x 1832.8475pt>
 File: images/interface/profil.png Graphic file (type png)
 <use images/interface/profil.png>
-Package pdftex.def Info: images/interface/profil.png  used on input line 217.
+Package pdftex.def Info: images/interface/profil.png  used on input line 232.
 (pdftex.def)             Requested size: 318.66948pt x 312.83847pt.
  [42 <./images/interface/connexion.png> <./images/interface/profil.png>]
-<images/interface/Demandes.png, id=643, 1143.0705pt x 649.2255pt>
+<images/interface/Demandes.png, id=648, 1143.0705pt x 649.2255pt>
 File: images/interface/Demandes.png Graphic file (type png)
 <use images/interface/Demandes.png>
-Package pdftex.def Info: images/interface/Demandes.png  used on input line 230.
+Package pdftex.def Info: images/interface/Demandes.png  used on input line 245.
 (pdftex.def)             Requested size: 318.66948pt x 180.98938pt.
-<images/interface/materiels.png, id=644, 1145.4795pt x 649.2255pt>
+<images/interface/materiels.png, id=649, 1145.4795pt x 649.2255pt>
 File: images/interface/materiels.png Graphic file (type png)
 <use images/interface/materiels.png>
-Package pdftex.def Info: images/interface/materiels.png  used on input line 238.
+Package pdftex.def Info: images/interface/materiels.png  used on input line 252.
 (pdftex.def)             Requested size: 318.66948pt x 180.61295pt.
-<images/interface/Formulaires.png, id=645, 1145.4795pt x 649.2255pt>
+<images/interface/Formulaires.png, id=650, 1145.4795pt x 649.2255pt>
 File: images/interface/Formulaires.png Graphic file (type png)
 <use images/interface/Formulaires.png>
-Package pdftex.def Info: images/interface/Formulaires.png  used on input line 246.
+Package pdftex.def Info: images/interface/Formulaires.png  used on input line 260.
 (pdftex.def)             Requested size: 318.66948pt x 180.61295pt.
  [43 <./images/interface/Demandes.png> <./images/interface/materiels.png>]
-<images/interface/Membres.png, id=654, 1120.185pt x 1472.50125pt>
+<images/interface/Membres.png, id=659, 1120.185pt x 1472.50125pt>
 File: images/interface/Membres.png Graphic file (type png)
 <use images/interface/Membres.png>
-Package pdftex.def Info: images/interface/Membres.png  used on input line 254.
-(pdftex.def)             Requested size: 318.66948pt x 418.90329pt.
- [44 <./images/interface/Formulaires.png>]
+Package pdftex.def Info: images/interface/Membres.png  used on input line 268.
+(pdftex.def)             Requested size: 282.24911pt x 371.02286pt.
 <images/interface/Statistiques.png, id=660, 1142.46825pt x 649.2255pt>
 File: images/interface/Statistiques.png Graphic file (type png)
 <use images/interface/Statistiques.png>
-Package pdftex.def Info: images/interface/Statistiques.png  used on input line 262.
+Package pdftex.def Info: images/interface/Statistiques.png  used on input line 276.
 (pdftex.def)             Requested size: 318.66948pt x 181.08846pt.
- [45 <./images/interface/Membres.png>]
-<images/interface/nouvelle_demande.png, id=666, 1103.322pt x 570.33075pt>
+ [44 <./images/interface/Formulaires.png> <./images/interface/Membres.png>]
+<images/interface/nouvelle_demande.png, id=667, 1103.322pt x 570.33075pt>
 File: images/interface/nouvelle_demande.png Graphic file (type png)
 <use images/interface/nouvelle_demande.png>
-Package pdftex.def Info: images/interface/nouvelle_demande.png  used on input line 276.
+Package pdftex.def Info: images/interface/nouvelle_demande.png  used on input line 293.
 (pdftex.def)             Requested size: 318.66948pt x 164.72157pt.
-<images/interface/inscriptionArticle.png, id=667, 1866.975pt x 1221.56375pt>
+ [45 <./images/interface/Statistiques.png>]
+<images/interface/inscriptionArticle.png, id=674, 1866.975pt x 1221.56375pt>
 File: images/interface/inscriptionArticle.png Graphic file (type png)
 <use images/interface/inscriptionArticle.png>
-Package pdftex.def Info: images/interface/inscriptionArticle.png  used on input line 284.
+Package pdftex.def Info: images/interface/inscriptionArticle.png  used on input line 300.
 (pdftex.def)             Requested size: 318.66948pt x 208.50186pt.
- [46 <./images/interface/Statistiques.png> <./images/interface/nouvelle_demande.png>] [47 <./images/interface/inscriptionArticle.png>]
-<images/backend/file.png, id=681, 507.0945pt x 482.40225pt>
+ [46 <./images/interface/nouvelle_demande.png> <./images/interface/inscriptionArticle.png>]
+<images/backend/file.png, id=682, 280.6485pt x 284.262pt>
 File: images/backend/file.png Graphic file (type png)
 <use images/backend/file.png>
-Package pdftex.def Info: images/backend/file.png  used on input line 309.
-(pdftex.def)             Requested size: 409.71692pt x 389.78676pt.
- [48 <./images/backend/file.png>] [49] [50]
-<images/backend/deploiement.png, id=704, 1155.1155pt x 582.37575pt>
+Package pdftex.def Info: images/backend/file.png  used on input line 325.
+(pdftex.def)             Requested size: 409.71692pt x 415.02339pt.
+ [47] [48 <./images/backend/file.png>] [49] [50]
+<images/backend/deploiement.png, id=709, 1155.1155pt x 582.37575pt>
 File: images/backend/deploiement.png Graphic file (type png)
 <use images/backend/deploiement.png>
-Package pdftex.def Info: images/backend/deploiement.png  used on input line 405.
+Package pdftex.def Info: images/backend/deploiement.png  used on input line 426.
 (pdftex.def)             Requested size: 318.66948pt x 160.66478pt.
 ) [51 <./images/backend/deploiement.png>] [52] (05_conclusion_generale.tex [53
 
 
 
-]) [54] (main.aux (02_chapitre1.aux) (03_chapitre2.aux) (04_chapitre3.aux))
+]) (bibliographie.tex [54] [55
+
+]
+Underfull \hbox (badness 1478) in paragraph at lines 13--14
+[]\T1/lmr/m/n/12 Remix Soft-ware Inc. \T1/lmr/m/it/12 React Rou-ter Do-cu-men-ta-tion\T1/lmr/m/n/12 . Dis-po-nible � : [][]$\T1/lmtt/m/n/12 https : / /
+ []
+
+
+Underfull \hbox (badness 2057) in paragraph at lines 16--17
+[]\T1/lmr/m/n/12 Tailwind Labs Inc. \T1/lmr/m/it/12 Tail-wind CSS Do-cu-men-ta-tion\T1/lmr/m/n/12 . Dis-po-nible � : [][]$\T1/lmtt/m/n/12 https : / /
+ []
+
+
+Underfull \hbox (badness 6526) in paragraph at lines 22--23
+[]\T1/lmr/m/n/12 UploadThing. \T1/lmr/m/it/12 Upload-Thing Do-cu-men-ta-tion\T1/lmr/m/n/12 . Dis-po-nible � : [][]$\T1/lmtt/m/n/12 https : / / docs .
+ []
+
+
+Underfull \hbox (badness 3375) in paragraph at lines 53--54
+[]\T1/lmr/m/n/12 CodeParrot AI. \T1/lmr/m/it/12 Get-ting Star-ted with Prisma React : Seam-less In-te-gra-tion
+ []
+
+
+Underfull \hbox (badness 3049) in paragraph at lines 53--54
+\T1/lmr/m/it/12 for Full-Stack De-ve-lop-ment\T1/lmr/m/n/12 . Dis-po-nible � : [][]$\T1/lmtt/m/n/12 https : / / codeparrot . ai / blogs /
+ []
+
+
+Overfull \hbox (74.08403pt too wide) in paragraph at lines 53--54
+\T1/lmtt/m/n/12 getting-[]started-[]with-[]prisma-[]react-[]seamless-[]integration-[]for-[]full-[]stack-[]development$[][] 
+ []
+
+) [56
+
+] (main.aux (02_chapitre1.aux) (03_chapitre2.aux) (04_chapitre3.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 6A9B9E9A294ABAED1BC3127E08B667F0;10892.
+(rerunfilecheck)             Checksum: ECF1E648CB85F4E39109923759D98C7F;11057.
  ) 
 Here is how much of TeX's memory you used:
- 12787 strings out of 474486
- 216185 string characters out of 5753571
+ 12834 strings out of 474486
+ 216841 string characters out of 5753571
  1939542 words of memory out of 5000000
- 34672 multiletter control sequences out of 15000+600000
+ 34696 multiletter control sequences out of 15000+600000
  601551 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 80i,14n,82p,618b,699s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 80i,14n,82p,783b,699s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Program Files/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmcsc10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmri12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on main.pdf (54 pages, 5664216 bytes).
+Output written on main.pdf (56 pages, 4206035 bytes).
 PDF statistics:
- 790 PDF objects out of 1000 (max. 8388607)
- 199 named destinations out of 1000 (max. 500000)
- 668 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 854 PDF objects out of 1000 (max. 8388607)
+ 219 named destinations out of 1000 (max. 500000)
+ 676 words of extra memory for PDF output out of 10000 (max. 10000000)
 

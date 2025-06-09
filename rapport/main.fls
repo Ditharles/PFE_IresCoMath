@@ -220,13 +220,6 @@ INPUT C:\Program Files\MiKTeX\fonts\tfm\public\lm\ec-lmr12.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\lm\ec-lmbx12.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\lm\ec-lmcsc10.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\lm\ec-lmri12.tfm
-INPUT .\images\Trello\Trello-Irescomath.png
-INPUT .\images\Trello\Trello-Irescomath.png
-INPUT .\images\Trello\Trello-Irescomath.png
-INPUT .\images\Trello\Trello-Irescomath.png
-INPUT .\images\Trello\Trello-Irescomath.png
-INPUT .\images\Trello\Trello-Irescomath.png
-INPUT .\images\Trello\Trello-Irescomath.png
 INPUT .\03_chapitre2.tex
 INPUT .\03_chapitre2.tex
 OUTPUT 03_chapitre2.aux
@@ -453,6 +446,13 @@ INPUT .\images\logos\axios.png
 INPUT .\images\logos\axios.png
 INPUT .\images\logos\axios.png
 INPUT .\images\logos\axios.png
+INPUT .\images\architecture.png
+INPUT .\images\architecture.png
+INPUT .\images\architecture.png
+INPUT .\images\architecture.png
+INPUT .\images\architecture.png
+INPUT .\images\architecture.png
+INPUT .\images\architecture.png
 INPUT .\images\interface\organigramme_interface_auth.png
 INPUT .\images\interface\organigramme_interface_auth.png
 INPUT .\images\interface\organigramme_interface_auth.png
@@ -570,6 +570,11 @@ INPUT .\05_conclusion_generale.tex
 INPUT .\05_conclusion_generale.tex
 INPUT .\05_conclusion_generale.tex
 INPUT 05_conclusion_generale.tex
+INPUT .\bibliographie.tex
+INPUT .\bibliographie.tex
+INPUT .\bibliographie.tex
+INPUT .\bibliographie.tex
+INPUT bibliographie.tex
 INPUT main.aux
 INPUT .\02_chapitre1.aux
 INPUT .\02_chapitre1.aux

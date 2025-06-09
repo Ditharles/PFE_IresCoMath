@@ -15,54 +15,53 @@
 \contentsline {subsection}{\numberline {1.5.1}Identification des acteurs}{13}{subsection.1.5.1}%
 \contentsline {subsection}{\numberline {1.5.2}Types de demandes}{13}{subsection.1.5.2}%
 \contentsline {section}{\numberline {1.6}Méthode de gestion de projet}{14}{section.1.6}%
-\contentsline {subsection}{\numberline {1.6.1}Approche Scrum}{14}{subsection.1.6.1}%
-\contentsline {subsection}{\numberline {1.6.2}Outils utilisés}{14}{subsection.1.6.2}%
-\contentsline {section}{\numberline {1.7}Conclusion}{15}{section.1.7}%
-\contentsline {chapter}{\numberline {2}Conception du système}{16}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Introduction}{16}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Choix du langage de modélisation}{16}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Définition}{16}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Diagrammes utilisés}{16}{subsection.2.2.2}%
-\contentsline {section}{\numberline {2.3}Diagrammes de cas d'utilisation}{17}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Présentation des acteurs}{17}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Cas d’utilisation }{17}{subsection.2.3.2}%
-\contentsline {paragraph}{Cas d’utilisation communs à tous les utilisateurs authentifiés}{17}{paragraph*.4}%
-\contentsline {paragraph}{Cas d’utilisation pour les membres (Étudiant-Master, Doctorant, Enseignant-Chercheur)}{18}{paragraph*.5}%
-\contentsline {paragraph}{Cas d’utilisation pour le Directeur du laboratoire}{18}{paragraph*.6}%
-\contentsline {paragraph}{Cas d’utilisation pour l’Administrateur}{18}{paragraph*.7}%
-\contentsline {subsection}{\numberline {2.3.3}Diagramme de cas d'utilisation global}{19}{subsection.2.3.3}%
-\contentsline {subsection}{\numberline {2.3.4}Diagrammes spécifiques par rôle}{20}{subsection.2.3.4}%
-\contentsline {subsubsection}{Cas spécifique : Étudiant-Master}{20}{subsubsection*.8}%
-\contentsline {subsubsection}{Cas spécifique : Doctorant}{21}{subsubsection*.9}%
-\contentsline {subsubsection}{Cas spécifique : Enseignant-Chercheur}{21}{subsubsection*.10}%
-\contentsline {subsubsection}{Cas spécifique : Directeur du laboratoire}{22}{subsubsection*.11}%
-\contentsline {paragraph}{Validation des demandes}{22}{paragraph*.12}%
-\contentsline {paragraph}{Gestion des matériels}{22}{paragraph*.13}%
-\contentsline {subsubsection}{Cas spécifique : Administrateur}{23}{subsubsection*.14}%
-\contentsline {section}{\numberline {2.4}Diagrammes de séquence}{24}{section.2.4}%
-\contentsline {subsection}{\numberline {2.4.1}Diagramme de séquence « Validation d'une demande d'adhésion par le Directeur »}{24}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Diagramme de séquence « Soumission d'une demande »}{25}{subsection.2.4.2}%
-\contentsline {subsection}{\numberline {2.4.3}Diagramme de séquence « Gestion des demandes par le directeur »}{26}{subsection.2.4.3}%
-\contentsline {subsection}{\numberline {2.4.4}Diagramme de séquence « Gestion des demandes par les membres »}{29}{subsection.2.4.4}%
-\contentsline {subsection}{\numberline {2.4.5}Diagramme de séquence « Ajout d'un équipement ou d'une catégorie d'équipement »}{31}{subsection.2.4.5}%
-\contentsline {section}{\numberline {2.5}Diagramme de classes}{32}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Résumé}{34}{section.2.6}%
-\contentsline {chapter}{\numberline {3}Réalisation et tests}{35}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Introduction}{35}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Réalisation}{35}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Environnement de développement}{35}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Outils logiciels utilisés}{36}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Environnement matériel}{38}{subsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.2.4}Frontend}{38}{subsection.3.2.4}%
+\contentsline {section}{\numberline {1.7}Conclusion}{14}{section.1.7}%
+\contentsline {chapter}{\numberline {2}Conception du système}{15}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction}{15}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Choix du langage de modélisation}{15}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Définition}{15}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Diagrammes utilisés}{15}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Diagrammes de cas d'utilisation}{16}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Présentation des acteurs}{16}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Cas d’utilisation }{16}{subsection.2.3.2}%
+\contentsline {paragraph}{Cas d’utilisation communs à tous les utilisateurs authentifiés}{16}{paragraph*.4}%
+\contentsline {paragraph}{Cas d’utilisation pour les membres (Étudiant-Master, Doctorant, Enseignant-Chercheur)}{17}{paragraph*.5}%
+\contentsline {paragraph}{Cas d’utilisation pour le Directeur du laboratoire}{17}{paragraph*.6}%
+\contentsline {paragraph}{Cas d’utilisation pour l’Administrateur}{17}{paragraph*.7}%
+\contentsline {subsection}{\numberline {2.3.3}Diagramme de cas d'utilisation global}{18}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Diagrammes spécifiques par rôle}{19}{subsection.2.3.4}%
+\contentsline {subsubsection}{Cas spécifique : Étudiant-Master}{19}{subsubsection*.8}%
+\contentsline {subsubsection}{Cas spécifique : Doctorant}{20}{subsubsection*.9}%
+\contentsline {subsubsection}{Cas spécifique : Enseignant-Chercheur}{20}{subsubsection*.10}%
+\contentsline {subsubsection}{Cas spécifique : Directeur du laboratoire}{21}{subsubsection*.11}%
+\contentsline {paragraph}{Validation des demandes}{21}{paragraph*.12}%
+\contentsline {paragraph}{Gestion des matériels}{21}{paragraph*.13}%
+\contentsline {subsubsection}{Cas spécifique : Administrateur}{22}{subsubsection*.14}%
+\contentsline {section}{\numberline {2.4}Diagrammes de séquence}{23}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Diagramme de séquence « Validation d'une demande d'adhésion par le Directeur »}{23}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Diagramme de séquence « Soumission d'une demande »}{24}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Diagramme de séquence « Gestion des demandes par le directeur »}{25}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Diagramme de séquence « Gestion des demandes par les membres »}{28}{subsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.4.5}Diagramme de séquence « Ajout d'un équipement ou d'une catégorie d'équipement »}{30}{subsection.2.4.5}%
+\contentsline {section}{\numberline {2.5}Diagramme de classes}{31}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Résumé}{33}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Réalisation et tests}{34}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{34}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Réalisation}{34}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Environnement de développement}{34}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Outils logiciels utilisés}{35}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Architecture générale}{37}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Environnement matériel}{38}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Frontend}{38}{subsection.3.2.5}%
 \contentsline {subsubsection}{Organigramme de navigation}{39}{subsubsection*.15}%
 \contentsline {subsubsection}{Inscription}{40}{subsubsection*.16}%
 \contentsline {subsubsection}{Renvoi du courriel de confirmation}{40}{subsubsection*.17}%
 \contentsline {subsubsection}{Connexion}{41}{subsubsection*.18}%
 \contentsline {subsubsection}{Profil}{42}{subsubsection*.19}%
 \contentsline {subsubsection}{Interface du directeur de laboratoire}{43}{subsubsection*.20}%
-\contentsline {subsubsection}{Interface des membres du laboratoire}{46}{subsubsection*.21}%
-\contentsline {subsection}{\numberline {3.2.5}Backend}{47}{subsection.3.2.5}%
-\contentsline {subsubsection}{Architecture générale}{47}{subsubsection*.22}%
+\contentsline {subsubsection}{Interface des membres du laboratoire}{45}{subsubsection*.21}%
+\contentsline {subsection}{\numberline {3.2.6}Backend}{46}{subsection.3.2.6}%
+\contentsline {subsubsection}{Architecture générale}{46}{subsubsection*.22}%
 \contentsline {subsubsection}{Couches métier et logique applicative}{48}{subsubsection*.23}%
 \contentsline {paragraph}{Routes et endpoints de l’API}{48}{paragraph*.24}%
 \contentsline {paragraph}{Services et controllers}{49}{paragraph*.25}%
@@ -72,11 +71,13 @@
 \contentsline {paragraph}{Prisma et PostgreSQL}{49}{paragraph*.29}%
 \contentsline {paragraph}{Uploadthing}{50}{paragraph*.30}%
 \contentsline {section}{\numberline {3.3}Tests et validation}{50}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Tests de sécurité}{50}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Tests utilisateurs}{50}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Tests automatisés}{50}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Tests fonctionnels}{51}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Tests d’interface utilisateur}{51}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.1}Stratégie de test}{50}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Tests de sécurité}{50}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Tests utilisateurs}{50}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Tests automatisés}{50}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Tests fonctionnels}{51}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.6}Tests d’interface utilisateur}{51}{subsection.3.3.6}%
 \contentsline {section}{\numberline {3.4}Déploiement}{51}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Conclusion}{52}{section.3.5}%
 \contentsline {chapter}{Conclusion générale}{53}{chapter*.31}%
+\contentsline {chapter}{Bibliographie}{55}{chapter*.32}%
