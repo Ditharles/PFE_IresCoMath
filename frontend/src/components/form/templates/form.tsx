@@ -61,11 +61,7 @@ const TemplateFields = ({ isVerified, defaultValues, mode = "create" }: Template
 
     const handleFileUpload = (fileUrls: string[] | string) => {
         const url = Array.isArray(fileUrls) ? fileUrls[0] : fileUrls;
-        setValue('url', url, {
-            shouldValidate: true,
-            shouldDirty: true,
-            shouldTouch: true
-        });
+        setValue('url', url);
         setFileUrl(url);
         // On garde la logique de visibilité pour le mode édition
         if (mode === "edit") {

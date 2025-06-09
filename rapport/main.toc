@@ -1,0 +1,82 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{ Introduction générale}{6}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Analyse du Système Actuel et Exploration d'Alternatives Similaires}{7}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction}{7}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Cadre du projet}{7}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Analyse de l’existant}{8}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Présentation du Laboratoire IReSCoMath}{8}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Les activités principales du laboratoire IReSCoMath}{8}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}Critique de l’existant}{8}{subsection.1.3.3}%
+\contentsline {subsection}{\numberline {1.3.4}La solution proposée}{8}{subsection.1.3.4}%
+\contentsline {section}{\numberline {1.4}Exploration des alternatives similaires}{9}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Systèmes de gestion universitaire intégrés}{9}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Solutions spécifiques au secteur académique}{10}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}Spécifications des besoins}{13}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Identification des acteurs}{13}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Types de demandes}{13}{subsection.1.5.2}%
+\contentsline {section}{\numberline {1.6}Méthode de gestion de projet}{14}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}Approche Scrum}{14}{subsection.1.6.1}%
+\contentsline {subsection}{\numberline {1.6.2}Outils utilisés}{14}{subsection.1.6.2}%
+\contentsline {section}{\numberline {1.7}Conclusion}{15}{section.1.7}%
+\contentsline {chapter}{\numberline {2}Conception du système}{16}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction}{16}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Choix du langage de modélisation}{16}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Définition}{16}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Diagrammes utilisés}{16}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Diagrammes de cas d'utilisation}{17}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Présentation des acteurs}{17}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Cas d’utilisation }{17}{subsection.2.3.2}%
+\contentsline {paragraph}{Cas d’utilisation communs à tous les utilisateurs authentifiés}{17}{paragraph*.4}%
+\contentsline {paragraph}{Cas d’utilisation pour les membres (Étudiant-Master, Doctorant, Enseignant-Chercheur)}{18}{paragraph*.5}%
+\contentsline {paragraph}{Cas d’utilisation pour le Directeur du laboratoire}{18}{paragraph*.6}%
+\contentsline {paragraph}{Cas d’utilisation pour l’Administrateur}{18}{paragraph*.7}%
+\contentsline {subsection}{\numberline {2.3.3}Diagramme de cas d'utilisation global}{19}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Diagrammes spécifiques par rôle}{20}{subsection.2.3.4}%
+\contentsline {subsubsection}{Cas spécifique : Étudiant-Master}{20}{subsubsection*.8}%
+\contentsline {subsubsection}{Cas spécifique : Doctorant}{21}{subsubsection*.9}%
+\contentsline {subsubsection}{Cas spécifique : Enseignant-Chercheur}{21}{subsubsection*.10}%
+\contentsline {subsubsection}{Cas spécifique : Directeur du laboratoire}{22}{subsubsection*.11}%
+\contentsline {paragraph}{Validation des demandes}{22}{paragraph*.12}%
+\contentsline {paragraph}{Gestion des matériels}{22}{paragraph*.13}%
+\contentsline {subsubsection}{Cas spécifique : Administrateur}{23}{subsubsection*.14}%
+\contentsline {section}{\numberline {2.4}Diagrammes de séquence}{24}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Diagramme de séquence « Validation d'une demande d'adhésion par le Directeur »}{24}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Diagramme de séquence « Soumission d'une demande »}{25}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Diagramme de séquence « Gestion des demandes par le directeur »}{26}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Diagramme de séquence « Gestion des demandes par les membres »}{29}{subsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.4.5}Diagramme de séquence « Ajout d'un équipement ou d'une catégorie d'équipement »}{31}{subsection.2.4.5}%
+\contentsline {section}{\numberline {2.5}Diagramme de classes}{32}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Résumé}{34}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Réalisation et tests}{35}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{35}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Réalisation}{35}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Environnement de développement}{35}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Outils logiciels utilisés}{36}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Environnement matériel}{38}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Frontend}{38}{subsection.3.2.4}%
+\contentsline {subsubsection}{Organigramme de navigation}{39}{subsubsection*.15}%
+\contentsline {subsubsection}{Inscription}{40}{subsubsection*.16}%
+\contentsline {subsubsection}{Renvoi du courriel de confirmation}{40}{subsubsection*.17}%
+\contentsline {subsubsection}{Connexion}{41}{subsubsection*.18}%
+\contentsline {subsubsection}{Profil}{42}{subsubsection*.19}%
+\contentsline {subsubsection}{Interface du directeur de laboratoire}{43}{subsubsection*.20}%
+\contentsline {subsubsection}{Interface des membres du laboratoire}{46}{subsubsection*.21}%
+\contentsline {subsection}{\numberline {3.2.5}Backend}{47}{subsection.3.2.5}%
+\contentsline {subsubsection}{Architecture générale}{47}{subsubsection*.22}%
+\contentsline {subsubsection}{Couches métier et logique applicative}{48}{subsubsection*.23}%
+\contentsline {paragraph}{Routes et endpoints de l’API}{48}{paragraph*.24}%
+\contentsline {paragraph}{Services et controllers}{49}{paragraph*.25}%
+\contentsline {paragraph}{Middlewares}{49}{paragraph*.26}%
+\contentsline {subsubsection}{Journalisation et surveillance}{49}{subsubsection*.27}%
+\contentsline {subsubsection}{Gestion des données et infrastructure}{49}{subsubsection*.28}%
+\contentsline {paragraph}{Prisma et PostgreSQL}{49}{paragraph*.29}%
+\contentsline {paragraph}{Uploadthing}{50}{paragraph*.30}%
+\contentsline {section}{\numberline {3.3}Tests et validation}{50}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Tests de sécurité}{50}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Tests utilisateurs}{50}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Tests automatisés}{50}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Tests fonctionnels}{51}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Tests d’interface utilisateur}{51}{subsection.3.3.5}%
+\contentsline {section}{\numberline {3.4}Déploiement}{51}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Conclusion}{52}{section.3.5}%
+\contentsline {chapter}{Conclusion générale}{53}{chapter*.31}%

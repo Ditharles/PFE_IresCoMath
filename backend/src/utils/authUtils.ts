@@ -29,10 +29,11 @@ export const generateTokenLink = (
   role: string,
   action: string
 ): string => {
+  const url = process.env.FRONTEND_URL ?? "http://localhost:5173";
   const token = jwt.sign({ email, role, action }, JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
-  return `http://localhost:5173/confirm-email/${token}`;
+  return `${url}/confirm-email/${token}`;
 };
 
 export const generateTokens = (
@@ -109,8 +110,7 @@ export const checkRequestStatus = async (email: string) => {
   return { exists: false };
 };
 
-
-export const  formatIpAddress = (ip: string): string => {
+export const formatIpAddress = (ip: string): string => {
   // Si c'est une adresse IPv6 de loopback, retourner localhost
   if (ip === "::1" || ip === "::ffff:127.0.0.1") {
     return "localhost";
