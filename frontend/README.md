@@ -52,7 +52,7 @@ Ce frontend est une application React (TypeScript) utilisant Vite, TailwindCSS e
    Variables utiles (exemple) :
 
    ```
-   VITE_API_URL=http://localhost:8000
+   VITE_BACKEND_URL=http://localhost:8000
    ```
 
    > Par défaut, l'API est appelée sur `http://localhost:8000`. Modifiez ce paramètre si votre backend tourne sur un autre port.

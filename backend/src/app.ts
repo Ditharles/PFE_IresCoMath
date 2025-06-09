@@ -26,14 +26,19 @@ import logger from "./logger";
 import loggingMiddleware from "./middleware/logging.middleware";
 dotenv.config();
 
+console.log("Allowed frontend:", process.env.FRONTEND_URL);
+
 const prisma = new PrismaClient();
 const app = express();
-
 //Middleware pour pino
-app.use(loggingMiddleware() );
+app.use(loggingMiddleware());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

@@ -6,20 +6,21 @@ import {
   removeUser,
 } from "../utils/tokens.utils";
 
+const baseUrl = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:8000";
 // Interface pour gérer la file d'attente
 interface QueueItem {
   resolve: (token: string) => void;
   reject: (error: unknown) => void;
 }
-
+console.log(baseUrl);
 // Client principal avec intercepteurs
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: baseUrl,
 });
 
 // Client sans intercepteurs pour le refresh
 const refreshClient = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: baseUrl,
 });
 
 // Routes publiques (ne nécessitent pas de token)

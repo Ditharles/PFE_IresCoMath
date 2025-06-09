@@ -11,6 +11,15 @@ export default defineConfig({
       plugins: [autoprefixer()],
     },
   },
+  server: {
+    host: '0.0.0.0',
+    port: 4173
+  },
+  preview: {
+    allowedHosts: ["pfeirescomath-production.up.railway.app"],
+    host: '0.0.0.0',
+    port: 4173
+  },
   resolve: {
     alias: {
       "@": "/src",
@@ -29,4 +38,5 @@ export default defineConfig({
   build: {
     // Configuration de build personnalisée si nécessaire
   },
+  
 });

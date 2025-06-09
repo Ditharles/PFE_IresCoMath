@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-// import { useTheme } from "next-themes"; // Supprimé car non utilisé
+
 
 import { templateSchema } from "../../schemas/template";
 import TemplateService from "../../services/templates.service";

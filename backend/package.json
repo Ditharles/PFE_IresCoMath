@@ -4,10 +4,10 @@
   "main": "app.ts",
   "scripts": {
     "dev": "nodemon --exec tsx src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "prisma generate && prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
-    "build": "tsc && prisma generate && prisma migrate deploy",
-"start": "node dist/app.js"
+
+    "start": "prisma generate && prisma migrate deploy && tsx src/app.ts"
 
   },
   "keywords": [],
