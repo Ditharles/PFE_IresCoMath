@@ -1,180 +1,273 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useNavigate } from 'react-router-dom';
-import AuthService from "../../services/auth.service";
-import RoleSelector from "../../components/form/RoleSelector";
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import { useForm, FormProvider } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
+import { Button } from "../../components/ui/button"
+import FileUpload from "../../components/FileUpload"
+import { DoctorantStudentFields } from "../../components/form/DoctorantStudentFields"
+import { MasterStudentFields } from "../../components/form/MasterStudentFields"
+import RoleSelector from "../../components/form/RoleSelector"
+import { TeacherResearcherFields } from "../../components/form/TeacherResearcherFields"
+import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card"
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "../../components/ui/form"
+import { Input } from "../../components/ui/input"
+import { InscriptionFormData, inscriptionSchema } from "../../schemas/inscriptionSchema"
+import AuthService from "../../services/auth.service"
+import { isAxiosError } from "axios"
 
-import type { BaseSpecificFields, CommonFields, Role } from "../../types/common";
-import LoadingOverlay from "../../components/LoadingOverlay";
-import { toast } from "sonner";
-import FileUpload from "../../components/FileUpload";
-import InputField from "../../components/form/InputField";
-import SubmitButtons from "../../components/form/SubmitButtons";
-import DoctorantStudent from "../../components/form/DoctorantStudent";
-import MasterStudent from "../../components/form/MasterStudent";
-import TeacherResearcher from "../../components/form/TeacherResearcher";
+
+type InscriptionRole = "DOCTORANT" | "MASTER" | "ENSEIGNANT"
 
 const Inscription: React.FC = () => {
-  const [role, setRole] = useState<Role | null>(null);
-  const [commonFields, setCommonFields] = useState<CommonFields>({
-    lastName: "",
-    firstName: "",
-    phone: "",
-    email: "",
-    cin: ""
-  });
+  const navigate = useNavigate()
+  const [role, setRole] = React.useState<InscriptionRole | null>(null)
+  const [loading, setLoading] = React.useState(false)
 
-  const [specificFields, setSpecificFields] = useState<BaseSpecificFields & { [key: string]: any }>({
-    photo: null,
-  });
-
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const navigate = useNavigate();
-  const authService = useMemo(() => new AuthService(), []);
-
-  useEffect(() => {
-    if (status === "success") {
-      const redirectTimer = setTimeout(() => {
-        navigate("/resend-confirmation-email");
-      }, 3000);
-
-      return () => clearTimeout(redirectTimer);
-    }
-  }, [status, navigate]);
-
-  const handleChangeCommon = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCommonFields((prev) => ({ ...prev, [name]: value }));
-  }, []);
-
-  const handleProfilePhotoUpdate = useCallback((photoLink: string) => {
-    setSpecificFields((prev) => ({
-      ...prev,
-      photo: photoLink[0],
-    }));
-  }, []);
-
-  const resetForm = useCallback(() => {
-    setCommonFields({
+  const methods = useForm<InscriptionFormData>({
+    resolver: zodResolver(inscriptionSchema),
+    mode: "onBlur",
+    defaultValues: {
       lastName: "",
       firstName: "",
       phone: "",
       email: "",
       cin: "",
-    });
-    setSpecificFields({ photo: null });
-    setStatus("idle");
-  }, []);
+      password: "",
+      photo: null,
+      role: undefined
+    },
+  })
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setStatus("idle");
+  // Mettre à jour le rôle dans le formulaire quand il change
+  React.useEffect(() => {
+    if (role) {
+      methods.setValue("role", role)
+    }
+  }, [role, methods])
 
+  const onSubmit = async (data: InscriptionFormData) => {
     if (!role) {
-      toast.warning("Veuillez sélectionner un rôle avant de soumettre le formulaire.");
-      setLoading(false);
-      return;
+      toast.warning("Veuillez sélectionner un rôle avant de soumettre le formulaire.")
+      return
     }
 
-    const requestData = {
-      ...commonFields,
-      role,
-      ...specificFields,
-
-    };
-
+    setLoading(true)
     try {
-      const response = await authService.register(requestData, role);
-      setStatus("success");
-      localStorage.setItem("temptoken", response.data.tempToken);
-      toast.success("Inscription réussie ! Vous allez être redirigé vers la page de confirmation.");
-    } catch (error: any) {
-      setStatus("error");
-      toast.error(error?.response?.data?.message || "Une erreur inattendue s'est produite.");
+      console.log("Données du formulaire:", data)
+      console.log("Rôle sélectionné:", role)
+
+      const formData = {
+        ...data,
+        role: role
+      }
+
+      
+      const authService = new AuthService()
+     
+      const response = await authService.register(formData, role)
+      console.log("Réponse reçue:", response)
+
+      if (response.data?.tempToken) {
+        localStorage.setItem("temptoken", response.data.tempToken)
+        toast.success("Inscription réussie ! Vous allez être redirigé vers la page de confirmation.")
+        navigate("/resend-confirmation-email")
+      } else {
+        throw new Error("Token temporaire non reçu")
+      }
+    } catch (error: unknown) {
+      console.error("Erreur détaillée lors de l'inscription:", error)
+      let errorMessage = "Une erreur inattendue s'est produite."
+      
+      if (isAxiosError(error)) {
+        errorMessage = error.response?.data?.message || error.message
+      } else if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
+      toast.error(errorMessage)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [role, commonFields, specificFields, authService]);
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 relative">
+    <div className="min-h-screen bg-gray-50 py-12">
+      <Card className="max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold text-center">Inscription</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={methods.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={methods.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Prénom</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm" />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-      {loading && <LoadingOverlay loadingText="Traitement en cours..." />}
-      <div className="max-w-3xl mx-auto bg-background rounded-xl shadow-lg p-8 relative">
-        <h1 className="text-3xl font-bold mb-8 text-center text-gray-900">Inscription</h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <CommonFieldsInputs commonFields={commonFields} handleChangeCommon={handleChangeCommon} />
-          <RoleSelection role={role} setRole={setRole} />
-          {role && (
-            <AdditionalInfo
-              role={role}
-              specificFields={specificFields}
-              setSpecificFields={setSpecificFields}
-            />
-          )}
-          <ProfilePhotoUpload
-            specificFields={specificFields}
-            handleProfilePhotoUpdate={handleProfilePhotoUpdate}
-          />
-          {role && (
-            <SubmitButtons loading={loading} resetForm={resetForm} />
-          )}
-        </form>
-      </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={methods.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Téléphone</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={methods.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={methods.control}
+                name="cin"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>CIN</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-sm" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={methods.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mot de passe</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-sm" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={methods.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirmer le mot de passe</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-sm" />
+                  </FormItem>
+                )}
+              />
+
+              <div className="py-4">
+                <h2 className="text-lg font-semibold mb-4">Sélectionnez votre rôle</h2>
+                <RoleSelector
+                  onSelectRole={(newRole) => {
+                    if (newRole === "DOCTORANT" || newRole === "MASTER" || newRole === "ENSEIGNANT") {
+                      setRole(newRole)
+                    }
+                  }}
+                  activeRole={role ?? ""}
+                />
+                {!role && methods.formState.errors.role && (
+                  <p className="text-red-500 text-sm mt-2">Veuillez sélectionner un rôle</p>
+                )}
+              </div>
+
+              {role && (
+                <div className="border-t pt-6">
+                  <h2 className="text-lg font-semibold mb-4">Informations supplémentaires</h2>
+                  {role === "DOCTORANT" && <DoctorantStudentFields form={methods} />}
+                  {role === "MASTER" && <MasterStudentFields form={methods} />}
+                  {role === "ENSEIGNANT" && <TeacherResearcherFields form={methods} />}
+                </div>
+              )}
+
+              <div className="py-4">
+                <h2 className="text-lg font-semibold mb-4">Photo de profil</h2>
+                <FormField
+                  control={methods.control}
+                  name="photo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FileUpload
+                          endpoint="profilePicture"
+                          maxFiles={1}
+                          onFileUploaded={(urls) => {
+                            console.log("URL de la photo reçue:", urls[0])
+                            field.onChange(urls[0])
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {role && (
+                <div className="flex justify-end space-x-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => methods.reset()}
+                    disabled={loading}
+                  >
+                    Réinitialiser
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? "Traitement en cours..." : "S'inscrire"}
+                  </Button>
+                </div>
+              )}
+            </form>
+          </FormProvider>
+        </CardContent>
+      </Card>
     </div>
-  );
-};
+  )
+}
 
-const CommonFieldsInputs: React.FC<{ commonFields: CommonFields, handleChangeCommon: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ commonFields, handleChangeCommon }) => {
-  return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField label="Nom" id="lastName" type="text" value={commonFields.lastName} onChange={handleChangeCommon} />
-        <InputField label="Prénom" id="firstName" type="text" value={commonFields.firstName} onChange={handleChangeCommon} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField label="Téléphone" id="phone" type="text" value={commonFields.phone} onChange={handleChangeCommon} />
-        <InputField label="Email" id="email" type="email" value={commonFields.email} onChange={handleChangeCommon} />
-      </div>
-      <InputField label="CIN" id="cin" value={commonFields.cin} onChange={handleChangeCommon} type="text" />
-    </>
-  );
-};
-
-const RoleSelection = ({ role, setRole }) => (
-  <div className="py-4">
-    <h2 className="text-lg font-semibold mb-4 text-gray-700">Sélectionnez votre rôle</h2>
-    <RoleSelector onSelectRole={setRole} activeRole={role} />
-  </div>
-);
-
-const AdditionalInfo = ({ role, specificFields, setSpecificFields }) => (
-  <div className="border-t pt-6">
-    <h2 className="text-lg font-semibold mb-4 text-gray-700">Informations supplémentaires</h2>
-    {role === "DOCTORANT" && <DoctorantStudent data={specificFields} onChange={setSpecificFields} />}
-    {role === "MASTER" && <MasterStudent data={specificFields} onChange={setSpecificFields} />}
-    {role === "ENSEIGNANT" && <TeacherResearcher data={specificFields} onChange={setSpecificFields} />}
-  </div>
-);
-
-const ProfilePhotoUpload = ({ specificFields, handleProfilePhotoUpdate }) => (
-  <div className="py-4">
-    <h2 className="text-lg font-semibold mb-4 text-gray-700">Photo de profil</h2>
-    <FileUpload
-      endpoint="profilePicture"
-      headerText="Téléchargez votre photo de profil"
-      subHeaderText="Formats acceptés : JPG, PNG"
-      maxFiles={1}
-      onFileUploaded={handleProfilePhotoUpdate}
-    />
-    {specificFields.photo && (
-      <div className="mt-2 text-sm text-green-600">
-        {specificFields.photo.length} photo(s) téléchargée(s) avec succès
-      </div>
-    )}
-  </div>
-);
-
-export default Inscription;
+export default Inscription

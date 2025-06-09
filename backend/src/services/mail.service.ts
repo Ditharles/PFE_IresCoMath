@@ -5,6 +5,7 @@ import transporter from "../utils/mailer";
 import jwt from "jsonwebtoken";
 import { RequestRole } from "../utils/validateUtils";
 
+const url = process.env.FRONTEND_URL ?? "http://localhost:4173";
 // Interface pour les données communes des emails
 interface EmailData {
   firstName: string;
@@ -299,7 +300,7 @@ export const sendInitialEmail = async (
     link,
     buttonText,
     mainContent: `
-      <p>Nous vous remercions pour la demande d'adhésion <span class="highlight">${role}</span> au sein du laboratoire IreSCoMath.</p>
+      <p>Nous vous remercions pour la demande d'adhésion <span class="highlight">${role}</span> au sein de la plateforme de gestion du laboratoire IreSCoMath.</p>
       
       <p>Pour poursuivre votre démarche, veuillez ${buttonText.toLowerCase()} en cliquant sur le bouton ci-dessous :</p>
     `,
@@ -323,8 +324,7 @@ export const sendMailAfterValidation = async (
   if (finalStatus === RequestStatus.APPROVED) {
     const token = jwt.sign(
       { email: request.email, role: request_role },
-      jwtSecret!,
-      { expiresIn: "24h" }
+      jwtSecret!
     );
 
     emailData = {
@@ -333,7 +333,7 @@ export const sendMailAfterValidation = async (
       email: request.email,
       role: request_role,
       subject: "Félicitations ! Votre demande a été approuvée",
-      link: `http://localhost:5173/validation-confirme/${token}`,
+      link: `${url}/validation-confirme/${token}`,
       buttonText: "Finaliser mon inscription",
       mainContent: `
         <p>Nous avons le plaisir de vous informer que votre demande pour rejoindre le laboratoire IreSCoMath en tant que <span class="highlight">${request_role}</span> a été approuvée par notre directeur.</p>
@@ -354,17 +354,17 @@ export const sendMailAfterValidation = async (
       email: request.email,
       role: request_role,
       subject: "Information concernant votre demande",
-      link: "https://localhost:5173/register",
+      link: `${url}/register`,
       buttonText: "Soumettre une nouvelle demande",
       mainContent: `
         <p>Nous vous remercions pour l'intérêt que vous portez au laboratoire IreSCoMath.</p>
         
-        <p>Après examen attentif de votre candidature pour le poste de <span class="highlight">${request_role}</span>, nous regrettons de vous informer que votre demande n'a pas pu être approuvée pour le moment.</p>
+        <p>Après examen attentif de votre demande d'adhésion en tant que <span class="highlight">${request_role}</span>, nous regrettons de vous informer que votre demande n'a pas pu être approuvée pour le moment.</p>
       `,
       additionalInfo: `
-        <p>Cette décision ne reflète pas nécessairement la qualité de votre profil, mais plutôt des besoins spécifiques actuels de notre laboratoire.</p>
         
-        <p>N'hésitez pas à soumettre une nouvelle demande avec des informations complémentaires ou à postuler pour un rôle différent si vous pensez qu'il correspondrait mieux à votre parcours.</p>
+        
+        <p>N'hésitez pas à soumettre une nouvelle demande avec des informations complémentaires .</p>
       `,
     };
   }
@@ -386,7 +386,7 @@ export const sendMailAfterRequestsValidation = async (
   if (user.role == "DOCTORAL") user = { ...user, ...user.doctoralStudent };
   if (user.role == "TEACHER") user = { ...user, ...user.teacherResearcher };
 
-  const requestLink = "http://localhost:5173/demande/" + request.id;
+  const requestLink = url+"/demande/" + request.id;
   const isRejected = finalStatus.includes("REJECTED");
 
   const approverTitle =
@@ -425,7 +425,7 @@ export const sendMailAfterRequestClose = async (
   request: any,
   user: { firstName: string; lastName: string; email: string; role: Role }
 ) => {
-  const requestLink = "http://localhost:5173/demande/" + request.id;
+  const requestLink = url+"/demande/" + request.id;
 
   const emailData: EmailData = {
     firstName: user.firstName,

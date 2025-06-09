@@ -53,11 +53,15 @@ const SidebarDirector = () => {
     ]
 
     const isActive = (path: string) => {
-        return location.pathname === path || location.pathname.startsWith(`${path}/`)
+        const item = menuItems.find(item => item.path === path);
+        const hasSubmenus = item && item.submenus && item.submenus.length > 0;
+        return hasSubmenus
+            ? location.pathname === path || location.pathname.startsWith(`${path}/`)
+            : location.pathname === path
     }
 
     const isParentActive = (item: SidebarMenuItem) => {
-        return isActive(item.path) || item.submenus?.some((sub) => isActive(sub.path))
+        return isActive(item.path) || (item.submenus ? item.submenus.some((sub) => isActive(sub.path)) : false);
     }
 
     return (

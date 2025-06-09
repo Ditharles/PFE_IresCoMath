@@ -1,0 +1,26 @@
+{
+  "validEquipment": {
+    "name": "test",
+    "cost": 10,
+    "date": "20/10/2020",
+    "specifications": {
+      "test": "test"
+    }
+  },
+  "duplicateEquipment": {
+    "name": "test",
+    "cost": "10",
+    "date": "20/10/2020",
+    "specifications": {
+      "test": "test"
+    }
+  },
+  "validCategory": {
+    "name": "test",
+    "description": "test"
+  },
+  "duplicateCategory": {
+    "name": "test",
+    "description": "test"
+  }
+}

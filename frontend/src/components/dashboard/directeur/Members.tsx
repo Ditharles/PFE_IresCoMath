@@ -7,7 +7,7 @@ import { ManageUserService } from "../../../services/manageUser.service";
 import Filters from "../Filters";
 import MembersAddRequests from "./membersAddRequests/MembersAddRequests";
 import MembersList from "./members/MembersList";
-import { useFilteredUsers, exportDataToCSV } from "../../../utils/membersUtils";
+import { useFilteredUsers, exportDataToCSV, useFilteredRequestUsers } from "../../../utils/membersUtils";
 import { RequestStatus, RequestUser } from "../../../types/MemberAddRequest";
 import { User } from "../../../types/Member";
 
@@ -26,7 +26,7 @@ const Members = () => {
     const manageUserService = new ManageUserService();
 
     // Filtrage des utilisateurs
-    const filteredRequests = useFilteredUsers(
+    const filteredRequests = useFilteredRequestUsers(
         membersRequest,
         searchQuery,
         filterRole,
@@ -55,6 +55,7 @@ const Members = () => {
         try {
             // Récupérer les demandes d'adhésion
             const membersRequestList = await manageUserService.getWaitingUsers();
+            console.log("membersRequestList.data", membersRequestList.data);
             const allMembersRequest: RequestUser[] = [
                 ...membersRequestList.data.MASTER,
                 ...membersRequestList.data.DOCTORANT,

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { TrendingUp, Package, Activity, Calendar, DollarSign } from 'lucide-react'
 import { toast } from 'sonner'
 import { ChartConfig } from '../../components/ui/chart'

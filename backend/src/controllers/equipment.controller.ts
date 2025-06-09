@@ -3,38 +3,49 @@ import { AuthRequest } from "../types/auth";
 import prisma from "../utils/db";
 import { ERROR_MESSAGES, validateRequestBody } from "../utils/authUtils";
 import { createCategory, switchCategory } from "../utils/equipment";
+import logger from "../logger";
 
+
+//Obtenir toutes les catégories
 export const getAllCategories = async (req: AuthRequest, res: Response) => {
   try {
+    logger.debug({ context: "GET_ALL_CATEGORIES" }, "Récupération des catégories");
     const equipmentCategories = await prisma.equipmentCategory.findMany();
     res.status(200).json(equipmentCategories);
   } catch (error) {
-    console.log(error);
+    logger.error({ context: "GET_ALL_CATEGORIES", error }, "Erreur serveur");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
+//Obtenir une catégorie
 export const getCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
 
+    logger.debug({ context: "GET_CATEGORY", categoryId: id }, "Récupération d'une catégorie");
     const category = await prisma.equipmentCategory.findUnique({
       where: { id },
       include: { equipments: true },
     });
 
-    if (!category)
+    if (!category) {
+      logger.warn({ context: "GET_CATEGORY", categoryId: id }, "Catégorie introuvable");
       return res.status(404).json({ message: "Categorie introuvable" });
+    }
     res.status(200).json(category);
   } catch (error) {
-    console.log(error);
+    logger.error({ context: "GET_CATEGORY", error }, "Erreur serveur");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
+
+//Obtenir tous les équipements
 export const getAllEquipments = async (req: AuthRequest, res: Response) => {
   try {
+    logger.debug({ context: "GET_ALL_EQUIPMENTS" }, "Récupération des équipements");
     const equipments = await prisma.equipment.findMany({
       select: {
         id: true,
@@ -57,16 +68,18 @@ export const getAllEquipments = async (req: AuthRequest, res: Response) => {
     });
     res.status(200).json(equipments);
   } catch (error) {
-    console.log(error);
+    logger.error({ context: "GET_ALL_EQUIPMENTS", error }, "Erreur serveur");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
+//Obtenir les informations  d'un équipement
 export const getEquipment = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
 
+    logger.debug({ context: "GET_EQUIPMENT", equipmentId: id }, "Récupération d'un équipement");
     const equipment = await prisma.equipment.findUnique({
       where: { id },
       select: {
@@ -89,23 +102,29 @@ export const getEquipment = async (req: AuthRequest, res: Response) => {
       },
     });
 
-    if (!equipment)
+    if (!equipment) {
+      logger.warn({ context: "GET_EQUIPMENT", equipmentId: id }, "Équipement introuvable");
       return res.status(404).json({ message: "Appareil introuvable" });
+    }
     res.status(200).json(equipment);
   } catch (error) {
-    console.log(error);
+    logger.error({ context: "GET_EQUIPMENT", error }, "Erreur serveur");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
+//Modifier un équipement
 export const editEquipment = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
 
+    logger.debug({ context: "EDIT_EQUIPMENT", equipmentId: id, body: req.body }, "Tentative de modification d'équipement");
     const equipment = await prisma.equipment.findUnique({ where: { id } });
-    if (!equipment)
+    if (!equipment) {
+      logger.warn({ context: "EDIT_EQUIPMENT", equipmentId: id }, "Équipement introuvable");
       return res.status(404).json({ message: "Appareil introuvable" });
+    }
 
     const {
       name,
@@ -123,7 +142,6 @@ export const editEquipment = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
 
-    // Utilisation de switchCategory pour gérer le changement de catégorie
     const result = await switchCategory(
       categoryId,
       categories,
@@ -137,10 +155,14 @@ export const editEquipment = async (req: AuthRequest, res: Response) => {
     );
 
     if (result.status !== 200) {
+      logger.warn({ 
+        context: "EDIT_EQUIPMENT", 
+        equipmentId: id,
+        error: result.message 
+      }, "Échec de la modification de catégorie");
       return res.status(result.status).json({ message: result.message });
     }
 
-    // Mise à jour des autres champs
     const updatedEquipment = await prisma.equipment.update({
       where: { id },
       data: {
@@ -153,18 +175,28 @@ export const editEquipment = async (req: AuthRequest, res: Response) => {
       },
       include: { category: true },
     });
-    console.log(updatedEquipment);
+
+    logger.info({ 
+      context: "EDIT_EQUIPMENT", 
+      equipmentId: id,
+      userId: req.user?.userId 
+    }, "Équipement modifié avec succès");
     res.status(200).json({
       message: "Équipement mis à jour",
       equipment: updatedEquipment,
       category: result.category,
     });
   } catch (error) {
-    console.error("Erreur lors de la modification de l'équipement:", error);
+    logger.error({ 
+      context: "EDIT_EQUIPMENT", 
+      error,
+      userId: req.user?.userId 
+    }, "Erreur lors de la modification de l'équipement");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
+//Ajouter une catégorie
 export const addCategory = async (req: AuthRequest, res: Response) => {
   try {
     const requiredFields = ["name", "type"];
@@ -172,29 +204,46 @@ export const addCategory = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: ERROR_MESSAGES.MISSING_FIELDS });
     }
 
+    logger.debug({ context: "ADD_CATEGORY", body: req.body }, "Tentative d'ajout de catégorie");
     const { status, message, category } = await createCategory(
       req.body.name,
       req.body.type,
       req.body.photo
     );
 
+    if (status === 200) {
+      logger.info({ 
+        context: "ADD_CATEGORY", 
+        categoryId: category?.id,
+        userId: req.user?.userId 
+      }, "Catégorie ajoutée avec succès");
+    }
+
     res.status(status).json({ message, category });
   } catch (error) {
-    console.log(error);
+    logger.error({ 
+      context: "ADD_CATEGORY", 
+      error,
+      userId: req.user?.userId 
+    }, "Erreur lors de l'ajout de catégorie");
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };
 
+//Modifier une catégorie
 export const editCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ message: "L'id est obligatoire" });
 
+    logger.debug({ context: "EDIT_CATEGORY", categoryId: id, body: req.body }, "Tentative de modification de catégorie");
     const category = await prisma.equipmentCategory.findUnique({
       where: { id },
     });
-    if (!category)
+    if (!category) {
+      logger.warn({ context: "EDIT_CATEGORY", categoryId: id }, "Catégorie introuvable");
       return res.status(404).json({ message: "Categorie introuvable" });
+    }
 
     const { name, type, description, photo } = req.body;
     await prisma.equipmentCategory.update({
@@ -202,7 +251,17 @@ export const editCategory = async (req: AuthRequest, res: Response) => {
       data: { name, type, description, photo },
     });
 
-    res.status(200).json({ message: "Catégorie modifiée avec succès" });
+    logger.info({ 
+      context: "EDIT_CATEGORY", 
+      categoryId: id,
+      userId: req.user?.userId 
+    }, "Catégorie modifiée avec succès");
+    res
+      .status(200)
+      .json({
+        message: "Catégorie modifiée avec succès",
+        updateCategory: category,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });

@@ -1,8 +1,7 @@
-import { Badge } from "../../../ui/badge"; 
-import { REQUEST_TYPE_LABELS } from "../../../../constants/requests";
-import { RequestType } from "../../../../types/request";
+import { Badge } from "../../../ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "../../../ui/card";
-import { EquipmentCategory } from "../../../../types/equipment";
+import { EquipmentCategory, EquipmentType } from "../../../../types/equipment";
+import { EQUIPMENT_TYPE_LABELS } from "../../../../constants/equipments";
 
 interface CategoriesStatsProps {
     categories: EquipmentCategory[];
@@ -14,7 +13,7 @@ const CategoriesStats = ({ categories }: CategoriesStatsProps) => {
         byType: categories.reduce((acc, category) => {
             acc[category.type] = (acc[category.type] || 0) + 1;
             return acc;
-        }, {} as Record<string, number>) 
+        }, {} as Record<string, number>)
     };
 
     return (
@@ -32,7 +31,7 @@ const CategoriesStats = ({ categories }: CategoriesStatsProps) => {
                             variant="outline"
                             className="mb-2 mr-2"
                         >
-                            {REQUEST_TYPE_LABELS[type as RequestType] || type}: {count}
+                            {EQUIPMENT_TYPE_LABELS[type as EquipmentType] || type}: {count}
                         </Badge>
                     ))}
                 </CardContent>

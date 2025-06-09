@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { CheckCircle, AlertCircle, Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import AuthService from "../../services/auth.service";
+import { isAxiosError } from "axios";
 
 type TokenStatus = "validating" | "valid" | "invalid" | "expired";
 
@@ -76,10 +77,17 @@ export default function ConfirmationEmail() {
     try {
       const response = await authService.resendConfirmationEmail(token);
 
-      toast.success("Un nouveau lien de confirmation a été envoyé à votre adresse email.");
+      toast.success(
+        response.data.message ??
+          "Un nouveau lien de confirmation a été envoyé à votre adresse email."
+      );
     } catch (error) {
       console.error("Error requesting new confirmation email:", error);
-      toast.error(error.response.data.message);
+      if (isAxiosError(error) && error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Une erreur est survenue lors de l'envoi du lien de confirmation");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -91,8 +99,8 @@ export default function ConfirmationEmail() {
       case "validating":
         return (
           <div className="text-center">
-            <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-4 text-gray-900">Validation en cours...</h1>
+            <Loader2 className="w-12 h-12  animate-spin mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-4">Validation en cours...</h1>
             <p className="text-gray-600">Nous vérifions votre lien de confirmation. Veuillez patienter.</p>
           </div>
         );

@@ -4,18 +4,19 @@
   "main": "app.ts",
   "scripts": {
     "dev": "nodemon --exec tsx src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "db:seed": "tsx prisma/seed.ts"
+    "build": "prisma generate && prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts",
+
+    "start": "prisma generate && prisma migrate deploy && tsx src/app.ts"
+
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-
     "@prisma/client": "^6.5.0",
     "axios": "^1.9.0",
-
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
@@ -28,6 +29,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mammoth": "^1.9.0",
+    "morgan": "^1.10.0",
     "multer": "^2.0.0",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.9",
@@ -35,6 +37,10 @@
     "pdf-parse": "^1.1.1",
     "pdfjs": "^2.5.3",
     "pdfjs-dist": "^5.2.133",
+    "pino": "^9.7.0",
+    "pino-http": "^10.5.0",
+    "pino-multi-stream": "^6.0.0",
+    "pino-pretty": "^13.0.0",
     "tmp-promise": "^3.0.3",
     "uploadthing": "^7.6.0"
   },

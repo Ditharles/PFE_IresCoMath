@@ -1,47 +1,50 @@
 import { RequestHandler, Router } from "express";
+
+import { checkRole } from "../middleware/checkRole";
 import {
-  addDocuments,
-  approveRequest,
-  closeRequest,
-  completeRequest,
-  deleteRequest,
-  editRequest,
   getAllRequests,
   getPossibleRequests,
   getRequest,
   getRequests,
-  reigniteRequest,
+} from "../controllers/requests/info.controller";
+
+import {
+  addDocuments,
   signFormUpload,
-  submitArticleRegistrationRequest,
-  submitEquipmentLendRequest,
+} from "../controllers/requests/documents.controller";
+import {
+  editRequest,
+  deleteRequest,
+} from "../controllers/requests/edit.controller";
+import {
   submitEquipmentPurchaseRequest,
+  submitEquipmentLendRequest,
   submitMissionRequest,
   submitRequestStage,
   submitScientificEventRequest,
-} from "../controllers/requests.controller";
-import { checkRole } from "../middleware/checkRole";
+  submitArticleRegistrationRequest,
+  submitRepairMaintenanceRequest,
+} from "../controllers/requests/submit.controller";
+import {
+  reigniteRequest,
+  closeRequest,
+  completeRequest,
+} from "../controllers/requests/actions.controller";
+import { approveRequest } from "../controllers/requests/approbal.controller";
 
 const router: Router = Router();
 
+// Routes pour obtenir les requetes
 router.get("/get-possible-requests", getPossibleRequests as RequestHandler);
-
-//Route pour obtenir les requetes effectués par l'utilisateur
 router.get("/get-requests", getRequests as RequestHandler);
-
 router.get("/get-request/:id", getRequest as RequestHandler);
-
-router.get(
-  "/get-all-requests",
-  checkRole(["DIRECTEUR"]),
-  getAllRequests as RequestHandler
-);
-//Routes pour obtenir toutes les requetes
 router.get(
   "/get-all-requests",
   checkRole(["DIRECTEUR"]),
   getAllRequests as RequestHandler
 );
 
+// Routes pour soumettre une requete
 router.post(
   "/equipment/purchase",
   submitEquipmentPurchaseRequest as RequestHandler
@@ -58,34 +61,49 @@ router.post(
 
 router.post(
   "/conference-national",
+  checkRole(["ENSEIGNANT", "DOCTORANT"]),
   submitScientificEventRequest as RequestHandler
 );
 
 router.post(
   "/article-registration",
+  checkRole(["ENSEIGNANT", "DOCTORANT"]),
   submitArticleRegistrationRequest as RequestHandler
 );
-export default router;
 
 router.post(
+  "/repair-maintenance",
+  checkRole(["ENSEIGNANT", "DOCTORANT"]),
+  submitRepairMaintenanceRequest as RequestHandler
+);
+// Routes pour approuver une requete
+router.post(
   "/approve-request/:id",
-  checkRole(["DIRECTEUR", "ENSEIGNANT"]),
+  checkRole(["DIRECTEUR"]),
   approveRequest as RequestHandler
 );
 
-router.post(
-  "/reignite-request/:id",
-
-  reigniteRequest as RequestHandler
-);
-router.post("/close-request/:id", closeRequest as RequestHandler);
-
+// Routes pour gérer les documents
 router.post("/add-document/:id", addDocuments as RequestHandler);
+router.post(
+  "/submit-sign-form/:id",
+  checkRole(["DIRECTEUR"]),
+  signFormUpload as RequestHandler
+);
 
-router.post("/complete-request/:id", completeRequest as RequestHandler);
+// Routes pour editer une requete
+router.put("/edit-request/:id", editRequest as RequestHandler);
 
-router.post("/edit-request/:id", editRequest as RequestHandler);
-
+// Routes pour supprimer une requete
 router.delete("/delete-request/:id", deleteRequest as RequestHandler);
 
-router.post("/submit-sign-form/:id", signFormUpload as RequestHandler);
+// Routes pour gérer l'état d'une requete
+router.post("/reignite-request/:id", reigniteRequest as RequestHandler);
+router.post(
+  "/close-request/:id",
+  checkRole(["DIRECTEUR"]),
+  closeRequest as RequestHandler
+);
+router.post("/complete-request/:id", completeRequest as RequestHandler);
+
+export default router;

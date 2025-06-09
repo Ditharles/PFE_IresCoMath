@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { z } from "zod";
-import { AxiosResponse } from "axios";
+import { AxiosResponse, isAxiosError } from "axios";
 import { editTemplateSchema } from "../../schemas/template";
 import TemplateService from "../../services/templates.service";
 import {
@@ -71,7 +71,11 @@ const EditTemplate = () => {
             toast.success("Template mis à jour avec succès");
             navigate("/templates");
         } catch (error: unknown) {
-            toast.error(error!.response?.data?.message || "Erreur lors de la mise à jour");
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data?.message || "Erreur lors de la mise à jour");
+            } else {
+                toast.error("Erreur lors de la mise à jour");
+            }
         } finally {
             setIsLoading(false);
         }

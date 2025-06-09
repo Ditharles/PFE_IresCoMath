@@ -8,6 +8,8 @@ import {
 import { AuthRequest } from "../types/auth";
 import { validateRequestBody, ERROR_MESSAGES } from "../utils/authUtils";
 import { sendRequestNotifications } from "../utils/notificationUtils";
+import { createForm } from "./template.service";
+import logger from "../logger";
 
 const prisma = new PrismaClient();
 
@@ -49,6 +51,14 @@ export const submitRequest = async (
     const specificRequest = await createSpecificRequest(request.id, data);
 
     await sendRequestNotifications(req.user, successMessage);
+    const formResult = await createForm(request.id);
+    if (formResult?.status === 500) {
+      logger.error(formResult.message, { requestId: request.id });
+      return {
+        status: 500,
+        message: "Une erreur est survenue lors de la création du formulaire",
+      };
+    }
     return {
       status: 201,
       message: "La demande a bien été soumise",

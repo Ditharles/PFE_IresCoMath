@@ -12,6 +12,7 @@ import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import GestionMembres from "../pages/directeur/GestionMembres";
 import RoleBasedRoute from "../components/routes/RoleBasedRoute";
+import Settings from "../pages/Settings";
 
 import PasswordForget from "../pages/auth/password-forget";
 import PasswordReset from "../pages/auth/password-reset";
@@ -38,6 +39,8 @@ import EditTemplate from "../pages/templates/Edit";
 import MembersStats from "../pages/statistiques/MembersStats";
 import EquipmentStats from "../pages/statistiques/EquipmentStats";
 import RequestsStats from "../pages/statistiques/RequestsStats";
+import Profile from "../pages/Profile";
+import MembersPage from "../pages/admin/MembersPage";
 
 const routes: RouteObject[] = [
     {
@@ -48,7 +51,6 @@ const routes: RouteObject[] = [
     {
         element: <PublicRoute />,
         children: [
-
             {
                 path: "login",
                 element: <Login />,
@@ -70,6 +72,10 @@ const routes: RouteObject[] = [
                 element: <ValidationConfirme />
             },
             {
+                path: "informations-supplementaires",
+                element: <AdditionalInfo />
+            },
+            {
                 path: "password-forget",
                 element: <PasswordForget />
             },
@@ -88,10 +94,6 @@ const routes: RouteObject[] = [
                 element: <HomePage />
             },
             {
-                path: "informations-supplementaires",
-                element: <AdditionalInfo />
-            },
-            {
                 path: "nouvelle-demande",
                 element: <NewRequests />
             },
@@ -99,17 +101,18 @@ const routes: RouteObject[] = [
                 path: "nouvelle-demande/:type",
                 element: <NewRequest />
             },
-
             {
                 path: "demande/:id",
                 element: <RequestDetails />
             },
-  { path: "profil", element: <Profile /> },
-
-
+            { path: "profil", element: <Profile /> },
+            { path: "parametres", element: <Settings /> },
+            {
+                path: "parametres/:page",
+                element: <Settings />
+            }
         ]
     },
-
     //Routes lié au roles 
     {
         element: <RoleBasedRoute allowedRoles={["DIRECTEUR"]} />,
@@ -129,8 +132,7 @@ const routes: RouteObject[] = [
             {
                 path: "demandes/:status",
                 element: <Historique />
-            }
-            ,
+            },
             {
                 path: "materiels",
                 element: <EquipmentsPage />
@@ -170,7 +172,8 @@ const routes: RouteObject[] = [
             {
                 path: "templates/modifier/:id",
                 element: <EditTemplate />
-            }, {
+            },
+            {
                 path: "statistiques/",
                 element: <Navigate to={"/statistiques/membres"} />
             },
@@ -186,6 +189,12 @@ const routes: RouteObject[] = [
                 path: "statistiques/demandes",
                 element: <RequestsStats />
             }
+        ]
+    },
+    {
+        element: <RoleBasedRoute allowedRoles={["DIRECTEUR", "ADMIN"]} />,
+        children: [
+            { path: "gestion/membres/:id", element: <Profile /> },
         ]
     },
     {
@@ -206,25 +215,37 @@ const routes: RouteObject[] = [
             }
         ]
     },
-     {
-    element: <RoleBasedRoute allowedRoles={["DIRECTEUR", "ENSEIGNANT", "DOCTORANT", "MASTER"]} />,
-    children: [
-      {
-        path: "membre/:id/:role",
-        element: <MemberDetails />,
-      }
-    ]
-  },
-
-    // {
-    //     path: "test",
-    //     element: <Calendar />
-    // },
+    {
+        element: <RoleBasedRoute allowedRoles={["ADMIN"]} />,
+        children: [
+            {
+                path: "admin",
+                children: [
+                    {
+                        index: true,
+                        element: <MembersPage />
+                    },
+                    {
+                        path: "membres",
+                        element: <MembersPage />
+                    },
+                    {
+                        path: "profil",
+                        element: <Profile />
+                    },
+                    {
+                        path: "parametres",
+                        element: <Settings />
+                    }
+                ]
+            }
+        ]
+    },
     //404
     {
         path: "*",
         element: <NotFound />
     }
-]
+];
 
-export default routes
+export default routes;

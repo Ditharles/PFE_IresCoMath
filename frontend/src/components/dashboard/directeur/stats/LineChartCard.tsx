@@ -1,8 +1,8 @@
-import React from 'react'
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../../ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '../../../ui/chart'
-import { LucideIcon } from 'lucide-react'
+
 
 interface LineChartCardProps {
     title: string
@@ -12,9 +12,9 @@ interface LineChartCardProps {
         value: number
     }>
     config: ChartConfig
-    icon: LucideIcon
+    icon: React.ComponentType<{ className?: string }>
     footerText?: string
-    footerIcon?: LucideIcon
+    footerIcon?: React.ComponentType<{ className?: string }>
     lineColor?: string
     gradientId?: string
 }

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { FileText } from "lucide-react";
 import { ArticleRegistration } from "../../../../../types/request";
 
@@ -9,18 +9,16 @@ import { BookOpen } from "lucide-react";
 import FileUpload from "../../../../FileUpload";
 import TemplateService from "../../../../../services/templates.service";
 import { toast } from "sonner";
-import { useState } from "react";
+
 
 export const ArticleRegistrationDetails = ({ articleRegistration, isDirector = false, onPreview }: {
     articleRegistration: ArticleRegistration;
     isDirector?: boolean;
     onPreview: (url: string) => void
 }) => {
-    const [isUploadingSignForm, setIsUploadingSignForm] = useState(false);
     const templateService = new TemplateService();
 
     const handleSignFormUpload = async (urls: string[] | string) => {
-        setIsUploadingSignForm(true);
         const url = Array.isArray(urls) ? urls[0] : urls;
         try {
             await templateService.sendSignForm(articleRegistration.id, url);
@@ -28,9 +26,7 @@ export const ArticleRegistrationDetails = ({ articleRegistration, isDirector = f
         } catch (error) {
             console.error("Erreur lors de l'envoi du formulaire signé:", error);
             toast.error("Erreur lors de l'envoi du formulaire signé");
-        } finally {
-            setIsUploadingSignForm(false);
-        }
+        } 
     };
 
     return (

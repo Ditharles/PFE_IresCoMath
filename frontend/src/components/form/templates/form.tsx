@@ -61,11 +61,7 @@ const TemplateFields = ({ isVerified, defaultValues, mode = "create" }: Template
 
     const handleFileUpload = (fileUrls: string[] | string) => {
         const url = Array.isArray(fileUrls) ? fileUrls[0] : fileUrls;
-        setValue('url', url, {
-            shouldValidate: true,
-            shouldDirty: true,
-            shouldTouch: true
-        });
+        setValue('url', url);
         setFileUrl(url);
         // On garde la logique de visibilité pour le mode édition
         if (mode === "edit") {
@@ -208,7 +204,7 @@ const TemplateFields = ({ isVerified, defaultValues, mode = "create" }: Template
                 <div className="space-y-2">
                     <FormLabel>Champs détectés dans le template</FormLabel>
                     <div className="flex flex-wrap gap-2">
-                        {placeholders.map((placeholder, index) => (
+                        {placeholders.map((placeholder: string, index: number) => (
                             <Badge
                                 key={`${placeholder}-${index}`}
                                 variant="outline"

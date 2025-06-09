@@ -29,10 +29,14 @@ model User {
   bankData          String?            @unique
   signature         String?
   equipmentHistory  EquipmentHistory[]
-
+status  UserStatus @default(ACTIVE)
   @@index([email])
 }
 
+enum UserStatus{
+  ACTIVE
+  DESACTIVE
+}
 model DoctoralStudent {
   id                 String            @id @default(uuid())
   thesisYear         Int
@@ -51,6 +55,7 @@ model DoctoralStudentRequest {
   email              String            @unique
   phone              String            @unique
   cin                String
+  password           String
   thesisYear         Int
   createdAt          DateTime          @default(now())
   thesisSupervisor   TeacherResearcher @relation(fields: [thesisSupervisorId], references: [id])
@@ -81,7 +86,8 @@ model MasterStudentRequest {
   firstName       String
   email           String            @unique
   phone           String
-  cin             String // Ajout de cin
+  cin             String
+  password        String
   masterYear      Int
   createdAt       DateTime          @default(now())
   supervisor      TeacherResearcher @relation(fields: [supervisorId], references: [id])
@@ -118,6 +124,7 @@ model TeacherResearcherRequest {
   position        String
   phone           String
   cin             String
+  password        String
   grade           Grade
   institution     String
   status          RequestStatus @default(PENDING)
@@ -141,11 +148,16 @@ model Session {
   id           String   @id @default(uuid())
   accessToken  String   @unique
   refreshToken String   @unique
-  deviceInfo   String
   createdAt    DateTime @default(now())
+
+  browserName     String   // Ex: "Chrome"
+  browserVersion  String   // Ex: "125.0.0.0"
+  ipAddress       String   // Ex: "192.168.1.5"
+
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
 }
+
 
 model Notification {
   id        String             @id @default(uuid())

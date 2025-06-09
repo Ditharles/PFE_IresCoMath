@@ -13,11 +13,16 @@ import { determineRequestRole } from "../../../../utils/membersUtils"
 
 const manageUserService = new ManageUserService();
 const requestStatusStrings = {
-    [RequestStatus.APPROVED]: "Approuvé",
-    [RequestStatus.PENDING]: "En attente",
-    [RequestStatus.REJECTED]: "Rejeté"
+  [RequestStatus.APPROVED]: "Approuvé",
+  [RequestStatus.PENDING]: "En attente",
+  [RequestStatus.REJECTED]: "Rejeté",
+  [RequestStatus.APPROVED_BY_SUPERVISOR]: "Approuvé par superviseur",
+  [RequestStatus.APPROVED_BY_DIRECTOR]: "Approuvé par directeur",
+  [RequestStatus.REJECTED_BY_SUPERVISOR]: "Rejeté par superviseur",
+  [RequestStatus.REJECTED_BY_DIRECTOR]: "Rejeté par directeur",
+  [RequestStatus.COMPLETED]: "Complété",
+  [RequestStatus.CLOSED]: "Clôturé",
 };
-
 export const columns = (refresh: () => void): ColumnDef<RequestUser>[] => [
     {
         accessorFn: (row) => `${row.lastName} ${row.firstName}`,

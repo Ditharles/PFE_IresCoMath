@@ -1,0 +1,1 @@
+Pour la réalisation de ces tests, le choix a été fait que tous les éléments de type sélect ou s'en rapprochant (Calendar) seront définis a la main. 

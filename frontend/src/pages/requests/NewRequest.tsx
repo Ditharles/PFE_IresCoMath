@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Send, Info } from 'lucide-react';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -24,6 +23,7 @@ import { internshipRequestSchema, missionRequestSchema, scientificEventRequestSc
 import RequestsService from '../../services/requests.service';
 import { RequestType } from '../../types/request';
 import RepairMaintenanceForm from '../../components/form/requests/RepairMaintenanceForm';
+import { isAxiosError } from 'axios';
 
 const NewRequest: React.FC = () => {
 
@@ -33,7 +33,7 @@ const NewRequest: React.FC = () => {
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  
   const requestService = new RequestsService();
 
   const mapTypeToRequest = (): RequestType => {
@@ -70,23 +70,18 @@ const NewRequest: React.FC = () => {
     defaultValues: {}
   });
 
-  const { handleSubmit, reset, formState: { errors, isValid } } = methods;
+  const { handleSubmit, reset, formState: {isValid } } = methods;
 
   useEffect(() => {
     reset();
-    setSubmitError(null);
+  
   }, [type, reset]);
 
   const handleFormSubmit = async (formData: any) => {
     console.log(isValid)
-    if (!isValid) {
-      toast.error('Veuillez remplir correctement tous les champs requis');
-
-      return;
-    }
 
     setIsSubmitting(true);
-    setSubmitError(null);
+  
 
     try {
       const response = await requestService.createRequest(formData, mapTypeToRequest());
@@ -94,11 +89,13 @@ const NewRequest: React.FC = () => {
       setTimeout(() => {
         navigate("/accueil");
       }, 2000);
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message ||
-        error.message ||
-        "Une erreur inattendue est survenue";
-      setSubmitError(errorMessage);
+    } catch (error: unknown) {
+      const errorMessage = isAxiosError(error) && error.response?.data?.message
+        ? error.response.data.message
+        : error instanceof Error 
+          ? error.message 
+          : "Une erreur inattendue est survenue";
+     
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);

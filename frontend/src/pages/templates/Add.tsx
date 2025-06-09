@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-// import { useTheme } from "next-themes"; // Supprimé car non utilisé
+
 
 import { templateSchema } from "../../schemas/template";
 import TemplateService from "../../services/templates.service";
@@ -37,6 +37,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "../../components/ui/dialog";
+import { isAxiosError } from "axios";
 
 type TemplateForm = z.infer<typeof templateSchema>;
 
@@ -102,7 +103,7 @@ const AddTemplate = () => {
         },
     });
 
-    const { setValue, getValues, formState: { isValid }, reset } = form;
+    const { setValue, getValues, reset } = form;
 
     ;
     const handleVerify = async () => {
@@ -112,32 +113,39 @@ const AddTemplate = () => {
                 url: getValues("url"),
             });
 
-            setIsVerified(true);
             const fieldName = response.data.placeholders.map(
                 (placeholder: { fieldName: string }) => placeholder.fieldName
             );
-            setValue("placeholders", fieldName, {
-                shouldValidate: true,
-                shouldDirty: true,
-                shouldTouch: true,
-            });
+            if (fieldName.length > 0) {
+                setIsVerified(true);
 
-            toast.success(response.data.message);
-        } catch (error: any) {
+                setValue("placeholders", fieldName, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                });
+                toast.success(response.data.message);
+            } else {
+                toast.warning("Aucun champ trouvé");
+            }
+
+        } catch (error: unknown) {
             setIsVerified(false);
             if (
+                isAxiosError(error) &&
                 error?.response?.data?.message?.includes(
                     "Des champs non authorisés ont été trouvés"
                 )
             ) {
                 toast.warning(error.response.data.message);
             } else if (
+                isAxiosError(error) &&
                 error?.response?.data?.message?.includes(
                     "Un template existe déjà pour ce type de requête"
                 )
             ) {
                 setShowOverwriteDialog(true);
-            } else if (error?.response?.data?.message) {
+            } else if (isAxiosError(error) && error.response?.data?.message) {
                 toast.error(error.response.data.message);
             } else {
                 toast.error("Une erreur est survenue");
@@ -155,8 +163,9 @@ const AddTemplate = () => {
             reset();
             setIsVerified(false);
             navigate("/templates");
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (
+                isAxiosError(error) &&
                 error?.response?.data?.message?.includes(
                     "Un template existe déjà pour ce type"
                 )
@@ -164,7 +173,11 @@ const AddTemplate = () => {
                 setPendingData(data);
                 setShowOverwriteDialog(true);
             } else {
-                toast.error(error?.response?.data?.message || "Une erreur est survenue");
+                if (isAxiosError(error)) {
+                    toast.error(error.response?.data?.message || "Une erreur est survenue");
+                } else {
+                    toast.error("Une erreur est survenue");
+                }
             }
         } finally {
             setIsLoading(false);
@@ -183,8 +196,12 @@ const AddTemplate = () => {
             setShowOverwriteDialog(false);
             setPendingData(null);
             navigate("/templates");
-        } catch (error: any) {
-            toast.error(error?.response?.data?.message || "Une erreur est survenue");
+        } catch (error: unknown) {
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data?.message || "Une erreur est survenue");
+            } else {
+                toast.error("Une erreur est survenue");
+            }
         } finally {
             setIsLoading(false);
         }

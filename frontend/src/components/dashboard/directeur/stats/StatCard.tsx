@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Card, CardContent } from '../../../ui/card'
 
 interface StatCardProps {
@@ -13,7 +13,7 @@ const StatCard: React.FC<StatCardProps> = ({
     title,
     value,
     icon: Icon,
-    iconColor = "hsl(var(--primary))",
+
     backgroundColor
 }) => {
     return (

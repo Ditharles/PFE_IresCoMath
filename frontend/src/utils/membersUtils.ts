@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { RoleEnum } from "../types/common";
 import { User } from "../types/Member";
-import { RequestUser } from "../types/MemberAddRequest";
-import { useMemo } from "react";
+import { RequestStatus, RequestUser } from "../types/MemberAddRequest";
+
 /**
  * Détermine le rôle d'un utilisateur en fonction de ses attributs
  */
-export const determineRole = (user: User) => {
+export const determineRole = (user: User|RequestUser) => {
   if ("thesisYear" in user) return RoleEnum.DOCTORANT;
   if ("masterYear" in user) return RoleEnum.MASTER;
   if ("position" in user) return RoleEnum.ENSEIGNANT;
@@ -23,22 +23,49 @@ export const determineRequestRole = (request: RequestUser) => {
  * Hook personnalisé pour filtrer les utilisateurs
  */
 export const useFilteredUsers = (
-  users,
-  searchQuery,
-  filterRole,
-  filterStatus,
-  activeTab
+  users: User[],
+  searchQuery: string,
+  filterRole: string,
+  filterStatus: RequestStatus | undefined,
+  activeTab: string
 ) => {
   return useMemo(() => {
-    return users.filter((user) => {
-      const fullName = `${user.nom} ${user.prenom}`.toLowerCase();
+    return users.filter((user: User) => {
+      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
       const matchesSearch =
         fullName.includes(searchQuery.toLowerCase()) ||
         user.email.toLowerCase().includes(searchQuery.toLowerCase());
 
       const role = determineRole(user);
       const matchesRole = filterRole ? role == filterRole : true;
-      const matchesStatus = filterStatus ? user.status === filterStatus : true;
+      const matchesStatus = filterStatus ?  
+        ('status' in user ? user.status === filterStatus : false) 
+        : true;
+      const matchesTab = activeTab === "all" ? true : role === activeTab;
+
+      return matchesSearch && matchesRole && matchesStatus && matchesTab;
+    });
+  }, [users, searchQuery, filterRole, filterStatus, activeTab]);
+};
+export const useFilteredRequestUsers = (
+  users: RequestUser[],
+  searchQuery: string,
+  filterRole: string,
+  filterStatus: RequestStatus | undefined,
+  activeTab: string
+) => {
+  return useMemo(() => {
+    return users.filter((user: RequestUser) => {
+      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+      const matchesSearch =
+        fullName.includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const role = determineRole(user);
+      const matchesRole = filterRole ? role == filterRole : true;
+      const matchesStatus = filterStatus ?  
+        ('status' in user ? user.status === filterStatus : false) 
+        : true;
       const matchesTab = activeTab === "all" ? true : role === activeTab;
 
       return matchesSearch && matchesRole && matchesStatus && matchesTab;
@@ -49,8 +76,8 @@ export const useFilteredUsers = (
 /**
  * Crée et télécharge un fichier CSV à partir des données
  */
-export const exportDataToCSV = (data, fileName) => {
-  // Créer des données CSV
+export const exportDataToCSV = (data: unknown, fileName: string) => {
+  // Créer des données CSV  
   const headers = [
     "Nom",
     "Prénom",
@@ -60,19 +87,13 @@ export const exportDataToCSV = (data, fileName) => {
     "Date de demande",
   ];
 
-  const csvData = data.map((item) => {
-    const role =
-      determineRole(item) === RoleEnum.DOCTORANT
-        ? "Doctorant"
-        : determineRole(item) === RoleEnum.MASTER
-        ? "Étudiant Master"
-        : "Enseignant";
-
+  const csvData = (data as Array<{nom: string; prenom: string; email: string; status?: string; createdAt: string,role: string}>).map((item) => {
+    
     return [
       item.nom,
       item.prenom,
       item.email,
-      role,
+      item.role,
       item.status || "N/A",
       new Date(item.createdAt).toLocaleDateString(),
     ];
@@ -80,7 +101,7 @@ export const exportDataToCSV = (data, fileName) => {
 
   const csvContent = [
     headers.join(","),
-    ...csvData.map((row) => row.join(",")),
+    ...csvData.map((row: string[]) => row.join(",")),
   ].join("\n");
 
   // Créer un blob et télécharger

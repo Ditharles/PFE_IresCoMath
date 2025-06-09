@@ -20,14 +20,25 @@ import requestsRoutes from "./routes/requests.routes";
 import notificationsRoutes from "./routes/notifications.routes";
 import equipmentsRoutes from "./routes/equipments.routes";
 import { checkRole } from "./middleware/checkRole";
+import { teacherResearcherFields } from "./constants/userFields";
+import pinoHttp from "pino-http";
+import logger from "./logger";
+import loggingMiddleware from "./middleware/logging.middleware";
 dotenv.config();
+
+console.log("Allowed frontend:", process.env.FRONTEND_URL);
 
 const prisma = new PrismaClient();
 const app = express();
-
+//Middleware pour pino
+app.use(loggingMiddleware());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -41,12 +52,7 @@ app.use("/validate/", validateRoutes);
 app.use("/users/", verifyToken as RequestHandler, usersRoutes);
 app.use("/requests/", verifyToken as RequestHandler, requestsRoutes);
 app.use("/notifications/", verifyToken as RequestHandler, notificationsRoutes);
-app.use(
-  "/equipments/",
-  verifyToken as RequestHandler,
-  // checkRole(["ADMIN", "DIRECTEUR"]),
-  equipmentsRoutes
-);
+app.use("/equipments/", verifyToken as RequestHandler, equipmentsRoutes);
 app.use(
   "/templates",
   verifyToken as RequestHandler,
@@ -67,30 +73,46 @@ app.get("/teachers-researchers", async (req, res) => {
   try {
     const data = await prisma.user.findMany({
       where: {
-        role: "ENSEIGNANT",
+        OR: [{ role: "ENSEIGNANT" }, { role: "DIRECTEUR" }],
       },
-      select: { id: true, lastName: true, firstName: true },
+      select: {
+        id: true,
+        lastName: true,
+        firstName: true,
+        teacherResearcher: true,
+      },
     });
 
-    res.json(data);
+    const formattedData = data.map((user) => ({
+      id: user.id,
+      lastName: user.lastName,
+      firstName: user.firstName,
+      ...user.teacherResearcher,
+    }));
+    res.json(formattedData);
   } catch (error) {
-    console.error(error);
+    logger.error(
+      error,
+      "Erreur lors de la récupération des enseignants chercheurs"
+    );
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });
 
 // Fermer la connexion Prisma proprement
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
+  logger.info("Prisma disconnected (SIGINT)");
   process.exit(0);
 });
 
 process.on("SIGTERM", async () => {
   await prisma.$disconnect();
+  logger.info("Prisma disconnected (SIGTERM)");
   process.exit(0);
 });

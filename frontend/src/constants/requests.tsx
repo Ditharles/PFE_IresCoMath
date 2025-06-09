@@ -30,7 +30,8 @@ export const STATUS_BADGE_VARIANTS = {
     [RequestStatus.REJECTED]: "bg-red-100 text-red-800",
     [RequestStatus.REJECTED_BY_SUPERVISOR]: "bg-orange-100 text-orange-800",
     [RequestStatus.REJECTED_BY_DIRECTOR]: "bg-rose-100 text-rose-800",
-    [RequestStatus.COMPLETED]: "bg-emerald-100 text-emerald-800"
+    [RequestStatus.COMPLETED]: "bg-emerald-100 text-emerald-800",
+    [RequestStatus.CLOSED]: "bg-gray-100 text-gray-800"
 };
 
 export const STATUS_TRANSLATIONS = {
@@ -41,7 +42,8 @@ export const STATUS_TRANSLATIONS = {
     [RequestStatus.REJECTED]: "Rejeté",
     [RequestStatus.REJECTED_BY_SUPERVISOR]: "Rejeté par superviseur",
     [RequestStatus.REJECTED_BY_DIRECTOR]: "Rejeté par directeur",
-    [RequestStatus.COMPLETED]: "Terminé"
+    [RequestStatus.COMPLETED]: "Complété",
+    [RequestStatus.CLOSED]: "Cloturé"
 };
 
 

@@ -40,6 +40,7 @@ export const DatePicker = ({ value, onChange, className }: DatePickerProps) => {
     return (
         <div className={`relative ${className}`} ref={calendarRef}>
             <Button
+            data-slot="date-picker"
                 variant="outline"
                 onClick={toggleCalendar}
                 className="w-full justify-start text-left font-normal"

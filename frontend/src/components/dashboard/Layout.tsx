@@ -3,7 +3,7 @@ import { ReactNode, useState } from "react";
 import Header from "./Header";
 import SidebarDirector from "../dashboard/directeur/Sidebar";
 import SidebarOthers from "./others/Sidebar";
-
+import AdminSidebar from "./admin/AdminSidebar";
 import UserProfile from "./UserProfile";
 import NotificationsPanel from "../NotificationsPanel";
 import { useAuth } from "../../contexts/AuthContext";
@@ -16,6 +16,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
     const { user } = useAuth();
+  
     const role = user?.role;
     const [showUserProfile, setShowUserProfile] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
@@ -42,7 +43,8 @@ const Layout = ({ children }: LayoutProps) => {
                         borderRight: "1px solid var(--sidebar-border)"
                     }}
                 >
-                    {role === "DIRECTEUR" ? <SidebarDirector /> : <SidebarOthers />}
+                    {/* Correction : test strict sur le rôle */}
+                    {role === "DIRECTEUR" ? <SidebarDirector /> : role === "ADMIN" ? <AdminSidebar /> : <SidebarOthers />}
                 </div>
 
                 <main className="ml-64 flex-1 p-6 overflow-auto bg-secondary text-foreground">

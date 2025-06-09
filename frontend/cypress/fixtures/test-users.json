@@ -1,0 +1,97 @@
+{
+  "validUser": {
+    "email": "directeur@irescomath.com",
+    "password": "directeur123"
+  },
+  "loginEnseignant": {
+    "email": "enseignant@irescomath.com",
+    "password": "enseignant123"
+  },
+
+  "invalidPassword": {
+    "email": "admin@irescomath.com",
+    "password": "mauvaismotdepasse"
+  },
+  "invalidUser": {
+    "email": "test@irescomath.com",
+    "password": "directeur123"
+  },
+  "userWithMailAlreadyExists": {
+    "lastName": "Ben Ali",
+    "firstName": "Mohamed",
+    "phone": "12345678",
+    "role": "Enseignant chercheur",
+    "email": "enseignant@irescomath.com",
+    "password": "enseignant123",
+    "cin": "123456789",
+    "confirmPassword": "enseignant123",
+    "specific": {
+      "grade": { "type": "select", "value": "Assistant" },
+      "position": { "type": "text", "value": "Professeur" },
+      "institution": { "type": "text", "value": "IRESCOMATH" }
+    }
+  },
+
+  "missingFields": {
+    "lastName": "",
+    "firstName": "",
+    "phone": "",
+    "role": "Enseignant chercheur",
+    "email": "",
+    "password": "",
+    "cin": "",
+    "confirmPassword": "",
+    "specific": {
+      "grade": { "type": "select", "value": "Assistant" },
+      "position": { "type": "text", "value": "Professeur" },
+      "institution": { "type": "text", "value": "IRESCOMATH" }
+    }
+  },
+  "registerEnseignant": {
+    "lastName": "Ben Ali",
+    "firstName": "Mohamed",
+    "phone": "77777777",
+    "role": "Enseignant chercheur",
+    "email": "test@irescomath.com",
+    "password": "enseignant123",
+    "cin": "123456789",
+    "confirmPassword": "enseignant123",
+    "specific": {
+      "grade": { "type": "select", "value": "Assistant" },
+      "position": { "type": "text", "value": "Professeur" },
+      "institution": { "type": "text", "value": "IRESCOMATH" }
+    }
+  },
+
+  "registerDoctorant": {
+    "lastName": "Ben Ali",
+    "firstName": "Mohamed",
+    "phone": "77777776",
+    "role": "Doctorant",
+    "email": "doctoranttest@irescomath.com",
+    "password": "directeur123",
+    "cin": "123456789",
+    "confirmPassword": "directeur123",
+    "specific": {
+      "thesisYear": { "type": "text", "value": 2 },
+      "thesisSupervisor": { "type": "select", "value": "Professeur" },
+      "institution": { "type": "text", "value": "IRESCOMATH" }
+    }
+  },
+
+  "registerMaster": {
+    "lastName": "Ben Ali",
+    "firstName": "Mohamed",
+    "phone": "77777774",
+    "role": "Étudiant en Master",
+    "email": "mastertest@irescomath.com",
+    "password": "directeur123",
+    "cin": "123456789",
+    "confirmPassword": "directeur123",
+    "specific": {
+      "masterYear": { "type": "text", "value": 2 },
+      "masterSupervisor": { "type": "select", "value": "Professeur" },
+      "institution": { "type": "text", "value": "IRESCOMATH" }
+    }
+  }
+}

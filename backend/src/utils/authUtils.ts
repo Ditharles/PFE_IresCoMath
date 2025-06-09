@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { requestRoleMap } from "../services/auth.service";
 
 export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY!;
 export const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY!;
@@ -28,10 +29,11 @@ export const generateTokenLink = (
   role: string,
   action: string
 ): string => {
+  const url = process.env.FRONTEND_URL ?? "http://localhost:5173";
   const token = jwt.sign({ email, role, action }, JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
-  return `http://localhost:5173/confirm-email/${token}`;
+  return `${url}/confirm-email/${token}`;
 };
 
 export const generateTokens = (
@@ -42,7 +44,7 @@ export const generateTokens = (
     { token: accessTokenValue },
     JWT_SECRET_KEY,
     {
-      expiresIn: "1h",
+      expiresIn: "4h",
     }
   );
 
@@ -50,7 +52,7 @@ export const generateTokens = (
     { token: refreshTokenValue },
     JWT_REFRESH_SECRET_KEY,
     {
-      expiresIn: "1w",
+      expiresIn: "30d",
     }
   );
 
@@ -61,3 +63,61 @@ export const validateRequestBody = (body: any, requiredFields: string[]) => {
   return requiredFields.every((field) => body.hasOwnProperty(field));
 };
 
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const decoded = jwt.decode(token) as { exp?: number };
+    if (!decoded.exp) return true;
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  } catch {
+    return true;
+  }
+};
+
+export const verifyToken = (
+  token: string,
+  isRefreshToken: boolean = false
+): boolean => {
+  try {
+    const secret = isRefreshToken ? JWT_REFRESH_SECRET_KEY : JWT_SECRET_KEY;
+    jwt.verify(token, secret);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const checkRequestStatus = async (email: string) => {
+  const roles = ["ENSEIGNANT", "MASTER", "DOCTORANT"] as const;
+
+  for (const role of roles) {
+    const model = requestRoleMap[role];
+    const request = await (model as any).findUnique({
+      where: { email },
+    });
+
+    if (request) {
+      return {
+        exists: true,
+        status: request.status,
+        role,
+        rejectedReason: request.rejectedReason,
+      };
+    }
+  }
+
+  return { exists: false };
+};
+
+export const formatIpAddress = (ip: string): string => {
+  // Si c'est une adresse IPv6 de loopback, retourner localhost
+  if (ip === "::1" || ip === "::ffff:127.0.0.1") {
+    return "localhost";
+  }
+  // Si c'est une adresse IPv6, la formater
+  if (ip.includes("::ffff:")) {
+    return ip.replace("::ffff:", "");
+  }
+  return ip;
+};

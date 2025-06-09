@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { X, CheckCircle2, Loader2, ImageIcon, FileText, FileAudio, FileVideo } from "lucide-react";
 import { UploadDropzone } from "../utils/uploadthing";
+import { OurFileRouter } from "../uploadthing";
+
+
+type Endpoint = keyof OurFileRouter;
 
 interface FileUploadProps {
-    endpoint: string;
+    endpoint: Endpoint;
     maxFiles?: number;
     acceptedTypes?: string[];
     headerText?: string;
     subHeaderText?: string;
-    onFileUploaded?: (fileUrls: string) => void;
+    onFileUploaded?: (fileUrls: string[] | string) => void;
 }
 
 interface FileItem {
@@ -20,7 +24,7 @@ interface FileItem {
 const FileUpload = ({
     endpoint,
     maxFiles = 1,
-    acceptedTypes = ["image/*"],
+    acceptedTypes,
     headerText = "Téléversement de fichiers",
     subHeaderText = "Glissez-déposez vos fichiers ou cliquez pour parcourir",
     onFileUploaded
@@ -29,8 +33,10 @@ const FileUpload = ({
     const [isLoading, setIsLoading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [error, setError] = useState<string | null>(null);
-
-    const handleUploadComplete = (res: any) => {
+    if (!acceptedTypes) {
+        acceptedTypes = ["image/*", "audio/*", "video/*"];
+    }
+    const handleUploadComplete = (res: { url: string; name?: string; type?: string }[]) => {
         console.log(res);
         if (!res || res.length === 0) {
             setError("Aucun fichier reçu du serveur.");
@@ -50,7 +56,7 @@ const FileUpload = ({
 
         if (uploadedFiles.length > 0 && onFileUploaded) {
             console.log("Fichiers téléchargés:", uploadedFiles);
-            onFileUploaded(uploadedFiles.map((f: FileItem) => f.url));
+            onFileUploaded(uploadedFiles.map((f) => f.url));
         }
     };
 
@@ -101,7 +107,8 @@ const FileUpload = ({
 
             {files.length < maxFiles && (
                 <UploadDropzone
-                    endpoint={endpoint as unknown}
+                    data-cy="file-dropzone"
+                    endpoint={endpoint}
                     onClientUploadComplete={handleUploadComplete}
                     onUploadProgress={handleUploadProgress}
                     onUploadError={handleError}
@@ -111,8 +118,6 @@ const FileUpload = ({
                     }}
                     config={{
                         mode: "auto",
-                        maxFileCount: maxFiles - files.length,
-                        acceptedTypes
                     }}
                     appearance={{
                         container: `border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:border-primary transition-all bg-background ${isLoading ? 'h-32' : 'h-48'}`,
@@ -206,4 +211,3 @@ const FileUpload = ({
 };
 
 export default FileUpload;
-

@@ -6,14 +6,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "../../../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../../../ui/dialog";
-import { Input } from "../../../ui/input";
 import { ManageUserService } from "../../../../services/manageUser.service";
 import { toast } from "../../../Toast";
 
 const manageUserService = new ManageUserService();
-const deleteUser = async (id: string, password: string) => {
+const deleteUser = async (id: string) => {
     try {
-        const response = await manageUserService.deleteUser(id, password);
+        const response = await manageUserService.delete(id);
         toast.success(response?.data?.message);
         return true;
     } catch (error) {
@@ -79,22 +78,19 @@ export const columns: ColumnDef<User>[] = [
         }
     },
     {
-  id: "actions",
-  header: "Actions",
-  enableColumnFilter: false,
-  cell: ({ row }) => {
-    const original = row.original;
-    const [open, setOpen] = useState(false);
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-    const role = determineRole(original);
+        id: "actions",
+        header: "Actions",
+        enableColumnFilter: false,
+        cell: ({ row }) => {
+            const original = row.original;
+            const [open, setOpen] = useState(false);
 
-    const handleDelete = async () => {
-      const success = await deleteUser(original.id, password);
-      if (success) {
-        setOpen(false);
-      }
-    };
+            const handleDelete = async () => {
+                const success = await deleteUser(original.id);
+                if (success) {
+                    setOpen(false);
+                }
+            }
 
             return (
                 <>
@@ -118,12 +114,6 @@ export const columns: ColumnDef<User>[] = [
                             <DialogHeader>
                                 <DialogTitle>Confirmer la suppression</DialogTitle>
                             </DialogHeader>
-                            <Input
-                                placeholder="Entrez le mot de passe"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
                             <DialogFooter className="flex justify-end gap-2 mt-4">
                                 <Button variant="ghost" onClick={() => setOpen(false)}>
                                     Annuler
@@ -131,7 +121,6 @@ export const columns: ColumnDef<User>[] = [
                                 <Button
                                     variant="destructive"
                                     onClick={handleDelete}
-                                    disabled={!password.trim()}
                                 >
                                     Confirmer la suppression
                                 </Button>
