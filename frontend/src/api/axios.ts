@@ -123,7 +123,7 @@ api.interceptors.response.use(
         removeUser();
         processQueue(refreshError, null);
         if (typeof window !== "undefined") {
-          window.location.href = "/login";
+          window.location.href = "/";
         }
         return Promise.reject(refreshError);
       } finally {
