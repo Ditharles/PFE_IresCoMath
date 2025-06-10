@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.ts",
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "nodemon --exec tsx src/app.ts",
