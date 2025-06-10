@@ -31,7 +31,7 @@ const publicRoutes = [
   "/auth/resend-confirmation-email",
   "/auth/forgot-password",
   "/auth/validate-account",
-  "/auth/submit-additional-info",
+  "/auth/submit-additional-info/",
 ];
 
 // Variable pour suivre l'état du rafraîchissement

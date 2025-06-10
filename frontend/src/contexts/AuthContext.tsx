@@ -59,39 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checkAuth();
     }, []);
 
-    // Vérification périodique de l'authentification
-    useEffect(() => {
-        if (isLoggedIn) {
-            const interval = setInterval(async () => {
-                const accessToken = getToken("accessToken");
-                const refreshToken = getToken("refreshToken");
-
-                if (!accessToken || !refreshToken) {
-                    setIsLoggedIn(false);
-                    setUser(null);
-                    return;
-                }
-
-                try {
-                    const response = await authService.getUser();
-                    if (response.status !== 200) {
-                        setIsLoggedIn(false);
-                        setUser(null);
-                        removesTokens();
-                        removeUser();
-                    }
-                } catch (error) {
-                    console.error("Erreur lors de la vérification périodique:", error);
-                    setIsLoggedIn(false);
-                    setUser(null);
-                    removesTokens();
-                    removeUser();
-                }
-            }, 5 * 60 * 1000); // Vérification toutes les 5 minutes
-
-            return () => clearInterval(interval);
-        }
-    }, [isLoggedIn]);
 
     const login = async () => {
         setUser(null);
