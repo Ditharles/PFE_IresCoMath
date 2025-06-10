@@ -161,10 +161,7 @@ class AuthService {
       data,
       {}
     );
-    if (response.data.accessToken && response.data.refreshToken) {
-      setToken("accessToken", response.data.accessToken);
-      setToken("refreshToken", response.data.refreshToken);
-    }
+
     return response;
   }
 

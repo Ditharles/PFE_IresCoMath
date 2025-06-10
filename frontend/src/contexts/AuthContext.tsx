@@ -94,6 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [isLoggedIn]);
 
     const login = async () => {
+        setUser(null);
+
         const accessToken = getToken("accessToken");
         const refreshToken = getToken("refreshToken");
         const currentUser = getUser();
@@ -101,20 +103,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (accessToken && refreshToken && currentUser) {
             try {
                 const response = await authService.getUser();
-                if (response.status === 200) {
-                    // Conserver à la fois userId (général) et id (sous-table)
-                    const userData = response.data;
-                    setUser({
-                        ...userData,
-                        userId: userData.userId ?? userData.id, // userId = id général
-                        id: userData.id, // id = id sous-table (si présent)
-                    });
-                    setIsLoggedIn(true);
-                } else {
-                    removesTokens();
-                    removeUser();
-                    setIsLoggedIn(false);
-                }
+
+                // Conserver à la fois userId (général) et id (sous-table)
+                const userData = response.data;
+                setUser({
+                    ...userData,
+                    userId: userData.userId ?? userData.id, // userId = id général
+                    id: userData.id, // id = id sous-table (si présent)
+                });
+                setIsLoggedIn(true);
+
             } catch (error) {
                 console.error("Erreur lors de la vérification de l'authentification:", error);
                 removesTokens();

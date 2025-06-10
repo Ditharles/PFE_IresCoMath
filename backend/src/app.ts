@@ -65,6 +65,7 @@ app.use(
     router: uploadRouter,
     config: {
       token: process.env.UPLOADTHING_TOKEN,
+    
     },
   })
 );
