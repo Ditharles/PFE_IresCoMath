@@ -95,7 +95,7 @@ router.post(
 router.put("/edit-request/:id", editRequest as RequestHandler);
 
 // Routes pour supprimer une requete
-router.delete("/delete-request/:id", deleteRequest as RequestHandler);
+router.delete("/:id", deleteRequest as RequestHandler);
 
 // Routes pour gérer l'état d'une requete
 router.post("/reignite-request/:id", reigniteRequest as RequestHandler);

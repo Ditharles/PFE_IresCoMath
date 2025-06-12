@@ -55,24 +55,24 @@ const RequestDetails = () => {
             const requestDetails = response.data.request;
             switch (requestDetails.type) {
                 case RequestType.MISSION:
-                    requestDetails.mission.awaitForm = requestDetails.awaitForm;
-                    requestDetails.mission.signForm = requestDetails.signForm;
+                    requestDetails.mission.awaitForm = requestDetails.awaitForm ?? "";
+                    requestDetails.mission.signForm = requestDetails.signForm ?? "";
                     break;
                 case RequestType.INTERNSHIP:
-                    requestDetails.stage.awaitForm = requestDetails.awaitForm;
-                    requestDetails.stage.signForm = requestDetails.signForm;
+                    requestDetails.stage.awaitForm = requestDetails.awaitForm ?? "";
+                    requestDetails.stage.signForm = requestDetails.signForm ?? "";
                     break;
                 case RequestType.EQUIPMENT_PURCHASE:
-                    requestDetails.purchaseRequest.awaitForm = requestDetails.awaitForm;
-                    requestDetails.purchaseRequest.signForm = requestDetails.signForm;
+                    requestDetails.purchaseRequest.awaitForm = requestDetails.awaitForm ?? "";
+                    requestDetails.purchaseRequest.signForm = requestDetails.signForm ?? "";
                     break;
                 case RequestType.EQUIPMENT_LOAN:
-                    requestDetails.loanRequest.awaitForm = requestDetails.awaitForm;
-                    requestDetails.loanRequest.signForm = requestDetails.signForm;
+                    requestDetails.loanRequest.awaitForm = requestDetails.awaitForm ?? "";
+                    requestDetails.loanRequest.signForm = requestDetails.signForm ?? "";
                     break;
                 case RequestType.ARTICLE_REGISTRATION:
-                    requestDetails.articleRegistration.awaitForm = requestDetails.awaitForm;
-                    requestDetails.articleRegistration.signForm = requestDetails.signForm;
+                    requestDetails.articleRegistration.awaitForm = requestDetails.awaitForm ?? "";
+                    requestDetails.articleRegistration.signForm = requestDetails.signForm ?? "";
                     break;
                 default:
                     break;

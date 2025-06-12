@@ -71,6 +71,7 @@ export const editRequest = async (req: AuthRequest, res: Response) => {
     const sendData = {
       ...request,
       [relationField]: updatedRequest,
+      user: req.user,
     };
 
     logger.info(
