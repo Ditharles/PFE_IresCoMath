@@ -1,3 +1,4 @@
+import { title } from "process";
 import { RequestType } from "../../generated/prisma";
 import { userFields } from "./userFields";
 
@@ -98,6 +99,7 @@ export const requestFields = {
   },
   articleRegistration: {
     select: {
+      title: true,
       id: true,
       conference: true,
       urlConference: true,
@@ -123,3 +125,32 @@ export const requestRelationFieldByType = {
   [RequestType.ARTICLE_REGISTRATION]: "articleRegistration",
   [RequestType.REPAIR_MAINTENANCE]: "repairMaintenanceRequest",
 };
+
+
+
+export const allowedFieldsByType: Record<RequestType, string[]> = {
+  [RequestType.EQUIPMENT_PURCHASE]: [
+    "equipmentType", "name", "url", "quantity", "photo", "specifications", "costEstimation"
+  ],
+  [RequestType.EQUIPMENT_LOAN]: [
+    "categoryId", "equipmentId", "quantity", "startDate", "endDate"
+  ],
+  [RequestType.REPAIR_MAINTENANCE]: [
+    "description", "photos"
+  ],
+  [RequestType.INTERNSHIP]: [
+    "organization", "organizationEmail", "organizationUrl",
+    "supervisor", "supervisorEmail", "supervisorPhone",
+    "letter", "country", "startDate", "endDate"
+  ],
+  [RequestType.MISSION]: [
+    "hostOrganization", "objective", "country", "startDate", "endDate", "specificDocument", "document"
+  ],
+  [RequestType.CONFERENCE_NATIONAL]: [
+    "location", "urlEvent", "mailAcceptation", "title",
+    "articlesAccepted", "articleCover", "startDate", "endDate"
+  ],
+  [RequestType.ARTICLE_REGISTRATION]: [
+    "title", "conference", "urlConference", "articleCover", "amount"
+  ],
+}

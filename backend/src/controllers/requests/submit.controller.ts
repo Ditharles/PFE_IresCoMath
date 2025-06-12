@@ -45,36 +45,37 @@ export const submitEquipmentPurchaseRequest = async (
     }
 
     const results = await prisma.$transaction(
-      req.body.items.map((item: { 
-        notes?: string;
-        equipmentType: EquipmentType;
-        name: string;
-        url?: string;
-        specifications?: object;
-        costEstimation: string | number;
-        quantity: string | number;
-        photo?: string;
-      }) =>
-        prisma.request.create({
-          data: {
-            type: RequestType.EQUIPMENT_PURCHASE,
-            userId: req.user.userId,
-            notes: item.notes || null,
-            status: RequestStatus.PENDING,
-            purchaseRequest: {
-              create: {
-                equipmentType: item.equipmentType as EquipmentType,
-                name: item.name,
-                url: item.url || null,
-                specifications: item.specifications || {},
-                costEstimation: Number(item.costEstimation),
-                quantity: Number(item.quantity),
-                photo: item.photo || null,
+      req.body.items.map(
+        (item: {
+          notes?: string;
+          equipmentType: EquipmentType;
+          name: string;
+          url?: string;
+          specifications?: object;
+          costEstimation: string | number;
+          quantity: string | number;
+          photo?: string;
+        }) =>
+          prisma.request.create({
+            data: {
+              type: RequestType.EQUIPMENT_PURCHASE,
+              userId: req.user.userId,
+              notes: item.notes || null,
+              status: RequestStatus.PENDING,
+              purchaseRequest: {
+                create: {
+                  equipmentType: item.equipmentType as EquipmentType,
+                  name: item.name,
+                  url: item.url || null,
+                  specifications: item.specifications || {},
+                  costEstimation: Number(item.costEstimation),
+                  quantity: Number(item.quantity),
+                  photo: item.photo || null,
+                },
               },
             },
-          },
-          include: { purchaseRequest: true },
-        })
+            include: { purchaseRequest: true },
+          })
       )
     );
     await Promise.all(
@@ -161,7 +162,7 @@ export const submitRepairMaintenanceRequest = async (
       requiredFields,
       successMessage: "Demande de maintenance soumise avec succès",
       createSpecificRequest: async (requestId, data) => {
-        prisma.repairMaintenance.create({
+        await prisma.repairMaintenance.create({
           data: {
             requestId,
             description: data.description,
@@ -215,7 +216,7 @@ export const submitEquipmentLendRequest = async (
       requiredFields,
       successMessage: "Demande de prêt soumise avec succès",
       createSpecificRequest: async (requestId, data) => {
-        prisma.equipmentLoanRequest.create({
+        await prisma.equipmentLoanRequest.create({
           data: {
             requestId,
             categoryId: data.categoryId,
@@ -277,7 +278,7 @@ export const submitRequestStage = async (req: AuthRequest, res: Response) => {
       requiredFields,
       successMessage: "Demande de stage",
       createSpecificRequest: async (requestId, data) => {
-        prisma.requestStage.create({
+        await prisma.requestStage.create({
           data: {
             requestId,
             organization: data.organization,
@@ -334,7 +335,7 @@ export const submitMissionRequest = async (req: AuthRequest, res: Response) => {
     requiredFields,
     successMessage: "Demande de mission",
     createSpecificRequest: async (requestId, data) => {
-      prisma.mission.create({
+      await prisma.mission.create({
         data: {
           requestId,
           objective: data.objective,
@@ -371,7 +372,7 @@ export const submitScientificEventRequest = async (
     requiredFields,
     successMessage: "Demande d'évènement scientifique",
     createSpecificRequest: async (requestId, data) => {
-      prisma.scientificEvent.create({
+      await prisma.scientificEvent.create({
         data: {
           requestId,
           title: data.title,
@@ -403,7 +404,7 @@ export const submitArticleRegistrationRequest = async (
     requiredFields,
     successMessage: "Demande d'enregistrement d'article",
     createSpecificRequest: async (requestId, data) => {
-      prisma.articleRegistration.create({
+      await prisma.articleRegistration.create({
         data: {
           requestId,
           title: data.title,
