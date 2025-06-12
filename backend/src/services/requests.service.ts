@@ -45,12 +45,13 @@ export const submitRequest = async (
         userId: req.user.userId,
         notes: data.notes || null,
         status: RequestStatus.PENDING,
+        awaitForm: null,
+        signForm: null,
       },
     });
 
     const specificRequest = await createSpecificRequest(request.id, data);
 
-    await sendRequestNotifications(req.user, successMessage);
     const formResult = await createForm(request.id);
     if (formResult?.status === 500) {
       logger.error(formResult.message, { requestId: request.id });
@@ -59,6 +60,7 @@ export const submitRequest = async (
         message: "Une erreur est survenue lors de la création du formulaire",
       };
     }
+    await sendRequestNotifications(req.user, successMessage);
     return {
       status: 201,
       message: "La demande a bien été soumise",
