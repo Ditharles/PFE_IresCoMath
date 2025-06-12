@@ -278,7 +278,7 @@ const AddTemplate = () => {
                                             <Button
                                                 type="button"
                                                 onClick={handleVerify}
-                                                disabled={isLoading || !form.getValues('url')}
+                                                disabled={isLoading || !form.watch('url')}
                                                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow"
                                             >
                                                 {isLoading ? (

@@ -1,0 +1,616 @@
+{"levelLabel":"info","time":"2025-06-12T17:12:39.037Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:13:11.287Z","context":"app","method":"OPTIONS","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:11.297Z","context":"app","method":"POST","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:11.801Z","context":"app","context":"LOGIN","user":{"id":"1873b248-92a2-4744-a5e6-21d574cd1072","role":"DIRECTEUR","firstName":"Fatma","lastName":"Zouari","email":"directeur@irescomath.com"},"msg":"Utilisateur connecté"}
+{"levelLabel":"info","time":"2025-06-12T17:13:11.804Z","context":"app","status":200,"responseTime":"507ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:11.817Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:11.819Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.048Z","context":"app","status":200,"responseTime":"229ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.170Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.173Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.176Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.241Z","context":"app","status":200,"responseTime":"65ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.244Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.289Z","context":"app","status":200,"responseTime":"45ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.420Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.422Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.424Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.592Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.594Z","context":"app","status":200,"responseTime":"170ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.599Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.695Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:13:12.696Z","context":"app","status":200,"responseTime":"97ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:13.177Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:13.179Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:13.180Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:13.210Z","context":"app","status":200,"responseTime":"30ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:13.220Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:13.264Z","context":"app","status":200,"responseTime":"44ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:14.943Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:15.042Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:13:15.043Z","context":"app","status":200,"responseTime":"100ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:15.054Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:15.166Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:13:15.167Z","context":"app","status":200,"responseTime":"113ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:17.961Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:17.976Z","context":"app","status":200,"responseTime":"15ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:17.982Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:18.001Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:20.150Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:20.347Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:27.720Z","context":"app","method":"OPTIONS","url":"/api/uploadthing?actionType=upload&slug=template","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:13:27.722Z","context":"app","method":"POST","url":"/api/uploadthing?actionType=upload&slug=template","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:15:26.726Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:15:26.832Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:15:36.251Z","context":"app","method":"OPTIONS","url":"/api/uploadthing?actionType=upload&slug=template","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:15:36.261Z","context":"app","method":"POST","url":"/api/uploadthing?actionType=upload&slug=template","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:22:57.915Z","context":"app","method":"OPTIONS","url":"/templates/verify","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:22:58.037Z","context":"app","method":"POST","url":"/templates/verify","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:01.291Z","context":"app","status":200,"responseTime":"3254ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:06.389Z","context":"app","method":"OPTIONS","url":"/templates/submit","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:06.400Z","context":"app","method":"POST","url":"/templates/submit","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:06.839Z","context":"app","count":1,"msg":"Nombre de requêtes à mettre à jour avec le template"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.510Z","context":"app","context":"SUBMIT_TEMPLATE","templateId":"a04e8c8d-1aa7-471e-8f14-be488413efc5","userId":"1873b248-92a2-4744-a5e6-21d574cd1072","action":"create","msg":"Template créé avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.511Z","context":"app","status":200,"responseTime":"4111ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.713Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.734Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.834Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.839Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.842Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.860Z","context":"app","status":200,"responseTime":"18ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.865Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:10.896Z","context":"app","status":200,"responseTime":"31ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:18.460Z","context":"app","method":"OPTIONS","url":"/templates/a04e8c8d-1aa7-471e-8f14-be488413efc5","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:18.463Z","context":"app","method":"DELETE","url":"/templates/a04e8c8d-1aa7-471e-8f14-be488413efc5","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:18.522Z","context":"app","context":"DELETE_TEMPLATE","templateId":"a04e8c8d-1aa7-471e-8f14-be488413efc5","userId":"1873b248-92a2-4744-a5e6-21d574cd1072","msg":"Template supprimé avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:23:18.522Z","context":"app","status":200,"responseTime":"59ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:19.697Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:19.710Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:33.936Z","context":"app","method":"OPTIONS","url":"/api/uploadthing?actionType=upload&slug=template","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:33.939Z","context":"app","method":"POST","url":"/api/uploadthing?actionType=upload&slug=template","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:41.900Z","context":"app","method":"OPTIONS","url":"/templates/verify","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:41.902Z","context":"app","method":"POST","url":"/templates/verify","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:43.014Z","context":"app","status":200,"responseTime":"1112ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:54.283Z","context":"app","method":"OPTIONS","url":"/templates/submit","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:54.286Z","context":"app","method":"POST","url":"/templates/submit","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:23:54.345Z","context":"app","count":1,"msg":"Nombre de requêtes à mettre à jour avec le template"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.504Z","context":"app","context":"SUBMIT_TEMPLATE","templateId":"1d2495aa-ceac-4744-bf44-de596df2ab45","userId":"1873b248-92a2-4744-a5e6-21d574cd1072","action":"create","msg":"Template créé avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.504Z","context":"app","status":200,"responseTime":"16218ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.582Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.598Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.712Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.713Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.715Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.725Z","context":"app","status":200,"responseTime":"10ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.730Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:10.751Z","context":"app","status":200,"responseTime":"21ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:12.837Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:12.838Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:12.839Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:12.950Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:12.951Z","context":"app","status":200,"responseTime":"112ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:12.955Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:13.017Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:13.017Z","context":"app","status":200,"responseTime":"62ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.482Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.484Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.488Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.490Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.492Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.493Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.494Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.497Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.500Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.786Z","context":"app","status":200,"responseTime":"286ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.795Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.819Z","context":"app","status":200,"responseTime":"322ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.833Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.878Z","context":"app","status":200,"responseTime":"83ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.885Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.887Z","context":"app","status":200,"responseTime":"393ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.908Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:18.924Z","context":"app","status":200,"responseTime":"91ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.021Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.025Z","context":"app","status":200,"responseTime":"117ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.060Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.173Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.178Z","context":"app","status":200,"responseTime":"118ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.193Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.284Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.289Z","context":"app","status":200,"responseTime":"96ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.301Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.436Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.438Z","context":"app","status":200,"responseTime":"137ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.448Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.561Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.566Z","context":"app","status":200,"responseTime":"118ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.581Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:24:19.622Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.301Z","context":"app","method":"OPTIONS","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.313Z","context":"app","method":"POST","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.476Z","context":"app","context":"LOGIN","user":{"id":"b3ab5624-b614-4c26-8a69-12e39791ef62","role":"ENSEIGNANT","firstName":"Ahmed","lastName":"Trabelsi","email":"enseignant@irescomath.com"},"msg":"Utilisateur connecté"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.477Z","context":"app","status":200,"responseTime":"164ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.486Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.491Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.510Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.643Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.656Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.659Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.673Z","context":"app","status":200,"responseTime":"14ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.675Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.688Z","context":"app","status":200,"responseTime":"13ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.743Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.744Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.747Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.859Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.860Z","context":"app","status":200,"responseTime":"114ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.868Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.950Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:06.951Z","context":"app","status":200,"responseTime":"83ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:09.684Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:09.759Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:09.760Z","context":"app","status":200,"responseTime":"76ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:09.763Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:09.818Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:09.819Z","context":"app","status":200,"responseTime":"56ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:15.242Z","context":"app","method":"OPTIONS","url":"/auth/logout","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:15.246Z","context":"app","method":"GET","url":"/auth/logout","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:15.266Z","context":"app","status":200,"responseTime":"20ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.296Z","context":"app","method":"OPTIONS","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.300Z","context":"app","method":"POST","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.388Z","context":"app","context":"LOGIN","user":{"id":"b3ab5624-b614-4c26-8a69-12e39791ef62","role":"ENSEIGNANT","firstName":"Ahmed","lastName":"Trabelsi","email":"enseignant@irescomath.com"},"msg":"Utilisateur connecté"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.388Z","context":"app","status":200,"responseTime":"88ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.393Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.396Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.414Z","context":"app","status":200,"responseTime":"17ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.500Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.502Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.505Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.523Z","context":"app","status":200,"responseTime":"18ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.525Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.544Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.650Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.654Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.656Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.701Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.702Z","context":"app","status":200,"responseTime":"46ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.707Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.765Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:41.771Z","context":"app","status":200,"responseTime":"64ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:44.569Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:44.583Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:44.583Z","context":"app","status":200,"responseTime":"14ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:44.585Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:25:44.612Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:25:44.614Z","context":"app","status":200,"responseTime":"29ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:26:24.934Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:26:24.997Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:26:32.314Z","context":"app","method":"OPTIONS","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:26:32.317Z","context":"app","method":"POST","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:26:37.313Z","context":"app","method":"OPTIONS","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:26:37.315Z","context":"app","method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"error","time":"2025-06-12T17:26:37.455Z","context":"app","context":"EDIT_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","error":{"name":"PrismaClientValidationError","clientVersion":"6.8.2"},"msg":"Erreur lors de la modification de la demande"}
+{"levelLabel":"info","time":"2025-06-12T17:26:37.456Z","context":"app","status":500,"responseTime":"141ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"error","time":"2025-06-12T17:26:37.459Z","context":"app","status":500,"method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","ip":"::1","context":"HTTP_ERROR","msg":"Erreur HTTP"}
+{"levelLabel":"info","time":"2025-06-12T17:28:04.405Z","context":"app","method":"OPTIONS","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:28:04.418Z","context":"app","method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"error","time":"2025-06-12T17:28:04.742Z","context":"app","context":"EDIT_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","error":{"name":"PrismaClientValidationError","clientVersion":"6.8.2"},"msg":"Erreur lors de la modification de la demande"}
+{"levelLabel":"info","time":"2025-06-12T17:28:04.743Z","context":"app","status":500,"responseTime":"325ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"error","time":"2025-06-12T17:28:04.747Z","context":"app","status":500,"method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","ip":"::1","context":"HTTP_ERROR","msg":"Erreur HTTP"}
+{"levelLabel":"info","time":"2025-06-12T17:28:07.024Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:28:07.050Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:28:14.087Z","context":"app","method":"OPTIONS","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:28:14.093Z","context":"app","method":"POST","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:28:20.632Z","context":"app","method":"OPTIONS","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:28:20.637Z","context":"app","method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"error","time":"2025-06-12T17:28:20.722Z","context":"app","context":"EDIT_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","error":{"name":"PrismaClientValidationError","clientVersion":"6.8.2"},"msg":"Erreur lors de la modification de la demande"}
+{"levelLabel":"info","time":"2025-06-12T17:28:20.726Z","context":"app","status":500,"responseTime":"89ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"error","time":"2025-06-12T17:28:20.749Z","context":"app","status":500,"method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","ip":"::1","context":"HTTP_ERROR","msg":"Erreur HTTP"}
+{"levelLabel":"info","time":"2025-06-12T17:28:43.234Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:28:44.538Z","context":"app","method":"OPTIONS","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:28:44.544Z","context":"app","method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"error","time":"2025-06-12T17:28:44.885Z","context":"app","context":"EDIT_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","error":{"name":"PrismaClientValidationError","clientVersion":"6.8.2"},"msg":"Erreur lors de la modification de la demande"}
+{"levelLabel":"info","time":"2025-06-12T17:28:44.886Z","context":"app","status":500,"responseTime":"342ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"error","time":"2025-06-12T17:28:44.890Z","context":"app","status":500,"method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","ip":"::1","context":"HTTP_ERROR","msg":"Erreur HTTP"}
+{"levelLabel":"info","time":"2025-06-12T17:32:05.259Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:32:05.632Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.685Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.785Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.791Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.797Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.800Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.807Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.810Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.977Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:27.984Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.604Z","context":"app","status":200,"responseTime":"793ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.615Z","context":"app","status":200,"responseTime":"631ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.623Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.628Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.648Z","context":"app","status":200,"responseTime":"25ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.653Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.655Z","context":"app","status":200,"responseTime":"678ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.657Z","context":"app","status":200,"responseTime":"29ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.658Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.672Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.673Z","context":"app","status":200,"responseTime":"15ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.815Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.836Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.837Z","context":"app","status":200,"responseTime":"22ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.840Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.854Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:28.855Z","context":"app","status":200,"responseTime":"16ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:29.027Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:29.046Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:29.046Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:29.051Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:29.078Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:29.088Z","context":"app","status":200,"responseTime":"37ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.415Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.417Z","context":"app","method":"OPTIONS","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.419Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.421Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.422Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.423Z","context":"app","method":"OPTIONS","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.425Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.428Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.432Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.452Z","context":"app","status":200,"responseTime":"27ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.455Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.462Z","context":"app","status":200,"responseTime":"30ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.467Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.476Z","context":"app","status":200,"responseTime":"21ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.483Z","context":"app","status":200,"responseTime":"16ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.544Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.545Z","context":"app","status":200,"responseTime":"117ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.547Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.577Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.578Z","context":"app","status":200,"responseTime":"31ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.595Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.654Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.655Z","context":"app","status":200,"responseTime":"60ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.657Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.738Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:35:46.741Z","context":"app","status":200,"responseTime":"83ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:49.983Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:49.988Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:54.811Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:35:54.868Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.475Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.507Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.510Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.513Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.517Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.520Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.528Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.576Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.579Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.709Z","context":"app","status":200,"responseTime":"181ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.711Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.718Z","context":"app","status":200,"responseTime":"139ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.720Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.722Z","context":"app","status":200,"responseTime":"146ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.724Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.731Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.736Z","context":"app","status":200,"responseTime":"25ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.748Z","context":"app","status":200,"responseTime":"24ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.750Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.751Z","context":"app","status":200,"responseTime":"20ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.932Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.951Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.952Z","context":"app","status":200,"responseTime":"20ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.953Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.976Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:06.976Z","context":"app","status":200,"responseTime":"23ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:07.148Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:07.159Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:07.160Z","context":"app","status":200,"responseTime":"12ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:07.161Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:07.171Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:07.171Z","context":"app","status":200,"responseTime":"10ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:16.753Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:16.760Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:16.761Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:16.763Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:16.764Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:16.766Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.164Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.166Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.170Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.172Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.174Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.178Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.181Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.185Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.188Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.199Z","context":"app","status":200,"responseTime":"18ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.203Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.208Z","context":"app","status":200,"responseTime":"20ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.211Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.216Z","context":"app","status":200,"responseTime":"13ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.227Z","context":"app","status":200,"responseTime":"16ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.245Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.246Z","context":"app","status":200,"responseTime":"61ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.249Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.268Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.268Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.521Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.539Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.539Z","context":"app","status":200,"responseTime":"18ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.541Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.563Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:37:32.564Z","context":"app","status":200,"responseTime":"23ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:36.077Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.775Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.779Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.781Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.783Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.796Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.798Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.799Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.802Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.805Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.993Z","context":"app","status":200,"responseTime":"188ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:39.997Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.016Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.085Z","context":"app","status":200,"responseTime":"302ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.091Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.115Z","context":"app","status":200,"responseTime":"24ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.138Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.142Z","context":"app","status":200,"responseTime":"340ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.147Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.161Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.161Z","context":"app","status":200,"responseTime":"14ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.294Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.308Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.308Z","context":"app","status":200,"responseTime":"14ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.309Z","context":"app","method":"GET","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.318Z","context":"app","context":"GET_REQUESTS","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","count":4,"msg":"Requêtes utilisateur récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:38:40.319Z","context":"app","status":200,"responseTime":"10ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:47.871Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:47.959Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:53.394Z","context":"app","method":"OPTIONS","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:38:53.398Z","context":"app","method":"POST","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:39:13.284Z","context":"app","method":"OPTIONS","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:39:13.288Z","context":"app","method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"error","time":"2025-06-12T17:39:13.502Z","context":"app","context":"EDIT_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","error":{"name":"PrismaClientValidationError","clientVersion":"6.8.2"},"msg":"Erreur lors de la modification de la demande"}
+{"levelLabel":"info","time":"2025-06-12T17:39:13.504Z","context":"app","status":500,"responseTime":"216ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"error","time":"2025-06-12T17:39:13.513Z","context":"app","status":500,"method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","ip":"::1","context":"HTTP_ERROR","msg":"Erreur HTTP"}
+{"levelLabel":"info","time":"2025-06-12T17:41:29.897Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:44:42.330Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:45:10.799Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:45:16.547Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:45:22.337Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:45:34.655Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:45:47.235Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:45:53.319Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:45:58.876Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:46:05.975Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:46:14.877Z","context":"app","msg":"Server is running on port 8000"}
+{"levelLabel":"info","time":"2025-06-12T17:46:16.104Z","context":"app","method":"OPTIONS","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:16.128Z","context":"app","method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:17.090Z","context":"app","context":"EDIT_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","msg":"Demande modifiée avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:46:17.091Z","context":"app","status":200,"responseTime":"963ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.625Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.628Z","context":"app","method":"OPTIONS","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.631Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.636Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.639Z","context":"app","method":"OPTIONS","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.642Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.644Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.651Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.662Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.794Z","context":"app","status":200,"responseTime":"150ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.806Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:26.907Z","context":"app","status":200,"responseTime":"101ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.108Z","context":"app","status":200,"responseTime":"446ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.118Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.152Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.155Z","context":"app","status":200,"responseTime":"504ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.186Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.245Z","context":"app","status":200,"responseTime":"127ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.366Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:46:27.368Z","context":"app","status":200,"responseTime":"183ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:28.063Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:28.159Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:46:28.161Z","context":"app","status":200,"responseTime":"99ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:28.168Z","context":"app","method":"GET","url":"/requests/get-request/2085c925-7cd5-4cd0-a25f-b13e25faf863","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:28.271Z","context":"app","context":"GET_REQUEST","requestId":"2085c925-7cd5-4cd0-a25f-b13e25faf863","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:46:28.282Z","context":"app","status":200,"responseTime":"115ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:38.963Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:38.967Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:38.972Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:38.975Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:38.977Z","context":"app","method":"OPTIONS","url":"/requests/get-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:38.979Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:45.498Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:45.577Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:55.544Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:55.556Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:58.433Z","context":"app","method":"OPTIONS","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:46:58.436Z","context":"app","method":"POST","url":"/api/uploadthing?actionType=upload&slug=articleCover","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:10.891Z","context":"app","method":"OPTIONS","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:10.895Z","context":"app","method":"PUT","url":"/requests/edit-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:10.964Z","context":"app","context":"EDIT_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","userId":"b3ab5624-b614-4c26-8a69-12e39791ef62","msg":"Demande modifiée avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:47:10.966Z","context":"app","status":200,"responseTime":"71ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.925Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.927Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.929Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.931Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.932Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.933Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.936Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.939Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.942Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.969Z","context":"app","status":200,"responseTime":"32ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.976Z","context":"app","status":200,"responseTime":"34ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.983Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:18.990Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.017Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.022Z","context":"app","status":200,"responseTime":"83ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.041Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.082Z","context":"app","status":200,"responseTime":"99ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.090Z","context":"app","status":200,"responseTime":"100ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.145Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.148Z","context":"app","status":200,"responseTime":"107ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.409Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.478Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.478Z","context":"app","status":200,"responseTime":"69ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.481Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.576Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:47:19.578Z","context":"app","status":200,"responseTime":"97ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:03.230Z","context":"app","method":"OPTIONS","url":"/auth/logout","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:03.234Z","context":"app","method":"GET","url":"/auth/logout","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:03.250Z","context":"app","status":200,"responseTime":"16ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.459Z","context":"app","method":"OPTIONS","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.463Z","context":"app","method":"POST","url":"/auth/login","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.571Z","context":"app","context":"LOGIN","user":{"id":"1873b248-92a2-4744-a5e6-21d574cd1072","role":"DIRECTEUR","firstName":"Fatma","lastName":"Zouari","email":"directeur@irescomath.com"},"msg":"Utilisateur connecté"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.572Z","context":"app","status":200,"responseTime":"109ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.579Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.582Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.604Z","context":"app","status":200,"responseTime":"22ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.739Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.741Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.747Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.768Z","context":"app","status":200,"responseTime":"21ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.772Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.786Z","context":"app","status":200,"responseTime":"14ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.888Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.890Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:29.898Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:30.054Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:48:30.055Z","context":"app","status":200,"responseTime":"157ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:30.060Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:30.131Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:48:30.132Z","context":"app","status":200,"responseTime":"72ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:32.764Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:32.849Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:48:32.850Z","context":"app","status":200,"responseTime":"86ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:32.851Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:32.933Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:48:32.934Z","context":"app","status":200,"responseTime":"83ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:35.946Z","context":"app","method":"OPTIONS","url":"/validate/get-waiting-list","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:35.948Z","context":"app","method":"OPTIONS","url":"/validate/get-waiting-list","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:35.951Z","context":"app","method":"GET","url":"/validate/get-waiting-list","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.070Z","context":"app","context":"GET_WAITING_LIST","count":3,"msg":"Liste des requêtes en attente récupérée"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.071Z","context":"app","status":200,"responseTime":"120ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.073Z","context":"app","method":"GET","url":"/validate/get-waiting-list","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.094Z","context":"app","context":"GET_WAITING_LIST","count":3,"msg":"Liste des requêtes en attente récupérée"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.094Z","context":"app","status":200,"responseTime":"21ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.104Z","context":"app","method":"OPTIONS","url":"/users/get-users","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.108Z","context":"app","method":"GET","url":"/users/get-users","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.159Z","context":"app","context":"GET_USERS","count":5,"msg":"Liste des utilisateurs récupérée"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.160Z","context":"app","status":200,"responseTime":"52ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.161Z","context":"app","method":"GET","url":"/users/get-users","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.176Z","context":"app","context":"GET_USERS","count":5,"msg":"Liste des utilisateurs récupérée"}
+{"levelLabel":"info","time":"2025-06-12T17:48:36.176Z","context":"app","status":200,"responseTime":"15ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:52.198Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:52.199Z","context":"app","method":"OPTIONS","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:52.200Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:52.229Z","context":"app","status":200,"responseTime":"29ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:52.232Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:52.251Z","context":"app","status":200,"responseTime":"19ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.118Z","context":"app","method":"OPTIONS","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.120Z","context":"app","method":"OPTIONS","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.121Z","context":"app","method":"OPTIONS","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.122Z","context":"app","method":"OPTIONS","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.124Z","context":"app","method":"GET","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.126Z","context":"app","method":"GET","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.148Z","context":"app","status":200,"responseTime":"22ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.152Z","context":"app","method":"GET","url":"/equipments/categories","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.176Z","context":"app","status":200,"responseTime":"52ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.190Z","context":"app","method":"GET","url":"/equipments","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.202Z","context":"app","status":200,"responseTime":"50ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:53.236Z","context":"app","status":200,"responseTime":"46ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:54.687Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:54.698Z","context":"app","status":200,"responseTime":"11ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:54.700Z","context":"app","method":"GET","url":"/templates","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:54.717Z","context":"app","status":200,"responseTime":"17ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.212Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.213Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.214Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.308Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.309Z","context":"app","status":200,"responseTime":"95ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.310Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.387Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:48:55.388Z","context":"app","status":200,"responseTime":"78ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.188Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.190Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.192Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.196Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.198Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.202Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.204Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.214Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.217Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.245Z","context":"app","status":200,"responseTime":"41ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.251Z","context":"app","status":200,"responseTime":"34ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.259Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.277Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.318Z","context":"app","status":200,"responseTime":"60ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.328Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.329Z","context":"app","status":200,"responseTime":"115ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.354Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.379Z","context":"app","status":200,"responseTime":"102ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.469Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.474Z","context":"app","status":200,"responseTime":"120ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.635Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.711Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.712Z","context":"app","status":200,"responseTime":"77ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.716Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.797Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"PENDING","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.799Z","context":"app","status":200,"responseTime":"83ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:00.934Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:01.054Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:49.279Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:49.295Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:49.300Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:49.304Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:49.307Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:49.311Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:49.989Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:49:50.113Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:14.440Z","context":"app","method":"OPTIONS","url":"/requests/approve-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:14.443Z","context":"app","method":"POST","url":"/requests/approve-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:15.947Z","context":"app","context":"APPROVE_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"APPROVED","approvedBy":"2f25c125-6f8d-4dc6-bef1-45ebccf76236","msg":"Demande approuvée avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:50:15.948Z","context":"app","status":200,"responseTime":"1505ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:15.955Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:15.959Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:16.005Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"APPROVED","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:50:16.005Z","context":"app","status":200,"responseTime":"46ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.426Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.429Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.430Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.432Z","context":"app","method":"OPTIONS","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.433Z","context":"app","method":"OPTIONS","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.434Z","context":"app","method":"OPTIONS","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.436Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.439Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.442Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.471Z","context":"app","status":200,"responseTime":"36ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.490Z","context":"app","method":"GET","url":"/notifications/get-unread-number-notifications","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.548Z","context":"app","status":200,"responseTime":"106ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.563Z","context":"app","method":"GET","url":"/auth/me","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.580Z","context":"app","status":200,"responseTime":"90ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.591Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"APPROVED","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.593Z","context":"app","status":200,"responseTime":"154ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.604Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.654Z","context":"app","status":200,"responseTime":"91ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.725Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"APPROVED","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:50:51.729Z","context":"app","status":200,"responseTime":"125ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.114Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.208Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"APPROVED","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.210Z","context":"app","status":200,"responseTime":"96ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.217Z","context":"app","method":"GET","url":"/requests/get-request/dd65a25d-0a6c-4723-b7b5-42927c01278d","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.434Z","context":"app","context":"GET_REQUEST","requestId":"dd65a25d-0a6c-4723-b7b5-42927c01278d","status":"APPROVED","msg":"Détails de la requête récupérés avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.437Z","context":"app","status":200,"responseTime":"220ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.645Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:50:52.668Z","context":"app","method":"GET","url":"/api/uploadthing","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:51:37.964Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:51:37.966Z","context":"app","method":"OPTIONS","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:51:37.967Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:51:38.309Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:51:38.311Z","context":"app","status":200,"responseTime":"344ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}
+{"levelLabel":"info","time":"2025-06-12T17:51:38.317Z","context":"app","method":"GET","url":"/requests/get-all-requests","context":"HTTP_REQUEST_IN","msg":"Requête entrante"}
+{"levelLabel":"info","time":"2025-06-12T17:51:38.394Z","context":"app","context":"GET_ALL_REQUESTS","count":7,"firstRequestId":"decc8f61-73e5-46f4-8437-d49360e3510d","msg":"Toutes les requêtes récupérées avec succès"}
+{"levelLabel":"info","time":"2025-06-12T17:51:38.394Z","context":"app","status":200,"responseTime":"77ms","context":"HTTP_RESPONSE_OUT","msg":"Réponse sortante"}

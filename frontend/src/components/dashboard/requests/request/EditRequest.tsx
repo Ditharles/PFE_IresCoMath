@@ -65,7 +65,7 @@ const getDefaultValues = (request: Request) => {
     },
     [RequestType.ARTICLE_REGISTRATION]: {
       id,
-      title: request.articleRegistration?.title || "",
+      title: request.articleRegistration?.title,
       conference: request.articleRegistration?.conference || "",
       urlConference: request.articleRegistration?.urlConference || "",
       articleCover: request.articleRegistration?.articleCover || "",
@@ -121,7 +121,9 @@ const EditRequest = ({ request, onClose, onSuccess, isOpen }: EditRequestProps) 
   const requestService = new RequestsService();
   const { type } = request;
   const schema = SCHEMA_MAP[type] || z.object({});
+
   const defaultValues = getDefaultValues(request);
+
   const FormComponent = FORM_COMPONENTS[type];
 
   const methods = useForm({
