@@ -257,7 +257,7 @@ async function main() {
         categoryId: capteursCategory.id,
         notes: "Capteur de luminosité analogique",
         cost: 2.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           type: "Photorésistance",
           resistance: "10-100kΩ",
@@ -278,7 +278,7 @@ async function main() {
         categoryId: capteursCategory.id,
         notes: "Capteur ultrasonique de distance",
         cost: 3.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           type: "Ultrasonique",
           portee: "2-400cm",
@@ -299,7 +299,7 @@ async function main() {
         categoryId: capteursCategory.id,
         notes: "Capteur de température et d'humidité",
         cost: 5.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           type: "Température/Humidité",
           plageTemp: "-40°C à 80°C",
@@ -320,7 +320,7 @@ async function main() {
         categoryId: capteursCategory.id,
         notes: "Détecteur de mouvement infrarouge",
         cost: 4.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           type: "Infrarouge passif",
           portee: "3-7m",
@@ -341,7 +341,7 @@ async function main() {
         categoryId: capteursCategory.id,
         notes: "Capteur de gaz combustible",
         cost: 6.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           type: "Gaz",
           plage: "0-10000ppm",
@@ -362,7 +362,7 @@ async function main() {
         categoryId: stockageCategory.id,
         notes: "Disque dur externe portable",
         cost: 89.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           capacite: "2TB",
           interface: "USB 3.0",
@@ -383,7 +383,7 @@ async function main() {
         categoryId: stockageCategory.id,
         notes: "SSD interne haute performance",
         cost: 129.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           capacite: "1TB",
           interface: "SATA III",
@@ -405,7 +405,7 @@ async function main() {
         categoryId: outilsPresentationCategory.id,
         notes: "Vidéoprojecteur portable",
         cost: 499.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           resolution: "1024 x 768",
           luminosite: "3300 lumens",
@@ -426,7 +426,7 @@ async function main() {
         categoryId: outilsPresentationCategory.id,
         notes: "Pointeur laser haute visibilité",
         cost: 29.99,
-        bill: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        bill: "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
         specifications: {
           couleur: "Vert",
           puissance: "5mW",
@@ -460,7 +460,7 @@ async function main() {
             supervisorEmail: "dupont@abc.com",
             supervisorPhone: "0123456789",
             letter:
-              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+              "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
             country: "France",
             startDate: new Date("2023-07-01"),
             endDate: new Date("2023-08-31"),
@@ -483,7 +483,7 @@ async function main() {
             supervisorEmail: "martin@xyz.org",
             supervisorPhone: "0987654321",
             letter:
-              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+              "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
             country: "Canada",
             startDate: new Date("2023-09-01"),
             endDate: new Date("2023-12-31"),
@@ -522,10 +522,10 @@ async function main() {
             startDate: new Date("2023-10-01"),
             endDate: new Date("2023-10-10"),
             specificDocument: [
-              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+              "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
             ],
             document: [
-              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+              "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
             ],
           },
         },
@@ -561,10 +561,9 @@ async function main() {
           create: {
             title: "Nouvelle méthode d'analyse mathématique",
             conference: "Conférence Internationale",
-            urlConference:
-              "https://m.media-amazon.com/images/I/71tjbl0yQQL._AC_UF1000,1000_QL80_.jpg",
+            urlConference: "https://url_de_la_conference.com",
             articleCover:
-              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+              "https://orw9jssgfa.ufs.sh/f/EXQHA8sNVKjwS3rZR2tYPnHiUWskfwtLy1Qrv4GIjpq8V9Me",
             amount: "500",
           },
         },

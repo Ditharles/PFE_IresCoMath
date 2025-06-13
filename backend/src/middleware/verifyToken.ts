@@ -47,10 +47,15 @@ export const verifyToken = async (
     }
 
     const user = await getUserByID(session.user.id);
+
     if (!user) {
       return res.status(401).json({ message: "Utilisateur non trouvé" });
     }
-
+    if (user.status !== "ACTIVE") {
+      return res
+        .status(401)
+        .json({ message: "Utilisateur désactivé contacter l'administrateur" });
+    }
     req.user = user;
     next();
   } catch (error) {

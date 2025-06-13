@@ -84,6 +84,7 @@ export interface ExtendedUser {
   id: string;
   userId: string;
   email: string;
+  status: UserStatus;
   role: Role;
   firstName: string;
   lastName: string;

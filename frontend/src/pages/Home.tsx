@@ -18,10 +18,12 @@ import additionnel from "../assets/additionnel.png"
 import BackgroundElements from "../components/home/BackgroundElements"
 import { features } from "../constants/home"
 import FeaturesSection from "../components/home/FeaturesSection"
+import { Navigate } from "react-router-dom"
+import { useAuth } from "../contexts/AuthContext"
 
 export default function Home() {
 
-
+    const { user } = useAuth();
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -39,6 +41,7 @@ export default function Home() {
 
         return () => observer.disconnect()
     }, [])
+    if (user) return <Navigate to="/accueil" />
 
     return (
         <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 text-slate-900 relative overflow-hidden">
@@ -135,7 +138,7 @@ export default function Home() {
                                                         </li>
                                                         <li className="flex items-center text-slate-700">
                                                             <Check className="h-5 w-5 text-green-600 mr-2" />
-                                                            <span>Gestion des budgets</span>
+                                                            <span>Gestion des utilisateurs</span>
                                                         </li>
                                                     </ul>
                                                 </CardContent>
@@ -180,14 +183,14 @@ export default function Home() {
                                                             <Check className="h-5 w-5 text-green-600 mr-2" />
                                                             <span>Gestion des utilisateurs</span>
                                                         </li>
-                                                        <li className="flex items-center text-slate-700">
+                                                        {/* <li className="flex items-center text-slate-700">
                                                             <Check className="h-5 w-5 text-green-600 mr-2" />
                                                             <span>Configuration système</span>
                                                         </li>
                                                         <li className="flex items-center text-slate-700">
                                                             <Check className="h-5 w-5 text-green-600 mr-2" />
                                                             <span>Logs et surveillance</span>
-                                                        </li>
+                                                        </li> */}
                                                     </ul>
                                                 </CardContent>
                                             </div>

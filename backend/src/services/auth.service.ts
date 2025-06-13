@@ -311,6 +311,7 @@ export const getUserByID = async (
       id: true,
       email: true,
       role: true,
+      status: true,
       firstName: true,
       lastName: true,
       photo: true,
@@ -348,6 +349,7 @@ export const getUserByID = async (
       email: user.email,
       role: user.role,
       firstName: user.firstName,
+      status: user.status,
       lastName: user.lastName,
       photo: user.photo,
       phone: user.phone,
@@ -375,6 +377,7 @@ export const getUserByID = async (
     return {
       userId: user.id,
       id: user.doctoralStudent.id,
+      status: user.status,
       email: user.email,
       role: user.role,
       firstName: user.firstName,
@@ -391,6 +394,7 @@ export const getUserByID = async (
 
   return {
     userId: user.id,
+    status: user.status,
     id:
       user.doctoralStudent?.id ??
       user.masterStudent?.id ??

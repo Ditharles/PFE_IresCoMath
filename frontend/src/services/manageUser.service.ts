@@ -27,7 +27,6 @@ export class ManageUserService {
       rejected_reason,
     });
   }
-
   async getRequestInfo(id: string, role: Role) {
     return await api.get(
       `/validate/get-request-info?user_id=${id}&user_role=${role}`
@@ -43,10 +42,14 @@ export class ManageUserService {
     }
   }
   async desactivate(id: string) {
-    return await api.post(`/users/desactivate-user/${id}`);
+    return await api.post(`/users/desactivate/${id}`);
+  }
+
+  async reactivate(id: string) {
+    return await api.post(`/users/reactivate/${id}`);
   }
   async delete(id: string) {
-    return await api.post(`/users/delete-user/${id}`);
+    return await api.delete(`/users/${id}`);
   }
   async updateUser(id: string, credentials: unknown) {
     return await api.post(`/users/update-user/${id}`, credentials);

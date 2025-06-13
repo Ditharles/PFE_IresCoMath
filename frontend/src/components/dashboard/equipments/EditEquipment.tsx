@@ -28,6 +28,7 @@ const EditEquipment = ({ equipment, onClose, isOpen, onSuccess }: EditEquipmentP
     console.log(equipment);
     const form = useForm<EquipmentFormValues>({
         resolver: zodResolver(editEquipmentSchema),
+        shouldUnregister: true,
         defaultValues: {
             id: equipment.id,
             name: equipment.name,

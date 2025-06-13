@@ -1,3 +1,4 @@
+import { stat } from "fs";
 import { RequestRole } from "../utils/validateUtils";
 //Définition des champs utilisés dans les requêtes pour les différents rôles d'utilisateur
 export const doctoralStudentFields = {
@@ -35,6 +36,7 @@ export const userFields = {
   role: true,
   createdAt: true,
   phone: true,
+  status: true,
   cin: true,
   bankData: true,
   teacherResearcher: { select: teacherResearcherFields },
