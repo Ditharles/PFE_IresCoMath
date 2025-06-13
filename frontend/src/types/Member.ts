@@ -10,6 +10,7 @@ export type User = {
   photo: string;
   cin?: string;
   phone?: string;
+  status?: string;
   bankData?: string;
   createdAt: string;
   updatedAt: string;

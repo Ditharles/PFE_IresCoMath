@@ -18,6 +18,7 @@ type EquipmentFormValues = z.infer<typeof equipmentSchema>;
 const AddEquipment = () => {
     const form = useForm<EquipmentFormValues>({
         resolver: zodResolver(equipmentSchema),
+        shouldUnregister: true,
         defaultValues: {
             name: '',
             categoryId: '',

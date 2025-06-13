@@ -52,8 +52,12 @@ const MembersList = ({
                             <Users className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                            <CardTitle className="text-2xl font-bold tracking-tight">Membres ({members.length})</CardTitle>
-                            <CardDescription className="text-muted-foreground/80">Liste des membres du laboratoire</CardDescription>
+                            <CardTitle className="text-2xl font-bold tracking-tight">
+                                Membres ({members.length})
+                            </CardTitle>
+                            <CardDescription className="text-muted-foreground/80">
+                                Liste des membres du laboratoire
+                            </CardDescription>
                         </div>
                     </div>
                     <div className="flex gap-2">
@@ -62,16 +66,14 @@ const MembersList = ({
                             size="sm"
                             onClick={() => exportToCSV()}
                             disabled={members.length === 0}
-                            className="hover:bg-primary/10 hover:text-primary transition-colors"
-                        >
+                            className="hover:bg-primary/10 hover:text-primary transition-colors">
                             <FileDown className="h-4 w-4 mr-2" />
                             Exporter CSV
                         </Button>
                         <Button
                             variant="default"
                             size="sm"
-                            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow transition-all"
-                        >
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow transition-all">
                             <UserPlus className="h-4 w-4 mr-2" />
                             Ajouter un membre
                         </Button>
@@ -92,24 +94,27 @@ const MembersList = ({
                             <div className="flex flex-wrap gap-3">
                                 <Badge
                                     variant="secondary"
-                                    className="bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 border border-border/40 px-4 py-2 rounded-full shadow-sm hover:shadow"
-                                >
+                                    className="bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 border border-border/40 px-4 py-2 rounded-full shadow-sm hover:shadow">
                                     <span className="font-medium">Doctorants:</span>
-                                    <span className="ml-2 font-bold text-primary">{memberRoleCounts[RoleEnum.DOCTORANT]}</span>
+                                    <span className="ml-2 font-bold text-primary">
+                                        {memberRoleCounts[RoleEnum.DOCTORANT]}
+                                    </span>
                                 </Badge>
                                 <Badge
                                     variant="secondary"
-                                    className="bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 border border-border/40 px-4 py-2 rounded-full shadow-sm hover:shadow"
-                                >
+                                    className="bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 border border-border/40 px-4 py-2 rounded-full shadow-sm hover:shadow">
                                     <span className="font-medium">Masters:</span>
-                                    <span className="ml-2 font-bold text-primary">{memberRoleCounts[RoleEnum.MASTER]}</span>
+                                    <span className="ml-2 font-bold text-primary">
+                                        {memberRoleCounts[RoleEnum.MASTER]}
+                                    </span>
                                 </Badge>
                                 <Badge
                                     variant="secondary"
-                                    className="bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 border border-border/40 px-4 py-2 rounded-full shadow-sm hover:shadow"
-                                >
+                                    className="bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 border border-border/40 px-4 py-2 rounded-full shadow-sm hover:shadow">
                                     <span className="font-medium">Enseignants:</span>
-                                    <span className="ml-2 font-bold text-primary">{memberRoleCounts[RoleEnum.ENSEIGNANT]}</span>
+                                    <span className="ml-2 font-bold text-primary">
+                                        {memberRoleCounts[RoleEnum.ENSEIGNANT]}
+                                    </span>
                                 </Badge>
                             </div>
                         </CardContent>
@@ -127,7 +132,9 @@ const MembersList = ({
                     ) : (
                         <div className="bg-card/50 backdrop-blur-sm border border-border/40 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                             <BaseDataTable
-                                columns={membersColumns}
+                                columns={membersColumns({
+                                    onUpdate: onRefresh as () => void,
+                                })}
                                 data={members}
                                 onRefresh={onRefresh}
                                 isLoading={isLoading}
