@@ -22,7 +22,14 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState(getUser);
+    const [user, setUser] = useState(() => getUser());
+    const clearSession = () => {
+        removesTokens();
+        removeUser();
+        setIsLoggedIn(false);
+        setUser(null);
+    };
+
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
         const accessToken = getToken("accessToken");
         const refreshToken = getToken("refreshToken");
@@ -43,15 +50,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         setUser(response.data);
                         setIsLoggedIn(true);
                     } else {
-                        removesTokens();
-                        removeUser();
-                        setIsLoggedIn(false);
+                        clearSession();
                     }
                 } catch (error) {
                     console.error("Erreur lors de la vérification de l'authentification:", error);
-                    removesTokens();
-                    removeUser();
-                    setIsLoggedIn(false);
+                    clearSession();
                 }
             }
         };
@@ -82,30 +85,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             } catch (error) {
                 console.error("Erreur lors de la vérification de l'authentification:", error);
-                removesTokens();
-                removeUser();
-                setIsLoggedIn(false);
+                clearSession();
             }
         } else {
-            setIsLoggedIn(false);
-            setUser(null);
+            clearSession();
         }
     };
 
     const logout = async () => {
         try {
             const response = await authService.logout();
-            setUser(null);
-            removesTokens();
-            removeUser();
-            setIsLoggedIn(false);
+            clearSession();
             return response;
         } catch (error) {
             console.error("Erreur lors de la déconnexion:", error);
-            setUser(null);
-            removesTokens();
-            removeUser();
-            setIsLoggedIn(false);
+            clearSession();
             throw error;
         }
     };
@@ -134,13 +128,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
             } catch (error) {
                 console.error("Erreur lors de la vérification de l'authentification:", error);
-                removesTokens();
-                removeUser();
-                setIsLoggedIn(false);
+                clearSession();
+
             }
         } else {
-            setIsLoggedIn(false);
-            setUser(null);
+            clearSession();
         }
     };
 
