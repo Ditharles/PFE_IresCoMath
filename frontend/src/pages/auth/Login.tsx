@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
       login();
       setTimeout(() => {
         navigate("/accueil");
-      }, 3000);
+      }, 1000);
     } catch (error: any) {
       if (error.response?.data?.type === "REQUEST_PENDING") {
         toast.warning("Votre demande d'adhésion est en cours de traitement. Veuillez patienter.");

@@ -1,7 +1,6 @@
 import api from "../api/axios";
 import { getBrowserInfo } from "../utils/browser.utils";
 import {
-  isAuthenticated,
   removesTokens,
   removeUser,
   setToken,
@@ -27,10 +26,9 @@ class AuthService {
   }
 
   async login(email: string, password: string) {
-    if (isAuthenticated()) {
-      removesTokens();
-      removeUser();
-    }
+    removesTokens();
+    removeUser();
+
     console.log("Connexion en cours");
     try {
       const browserInfo = getBrowserInfo();
