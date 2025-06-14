@@ -104,8 +104,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const login = async () => {
-        clearSession();
-
         try {
             const response = await authService.getUser();
             const userData = response.data;
