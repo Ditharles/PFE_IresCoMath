@@ -60,16 +60,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     // Gestion des sessions expirées
+    // Remplacer l'événement actuel par :
     useEffect(() => {
         const handleSessionExpired = () => {
             clearSession();
-            window.location.href = '/login';
+
         };
 
-        window.addEventListener('sessionExpired', handleSessionExpired);
+        window.addEventListener('sessionExpired', handleSessionExpired as EventListener);
 
         return () => {
-            window.removeEventListener('sessionExpired', handleSessionExpired);
+            window.removeEventListener('sessionExpired', handleSessionExpired as EventListener);
         };
     }, []);
 

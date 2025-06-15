@@ -66,7 +66,6 @@ export const refreshToken: AuthHandler = async (req, res) => {
       const session = await prisma.session.findFirst({
         where: {
           refreshToken: decodedRefresh.token,
-          accessToken: accessTokenValue,
         },
       });
 
