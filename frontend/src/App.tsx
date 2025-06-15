@@ -5,9 +5,8 @@ import Layout from './components/dashboard/Layout';
 import { Toaster } from './components/ui/sonner';
 
 const AppContent = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn} = useAuth();
   const AppRoutes = () => useRoutes(routes);
-
   return isLoggedIn ? (
     <Layout>
       <AppRoutes />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { toast } from "sonner";
@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "../../components/ui/button";
 
 const LoginPage: React.FC = () => {
-  const { login } = useAuth();
+  const { login, clearSession } = useAuth();
   const authService = new AuthService();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -42,6 +42,11 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+
+    clearSession();
+
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-r from-background/50 to-background/80 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full mx-auto">

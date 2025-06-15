@@ -10,6 +10,7 @@ import {
   removeUser,
 } from "../utils/tokens.utils";
 
+
 // URL de base de l'API backend
 const baseUrl = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:8000";
 
@@ -144,11 +145,14 @@ api.interceptors.response.use(
         removeUser();
         processQueue(refreshError, null);
 
-        // Événement global pour gérer l'expiration de session
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new Event("sessionExpired"));
+        if (window !== undefined) {
+          // Événement global pour gérer l'expiration de session
+          window.dispatchEvent(
+            new CustomEvent("sessionExpired", {
+              detail: { fromRefresh: true },
+            })
+          );
         }
-
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
