@@ -4,6 +4,7 @@ import {
   desactivateUser,
   getStudents,
   getUser,
+  reactivateUser,
   updateUser,
 } from "../controllers/users.controller";
 import { getUsers } from "../controllers/users.controller";
@@ -14,12 +15,16 @@ router.get("/get-students/:id", getStudents as RequestHandler);
 router.get("/get-users", getUsers as RequestHandler);
 router.get("/get-user/:id", getUser as RequestHandler);
 router.post("/update-user", updateUser as RequestHandler);
+router.delete("/:id", checkRole(["ADMIN"]), deleteUser as RequestHandler);
 router.post(
-  "/delete-user/:id",
-  checkRole(["ADMIN"]),
-  deleteUser as RequestHandler
+  "/desactivate/:id",
+  checkRole(["DIRECTEUR"]),
+  desactivateUser as RequestHandler
 );
-router.post("/desactivate-user/:id", desactivateUser as RequestHandler);
-export default router;
 
-router.delete("/delete-user/:id", deleteUser as RequestHandler);
+router.post(
+  "/reactivate/:id",
+  checkRole(["DIRECTEUR"]),
+  reactivateUser as RequestHandler
+);
+export default router;

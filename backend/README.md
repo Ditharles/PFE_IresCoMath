@@ -178,4 +178,4 @@ Pour une sortie JSON brute (production), retirez ou modifiez la configuration `p
 
 ---
 
-Pour toute question, ouvrez une issue ou contactez l'équipe technique.
+Pour toute question, contactez nous.

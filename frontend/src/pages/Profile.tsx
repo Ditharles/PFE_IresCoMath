@@ -2,14 +2,13 @@ import { JSX, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateReactHelpers } from "@uploadthing/react";
 import {
-  Pencil, Trash2, Mail, Phone, CreditCard,
-  GraduationCap, Users, User as UserIcon, IdCard, Check, X, ExternalLink, Calendar, ArrowLeft
+  Pencil, Mail, Phone, CreditCard,
+  GraduationCap, Users, User as UserIcon, IdCard, X, ExternalLink, Calendar, ArrowLeft
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from '../lib/utils';
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Badge } from "../components/ui/badge";
-import { Skeleton } from "../components/ui/skeleton";
+import { RoleEnum } from "../types/common";
 
 // Components
 import {
@@ -19,7 +18,8 @@ import {
 import { Separator } from "../components/ui/separator";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import SupervisedStudentsList from "../components/dashboard/directeur/profile/SupervisedStudentsList";
+import SupervisedStudentsList from "../components/profile/SupervisedStudentsList";
+import { ActionButtons } from "../components/profile/ActionsButtons";
 
 // Services & Utils
 import { useAuth } from "../contexts/AuthContext";
@@ -29,17 +29,12 @@ import { ManageUserService } from "../services/manageUser.service";
 
 // Types
 import { User } from "../types/Member";
+import { isAxiosError } from "axios";
+import SkeletonProfile from "../components/profile/SkeletonProfile";
+import { Role } from "../types/request";
+import { ROLE_TRANSLATIONS } from "../constants/members";
 
 const { useUploadThing } = generateReactHelpers();
-
-// Constants
-const ROLE_TRANSLATIONS: Record<string, string> = {
-  ADMIN: "Administrateur",
-  ENSEIGNANT: "Enseignant-Chercheur",
-  DIRECTEUR: "Directeur",
-  DOCTORANT: "Doctorant",
-  MASTER: "Master",
-};
 
 export default function Profile() {
   // Hooks and Services
@@ -52,7 +47,7 @@ export default function Profile() {
   // State
   const [userData, setUserData] = useState<User | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [editedData, setEditedData] = useState({
     firstName: '',
     lastName: '',
@@ -75,7 +70,10 @@ export default function Profile() {
 
   // Data Fetching
   const fetchUserData = async () => {
-    if (!isAuthenticated()) return;
+    if (!isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
 
     try {
       setLoading(true);
@@ -92,6 +90,7 @@ export default function Profile() {
     } catch (error) {
       toast.error('Erreur lors du chargement des données utilisateur');
       console.error(error);
+      navigate('/');
     } finally {
       setLoading(false);
     }
@@ -102,7 +101,7 @@ export default function Profile() {
   }, [id]);
 
   // Permissions
-  const isCurrentUser = user.userId === userData?.userId || user.id === userData?.id;
+  const isCurrentUser = (user?.userId === userData?.userId) || (user?.id === userData?.id) || false;
 
   // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,6 +144,24 @@ export default function Profile() {
     }
   };
 
+  const handleReactivateUser = async () => {
+    try {
+      if (!userData?.id) {
+        throw new Error("ID utilisateur non trouvé");
+      }
+      await manageUserService.reactivate(userData.id);
+      await fetchUserData();
+      toast.success("Compte réactivé avec succès");
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message ?? 'Erreur lors de la réactivation');
+      } else {
+        toast.error('Erreur lors de la réactivation');
+      }
+      console.error(error);
+    }
+  };
+
   const handleDeleteUser = async () => {
     try {
       if (!userData?.id) {
@@ -157,10 +174,16 @@ export default function Profile() {
       await manageUserService.delete(userData.id);
       setShowDeleteAlert(false);
       setConfirmationText('');
-      navigate('/');
+      if (isCurrentUser) {
+        navigate('/logout');
+      } else {
+        navigate('/gestion/membres');
+      }
       toast.success("Compte supprimé avec succès");
     } catch (error) {
-      toast.error('Erreur lors de la suppression');
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message ?? 'Erreur lors de la suppression');
+      }
       console.error(error);
     }
   };
@@ -171,78 +194,19 @@ export default function Profile() {
         throw new Error("ID utilisateur non trouvé");
       }
       await manageUserService.desactivate(userData.id);
-      fetchUserData();
+      await fetchUserData();
       toast.success("Compte désactivé avec succès");
     } catch (error) {
-      toast.error('Erreur lors de la désactivation');
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message ?? 'Erreur lors de la désactivation');
+      }
       console.error(error);
     }
   };
 
   // Loading State
   if (loading || !userData) {
-    return (
-      <div className="container mx-auto p-4 md:p-6 max-w-7xl">
-        <div className="mb-4">
-          <Skeleton className="h-9 w-24" />
-        </div>
-
-        <Card className="shadow-sm border-border">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-muted/5 border-b">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="flex items-center gap-4">
-                <Skeleton className="w-24 h-24 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-8 w-48" />
-                  <Skeleton className="h-5 w-64" />
-                  <Skeleton className="h-6 w-32" />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Skeleton className="h-9 w-24" />
-                <Skeleton className="h-9 w-32" />
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="p-6 space-y-8">
-            {/* Section Informations personnelles */}
-            <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
-              <div className="flex items-center gap-2 mb-3">
-                <Skeleton className="h-5 w-5" />
-                <Skeleton className="h-5 w-48" />
-              </div>
-              <Separator className="mb-4" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="space-y-2">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-full" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Section Informations académiques */}
-            <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
-              <div className="flex items-center gap-2 mb-3">
-                <Skeleton className="h-5 w-5" />
-                <Skeleton className="h-5 w-56" />
-              </div>
-              <Separator className="mb-4" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="space-y-2">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-full" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <SkeletonProfile />;
   }
 
   // Render Helpers
@@ -270,6 +234,7 @@ export default function Profile() {
             type="file"
             id="profileImage"
             className="hidden"
+            accept="image/*"
             onChange={async (e) => {
               if (e.target.files) {
                 await startUpload([e.target.files[0]]);
@@ -316,106 +281,13 @@ export default function Profile() {
     );
   };
 
-  const renderInfoCard = (icon: React.ReactNode, label: string, value: string) => (
+  const renderInfoCard = (icon: React.ReactNode, label: string, value: React.ReactNode) => (
     <div className="flex flex-col">
       <span className="text-sm text-muted-foreground mb-1 flex items-center gap-2">
         {icon}
         {label}
       </span>
-      <div className="text-foreground font-medium">{value}</div>
-    </div>
-  );
-
-  const renderActionButtons = () => (
-    <div className="flex gap-2">
-      {isCurrentUser && (
-        <>
-          {editMode ? (
-            <>
-              <Button
-                onClick={handleSave}
-                size="sm"
-                variant="default"
-                disabled={isUploading}
-              >
-                <Check className="mr-2 h-4 w-4" />
-                Soumettre
-              </Button>
-              <Button
-                onClick={handleCancelEdit}
-                size="sm"
-                variant="outline"
-              >
-                <X className="mr-2 h-4 w-4" />
-                Annuler
-              </Button>
-            </>
-          ) : (
-            <Button
-              onClick={() => setEditMode(true)}
-              size="sm"
-              variant="outline"
-            >
-              <Pencil className="mr-2 h-4 w-4" />
-              Modifier
-            </Button>
-          )}
-        </>
-      )}
-      {user.role === "ADMIN" && !isCurrentUser && (
-        <>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => setShowDeleteAlert(true)}
-          >
-            <Trash2 className="mr-2 w-4 h-4" />
-            Supprimer le compte
-          </Button>
-          {showDeleteAlert && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertTitle>Confirmer la suppression</AlertTitle>
-              <AlertDescription>
-                <div className="mt-2">
-                  <p className="mb-4">Cette action est irréversible. Veuillez taper "Confirmer" pour confirmer la suppression.</p>
-                  <Input
-                    placeholder="Tapez 'Confirmer'"
-                    value={confirmationText}
-                    onChange={(e) => setConfirmationText(e.target.value)}
-                    className="mb-4"
-                  />
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setShowDeleteAlert(false);
-                        setConfirmationText('');
-                      }}
-                    >
-                      Annuler
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={handleDeleteUser}
-                      disabled={confirmationText !== "Confirmer"}
-                    >
-                      Confirmer la suppression
-                    </Button>
-                  </div>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={handleDesactiveUser}
-          >
-            <Trash2 className="mr-2 w-4 h-4" />
-            Désactiver le compte
-          </Button>
-        </>
-      )}
+      <div className="text-foreground font-medium">{value || "Non spécifié"}</div>
     </div>
   );
 
@@ -445,15 +317,39 @@ export default function Profile() {
                     ? "Gérez vos informations personnelles"
                     : "Informations de l'utilisateur"}
                 </CardDescription>
-                <div className="mt-2">
+                <div className="mt-2 flex gap-2 items-center">
                   <Badge variant="secondary">
-                    {ROLE_TRANSLATIONS[userData.role]}
+                    {ROLE_TRANSLATIONS[userData.role as Role]}
                   </Badge>
+                  {userData.status === 'DESACTIVE' && (
+                    <Badge variant="destructive" className="flex items-center gap-1">
+                      <X className="h-3 w-3" />
+                      Désactivé
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {renderActionButtons()}
+              <ActionButtons
+                isCurrentUser={isCurrentUser}
+                isAdmin={user?.role === RoleEnum.ADMIN}
+                isDirector={user?.role === RoleEnum.DIRECTEUR}
+                isTargetAdminOrDirector={[Role.ADMIN, Role.DIRECTEUR].includes(userData?.role)}
+                isDesactivated={userData?.status !== "ACTIVE"}
+                editMode={editMode}
+                isUploading={isUploading}
+                showDeleteAlert={showDeleteAlert}
+                confirmationText={confirmationText}
+                onEdit={() => setEditMode(true)}
+                onSave={handleSave}
+                onCancelEdit={handleCancelEdit}
+                onDelete={handleDeleteUser}
+                onShowDeleteAlert={setShowDeleteAlert}
+                onConfirmationTextChange={setConfirmationText}
+                onDesactivate={handleDesactiveUser}
+                onReactivate={handleReactivateUser}
+              />
             </div>
           </div>
         </CardHeader>
@@ -496,38 +392,25 @@ export default function Profile() {
                 editedData.phone,
                 <Phone className="h-4 w-4" />
               )}
-              {userData.bankData && (
-                <div className="flex flex-col">
-                  <span className="text-sm text-muted-foreground mb-1 flex items-center gap-2">
-                    <CreditCard className="h-4 w-4" />
-                    Informations bancaires
-                  </span>
-                  <div className="text-foreground font-medium">
-                    {userData.bankData}
-                  </div>
-                </div>
+              {userData.bankData && renderInfoCard(
+                <CreditCard className="h-4 w-4" />,
+                "Informations bancaires",
+                userData.bankData
               )}
-              {userData.createdAt && (
-                <div className="flex flex-col">
-                  <span className="text-sm text-muted-foreground mb-1 flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Date d'inscription
-                  </span>
-                  <div className="text-foreground font-medium">
-                    {new Date(userData.createdAt).toLocaleDateString('fr-FR', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </div>
-                </div>
+              {userData.createdAt && renderInfoCard(
+                <Calendar className="h-4 w-4" />,
+                "Date d'inscription",
+                new Date(userData.createdAt).toLocaleDateString('fr-FR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
               )}
             </div>
           </div>
 
           {/* Section Informations académiques */}
-          {userData.thesisYear || userData.masterYear || userData.grade ||
-            (userData.role === "ENSEIGNANT" || userData.role === "DIRECTEUR") ? (
+          {(userData.role!== Role.ADMIN) && (
             <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <GraduationCap className="h-5 w-5 text-primary" />
@@ -535,47 +418,38 @@ export default function Profile() {
               </div>
               <Separator className="mb-4" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {userData.thesisYear && (
-                  <div className="flex flex-col">
-                    <span className="text-sm text-muted-foreground mb-1">Année de thèse</span>
-                    <div className="text-foreground font-medium">{userData.thesisYear}</div>
-                  </div>
+                {userData.thesisYear && renderInfoCard(
+                  <GraduationCap className="h-4 w-4" />,
+                  "Année de thèse",
+                  userData.thesisYear
                 )}
-                {userData.masterYear && (
-                  <div className="flex flex-col">
-                    <span className="text-sm text-muted-foreground mb-1">Année de master</span>
-                    <div className="text-foreground font-medium">{userData.masterYear}</div>
-                  </div>
+                {userData.masterYear && renderInfoCard(
+                  <GraduationCap className="h-4 w-4" />,
+                  "Année de master",
+                  userData.masterYear
                 )}
-                {userData.grade && (
-                  <div className="flex flex-col">
-                    <span className="text-sm text-muted-foreground mb-1">Grade</span>
-                    <div className="text-foreground font-medium">{userData.grade}</div>
-                  </div>
+                {userData.grade && renderInfoCard(
+                  <GraduationCap className="h-4 w-4" />,
+                  "Grade",
+                  userData.grade
                 )}
-                {(userData.role === "ENSEIGNANT" || userData.role === "DIRECTEUR") && (
-                  <>
-                    {userData.position && (
-                      <div className="flex flex-col">
-                        <span className="text-sm text-muted-foreground mb-1">Position</span>
-                        <div className="text-foreground font-medium">{userData.position}</div>
-                      </div>
-                    )}
-                    {userData.institution && (
-                      <div className="flex flex-col">
-                        <span className="text-sm text-muted-foreground mb-1">Établissement</span>
-                        <div className="text-foreground font-medium">{userData.institution}</div>
-                      </div>
-                    )}
-                  </>
+                {userData.position && renderInfoCard(
+                  <GraduationCap className="h-4 w-4" />,
+                  "Position",
+                  userData.position
+                )}
+                {userData.institution && renderInfoCard(
+                  <GraduationCap className="h-4 w-4" />,
+                  "Établissement",
+                  userData.institution
                 )}
               </div>
             </div>
-          ) : null}
+          )}
 
           {/* Section Informations d'encadrement */}
-          {(userData.role === 'MASTER' && userData.supervisor) ||
-            (userData.role === 'DOCTORANT' && userData.thesisSupervisorId) ? (
+          {userData.role === Role.MASTER  ||
+            userData.role === Role.DOCTORANT ? (
             <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Users className="h-5 w-5 text-primary" />
@@ -583,14 +457,14 @@ export default function Profile() {
               </div>
               <Separator className="mb-4" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {userData.role === 'MASTER' && userData.supervisor && (
+                {userData.role === Role.MASTER && userData.supervisor && (
                   <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground mb-1">Encadrant</span>
                     <div className="text-foreground font-medium">
                       <Button
                         variant="link"
                         className="p-0 h-auto font-medium text-primary hover:text-primary/80 hover:underline flex items-center gap-1"
-                        onClick={() => userData.supervisor && navigate(`/profile/${userData.supervisorId}`)}
+                        onClick={() => userData.supervisor && navigate(`/gestion/membres/${userData.supervisorId}`)}
                       >
                         {userData.supervisor?.firstName} {userData.supervisor?.lastName}
                         <ExternalLink className="h-3 w-3" />
@@ -598,14 +472,14 @@ export default function Profile() {
                     </div>
                   </div>
                 )}
-                {userData.role === 'DOCTORANT' && userData.thesisSupervisorId && (
+                {userData.role === Role.DOCTORANT && userData.thesisSupervisorId && (
                   <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground mb-1">Directeur de thèse</span>
                     <div className="text-foreground font-medium">
                       <Button
                         variant="link"
                         className="p-0 h-auto font-medium text-primary hover:text-primary/80 hover:underline flex items-center gap-1"
-                        onClick={() => navigate(`/profil/${userData.thesisSupervisorId}`)}
+                        onClick={() => navigate(`/gestion/membres/${userData.thesisSupervisorId}`)}
                       >
                         {userData.thesisSupervisor?.firstName} {userData.thesisSupervisor?.lastName}
                         <ExternalLink className="h-3 w-3" />
@@ -618,8 +492,8 @@ export default function Profile() {
           ) : null}
 
           {/* Section Étudiants supervisés */}
-          {((userData.role === "ENSEIGNANT" || userData.role === "DIRECTEUR") && isCurrentUser) ||
-            ((userData.role === "ENSEIGNANT" || userData.role === "DIRECTEUR") && user.role === "ADMIN") ? (
+          {((userData.role === Role.ENSEIGNANT || userData.role === Role.DIRECTEUR) &&
+            (isCurrentUser || user?.role === RoleEnum.ADMIN || user?.role === RoleEnum.DIRECTEUR)) && (
             <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Users className="h-5 w-5 text-primary" />
@@ -632,7 +506,7 @@ export default function Profile() {
                 isLoading={false}
               />
             </div>
-          ) : null}
+          )}
         </CardContent>
       </Card>
     </div>

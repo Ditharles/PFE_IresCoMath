@@ -42,6 +42,7 @@ export const getUsers = async (req: Request, res: Response) => {
       id: user.id,
       role: user.role,
       email: user.email,
+      status: user.status,
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
@@ -196,6 +197,7 @@ export const getStudents = async (req: Request, res: Response) => {
       userId: user.id,
       role: user.role,
       email: user.email,
+      status: user.status,
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
@@ -270,8 +272,18 @@ export const desactivateUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const existingUser = await prisma.user.findUnique({ where: { id } });
-
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { id },
+          { teacherResearcher: { id } },
+          { doctoralStudent: { id } },
+          { masterStudent: { id } },
+        ],
+      },
+      select: { id: true, status: true },
+    });
+    console.log(existingUser);
     if (!existingUser) {
       logger.warn(
         { context: "DESACTIVATE_USER", userId: id },
@@ -287,7 +299,7 @@ export const desactivateUser = async (req: Request, res: Response) => {
     }
 
     const user = await prisma.user.update({
-      where: { id },
+      where: { id: existingUser.id },
       data: { status: UserStatus.DESACTIVE },
     });
 
@@ -317,13 +329,75 @@ export const desactivateUser = async (req: Request, res: Response) => {
       "Erreur lors de la désactivation"
     );
 
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return res.status(400).json({
-        message: "Erreur lors de la mise à jour",
-        error: error.message,
-      });
+    console.log(error);
+    res.status(500).json({
+      message: ERROR_MESSAGES.INTERNAL_ERROR,
+    });
+  }
+};
+
+export const reactivateUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    res
+      .status(400)
+      .json({ message: "L'identifiant de l'utilisateur est requis" });
+    return;
+  }
+
+  try {
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { id },
+          { teacherResearcher: { id } },
+          { doctoralStudent: { id } },
+          { masterStudent: { id } },
+        ],
+      },
+      select: { id: true, status: true },
+    });
+    console.log(existingUser);
+    if (!existingUser) {
+      logger.warn(
+        { context: "REACTIVATE_USER", userId: id },
+        "Utilisateur introuvable"
+      );
+      res.status(404).json({ message: "Utilisateur non trouvé" });
+      return;
     }
 
+    if (existingUser.status === UserStatus.ACTIVE) {
+      res.status(400).json({ message: "L'utilisateur est déjà activé" });
+      return;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: existingUser.id },
+      data: { status: UserStatus.ACTIVE },
+    });
+
+    logger.info(
+      {
+        context: "REACTIVATE_USER",
+        userId: updatedUser.id,
+      },
+      "Utilisateur reactivé"
+    );
+    res.status(200).json({
+      message: "Utilisateur reactivé avec succès",
+    });
+    return;
+  } catch (error) {
+    logger.error(
+      {
+        context: "REACTIVATE_USER",
+        error,
+        userId: id,
+      },
+      "Erreur lors de la reactivation"
+    );
     res.status(500).json({
       message: ERROR_MESSAGES.INTERNAL_ERROR,
     });

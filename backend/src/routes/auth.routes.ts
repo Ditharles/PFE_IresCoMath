@@ -29,8 +29,6 @@ import {
 import { getUser } from "../controllers/auth/other.controller";
 import logger from "../logger";
 
-
-
 const router = express.Router();
 // Routes d'inscription
 

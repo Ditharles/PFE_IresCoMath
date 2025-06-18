@@ -1,7 +1,6 @@
 import api from "../api/axios";
 import { getBrowserInfo } from "../utils/browser.utils";
 import {
-  isAuthenticated,
   removesTokens,
   removeUser,
   setToken,
@@ -11,6 +10,11 @@ import {
 import { ChangePasswordRequest } from "../types/auth";
 
 class AuthService {
+  private triggerSessionExpired() {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("sessionExpired"));
+    }
+  }
   async getUser() {
     try {
       const response = await api.get("/auth/me");
@@ -18,6 +22,7 @@ class AuthService {
     } catch (error) {
       removesTokens();
       removeUser();
+      this.triggerSessionExpired();
       console.error(
         "Une erreur s'est produite lors de la récupération de l'utilisateur:",
         error
@@ -27,10 +32,9 @@ class AuthService {
   }
 
   async login(email: string, password: string) {
-    if (isAuthenticated()) {
-      removesTokens();
-      removeUser();
-    }
+    removesTokens();
+    removeUser();
+
     console.log("Connexion en cours");
     try {
       const browserInfo = getBrowserInfo();
@@ -66,6 +70,7 @@ class AuthService {
       console.error("Erreur lors de la connexion:", error);
       removesTokens();
       removeUser();
+      this.triggerSessionExpired();
 
       // Si l'erreur contient un type spécifique, on la propage
       if (error.response?.data?.type) {
@@ -87,6 +92,7 @@ class AuthService {
     } catch (error) {
       removesTokens();
       removeUser();
+      this.triggerSessionExpired();
       console.error("Une erreur s'est produite lors de la déconnexion:", error);
       throw error;
     } finally {
@@ -96,76 +102,127 @@ class AuthService {
   }
 
   async register(credentials: Record<string, unknown>, role: string) {
-    const browserInfo = getBrowserInfo();
-    const response = await api.post(`/auth/register/${role}`, {
-      ...credentials,
-      browserInfo,
-    });
-    return response;
+    try {
+      const browserInfo = getBrowserInfo();
+      const response = await api.post(`/auth/register/${role}`, {
+        ...credentials,
+        browserInfo,
+      });
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async confirmRequest(token: string) {
-    const response = await api.get(`/auth/confirm-request/${token}`);
-    return response;
+    try {
+      const response = await api.get(`/auth/confirm-request/${token}`);
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async resendConfirmationEmail(token: string) {
-    const response = await api.get("/auth/resend-confirmation-link", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    return response;
+    try {
+      const response = await api.get("/auth/resend-confirmation-link", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async resendConfirmationEmailWithEmail(email: string) {
-    const response = await api.post("/auth/resend-confirmation-link", {
-      email,
-    });
-    return response;
+    try {
+      const response = await api.post("/auth/resend-confirmation-link", {
+        email,
+      });
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async forgotPassword(email: string) {
-    const response = await api.post("/auth/forgot-password", { email });
-    return response;
+    try {
+      const response = await api.post("/auth/forgot-password", { email });
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async confirmResetPassword(token: string) {
-    const response = await api.get(`/auth/confirm-reset-password/${token}`);
-    return response;
+    try {
+      const response = await api.get(`/auth/confirm-reset-password/${token}`);
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async resetPassword(token: string, password: string) {
-    const response = await api.post(`/auth/reset-password/${token}`, {
-      password,
-    });
-    return response;
+    try {
+      const response = await api.post(`/auth/reset-password/${token}`, {
+        password,
+      });
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async verifyValidationUser(token: string) {
-    const response = await api.get(`/auth/validate-account/${token}`);
+    try {
+      const response = await api.get(`/auth/validate-account/${token}`);
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
+  }
 
-    return response;
-  }
   async updateUser(data: unknown) {
-    const response = await api.post("/users/update-user", data);
-    return response;
+    try {
+      const response = await api.post("/users/update-user", data);
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
+
   async updatePassword(data: ChangePasswordRequest) {
-    const response = await api.post("/auth/change-password", data);
-    return response;
+    try {
+      const response = await api.post("/auth/change-password", data);
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
+    }
   }
 
   async submitAdditionalInfo(data: unknown, tempToken: string) {
-    const response = await api.post(
-      `/auth/submit-additional-info/:${tempToken}`,
-      data,
-      {}
-    );
-    if (response.data.accessToken && response.data.refreshToken) {
-      setToken("accessToken", response.data.accessToken);
-      setToken("refreshToken", response.data.refreshToken);
+    try {
+      const response = await api.post(
+        `/auth/submit-additional-info/:${tempToken}`,
+        data,
+        {}
+      );
+      return response;
+    } catch (error) {
+      this.triggerSessionExpired();
+      throw error;
     }
-    return response;
   }
 
   async getUserSessions() {
@@ -173,6 +230,7 @@ class AuthService {
       const response = await api.get("/auth/sessions");
       return response.data.sessions;
     } catch (error) {
+      this.triggerSessionExpired();
       console.error("Erreur lors de la récupération des sessions:", error);
       throw error;
     }
@@ -183,6 +241,7 @@ class AuthService {
       const response = await api.delete(`/auth/sessions/${sessionId}`);
       return response;
     } catch (error) {
+      this.triggerSessionExpired();
       console.error("Erreur lors de la déconnexion de la session:", error);
       throw error;
     }

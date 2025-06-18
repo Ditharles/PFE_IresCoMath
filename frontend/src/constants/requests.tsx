@@ -4,7 +4,7 @@ import EquipmentLoanForm from "../components/form/requests/EquipementLoanForm";
 import InternshipForm from "../components/form/requests/InternshipForm";
 import MissionForm from "../components/form/requests/MissionForm";
 import ScientificEventForm from "../components/form/requests/ScientificEvent.Form";
-import { editInternshipRequestSchema, editScientificEventRequestSchema, editArticleRegistrationRequestSchema, editEquipmentLoanRequestSchema, editEquipmentPurchaseRequestSchema, editMissionRequestSchema } from "../schemas/editRequestSchema";
+import { editInternshipRequestSchema, editScientificEventRequestSchema, editArticleRegistrationRequestSchema, editEquipmentLoanRequestSchema, editEquipmentPurchaseRequestSchema, editMissionRequestSchema, editRepairMaitenanceRequestSchema } from "../schemas/editRequestSchema";
 import { RequestStatus } from "../types/MemberAddRequest";
 import { RequestType } from "../types/request";
 import EquipmentPurchaseItem from "../components/form/requests/EquipmentPurchaseItem";
@@ -54,7 +54,7 @@ export const SCHEMA_MAP = {
     [RequestType.EQUIPMENT_LOAN]: editEquipmentLoanRequestSchema,
     [RequestType.EQUIPMENT_PURCHASE]: editEquipmentPurchaseRequestSchema,
     [RequestType.MISSION]: editMissionRequestSchema,
-    [RequestType.REPAIR_MAINTENANCE]: editScientificEventRequestSchema,// Add this line
+    [RequestType.REPAIR_MAINTENANCE]: editRepairMaitenanceRequestSchema,// Add this line
 };
 
 export const FORM_COMPONENTS = {
@@ -67,3 +67,31 @@ export const FORM_COMPONENTS = {
     [RequestType.REPAIR_MAINTENANCE]: ScientificEventForm, // a corriger
 };
 
+
+
+export const allowedFieldsByType: Record<RequestType, string[]> = {
+  [RequestType.EQUIPMENT_PURCHASE]: [
+    "equipmentType", "name", "url", "quantity", "photo", "specifications", "costEstimation"
+  ],
+  [RequestType.EQUIPMENT_LOAN]: [
+    "categoryId", "equipmentId", "quantity", "startDate", "endDate"
+  ],
+  [RequestType.REPAIR_MAINTENANCE]: [
+    "description", "photos"
+  ],
+  [RequestType.INTERNSHIP]: [
+    "organization", "organizationEmail", "organizationUrl",
+    "supervisor", "supervisorEmail", "supervisorPhone",
+    "letter", "country", "startDate", "endDate"
+  ],
+  [RequestType.MISSION]: [
+    "hostOrganization", "objective", "country", "startDate", "endDate", "specificDocument", "document"
+  ],
+  [RequestType.CONFERENCE_NATIONAL]: [
+    "location", "urlEvent", "mailAcceptation", "title",
+    "articlesAccepted", "articleCover", "startDate", "endDate"
+  ],
+  [RequestType.ARTICLE_REGISTRATION]: [
+    "title", "conference", "urlConference", "articleCover", "amount"
+  ],
+}

@@ -11,7 +11,7 @@ import {
 import prisma from "../../utils/db";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import logger from "../../logger";
+import logger from "../../logger"; // Correction de l'import du logger
 
 //Gère la déconnexion de l'utilisateur en supprimant la session associée au token d'accès
 export const logout: AuthHandler = async (req, res) => {
@@ -33,7 +33,7 @@ export const logout: AuthHandler = async (req, res) => {
     });
     res.status(200).json({ message: "Déconnexion effectuée avec succès" });
   } catch (error) {
-    logger.error({context:"LOGOUT"} ,"Erreur lors de la déconnexion",error);
+    logger.error(error, "Erreur lors de la déconnexion");
     res.status(401).json({ message: ERROR_MESSAGES.INVALID_TOKEN });
   }
 };
@@ -66,7 +66,6 @@ export const refreshToken: AuthHandler = async (req, res) => {
       const session = await prisma.session.findFirst({
         where: {
           refreshToken: decodedRefresh.token,
-          accessToken: accessTokenValue,
         },
       });
 
@@ -101,7 +100,7 @@ export const refreshToken: AuthHandler = async (req, res) => {
       throw error;
     }
   } catch (error) {
-    logger.error({context: "REFRESH"}, "Refresh token error",error);
+    logger.error(error, "Refresh token error");
     return res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
   }
 };

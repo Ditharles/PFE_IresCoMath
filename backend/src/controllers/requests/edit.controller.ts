@@ -1,5 +1,8 @@
 import { RequestType } from "../../../generated/prisma";
-import { requestRelationFieldByType } from "../../constants/requests";
+import {
+  allowedFieldsByType,
+  requestRelationFieldByType,
+} from "../../constants/requests";
 import { getRequestById } from "../../services/requests.service";
 import { AuthRequest } from "../../types/auth";
 import { ERROR_MESSAGES } from "../../utils/authUtils";
@@ -63,14 +66,20 @@ export const editRequest = async (req: AuthRequest, res: Response) => {
 
     const { type, ...updateData } = req.body;
 
+    const allowedFields = allowedFieldsByType[request.type];
+
+    const filteredData = Object.fromEntries(
+      Object.entries(updateData).filter(([key]) => allowedFields.includes(key))
+    );
     const updatedRequest = await (prismaModel as any).update({
       where: { id: relationId },
-      data: updateData,
+      data: filteredData,
     });
 
     const sendData = {
       ...request,
       [relationField]: updatedRequest,
+      user: req.user,
     };
 
     logger.info(
@@ -83,6 +92,7 @@ export const editRequest = async (req: AuthRequest, res: Response) => {
     });
     return;
   } catch (error) {
+    console.error(error);
     logger.error(
       { context: "EDIT_REQUEST", requestId: id, error },
       "Erreur lors de la modification de la demande"
