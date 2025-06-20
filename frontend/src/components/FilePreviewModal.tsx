@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./ui/dialog";
-import { FileIcon, DownloadIcon, X } from "lucide-react";
+import { FileIcon, DownloadIcon, X, ExternalLink } from "lucide-react";
 
 interface FilePreviewModalProps {
     isOpen: boolean;
@@ -11,7 +11,6 @@ interface FilePreviewModalProps {
 }
 
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
-const SUPPORTED_DOC_TYPES = ['application/pdf', 'text/plain'];
 
 const FilePreviewModal = ({
     isOpen,
@@ -20,7 +19,7 @@ const FilePreviewModal = ({
     fileName,
     mimeType,
 }: FilePreviewModalProps) => {
-    const [fileType, setFileType] = useState<'image' | 'document' | 'unsupported'>('unsupported');
+    const [isImage, setIsImage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -30,26 +29,17 @@ const FilePreviewModal = ({
             setIsLoading(true);
 
             try {
-                // Priorité au type MIME fourni en prop
                 let detectedType = mimeType;
 
-                // Fallback: requête HEAD si le type n'est pas fourni
                 if (!detectedType) {
                     const response = await fetch(fileUrl, { method: 'HEAD' });
                     detectedType = response.headers.get('content-type') || '';
                 }
 
-                // Détermination du type supporté
-                if (detectedType && SUPPORTED_IMAGE_TYPES.includes(detectedType)) {
-                    setFileType('image');
-                } else if (detectedType && SUPPORTED_DOC_TYPES.includes(detectedType)) {
-                    setFileType('document');
-                } else {
-                    setFileType('unsupported');
-                }
+                setIsImage(detectedType ? SUPPORTED_IMAGE_TYPES.includes(detectedType) : false);
             } catch (error) {
-                console.error("Error detecting file type:", error);
-                setFileType('unsupported');
+                console.error("Erreur de détection du type de fichier:", error);
+                setIsImage(false);
             } finally {
                 setIsLoading(false);
             }
@@ -70,46 +60,58 @@ const FilePreviewModal = ({
             );
         }
 
-        switch (fileType) {
-            case 'image':
-                return (
-                    <div className="flex flex-col items-center w-full h-full">
-                        <div className="relative max-h-[70vh] max-w-full">
-                            <img
-                                src={fileUrl}
-                                alt={fileName || "Aperçu de l'image"}
-                                className="max-h-[70vh] max-w-full object-contain rounded-lg border shadow-sm"
-                                onError={() => setFileType('unsupported')}
-                            />
-                        </div>
+        if (isImage) {
+            return (
+                <div className="flex flex-col items-center w-full h-full">
+                    <div className="relative max-h-[70vh] max-w-full">
+                        <img
+                            src={fileUrl}
+                            alt={fileName || "Aperçu de l'image"}
+                            className="max-h-[70vh] max-w-full object-contain rounded-lg border shadow-sm"
+                            onError={() => setIsImage(false)}
+                        />
                     </div>
-                );
-            case 'document':
-                return (
-                    <iframe
-                        src={fileUrl}
-                        title={fileName || "Aperçu du document"}
-                        className="w-full h-[70vh] border rounded-lg shadow-sm bg-white"
-                        sandbox="allow-scripts allow-same-origin"
-                    />
-                );
-            default:
-                return (
-                    <div className="flex flex-col items-center justify-center h-full text-center">
-                        <FileIcon className="h-12 w-12 text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-medium text-foreground">
-                            Prévisualisation non disponible
-                        </h3>
-                        <p className="text-muted-foreground mb-6">
-                            Ce type de fichier ne peut pas être prévisualisé.
-                        </p>
-                    </div>
-                );
+                </div>
+            );
         }
+
+        return (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+                <FileIcon className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">
+                    Aperçu non disponible
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                    Ce fichier ne peut pas être prévisualisé ici.
+                </p>
+                <div className="flex flex-col items-center gap-3">
+                    <a
+                        href={fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground 
+                        rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+                    >
+                        <ExternalLink className="h-4 w-4" />
+                        Parcourir
+                    </a>
+                    <a
+                        href={fileUrl}
+                        download={fileName || true}
+                        className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground 
+                        rounded-lg hover:bg-secondary/90 transition-colors shadow-sm"
+                    >
+                        <DownloadIcon className="h-4 w-4" />
+                        Télécharger
+                    </a>
+                </div>
+            </div>
+        );
     };
 
+    // Pour les images, on garde le bouton télécharger en bas
     const renderDownloadButton = () => {
-        if (fileType === 'unsupported' || isLoading) return null;
+        if (isLoading || !isImage) return null;
 
         return (
             <a
@@ -132,7 +134,7 @@ const FilePreviewModal = ({
                 onInteractOutside={(e) => e.preventDefault()}
             >
                 <div className="relative h-full w-full bg-background rounded-xl shadow-xl overflow-hidden">
-                    {/* Close button */}
+                    {/* Bouton fermer */}
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 z-50 p-2 rounded-full bg-background/80 
@@ -143,7 +145,7 @@ const FilePreviewModal = ({
                         <X className="h-5 w-5" />
                     </button>
 
-                    {/* File preview area */}
+                    {/* Zone d'aperçu */}
                     <div className="h-full w-full flex items-center justify-center p-6 pt-14 pb-24">
                         {fileUrl ? renderPreviewContent() : (
                             <div className="text-center">
@@ -153,10 +155,10 @@ const FilePreviewModal = ({
                         )}
                     </div>
 
-                    {/* Download button */}
+                    {/* Bouton télécharger pour les images */}
                     {renderDownloadButton()}
 
-                    {/* File info footer */}
+                    {/* Footer info fichier */}
                     {fileUrl && !isLoading && (
                         <div className="absolute bottom-4 left-0 w-full px-6 text-center">
                             <p className="text-sm text-muted-foreground truncate max-w-full">
