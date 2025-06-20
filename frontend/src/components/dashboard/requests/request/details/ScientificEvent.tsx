@@ -9,6 +9,7 @@ import TemplateService from "../../../../../services/templates.service";
 import { toast } from "sonner";
 
 import { formatDate } from "../../../../../utils/utils";
+import { Mail } from "lucide-react";
 
 interface ScientificEventProps {
     scientificEvent: ScientificEventType;
@@ -17,11 +18,11 @@ interface ScientificEventProps {
 }
 
 const ScientificEvent = ({ scientificEvent, isDirector = false, onPreview }: ScientificEventProps) => {
-   
+
     const templateService = new TemplateService();
 
     const handleSignFormUpload = async (urls: string[] | string) => {
-       
+
         const url = Array.isArray(urls) ? urls[0] : urls;
         try {
             await templateService.sendSignForm(scientificEvent.id, url);
@@ -29,31 +30,50 @@ const ScientificEvent = ({ scientificEvent, isDirector = false, onPreview }: Sci
         } catch (error) {
             console.error("Erreur lors de l'envoi du formulaire signé:", error);
             toast.error("Erreur lors de l'envoi du formulaire signé");
-        } 
+        }
     };
 
     return (
         <>
             <DetailSection
                 icon={<Calendar className="h-5 w-5 text-red-500" />}
-                title="Détails de la conférence"
-            >
+                title="Détails de la conférence">
                 <DetailItem label="Titre" value={scientificEvent.title} />
                 <DetailItem label="Lieu" value={scientificEvent.location} />
                 {scientificEvent.urlEvent && (
-                    <DetailItem label="URL de l'événement" value={scientificEvent.urlEvent} />
+                    <DetailItem
+                        label="URL de l'événement"
+                        value={scientificEvent.urlEvent}
+                    />
                 )}
-                <DetailItem label="Email d'acceptation" value={scientificEvent.mailAcceptation} />
-                <DetailItem label="Articles acceptés" value={scientificEvent.articlesAccepted ? "Oui" : "Non"} />
-                <DetailItem label="Date de début" value={formatDate(scientificEvent.startDate)} />
-                <DetailItem label="Date de fin" value={formatDate(scientificEvent.endDate)} />
+                <DetailSection
+                    icon={<Mail className="h-5 w-5 text-green-500" />}
+                    title="Email d'acceptation">
+                    <DetailItem label="Couverture de l'article">
+                        <FileListViewer
+                            files={[scientificEvent.mailAcceptation]}
+                            onPreview={onPreview}
+                        />
+                    </DetailItem>
+                </DetailSection>
+                <DetailItem
+                    label="Articles acceptés"
+                    value={scientificEvent.articlesAccepted ? "Oui" : "Non"}
+                />
+                <DetailItem
+                    label="Date de début"
+                    value={formatDate(scientificEvent.startDate)}
+                />
+                <DetailItem
+                    label="Date de fin"
+                    value={formatDate(scientificEvent.endDate)}
+                />
             </DetailSection>
 
             {scientificEvent.articleCover && (
                 <DetailSection
                     icon={<FileText className="h-5 w-5 text-green-500" />}
-                    title="Documents associés"
-                >
+                    title="Documents associés">
                     <DetailItem label="Couverture de l'article">
                         <FileListViewer
                             files={[scientificEvent.articleCover]}
@@ -78,7 +98,7 @@ const ScientificEvent = ({ scientificEvent, isDirector = false, onPreview }: Sci
                                     acceptedTypes={[
                                         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                                         "application/msword",
-                                        "application/pdf"
+                                        "application/pdf",
                                     ]}
                                     headerText="Téléversement du formulaire signé"
                                     subHeaderText="Format accepté : .docx, .doc, .pdf"
@@ -89,20 +109,29 @@ const ScientificEvent = ({ scientificEvent, isDirector = false, onPreview }: Sci
                     } else {
                         formSectionContent = (
                             <div className="text-sm text-gray-600 mb-2 block">
-                                Le formulaire signé sera disponible après approbation par le directeur.
+                                Le formulaire signé sera disponible après approbation par le
+                                directeur.
                             </div>
                         );
                     }
                 } else {
                     formSectionContent = (
-                        <FileListViewer files={[scientificEvent.signForm]} onPreview={onPreview} />
+                        <FileListViewer
+                            files={[scientificEvent.signForm]}
+                            onPreview={onPreview}
+                        />
                     );
                 }
                 return (
-                    <DetailSection icon={<FileText className="h-5 w-5 text-blue-500" />} title="Formulaire">
+                    <DetailSection
+                        icon={<FileText className="h-5 w-5 text-blue-500" />}
+                        title="Formulaire">
                         {isDirector && scientificEvent.awaitForm && (
                             <>
-                                <FileListViewer files={[scientificEvent.awaitForm]} onPreview={onPreview} />
+                                <FileListViewer
+                                    files={[scientificEvent.awaitForm]}
+                                    onPreview={onPreview}
+                                />
                                 <div className="flex flex-col gap-4 md:col-span-2">
                                     <div className="flex items-center gap-4">
                                         <a
@@ -110,8 +139,7 @@ const ScientificEvent = ({ scientificEvent, isDirector = false, onPreview }: Sci
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-primary underline font-medium"
-                                            download
-                                        >
+                                            download>
                                             Télécharger le formulaire à signer
                                         </a>
                                     </div>
