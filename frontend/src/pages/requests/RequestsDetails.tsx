@@ -74,6 +74,14 @@ const RequestDetails = () => {
                     requestDetails.articleRegistration.awaitForm = requestDetails.awaitForm ?? "";
                     requestDetails.articleRegistration.signForm = requestDetails.signForm ?? "";
                     break;
+                case RequestType.CONFERENCE_NATIONAL:
+                    requestDetails.scientificEvent.awaitForm = requestDetails.awaitForm ?? "";
+                    requestDetails.scientificEvent.signForm = requestDetails.signForm ?? "";
+                    break;
+                case RequestType.REPAIR_MAINTENANCE:
+                    requestDetails.repairMaintenanceRequest.awaitForm = requestDetails.awaitForm ?? "";
+                    requestDetails.repairMaintenanceRequest.signForm = requestDetails.signForm ?? "";
+                    break;
                 default:
                     break;
             }
