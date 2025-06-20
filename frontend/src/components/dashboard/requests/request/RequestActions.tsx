@@ -60,7 +60,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({ requestData, onActionCo
 
     const canReject = canApprove;
     const canComplete = isOwner && requestData.request.status === RequestStatus.APPROVED;
-    const canClose = isOwner && requestData.request.status === RequestStatus.COMPLETED;
+    const canClose = isDirector && requestData.request.status === RequestStatus.COMPLETED;
 
     let canReignite = false;
     if (isOwner) {
