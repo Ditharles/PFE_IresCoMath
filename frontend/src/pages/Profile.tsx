@@ -24,7 +24,6 @@ import { ActionButtons } from "../components/profile/ActionsButtons";
 // Services & Utils
 import { useAuth } from "../contexts/AuthContext";
 import AuthService from "../services/auth.service";
-import { isAuthenticated } from "../utils/tokens.utils";
 import { ManageUserService } from "../services/manageUser.service";
 
 // Types
@@ -38,7 +37,7 @@ const { useUploadThing } = generateReactHelpers();
 
 export default function Profile() {
   // Hooks and Services
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const authService = new AuthService();
@@ -70,7 +69,7 @@ export default function Profile() {
 
   // Data Fetching
   const fetchUserData = async () => {
-    if (!isAuthenticated()) {
+    if (!isLoggedIn) {
       navigate('/login');
       return;
     }
@@ -410,7 +409,7 @@ export default function Profile() {
           </div>
 
           {/* Section Informations académiques */}
-          {(userData.role!== Role.ADMIN) && (
+          {(userData.role !== Role.ADMIN) && (
             <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <GraduationCap className="h-5 w-5 text-primary" />
@@ -448,7 +447,7 @@ export default function Profile() {
           )}
 
           {/* Section Informations d'encadrement */}
-          {userData.role === Role.MASTER  ||
+          {userData.role === Role.MASTER ||
             userData.role === Role.DOCTORANT ? (
             <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
@@ -494,19 +493,19 @@ export default function Profile() {
           {/* Section Étudiants supervisés */}
           {((userData.role === Role.ENSEIGNANT || userData.role === Role.DIRECTEUR) &&
             (isCurrentUser || user?.role === RoleEnum.ADMIN || user?.role === RoleEnum.DIRECTEUR)) && (
-            <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
-              <div className="flex items-center gap-2 mb-3">
-                <Users className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold text-foreground">Étudiants Supervisés</h3>
+              <div className="rounded-lg bg-muted/50 p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <Users className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold text-foreground">Étudiants Supervisés</h3>
+                </div>
+                <Separator className="mb-4" />
+                <SupervisedStudentsList
+                  supervisorId={userData.id}
+                  title={`Étudiants supervisés par ${userData.firstName} ${userData.lastName}`}
+                  isLoading={false}
+                />
               </div>
-              <Separator className="mb-4" />
-              <SupervisedStudentsList
-                supervisorId={userData.id}
-                title={`Étudiants supervisés par ${userData.firstName} ${userData.lastName}`}
-                isLoading={false}
-              />
-            </div>
-          )}
+            )}
         </CardContent>
       </Card>
     </div>

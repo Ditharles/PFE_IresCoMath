@@ -3,7 +3,7 @@ import { SearchIcon, History, FilePlus2, User, Settings, Users, UserCircle, File
 import { Input } from "../ui/input"
 import { Badge } from "../ui/badge"
 import { useNavigate, useLocation } from "react-router-dom"
-import { getUser } from "../../utils/tokens.utils"
+import { useAuth } from "../../contexts/AuthContext"
 import {
     CommandDialog,
     CommandEmpty,
@@ -108,7 +108,7 @@ const useCommandState = () => {
 
 export const SearchCommand = ({ searchQuery, setSearchQuery }: SearchCommandProps) => {
     const navigate = useNavigate()
-    const user = getUser()
+    const { user } = useAuth();
     const { isOpen, isNavigating, selectedPath, open, close, handleNavigation } = useCommandState()
 
     const memberCommands: CommandItem[] = [

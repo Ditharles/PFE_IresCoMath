@@ -1,5 +1,4 @@
 import { BellIcon, UserIcon } from "lucide-react"
-import { getUser } from "../../utils/tokens.utils"
 import { useEffect, useState } from "react"
 import NotificationsService from "../../services/notifcations.service"
 import { ModeToggle } from "../ui/mode-toogle"
@@ -8,6 +7,7 @@ import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { SearchCommand } from "./SearchCommand"
+import { useAuth } from "../../contexts/AuthContext"
 
 interface HeaderProps {
     showUserProfile: boolean
@@ -26,7 +26,7 @@ export const Header = ({
     searchQuery,
     setSearchQuery
 }: HeaderProps) => {
-    const user = getUser();
+    const { user } = useAuth();
     const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
     const notificationService = new NotificationsService();
 
