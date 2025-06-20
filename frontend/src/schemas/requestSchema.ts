@@ -68,7 +68,7 @@ export const scientificEventRequestSchema = z
       .string()
       .min(1, { message: "L'email d'acceptation est requis" }),
     title: z.string().min(1, { message: "Le titre de l'événement est requis" }),
-    articlesAccepted: z.boolean(),
+    articlesAccepted: z.boolean().default(false),
     articleCover: z.string().optional(),
     ...dateValidation,
   })

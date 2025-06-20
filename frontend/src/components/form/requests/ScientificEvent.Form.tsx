@@ -105,7 +105,7 @@ const ScientificEventForm: React.FC = () => {
               <FormControl>
                 <Input
                   type="checkbox"
-                  checked={field.value}
+                  checked={field.value ?? false}
                   onChange={e => field.onChange(e.target.checked)}
                   className="w-5 h-5 accent-blue-600"
                 />
