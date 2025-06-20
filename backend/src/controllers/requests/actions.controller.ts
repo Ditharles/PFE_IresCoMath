@@ -83,10 +83,10 @@ export const closeRequest = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    if (request?.status !== RequestStatus.APPROVED) {
+    if (request?.status !== RequestStatus.COMPLETED) {
       logger.warn(
         { context: "CLOSE_REQUEST", requestId: id, status: request?.status },
-        "Tentative de clôture d'une demande non approuvée"
+        "Tentative de clôture d'une demande non complétée"
       );
       res.status(400).json({ message: "La demande doit être complétée" });
       return;
